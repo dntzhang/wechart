@@ -1,0 +1,73 @@
+{
+  "name": "wechart",
+  "version": "0.1.0",
+  "description": "Build Chart with cax.",
+  "main": "dist/wechart.js",
+  "scripts": {
+    "lint": "eslint src",
+    "fix": "eslint src --fix",
+    "fixweapp": "eslint ../cax-weapp --fix",
+    "lint:example": "eslint example --fix",
+    "pie-simple": "webpack -w",
+    "build": "webpack",
+    "build-min": "webpack",
+    "test": "karma start test/karma.conf.js"
+  },
+  "dependencies": {
+    "cax": "latest"
+  },
+  "devDependencies": {
+    "eslint": "^4.3.0",
+    "eslint-config-standard": "^10.2.1",
+    "eslint-plugin-import": "^2.7.0",
+    "eslint-plugin-node": "^5.1.1",
+    "eslint-plugin-promise": "^3.5.0",
+    "eslint-plugin-standard": "^3.0.1",
+    "babel-core": "^6.26.0",
+    "babel-loader": "^7.1.4",
+    "babel-plugin-transform-class-properties": "^6.24.1",
+    "babel-plugin-transform-react-jsx": "^6.24.1",
+    "babel-preset-env": "^1.6.1",
+    "chai": "^4.1.2",
+    "jasmine-core": "^2.5.2",
+    "karma": "^1.3.0",
+    "karma-babel-preprocessor": "^7.0.0",
+    "karma-chai-sinon": "^0.1.5",
+    "karma-chrome-launcher": "^2.0.0",
+    "karma-coverage": "^1.0.0",
+    "karma-jasmine": "^1.1.0",
+    "karma-mocha": "^1.1.1",
+    "karma-mocha-reporter": "^2.0.4",
+    "karma-sauce-launcher": "^1.1.0",
+    "karma-sinon": "^1.0.5",
+    "karma-source-map-support": "^1.2.0",
+    "karma-sourcemap-loader": "^0.3.6",
+    "karma-webpack": "^2.0.4",
+    "mocha": "^5.0.4",
+    "node-libs-browser": "^0.5.3",
+    "sinon": "^4.5.0",
+    "sinon-chai": "^3.0.0",
+    "webpack": "^3.4.1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/AlloyTeam/omix.git"
+  },
+  "keywords": [
+    "cax",
+    "chart",
+    "wechart",
+    "wechat",
+    "canvas"
+  ],
+  "devEngines": {
+    "node": "6.x || 7.x || 8.x",
+    "npm": "3.x || 4.x || 5.x"
+  },
+  "author": "dntzhang",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/AlloyTeam/omix/issues/new"
+  },
+  "homepage": "http://alloyteam.github.io/omix"
+}
