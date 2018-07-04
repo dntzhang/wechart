@@ -6059,7 +6059,19 @@ var Pie = function (_Group) {
 
     var _this = _possibleConstructorReturn(this, (Pie.__proto__ || Object.getPrototypeOf(Pie)).call(this));
 
+    option = Object.assign({}, defaultOption, option);
     _this.data = data;
+    _this.textGroup = new Group();
+    _this.sectorGroup = new _cax2.default.Group();
+    _this.option = option;
+
+    var totalValue = 0;
+    data.forEach(function (item) {
+      totalValue += option.processing(item);
+    });
+    _this.totalValue = totalValue;
+
+    _this.add(_this.sectorGroup, _this.textGroup);
 
     var tooltip = document.createElement('div');
     document.body.appendChild(tooltip);
@@ -6075,24 +6087,7 @@ var Pie = function (_Group) {
     tooltip.style.backgroundColor = 'rgba(0,0,0,.5)';
     tooltip.style.color = 'white';
     tooltip.style.textAlign = 'center';
-
-    var textGroup = new Group();
-    option = Object.assign({}, defaultOption, option);
-    _this.option = option;
-    var totalValue = 0;
-    data.forEach(function (item) {
-      totalValue += option.processing(item);
-    });
-
-    _this.sectorGroup = new _cax2.default.Group();
-
-    _this.add(_this.sectorGroup);
-    _this.add(textGroup);
-
     _this.tooltip = tooltip;
-    _this.totalValue = totalValue;
-    _this.textGroup = textGroup;
-
     return _this;
   }
 

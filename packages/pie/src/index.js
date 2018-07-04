@@ -2,8 +2,6 @@ import cax from 'cax'
 
 const { Graphics, To, Group, Text } = cax
 
-
-
 const defaultOption = {
   totalAngle: 0,
   begin: Math.random() * Math.PI * 2
@@ -13,7 +11,19 @@ class Pie extends Group {
   constructor(data, option) {
     super()
 
+    option = Object.assign({}, defaultOption, option)
     this.data = data
+    this.textGroup = new Group()
+    this.sectorGroup = new cax.Group()
+    this.option = option
+
+    let totalValue = 0
+    data.forEach((item) => {
+      totalValue += option.processing(item)
+    })
+    this.totalValue = totalValue
+
+    this.add(this.sectorGroup, this.textGroup)
 
     const tooltip = document.createElement('div')
     document.body.appendChild(tooltip)
@@ -29,47 +39,26 @@ class Pie extends Group {
     tooltip.style.backgroundColor = 'rgba(0,0,0,.5)'
     tooltip.style.color = 'white'
     tooltip.style.textAlign = 'center'
-
-  
-    const textGroup = new Group()
-    option = Object.assign({}, defaultOption, option)
-    this.option = option
-    let totalValue = 0
-    data.forEach((item) => {
-      totalValue += option.processing(item)
-    })
-
-   
-
-    this.sectorGroup = new cax.Group()
-  
-   
-    this.add(this.sectorGroup)
-    this.add(textGroup)
-
     this.tooltip = tooltip
-    this.totalValue = totalValue
-    this.textGroup = textGroup
-    
   }
 
-  show(){
+  show() {
     this._init()
-    this._to(0, Math.PI*2, 1000,cax.easing.bounceOut,true)
+    this._to(0, Math.PI * 2, 1000, cax.easing.bounceOut, true)
   }
 
-  hide(){
-    this._to( Math.PI*2, 0, 600,null,false)
+  hide() {
+    this._to(Math.PI * 2, 0, 600, null, false)
   }
 
-  _init(){
-    
+  _init() {
+
     const option = this.option
     const data = this.data
     const { x, y, r } = option
     const tooltip = this.tooltip
     let current = option.begin
-    
+
     let totalValue = 0
     data.forEach((item) => {
       totalValue += option.processing(item)
@@ -114,7 +103,7 @@ class Pie extends Group {
 
   }
 
-  _to(from, to,duration,easing, show){
+  _to(from, to, duration, easing, show) {
 
     const option = this.option
     const sectorGroup = this.sectorGroup
@@ -123,14 +112,14 @@ class Pie extends Group {
     const data = this.data
     let current = option.begin
 
-    if(!show){
-      fadeOut(this.textGroup,()=>{
+    if (!show) {
+      fadeOut(this.textGroup, () => {
         this.textGroup.empty()
       })
     }
 
-    To.get({totalAngle:from})
-      .to({ totalAngle: to}, duration, easing)
+    To.get({ totalAngle: from })
+      .to({ totalAngle: to }, duration, easing)
       .progress((object) => {
 
         current = option.begin
@@ -157,9 +146,9 @@ class Pie extends Group {
           current += object.totalAngle * option.processing(item) / totalValue
           arr.push(center)
         })
-        if(show){
+        if (show) {
 
-       
+
           this.textGroup.alpha = 0
           arr.forEach((angle, index) => {
             angle %= Math.PI * 2
@@ -213,17 +202,14 @@ class Pie extends Group {
             this.textGroup.add(g, text)
           })
           fadeIn(this.textGroup)
-        }else{
-          
+        } else {
+
           this.sectorGroup.empty()
         }
-        
+
       })
       .start()
-
   }
-
-
 }
 
 
@@ -232,10 +218,9 @@ function fadeIn(obj) {
   To.get(obj).to({ alpha: 1 }, 600).start()
 }
 
-
 function fadeOut(obj, callback) {
   obj.alpha = 1
-  To.get(obj).to({ alpha: 0 }, 600).end(function(){callback()}).start()
+  To.get(obj).to({ alpha: 0 }, 600).end(function () { callback() }).start()
 }
 
 function bounceIn(obj, from, to) {
@@ -250,9 +235,4 @@ function bounceOut(obj, from, to) {
   To.get(obj).to({ scaleX: to || 0, scaleY: to || 0 }, 300, cax.easing.bounceOut).start()
 }
 
-
-
 export default Pie
-
-
-
