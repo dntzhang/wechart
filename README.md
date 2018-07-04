@@ -2,9 +2,9 @@
 
 # Wechart
 
-> Cax 渲染精巧图表
+> [Cax](https://github.com/dntzhang/cax) 渲染精巧图表
 
-* [Pie Chart](https://dntzhang.github.io/cax/packages/cax/examples/pie/)
+* [Pie Chart](https://dntzhang.github.io/wechart/packages/pie/examples/simple/) | [Source](https://github.com/dntzhang/wechart/blob/master/packages/pie/examples/simple/main.js) | [Pie Source](https://github.com/dntzhang/wechart/blob/master/packages/pie/src/index.js)
 
 ## 谁在使用？
 
