@@ -19,11 +19,9 @@ const pie = new Pie([
             return ['#4BC0C0', '#FF6485', '#FFA07A', '#ADACB9', '#A37AC1'][index]
         },
         circleColor: 'white',
-        duration: 1000,
         label: (item) => {
             return item.name
         },
-        easing: cax.easing.bounceOut,
         textOffsetY: -12,
         font: '20px Arial',
         tooltip: (item) => {
@@ -35,7 +33,7 @@ const pie = new Pie([
     }
 )
 
-
+pie.show()
 stage.add(pie)
 
 if (window.innerWidth <= 500) {
@@ -45,5 +43,3 @@ if (window.innerWidth <= 500) {
 cax.tick(() => {
     stage.update()
 })
-
-

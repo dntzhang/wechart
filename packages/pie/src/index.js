@@ -12,6 +12,9 @@ const defaultOption = {
 class Pie extends Group {
   constructor(data, option) {
     super()
+
+    this.data = data
+
     const tooltip = document.createElement('div')
     document.body.appendChild(tooltip)
     tooltip.style.position = 'absolute'
@@ -27,18 +30,49 @@ class Pie extends Group {
     tooltip.style.color = 'white'
     tooltip.style.textAlign = 'center'
 
-    const { x, y, r } = option
-
+  
     const textGroup = new Group()
     option = Object.assign({}, defaultOption, option)
+    this.option = option
     let totalValue = 0
     data.forEach((item) => {
       totalValue += option.processing(item)
     })
 
-    let current = option.begin
+   
 
-    const sectors = []
+    this.sectorGroup = new cax.Group()
+  
+   
+    this.add(this.sectorGroup)
+    this.add(textGroup)
+
+    this.totalValue = totalValue
+    this.textGroup = textGroup
+    
+  }
+
+  show(){
+    this._init()
+    this._to(0, Math.PI*2, 1000,cax.easing.bounceOut,true)
+  }
+
+  hide(){
+    this._to( Math.PI*2, 0, 600,null,false)
+  }
+
+  _init(){
+    
+    const option = this.option
+    const data = this.data
+    const { x, y, r } = option
+    let current = option.begin
+    
+    let totalValue = 0
+    data.forEach((item) => {
+      totalValue += option.processing(item)
+    })
+
     data.forEach((item, index) => {
       const sector = new Graphics()
       sector.value = option.processing(item)
@@ -54,8 +88,7 @@ class Pie extends Group {
         .stroke()
       sector.x = x
       sector.y = y
-      sectors.push(sector)
-      this.add(sector)
+      this.sectorGroup.add(sector)
 
 
       if (option.tooltip) {
@@ -77,13 +110,29 @@ class Pie extends Group {
       }
     })
 
+  }
 
-    To.get(option)
-      .to({ totalAngle: Math.PI * 2 }, option.duration, option.easing)
+  _to(from, to,duration,easing, show){
+
+    const option = this.option
+    const sectorGroup = this.sectorGroup
+    const { x, y, r } = option
+    const totalValue = this.totalValue
+    const data = this.data
+    let current = option.begin
+
+    if(!show){
+      fadeOut(this.textGroup,()=>{
+        this.textGroup.empty()
+      })
+    }
+
+    To.get({totalAngle:from})
+      .to({ totalAngle: to}, duration, easing)
       .progress((object) => {
 
         current = option.begin
-        sectors.forEach((item, index) => {
+        sectorGroup.children.forEach((item, index) => {
           item
             .clear()
             .beginPath()
@@ -101,71 +150,77 @@ class Pie extends Group {
       .end((object) => {
         current = option.begin
         let arr = []
-        sectors.forEach((item, index) => {
+        sectorGroup.children.forEach((item, index) => {
           let center = current + object.totalAngle * option.processing(item) / totalValue / 2
           current += object.totalAngle * option.processing(item) / totalValue
           arr.push(center)
         })
-        textGroup.alpha = 0
-        arr.forEach((angle, index) => {
-          angle %= Math.PI * 2
-          let centerX = x + r * Math.cos(angle)
-          let centerY = y + r * Math.sin(angle)
+        if(show){
 
-          const currentColor = option.textColor(index)
-          const label = option.label(data[index])
-          const text = new Text(label, { color: currentColor, font: option.font })
+       
+          this.textGroup.alpha = 0
+          arr.forEach((angle, index) => {
+            angle %= Math.PI * 2
+            let centerX = x + r * Math.cos(angle)
+            let centerY = y + r * Math.sin(angle)
 
-          const g = new Graphics()
+            const currentColor = option.textColor(index)
+            const label = option.label(data[index])
+            const text = new Text(label, { color: currentColor, font: option.font })
 
-          if (angle >= 0 && angle < Math.PI / 2) {
-            g.beginPath().moveTo(centerX, centerY)
-              .lineTo(centerX + 20 * 0.7, centerY + 20 * 0.5)
-              .lineTo(centerX + 20 * 0.7 + 20, centerY + 20 * 0.5)
-              .strokeStyle(currentColor)
-              .stroke()
+            const g = new Graphics()
 
-            text.x = centerX + 20 * 0.7 + 20 + 3
-            text.y = centerY + 20 * 0.5 + option.textOffsetY
-          } else if (angle >= Math.PI / 2 && angle < Math.PI) {
-            g.beginPath().moveTo(centerX, centerY)
-              .lineTo(centerX - 20 * 0.7, centerY + 20 * 0.5)
-              .lineTo(centerX - 20 * 0.7 - 20, centerY + 20 * 0.5)
-              .strokeStyle(currentColor)
-              .stroke()
+            if (angle >= 0 && angle < Math.PI / 2) {
+              g.beginPath().moveTo(centerX, centerY)
+                .lineTo(centerX + 20 * 0.7, centerY + 20 * 0.5)
+                .lineTo(centerX + 20 * 0.7 + 20, centerY + 20 * 0.5)
+                .strokeStyle(currentColor)
+                .stroke()
 
-            text.x = centerX - 20 * 0.7 - 20 - text.getWidth() - 3
-            text.y = centerY + 20 * 0.5 + option.textOffsetY
-          } else if (angle >= Math.PI && angle < Math.PI + Math.PI / 2) {
-            g.beginPath().moveTo(centerX, centerY)
-              .lineTo(centerX - 20 * 0.7, centerY - 20 * 0.5)
-              .lineTo(centerX - 20 * 0.7 - 20, centerY - 20 * 0.5)
-              .strokeStyle(currentColor)
-              .stroke()
+              text.x = centerX + 20 * 0.7 + 20 + 3
+              text.y = centerY + 20 * 0.5 + option.textOffsetY
+            } else if (angle >= Math.PI / 2 && angle < Math.PI) {
+              g.beginPath().moveTo(centerX, centerY)
+                .lineTo(centerX - 20 * 0.7, centerY + 20 * 0.5)
+                .lineTo(centerX - 20 * 0.7 - 20, centerY + 20 * 0.5)
+                .strokeStyle(currentColor)
+                .stroke()
 
-            text.x = centerX - 20 * 0.7 - 20 - text.getWidth() - 3
-            text.y = centerY - 20 * 0.5 + option.textOffsetY
-          } else if (angle >= Math.PI + Math.PI / 2 && angle <= Math.PI * 2) {
-            g.beginPath().moveTo(centerX, centerY)
-              .lineTo(centerX + 20 * 0.7, centerY - 20 * 0.5)
-              .lineTo(centerX + 20 * 0.7 + 20, centerY - 20 * 0.5)
-              .strokeStyle(currentColor)
-              .stroke()
+              text.x = centerX - 20 * 0.7 - 20 - text.getWidth() - 3
+              text.y = centerY + 20 * 0.5 + option.textOffsetY
+            } else if (angle >= Math.PI && angle < Math.PI + Math.PI / 2) {
+              g.beginPath().moveTo(centerX, centerY)
+                .lineTo(centerX - 20 * 0.7, centerY - 20 * 0.5)
+                .lineTo(centerX - 20 * 0.7 - 20, centerY - 20 * 0.5)
+                .strokeStyle(currentColor)
+                .stroke()
 
-            text.x = centerX + 20 * 0.7 + 20 + 3
-            text.y = centerY - 20 * 0.5 + option.textOffsetY
-          }
+              text.x = centerX - 20 * 0.7 - 20 - text.getWidth() - 3
+              text.y = centerY - 20 * 0.5 + option.textOffsetY
+            } else if (angle >= Math.PI + Math.PI / 2 && angle <= Math.PI * 2) {
+              g.beginPath().moveTo(centerX, centerY)
+                .lineTo(centerX + 20 * 0.7, centerY - 20 * 0.5)
+                .lineTo(centerX + 20 * 0.7 + 20, centerY - 20 * 0.5)
+                .strokeStyle(currentColor)
+                .stroke()
 
-          textGroup.add(g, text)
-        })
+              text.x = centerX + 20 * 0.7 + 20 + 3
+              text.y = centerY - 20 * 0.5 + option.textOffsetY
+            }
 
-        fadeIn(textGroup)
+            this.textGroup.add(g, text)
+          })
+          fadeIn(this.textGroup)
+        }else{
+          
+          this.sectorGroup.empty()
+        }
+        
       })
       .start()
 
-    this.add(textGroup)
-
   }
+
 
 }
 
@@ -173,6 +228,12 @@ class Pie extends Group {
 function fadeIn(obj) {
   obj.alpha = 0
   To.get(obj).to({ alpha: 1 }, 600).start()
+}
+
+
+function fadeOut(obj, callback) {
+  obj.alpha = 1
+  To.get(obj).to({ alpha: 0 }, 600).end(function(){callback()}).start()
 }
 
 function bounceIn(obj, from, to) {

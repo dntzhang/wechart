@@ -5961,11 +5961,9 @@ var pie = new _index2.default([{ name: 'WeChat', value: rd(10, 30) }, { name: 'C
         return ['#4BC0C0', '#FF6485', '#FFA07A', '#ADACB9', '#A37AC1'][index];
     },
     circleColor: 'white',
-    duration: 1000,
     label: function label(item) {
         return item.name;
     },
-    easing: _cax2.default.easing.bounceOut,
     textOffsetY: -12,
     font: '20px Arial',
     tooltip: function tooltip(item) {
@@ -5976,6 +5974,7 @@ var pie = new _index2.default([{ name: 'WeChat', value: rd(10, 30) }, { name: 'C
     }
 });
 
+pie.show();
 stage.add(pie);
 
 if (window.innerWidth <= 500) {
@@ -6027,6 +6026,8 @@ Object.defineProperty(exports, "__esModule", {
   value: true
 });
 
+var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
+
 var _cax = __webpack_require__(0);
 
 var _cax2 = _interopRequireDefault(_cax);
@@ -6058,6 +6059,8 @@ var Pie = function (_Group) {
 
     var _this = _possibleConstructorReturn(this, (Pie.__proto__ || Object.getPrototypeOf(Pie)).call(this));
 
+    _this.data = data;
+
     var tooltip = document.createElement('div');
     document.body.appendChild(tooltip);
     tooltip.style.position = 'absolute';
@@ -6073,106 +6076,160 @@ var Pie = function (_Group) {
     tooltip.style.color = 'white';
     tooltip.style.textAlign = 'center';
 
-    var _option = option,
-        x = _option.x,
-        y = _option.y,
-        r = _option.r;
-
-
     var textGroup = new Group();
     option = Object.assign({}, defaultOption, option);
+    _this.option = option;
     var totalValue = 0;
     data.forEach(function (item) {
       totalValue += option.processing(item);
     });
 
-    var current = option.begin;
+    _this.sectorGroup = new _cax2.default.Group();
 
-    var sectors = [];
-    data.forEach(function (item, index) {
-      var sector = new Graphics();
-      sector.value = option.processing(item);
-      sector.beginPath().moveTo(0, 0).arc(0, 0, r, current, current += option.totalAngle * option.processing(item) / totalValue).closePath().fillStyle(option.color(index)).fill().strokeStyle(option.circleColor).lineWidth(2).stroke();
-      sector.x = x;
-      sector.y = y;
-      sectors.push(sector);
-      _this.add(sector);
-
-      if (option.tooltip) {
-        sector.hover(function (evt) {
-          bounceIn(sector, 1, 1.1);
-          tooltip.style.left = evt.pureEvent.pageX + 5 + 'px';
-          tooltip.style.top = evt.pureEvent.pageY + 5 + 'px';
-          tooltip.innerHTML = option.tooltip(data[index]);
-          tooltip.style.display = 'block';
-        }, function (evt) {
-          bounceOut(sector, 1.1, 1);
-          tooltip.style.display = 'none';
-        }, function (evt) {
-          tooltip.style.left = evt.pureEvent.pageX + 5 + 'px';
-          tooltip.style.top = evt.pureEvent.pageY + 5 + 'px';
-        });
-      }
-    });
-
-    To.get(option).to({ totalAngle: Math.PI * 2 }, option.duration, option.easing).progress(function (object) {
-
-      current = option.begin;
-      sectors.forEach(function (item, index) {
-        item.clear().beginPath().moveTo(0, 0).arc(0, 0, r, current, current += object.totalAngle * option.processing(item) / totalValue).closePath().fillStyle(option.color(index)).fill().strokeStyle(option.circleColor).lineWidth(2).stroke().closePath();
-      });
-    }).end(function (object) {
-      current = option.begin;
-      var arr = [];
-      sectors.forEach(function (item, index) {
-        var center = current + object.totalAngle * option.processing(item) / totalValue / 2;
-        current += object.totalAngle * option.processing(item) / totalValue;
-        arr.push(center);
-      });
-      textGroup.alpha = 0;
-      arr.forEach(function (angle, index) {
-        angle %= Math.PI * 2;
-        var centerX = x + r * Math.cos(angle);
-        var centerY = y + r * Math.sin(angle);
-
-        var currentColor = option.textColor(index);
-        var label = option.label(data[index]);
-        var text = new Text(label, { color: currentColor, font: option.font });
-
-        var g = new Graphics();
-
-        if (angle >= 0 && angle < Math.PI / 2) {
-          g.beginPath().moveTo(centerX, centerY).lineTo(centerX + 20 * 0.7, centerY + 20 * 0.5).lineTo(centerX + 20 * 0.7 + 20, centerY + 20 * 0.5).strokeStyle(currentColor).stroke();
-
-          text.x = centerX + 20 * 0.7 + 20 + 3;
-          text.y = centerY + 20 * 0.5 + option.textOffsetY;
-        } else if (angle >= Math.PI / 2 && angle < Math.PI) {
-          g.beginPath().moveTo(centerX, centerY).lineTo(centerX - 20 * 0.7, centerY + 20 * 0.5).lineTo(centerX - 20 * 0.7 - 20, centerY + 20 * 0.5).strokeStyle(currentColor).stroke();
-
-          text.x = centerX - 20 * 0.7 - 20 - text.getWidth() - 3;
-          text.y = centerY + 20 * 0.5 + option.textOffsetY;
-        } else if (angle >= Math.PI && angle < Math.PI + Math.PI / 2) {
-          g.beginPath().moveTo(centerX, centerY).lineTo(centerX - 20 * 0.7, centerY - 20 * 0.5).lineTo(centerX - 20 * 0.7 - 20, centerY - 20 * 0.5).strokeStyle(currentColor).stroke();
-
-          text.x = centerX - 20 * 0.7 - 20 - text.getWidth() - 3;
-          text.y = centerY - 20 * 0.5 + option.textOffsetY;
-        } else if (angle >= Math.PI + Math.PI / 2 && angle <= Math.PI * 2) {
-          g.beginPath().moveTo(centerX, centerY).lineTo(centerX + 20 * 0.7, centerY - 20 * 0.5).lineTo(centerX + 20 * 0.7 + 20, centerY - 20 * 0.5).strokeStyle(currentColor).stroke();
-
-          text.x = centerX + 20 * 0.7 + 20 + 3;
-          text.y = centerY - 20 * 0.5 + option.textOffsetY;
-        }
-
-        textGroup.add(g, text);
-      });
-
-      fadeIn(textGroup);
-    }).start();
-
+    _this.add(_this.sectorGroup);
     _this.add(textGroup);
+
+    _this.totalValue = totalValue;
+    _this.textGroup = textGroup;
 
     return _this;
   }
+
+  _createClass(Pie, [{
+    key: 'show',
+    value: function show() {
+      this._init();
+      this._to(0, Math.PI * 2, 1000, _cax2.default.easing.bounceOut, true);
+    }
+  }, {
+    key: 'hide',
+    value: function hide() {
+      this._to(Math.PI * 2, 0, 600, null, false);
+    }
+  }, {
+    key: '_init',
+    value: function _init() {
+      var _this2 = this;
+
+      var option = this.option;
+      var data = this.data;
+      var x = option.x,
+          y = option.y,
+          r = option.r;
+
+      var current = option.begin;
+
+      var totalValue = 0;
+      data.forEach(function (item) {
+        totalValue += option.processing(item);
+      });
+
+      data.forEach(function (item, index) {
+        var sector = new Graphics();
+        sector.value = option.processing(item);
+        sector.beginPath().moveTo(0, 0).arc(0, 0, r, current, current += option.totalAngle * option.processing(item) / totalValue).closePath().fillStyle(option.color(index)).fill().strokeStyle(option.circleColor).lineWidth(2).stroke();
+        sector.x = x;
+        sector.y = y;
+        _this2.sectorGroup.add(sector);
+
+        if (option.tooltip) {
+          sector.hover(function (evt) {
+            bounceIn(sector, 1, 1.1);
+            tooltip.style.left = evt.pureEvent.pageX + 5 + 'px';
+            tooltip.style.top = evt.pureEvent.pageY + 5 + 'px';
+            tooltip.innerHTML = option.tooltip(data[index]);
+            tooltip.style.display = 'block';
+          }, function (evt) {
+            bounceOut(sector, 1.1, 1);
+            tooltip.style.display = 'none';
+          }, function (evt) {
+            tooltip.style.left = evt.pureEvent.pageX + 5 + 'px';
+            tooltip.style.top = evt.pureEvent.pageY + 5 + 'px';
+          });
+        }
+      });
+    }
+  }, {
+    key: '_to',
+    value: function _to(from, to, duration, easing, show) {
+      var _this3 = this;
+
+      var option = this.option;
+      var sectorGroup = this.sectorGroup;
+      var x = option.x,
+          y = option.y,
+          r = option.r;
+
+      var totalValue = this.totalValue;
+      var data = this.data;
+      var current = option.begin;
+
+      if (!show) {
+        fadeOut(this.textGroup, function () {
+          _this3.textGroup.empty();
+        });
+      }
+
+      To.get({ totalAngle: from }).to({ totalAngle: to }, duration, easing).progress(function (object) {
+
+        current = option.begin;
+        sectorGroup.children.forEach(function (item, index) {
+          item.clear().beginPath().moveTo(0, 0).arc(0, 0, r, current, current += object.totalAngle * option.processing(item) / totalValue).closePath().fillStyle(option.color(index)).fill().strokeStyle(option.circleColor).lineWidth(2).stroke().closePath();
+        });
+      }).end(function (object) {
+        current = option.begin;
+        var arr = [];
+        sectorGroup.children.forEach(function (item, index) {
+          var center = current + object.totalAngle * option.processing(item) / totalValue / 2;
+          current += object.totalAngle * option.processing(item) / totalValue;
+          arr.push(center);
+        });
+        if (show) {
+
+          _this3.textGroup.alpha = 0;
+          arr.forEach(function (angle, index) {
+            angle %= Math.PI * 2;
+            var centerX = x + r * Math.cos(angle);
+            var centerY = y + r * Math.sin(angle);
+
+            var currentColor = option.textColor(index);
+            var label = option.label(data[index]);
+            var text = new Text(label, { color: currentColor, font: option.font });
+
+            var g = new Graphics();
+
+            if (angle >= 0 && angle < Math.PI / 2) {
+              g.beginPath().moveTo(centerX, centerY).lineTo(centerX + 20 * 0.7, centerY + 20 * 0.5).lineTo(centerX + 20 * 0.7 + 20, centerY + 20 * 0.5).strokeStyle(currentColor).stroke();
+
+              text.x = centerX + 20 * 0.7 + 20 + 3;
+              text.y = centerY + 20 * 0.5 + option.textOffsetY;
+            } else if (angle >= Math.PI / 2 && angle < Math.PI) {
+              g.beginPath().moveTo(centerX, centerY).lineTo(centerX - 20 * 0.7, centerY + 20 * 0.5).lineTo(centerX - 20 * 0.7 - 20, centerY + 20 * 0.5).strokeStyle(currentColor).stroke();
+
+              text.x = centerX - 20 * 0.7 - 20 - text.getWidth() - 3;
+              text.y = centerY + 20 * 0.5 + option.textOffsetY;
+            } else if (angle >= Math.PI && angle < Math.PI + Math.PI / 2) {
+              g.beginPath().moveTo(centerX, centerY).lineTo(centerX - 20 * 0.7, centerY - 20 * 0.5).lineTo(centerX - 20 * 0.7 - 20, centerY - 20 * 0.5).strokeStyle(currentColor).stroke();
+
+              text.x = centerX - 20 * 0.7 - 20 - text.getWidth() - 3;
+              text.y = centerY - 20 * 0.5 + option.textOffsetY;
+            } else if (angle >= Math.PI + Math.PI / 2 && angle <= Math.PI * 2) {
+              g.beginPath().moveTo(centerX, centerY).lineTo(centerX + 20 * 0.7, centerY - 20 * 0.5).lineTo(centerX + 20 * 0.7 + 20, centerY - 20 * 0.5).strokeStyle(currentColor).stroke();
+
+              text.x = centerX + 20 * 0.7 + 20 + 3;
+              text.y = centerY - 20 * 0.5 + option.textOffsetY;
+            }
+
+            _this3.textGroup.add(g, text);
+          });
+          fadeIn(_this3.textGroup);
+        } else {
+
+          _this3.sectorGroup.empty();
+        }
+      }).start();
+    }
+  }]);
 
   return Pie;
 }(Group);
@@ -6180,6 +6237,13 @@ var Pie = function (_Group) {
 function fadeIn(obj) {
   obj.alpha = 0;
   To.get(obj).to({ alpha: 1 }, 600).start();
+}
+
+function fadeOut(obj, callback) {
+  obj.alpha = 1;
+  To.get(obj).to({ alpha: 0 }, 600).end(function () {
+    callback();
+  }).start();
 }
 
 function bounceIn(obj, from, to) {

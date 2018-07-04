@@ -4,6 +4,8 @@ Cax 渲染的精致响应式饼图
 
 * [Simple Demo Preview](https://dntzhang.github.io/wechart/packages/pie/examples/simple/)
 
+![Pie](./asset/pie.png)
+
 ## 快速开始
 
 创建饼图实例:
