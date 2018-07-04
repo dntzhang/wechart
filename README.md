@@ -4,7 +4,7 @@
 
 > [Cax](https://github.com/dntzhang/cax) 渲染精巧图表
 
-* [Pie Chart](https://dntzhang.github.io/wechart/packages/pie/examples/simple/) | [Source](https://github.com/dntzhang/wechart/blob/master/packages/pie/examples/simple/main.js#L7-L36) | [Pie Source](https://github.com/dntzhang/wechart/blob/master/packages/pie/src/index.js#L12)
+* [Pie Chart](https://dntzhang.github.io/wechart/packages/pie/examples/simple/) | [Source](https://github.com/dntzhang/wechart/blob/master/packages/pie/examples/simple/main.js) | [Pie Source](https://github.com/dntzhang/wechart/blob/master/packages/pie/src/index.js) | [Tutorial](https://github.com/dntzhang/wechart/blob/master/packages/pie/README.md)
 
 ## 谁在使用？
 
