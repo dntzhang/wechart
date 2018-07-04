@@ -47,6 +47,7 @@ class Pie extends Group {
     this.add(this.sectorGroup)
     this.add(textGroup)
 
+    this.tooltip = tooltip
     this.totalValue = totalValue
     this.textGroup = textGroup
     
@@ -66,6 +67,7 @@ class Pie extends Group {
     const option = this.option
     const data = this.data
     const { x, y, r } = option
+    const tooltip = this.tooltip
     let current = option.begin
     
     let totalValue = 0

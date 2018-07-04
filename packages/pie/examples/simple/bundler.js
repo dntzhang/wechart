@@ -6089,6 +6089,7 @@ var Pie = function (_Group) {
     _this.add(_this.sectorGroup);
     _this.add(textGroup);
 
+    _this.tooltip = tooltip;
     _this.totalValue = totalValue;
     _this.textGroup = textGroup;
 
@@ -6117,6 +6118,7 @@ var Pie = function (_Group) {
           y = option.y,
           r = option.r;
 
+      var tooltip = this.tooltip;
       var current = option.begin;
 
       var totalValue = 0;
