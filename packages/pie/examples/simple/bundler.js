@@ -73,7 +73,7 @@
 var _typeof2 = typeof Symbol === "function" && typeof Symbol.iterator === "symbol" ? function (obj) { return typeof obj; } : function (obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj; };
 
 /*!
- *  cax v1.1.2
+ *  cax v1.1.3
  *  By https://github.com/dntzhang 
  *  Github: https://github.com/dntzhang/cax
  *  MIT Licensed.
@@ -611,6 +611,11 @@ var _typeof2 = typeof Symbol === "function" && typeof Symbol.iterator === "symbo
             this.cache(filterBox.x || 0, filterBox.y || 0, filterBox.width || this.width, filterBox.height || this.height);
             this._readyToFilter = true;
             this._filterName = filterName;
+          }
+        }, {
+          key: 'unfilter',
+          value: function unfilter() {
+            this.uncache();
           }
         }]);
 
@@ -2922,7 +2927,7 @@ var _typeof2 = typeof Symbol === "function" && typeof Symbol.iterator === "symbo
 
       var _renderer2 = _interopRequireDefault(_renderer);
 
-      var _wxHitRender = __webpack_require__(29);
+      var _wxHitRender = __webpack_require__(31);
 
       var _wxHitRender2 = _interopRequireDefault(_wxHitRender);
 
@@ -3260,31 +3265,31 @@ var _typeof2 = typeof Symbol === "function" && typeof Symbol.iterator === "symbo
 
       var _roundedRect2 = _interopRequireDefault(_roundedRect);
 
-      var _arrowPath = __webpack_require__(30);
+      var _arrowPath = __webpack_require__(32);
 
       var _arrowPath2 = _interopRequireDefault(_arrowPath);
 
-      var _ellipse = __webpack_require__(31);
+      var _ellipse = __webpack_require__(33);
 
       var _ellipse2 = _interopRequireDefault(_ellipse);
 
-      var _button = __webpack_require__(32);
+      var _button = __webpack_require__(34);
 
       var _button2 = _interopRequireDefault(_button);
 
-      var _rect = __webpack_require__(33);
+      var _rect = __webpack_require__(35);
 
       var _rect2 = _interopRequireDefault(_rect);
 
-      var _circle = __webpack_require__(34);
+      var _circle = __webpack_require__(36);
 
       var _circle2 = _interopRequireDefault(_circle);
 
-      var _polygon = __webpack_require__(35);
+      var _polygon = __webpack_require__(37);
 
       var _polygon2 = _interopRequireDefault(_polygon);
 
-      var _equilateralPolygon = __webpack_require__(36);
+      var _equilateralPolygon = __webpack_require__(38);
 
       var _equilateralPolygon2 = _interopRequireDefault(_equilateralPolygon);
 
@@ -3696,7 +3701,7 @@ var _typeof2 = typeof Symbol === "function" && typeof Symbol.iterator === "symbo
 
       var _renderer2 = _interopRequireDefault(_renderer);
 
-      var _hitRender = __webpack_require__(28);
+      var _hitRender = __webpack_require__(30);
 
       var _hitRender2 = _interopRequireDefault(_hitRender);
 
@@ -4446,6 +4451,9 @@ var _typeof2 = typeof Symbol === "function" && typeof Symbol.iterator === "symbo
         _createClass(CanvasRender, [{
           key: 'clear',
           value: function clear(ctx, width, height) {
+            //restore cache cavans transform
+            ctx.restore();
+
             ctx.clearRect(0, 0, width, height);
           }
         }, {
@@ -4598,10 +4606,14 @@ var _typeof2 = typeof Symbol === "function" && typeof Symbol.iterator === "symbo
 
       var _invert = __webpack_require__(27);
 
+      var _blur = __webpack_require__(28);
+
       function filter(pixels, name) {
 
         if (name.indexOf('invert(') === 0) {
           return (0, _invert.invert)(pixels, Number(name.replace('invert(', '').replace('%)', '')) / 100);
+        } else if (name.indexOf('blur(') === 0) {
+          return (0, _blur.blur)(pixels, Number(name.replace('blur(', '').replace('px)', '')));
         }
       }
 
@@ -4632,6 +4644,157 @@ var _typeof2 = typeof Symbol === "function" && typeof Symbol.iterator === "symbo
       /***/
     },
     /* 28 */
+    /***/function (module, exports, __webpack_require__) {
+
+      "use strict";
+
+      Object.defineProperty(exports, "__esModule", {
+        value: true
+      });
+      exports.blur = blur;
+
+      var _createImageData = __webpack_require__(29);
+
+      function blur(pixels, diameter) {
+        diameter = Math.abs(diameter);
+        if (diameter <= 1) return pixels;
+        var radius = diameter / 2;
+        var len = Math.ceil(diameter) + (1 - Math.ceil(diameter) % 2);
+        var weights = new Float32Array(len);
+        var rho = (radius + 0.5) / 3;
+        var rhoSq = rho * rho;
+        var gaussianFactor = 1 / Math.sqrt(2 * Math.PI * rhoSq);
+        var rhoFactor = -1 / (2 * rho * rho);
+        var wsum = 0;
+        var middle = Math.floor(len / 2);
+        for (var i = 0; i < len; i++) {
+          var x = i - middle;
+          var gx = gaussianFactor * Math.exp(x * x * rhoFactor);
+          weights[i] = gx;
+          wsum += gx;
+        }
+        for (var i = 0; i < weights.length; i++) {
+          weights[i] /= wsum;
+        }
+        return separableConvolve(pixels, weights, weights, false);
+      }
+
+      function separableConvolve(pixels, horizWeights, vertWeights, opaque) {
+        return horizontalConvolve(verticalConvolve(pixels, vertWeights, opaque), horizWeights, opaque);
+      }
+
+      function horizontalConvolve(pixels, weightsVector, opaque) {
+        var side = weightsVector.length;
+        var halfSide = Math.floor(side / 2);
+
+        var src = pixels.data;
+        var sw = pixels.width;
+        var sh = pixels.height;
+
+        var w = sw;
+        var h = sh;
+        var output = (0, _createImageData.createImageData)(w, h);
+        var dst = output.data;
+
+        var alphaFac = opaque ? 1 : 0;
+
+        for (var y = 0; y < h; y++) {
+          for (var x = 0; x < w; x++) {
+            var sy = y;
+            var sx = x;
+            var dstOff = (y * w + x) * 4;
+            var r = 0,
+                g = 0,
+                b = 0,
+                a = 0;
+            for (var cx = 0; cx < side; cx++) {
+              var scy = sy;
+              var scx = Math.min(sw - 1, Math.max(0, sx + cx - halfSide));
+              var srcOff = (scy * sw + scx) * 4;
+              var wt = weightsVector[cx];
+              r += src[srcOff] * wt;
+              g += src[srcOff + 1] * wt;
+              b += src[srcOff + 2] * wt;
+              a += src[srcOff + 3] * wt;
+            }
+            dst[dstOff] = r;
+            dst[dstOff + 1] = g;
+            dst[dstOff + 2] = b;
+            dst[dstOff + 3] = a + alphaFac * (255 - a);
+          }
+        }
+        return output;
+      }
+
+      function verticalConvolve(pixels, weightsVector, opaque) {
+        var side = weightsVector.length;
+        var halfSide = Math.floor(side / 2);
+
+        var src = pixels.data;
+        var sw = pixels.width;
+        var sh = pixels.height;
+
+        var w = sw;
+        var h = sh;
+        var output = (0, _createImageData.createImageData)(w, h);
+        var dst = output.data;
+
+        var alphaFac = opaque ? 1 : 0;
+
+        for (var y = 0; y < h; y++) {
+          for (var x = 0; x < w; x++) {
+            var sy = y;
+            var sx = x;
+            var dstOff = (y * w + x) * 4;
+            var r = 0,
+                g = 0,
+                b = 0,
+                a = 0;
+            for (var cy = 0; cy < side; cy++) {
+              var scy = Math.min(sh - 1, Math.max(0, sy + cy - halfSide));
+              var scx = sx;
+              var srcOff = (scy * sw + scx) * 4;
+              var wt = weightsVector[cy];
+              r += src[srcOff] * wt;
+              g += src[srcOff + 1] * wt;
+              b += src[srcOff + 2] * wt;
+              a += src[srcOff + 3] * wt;
+            }
+            dst[dstOff] = r;
+            dst[dstOff + 1] = g;
+            dst[dstOff + 2] = b;
+            dst[dstOff + 3] = a + alphaFac * (255 - a);
+          }
+        }
+        return output;
+      };
+
+      /***/
+    },
+    /* 29 */
+    /***/function (module, exports, __webpack_require__) {
+
+      "use strict";
+
+      Object.defineProperty(exports, "__esModule", {
+        value: true
+      });
+      exports.createImageData = createImageData;
+      var tmpCtx = null;
+
+      if (typeof document != 'undefined') {
+        tmpCtx = document.createElement('canvas').getContext('2d');
+      } else if (typeof wx !== 'undefined' && wx.createCanvas) {
+        tmpCtx = wx.createCanvas().getContext('2d');
+      }
+
+      function createImageData(w, h) {
+        return tmpCtx.createImageData(w, h);
+      }
+
+      /***/
+    },
+    /* 30 */
     /***/function (module, exports, __webpack_require__) {
 
       "use strict";
@@ -4891,7 +5054,7 @@ var _typeof2 = typeof Symbol === "function" && typeof Symbol.iterator === "symbo
 
       /***/
     },
-    /* 29 */
+    /* 31 */
     /***/function (module, exports, __webpack_require__) {
 
       "use strict";
@@ -5074,7 +5237,7 @@ var _typeof2 = typeof Symbol === "function" && typeof Symbol.iterator === "symbo
 
       /***/
     },
-    /* 30 */
+    /* 32 */
     /***/function (module, exports, __webpack_require__) {
 
       "use strict";
@@ -5192,7 +5355,7 @@ var _typeof2 = typeof Symbol === "function" && typeof Symbol.iterator === "symbo
 
       /***/
     },
-    /* 31 */
+    /* 33 */
     /***/function (module, exports, __webpack_require__) {
 
       "use strict";
@@ -5293,7 +5456,7 @@ var _typeof2 = typeof Symbol === "function" && typeof Symbol.iterator === "symbo
 
       /***/
     },
-    /* 32 */
+    /* 34 */
     /***/function (module, exports, __webpack_require__) {
 
       "use strict";
@@ -5367,7 +5530,7 @@ var _typeof2 = typeof Symbol === "function" && typeof Symbol.iterator === "symbo
 
       /***/
     },
-    /* 33 */
+    /* 35 */
     /***/function (module, exports, __webpack_require__) {
 
       "use strict";
@@ -5448,7 +5611,7 @@ var _typeof2 = typeof Symbol === "function" && typeof Symbol.iterator === "symbo
 
       /***/
     },
-    /* 34 */
+    /* 36 */
     /***/function (module, exports, __webpack_require__) {
 
       "use strict";
@@ -5536,7 +5699,7 @@ var _typeof2 = typeof Symbol === "function" && typeof Symbol.iterator === "symbo
 
       /***/
     },
-    /* 35 */
+    /* 37 */
     /***/function (module, exports, __webpack_require__) {
 
       "use strict";
@@ -5632,7 +5795,7 @@ var _typeof2 = typeof Symbol === "function" && typeof Symbol.iterator === "symbo
 
       /***/
     },
-    /* 36 */
+    /* 38 */
     /***/function (module, exports, __webpack_require__) {
 
       "use strict";
@@ -5788,13 +5951,16 @@ var stage = new _cax2.default.Stage(640, 400, 'body');
 var rd = _cax2.default.util.randomInt;
 
 var pie = new _index2.default([{ name: 'WeChat', value: rd(10, 30) }, { name: 'Canvas', value: rd(10, 30) }, { name: 'Cax', value: rd(10, 30) }, { name: 'Tencent', value: rd(10, 30) }, { name: 'Wepay', value: rd(10, 30) }], {
+    processing: function processing(item) {
+        return item.value;
+    },
     x: stage.width / 2,
     y: stage.height / 2,
     r: 160,
     color: function color(index) {
         return ['#4BC0C0', '#FF6485', '#FFA07A', '#ADACB9', '#A37AC1'][index];
     },
-    boxColor: 'white',
+    circleColor: 'white',
     duration: 1000,
     label: function label(item) {
         return item.name;
@@ -5917,7 +6083,7 @@ var Pie = function (_Group) {
     option = Object.assign({}, defaultOption, option);
     var totalValue = 0;
     data.forEach(function (item) {
-      totalValue += item.value;
+      totalValue += option.processing(item);
     });
 
     var current = option.begin;
@@ -5925,8 +6091,8 @@ var Pie = function (_Group) {
     var sectors = [];
     data.forEach(function (item, index) {
       var sector = new Graphics();
-      sector.value = item.value;
-      sector.beginPath().moveTo(0, 0).arc(0, 0, r, current, current += option.totalAngle * item / totalValue).closePath().fillStyle(option.color(index)).fill().strokeStyle(option.boxColor).lineWidth(2).stroke();
+      sector.value = option.processing(item);
+      sector.beginPath().moveTo(0, 0).arc(0, 0, r, current, current += option.totalAngle * item / totalValue).closePath().fillStyle(option.color(index)).fill().strokeStyle(option.circleColor).lineWidth(2).stroke();
       sector.x = x;
       sector.y = y;
       sectors.push(sector);
@@ -5953,14 +6119,14 @@ var Pie = function (_Group) {
 
       current = option.begin;
       sectors.forEach(function (item, index) {
-        item.clear().beginPath().moveTo(0, 0).arc(0, 0, r, current, current += object.totalAngle * item.value / totalValue).closePath().fillStyle(option.color(index)).fill().strokeStyle(option.boxColor).lineWidth(2).stroke().closePath();
+        item.clear().beginPath().moveTo(0, 0).arc(0, 0, r, current, current += object.totalAngle * option.processing(item) / totalValue).closePath().fillStyle(option.color(index)).fill().strokeStyle(option.circleColor).lineWidth(2).stroke().closePath();
       });
     }).end(function (object) {
       current = option.begin;
       var arr = [];
       sectors.forEach(function (item, index) {
-        var center = current + object.totalAngle * item.value / totalValue / 2;
-        current += object.totalAngle * item.value / totalValue;
+        var center = current + object.totalAngle * option.processing(item) / totalValue / 2;
+        current += object.totalAngle * option.processing(item) / totalValue;
         arr.push(center);
       });
       textGroup.alpha = 0;

@@ -33,7 +33,7 @@ class Pie extends Group {
     option = Object.assign({}, defaultOption, option)
     let totalValue = 0
     data.forEach((item) => {
-      totalValue += item.value
+      totalValue += option.processing(item)
     })
 
     let current = option.begin
@@ -41,7 +41,7 @@ class Pie extends Group {
     const sectors = []
     data.forEach((item, index) => {
       const sector = new Graphics()
-      sector.value = item.value
+      sector.value = option.processing(item)
       sector
         .beginPath()
         .moveTo(0, 0)
@@ -49,7 +49,7 @@ class Pie extends Group {
         .closePath()
         .fillStyle(option.color(index))
         .fill()
-        .strokeStyle(option.boxColor)
+        .strokeStyle(option.circleColor)
         .lineWidth(2)
         .stroke()
       sector.x = x
@@ -88,11 +88,11 @@ class Pie extends Group {
             .clear()
             .beginPath()
             .moveTo(0, 0)
-            .arc(0, 0, r, current, current += object.totalAngle * item.value / totalValue)
+            .arc(0, 0, r, current, current += object.totalAngle * option.processing(item) / totalValue)
             .closePath()
             .fillStyle(option.color(index))
             .fill()
-            .strokeStyle(option.boxColor)
+            .strokeStyle(option.circleColor)
             .lineWidth(2)
             .stroke()
             .closePath()
@@ -102,8 +102,8 @@ class Pie extends Group {
         current = option.begin
         let arr = []
         sectors.forEach((item, index) => {
-          let center = current + object.totalAngle * item.value / totalValue / 2
-          current += object.totalAngle * item.value / totalValue
+          let center = current + object.totalAngle * option.processing(item) / totalValue / 2
+          current += object.totalAngle * option.processing(item) / totalValue
           arr.push(center)
         })
         textGroup.alpha = 0
