@@ -4,7 +4,7 @@ Pie chart by cax
 
 * [Simple Demo Preview](https://dntzhang.github.io/wechart/packages/pie/examples/simple/)
 
-## API
+## Usage
 
 Create pie chart：
 

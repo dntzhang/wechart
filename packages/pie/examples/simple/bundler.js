@@ -6092,7 +6092,7 @@ var Pie = function (_Group) {
     data.forEach(function (item, index) {
       var sector = new Graphics();
       sector.value = option.processing(item);
-      sector.beginPath().moveTo(0, 0).arc(0, 0, r, current, current += option.totalAngle * item / totalValue).closePath().fillStyle(option.color(index)).fill().strokeStyle(option.circleColor).lineWidth(2).stroke();
+      sector.beginPath().moveTo(0, 0).arc(0, 0, r, current, current += option.totalAngle * option.processing(item) / totalValue).closePath().fillStyle(option.color(index)).fill().strokeStyle(option.circleColor).lineWidth(2).stroke();
       sector.x = x;
       sector.y = y;
       sectors.push(sector);

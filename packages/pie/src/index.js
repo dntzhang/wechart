@@ -45,7 +45,7 @@ class Pie extends Group {
       sector
         .beginPath()
         .moveTo(0, 0)
-        .arc(0, 0, r, current, current += option.totalAngle * item / totalValue)
+        .arc(0, 0, r, current, current += option.totalAngle * option.processing(item) / totalValue)
         .closePath()
         .fillStyle(option.color(index))
         .fill()
