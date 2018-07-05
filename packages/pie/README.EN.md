@@ -4,6 +4,8 @@ Pie chart by cax
 
 * [Simple Demo Preview](https://dntzhang.github.io/wechart/packages/pie/examples/simple/)
 
+![Pie](./asset/pie.png)
+
 ## Usage
 
 Create pie chart：
