@@ -5784,7 +5784,7 @@ var _index2 = _interopRequireDefault(_index);
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
-var stage = new _cax2.default.Stage(1940, 820, 'body');
+var stage = new _cax2.default.Stage(700, 420, 'body');
 
 var data = [//数据
 { name: 'dntzhang', age: _cax2.default.util.randomInt(-20, 20), exp: _cax2.default.util.randomInt(500, 100) }, { name: 'Canvas', age: _cax2.default.util.randomInt(-20, 20), exp: _cax2.default.util.randomInt(500, 100) }, { name: 'Wechart', age: _cax2.default.util.randomInt(-20, 20), exp: _cax2.default.util.randomInt(500, 100) }, { name: 'Tencent', age: _cax2.default.util.randomInt(-20, 20), exp: _cax2.default.util.randomInt(500, 100) }, { name: 'Cax', age: _cax2.default.util.randomInt(-20, 20), exp: _cax2.default.util.randomInt(500, 100) }];

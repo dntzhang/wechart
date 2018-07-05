@@ -16,19 +16,19 @@ class Bar extends Group {
     super()
 
     const tooltip = document.createElement('div')
-document.body.appendChild(tooltip)
-tooltip.style.position = 'absolute'
-tooltip.style.width = 'auto'
-tooltip.style.maxWidth = '400px'
-tooltip.style.height = 'auto'
-tooltip.style.padding = '4px 8px'
-tooltip.style.display = 'none'
-tooltip.style.minWidth = '100px'
-tooltip.style.pointerEvents = 'none'
-tooltip.style.transition = 'all .6s'
-tooltip.style.backgroundColor = 'rgba(0,0,0,.5)'
-tooltip.style.color = 'white'
-tooltip.style.textAlign = 'center'
+    document.body.appendChild(tooltip)
+    tooltip.style.position = 'absolute'
+    tooltip.style.width = 'auto'
+    tooltip.style.maxWidth = '400px'
+    tooltip.style.height = 'auto'
+    tooltip.style.padding = '4px 8px'
+    tooltip.style.display = 'none'
+    tooltip.style.minWidth = '100px'
+    tooltip.style.pointerEvents = 'none'
+    tooltip.style.transition = 'all .6s'
+    tooltip.style.backgroundColor = 'rgba(0,0,0,.5)'
+    tooltip.style.color = 'white'
+    tooltip.style.textAlign = 'center'
 
 
     config.forEach(rect => {
@@ -107,7 +107,7 @@ class OneBar extends Group {
     }
 
     this.add(rect)
-   
+
     cax.To.get(from)
 
       .wait(typeof option.show.delay === 'number'

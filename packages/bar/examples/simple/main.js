@@ -1,7 +1,7 @@
 import cax from 'cax'
 import Bar from '../../src/index'
 
-const stage = new cax.Stage(1940, 820, 'body')
+const stage = new cax.Stage(700, 420, 'body')
 
 const data = [ //数据
     { name: 'dntzhang', age: cax.util.randomInt(-20, 20), exp: cax.util.randomInt(500, 100) },
