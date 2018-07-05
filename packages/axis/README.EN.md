@@ -42,7 +42,7 @@ Render to stage:
 
 ```js
 const stage = new cax.Stage(640, 400, 'body')
-stage.add(pie)
+stage.add(axis)
 stage.update()
 ```
 
