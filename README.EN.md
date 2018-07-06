@@ -11,6 +11,7 @@ English | [简体中文](./README.md)
 * [Bar](https://dntzhang.github.io/wechart/packages/bar/examples/simple/) | [Source](https://github.com/dntzhang/wechart/blob/master/packages/bar/examples/simple/main.js) | [Bar Source](https://github.com/dntzhang/wechart/blob/master/packages/bar/src/index.js) 
 * [Cylinder](https://dntzhang.github.io/wechart/packages/cylinder/examples/simple/) | [Source](https://github.com/dntzhang/wechart/blob/master/packages/cylinder/examples/simple/main.js) | [Cylinder Source](https://github.com/dntzhang/wechart/blob/master/packages/cylinder/src/index.js) 
 * [Line](https://dntzhang.github.io/wechart/packages/line/examples/simple/) | [Source](https://github.com/dntzhang/wechart/blob/master/packages/line/examples/simple/main.js) | [Line Source](https://github.com/dntzhang/wechart/blob/master/packages/line/src/index.js) 
+* [Graph](https://dntzhang.github.io/wechart/packages/graph/examples/simple/) | [Source](https://github.com/dntzhang/wechart/blob/master/packages/graph/examples/simple/main.js) | [Graph Source](https://github.com/dntzhang/wechart/blob/master/packages/graph/src/index.js) 
 
 # Who is using cax?
 

@@ -1,52 +1,65 @@
 
 import cax from 'cax'
-const { Ellipse, Graphics, Group } = cax
+const { Graphics, Group, Button, ArrowPath } = cax
 
-class Cylinder extends Group {
+class Graph extends Group {
 
-  constructor(width, height, percent, color, bottleColor) {
+  constructor(data) {
     super()
+    this.data = data
+    const g = new dagre.graphlib.Graph()
 
-    this.width = width
-    this.height = height
-    this.value = percent
-    bottleColor = bottleColor || '#CACACA'
-    const topRect = new Graphics()
-    const th = height * (1 - percent)
-    const shortSize = width / 2.5 / 2
-    this.shortSize = shortSize
-    topRect.beginPath().fillStyle(bottleColor).fillRect(0, 0, width, height)
-    topRect.alpha = 0.618
+    // Set an object for the graph label
+    g.setGraph({
+      // ranksep: 80,
+      // nodesep: 10
+    });
 
-    this.surfaceY = height - height * percent - shortSize
-    const btRect = new Graphics()
-    btRect.beginPath().fillStyle(color).fillRect(0, 0, width, height - th)
-    btRect.y = th
+    // Default to assigning a new object as a label for each new edge.
+    g.setDefaultEdgeLabel(function () { return {}; });
 
-
-    const topEllipse = new Ellipse(width, width / 2.5, {
-      fillStyle: bottleColor
+    this.data.nodes.forEach(node => {
+      g.setNode(node.id, { label: node.name, width: node.width || 50, height: node.height || 50 });
     })
-    topEllipse.y = shortSize * -1
 
-    const middleEllipse = new Ellipse(width, width / 2.5, {
-      fillStyle: color
+    this.data.edges.forEach(edge => {
+      g.setEdge(edge[0], edge[1]);
     })
-    middleEllipse.y = th - shortSize
 
-    const middleEllipseMask = new Ellipse(width, width / 2.5, {
-      fillStyle: bottleColor
-    })
-    middleEllipseMask.alpha = 0.618
-    middleEllipseMask.y = th - shortSize
+    dagre.layout(g);
 
-    const bottomEllipse = new Ellipse(width, width / 2.5, {
-      fillStyle: color
-    })
-    bottomEllipse.y = height - shortSize
+    this.render(g)
+  }
 
-    this.add(topRect, topEllipse, btRect, bottomEllipse, middleEllipse, middleEllipseMask)
+  render(g) {
+
+    g.edges().forEach((e) => {
+      const path = g.edge(e).points
+      const ap = new ArrowPath(path)
+      this.add(ap)
+    });
+
+    g.nodes().forEach((v) => {
+      const node = g.node(v)
+      const rr = new Button({
+        width: node.width,
+        height: node.height,
+        borderRadius: 5,
+        color: 'white',
+        text: node.label,
+        textX: 3,
+        textY: -2,
+        borderColor: '#8899AB',
+        backgroundColor: '#123456'
+      })
+
+      rr.originX = node.width / 2
+      rr.originY = node.height / 2
+      rr.x = node.x
+      rr.y = node.y
+      this.add(rr)
+    });
   }
 }
 
-export default Cylinder
+export default Graph

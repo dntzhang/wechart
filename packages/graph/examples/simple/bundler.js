@@ -74,75 +74,34 @@ var _cax = __webpack_require__(1);
 
 var _cax2 = _interopRequireDefault(_cax);
 
+var _src = __webpack_require__(3);
+
+var _src2 = _interopRequireDefault(_src);
+
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
 var stage = new _cax2.default.Stage(2000, 2000, 'body');
-var grahpGroup = new _cax2.default.Group();
-var g = new dagre.graphlib.Graph();
 
-function init(nodeCount) {
-    // Set an object for the graph label
-    g.setGraph({
-        // ranksep: 80,
-        // nodesep: 10
-    });
-
-    // Default to assigning a new object as a label for each new edge.
-    g.setDefaultEdgeLabel(function () {
-        return {};
-    });
-
+function randomData(nodeCount) {
+    var nodes = [];
     for (var i = 0; i < nodeCount; i++) {
-        g.setNode("node" + i, { label: "node" + i, width: 50, height: 50 });
+        nodes.push({ id: i, name: 'node' + i });
     }
 
+    var edges = [];
     for (var _i = 0; _i < nodeCount; _i++) {
-        g.setEdge("node" + _cax2.default.util.randomInt(0, nodeCount - 1), "node" + _cax2.default.util.randomInt(0, nodeCount - 1));
+        edges.push([_cax2.default.util.randomInt(0, nodeCount - 1), _cax2.default.util.randomInt(0, nodeCount - 1)]);
     }
 
-    dagre.layout(g);
+    return { nodes: nodes, edges: edges };
 }
+var graph = new _src2.default(randomData(20));
 
-function render() {
+graph.x = 100;
+graph.y = 100;
 
-    g.edges().forEach(function (e) {
-        var path = g.edge(e).points;
-        var ap = new _cax2.default.ArrowPath(path);
-        grahpGroup.add(ap);
-    });
-
-    g.nodes().forEach(function (v) {
-
-        var node = g.node(v);
-
-        var rr = new _cax2.default.Button({
-            width: node.width,
-            height: node.height,
-            borderRadius: 5,
-            color: 'white',
-            text: v,
-            textX: 3,
-            textY: -2,
-            borderColor: '#8899AB',
-            backgroundColor: '#123456'
-        });
-
-        rr.originX = node.width / 2;
-        rr.originY = node.height / 2;
-        rr.x = node.x;
-        rr.y = node.y;
-        grahpGroup.add(rr);
-    });
-
-    grahpGroup.x = 100;
-    grahpGroup.y = 100;
-
-    stage.add(grahpGroup);
-    stage.update();
-}
-
-init(20);
-render();
+stage.add(graph);
+stage.update();
 
 /***/ }),
 /* 1 */
@@ -5877,6 +5836,111 @@ module.exports = function (module) {
 	}
 	return module;
 };
+
+/***/ }),
+/* 3 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+
+var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
+
+var _cax = __webpack_require__(1);
+
+var _cax2 = _interopRequireDefault(_cax);
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+
+function _possibleConstructorReturn(self, call) { if (!self) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return call && (typeof call === "object" || typeof call === "function") ? call : self; }
+
+function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
+
+var Graphics = _cax2.default.Graphics,
+    Group = _cax2.default.Group,
+    Button = _cax2.default.Button,
+    ArrowPath = _cax2.default.ArrowPath;
+
+var Graph = function (_Group) {
+  _inherits(Graph, _Group);
+
+  function Graph(data) {
+    _classCallCheck(this, Graph);
+
+    var _this = _possibleConstructorReturn(this, (Graph.__proto__ || Object.getPrototypeOf(Graph)).call(this));
+
+    _this.data = data;
+    var g = new dagre.graphlib.Graph();
+
+    // Set an object for the graph label
+    g.setGraph({
+      // ranksep: 80,
+      // nodesep: 10
+    });
+
+    // Default to assigning a new object as a label for each new edge.
+    g.setDefaultEdgeLabel(function () {
+      return {};
+    });
+
+    _this.data.nodes.forEach(function (node) {
+      g.setNode(node.id, { label: node.name, width: node.width || 50, height: node.height || 50 });
+    });
+
+    _this.data.edges.forEach(function (edge) {
+      g.setEdge(edge[0], edge[1]);
+    });
+
+    dagre.layout(g);
+
+    _this.render(g);
+    return _this;
+  }
+
+  _createClass(Graph, [{
+    key: 'render',
+    value: function render(g) {
+      var _this2 = this;
+
+      g.edges().forEach(function (e) {
+        var path = g.edge(e).points;
+        var ap = new ArrowPath(path);
+        _this2.add(ap);
+      });
+
+      g.nodes().forEach(function (v) {
+        var node = g.node(v);
+        var rr = new Button({
+          width: node.width,
+          height: node.height,
+          borderRadius: 5,
+          color: 'white',
+          text: node.label,
+          textX: 3,
+          textY: -2,
+          borderColor: '#8899AB',
+          backgroundColor: '#123456'
+        });
+
+        rr.originX = node.width / 2;
+        rr.originY = node.height / 2;
+        rr.x = node.x;
+        rr.y = node.y;
+        _this2.add(rr);
+      });
+    }
+  }]);
+
+  return Graph;
+}(Group);
+
+exports.default = Graph;
 
 /***/ })
 /******/ ]);
