@@ -40,6 +40,4 @@ if (window.innerWidth <= 500) {
     stage.scaleEventPoint(0.5, 0.5)
 }
 
-cax.tick(() => {
-    stage.update()
-})
+cax.tick(stage.update.bind(stage))
