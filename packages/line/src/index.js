@@ -3,11 +3,6 @@ import cax from 'cax'
 import { getControlPoint } from './get-control-point'
 const { TWEEN, Graphics, Circle, Group, Stage, To } = cax
 
-
-
-
-
-
 export default class Line extends Group {
   constructor(data, lines) {
     super()
@@ -19,11 +14,9 @@ export default class Line extends Group {
   }
 }
 
-
 const defaultOption = {
   smooth: true
 }
-
 
 class OneLine extends Group {
   constructor(option, data) {

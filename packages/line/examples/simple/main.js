@@ -3,7 +3,6 @@ import Line from '../../src'
 
 const stage = new cax.Stage(800, 600, '#canvasCtn')
 
-
 const lines = [{
     //age 30 对应 200像素高 
     mapping: [30, 200],
@@ -69,8 +68,6 @@ const lines = [{
     }
 }
 ]
-
-
 
 function random(){
     stage.empty()
