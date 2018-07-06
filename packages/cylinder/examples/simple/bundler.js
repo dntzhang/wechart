@@ -5800,7 +5800,7 @@ function random() {
             color: 'white'
         });
         text.x = cy.x + cy.width / 2 - text.getWidth() / 2;
-        text.y = cy.y + cy.height - cy.height * cy.value;
+        text.y = cy.y + cy.surfaceY;
         stage.add(cy, text);
     }
 }
@@ -5883,10 +5883,11 @@ var Cylinder = function (_Group) {
         var topRect = new Graphics();
         var th = height * (1 - percent);
         var shortSize = width / 2.5 / 2;
-
+        _this.shortSize = shortSize;
         topRect.beginPath().fillStyle(bottleColor).fillRect(0, 0, width, height);
         topRect.alpha = 0.618;
 
+        _this.surfaceY = height - height * percent - shortSize;
         var btRect = new Graphics();
         btRect.beginPath().fillStyle(color).fillRect(0, 0, width, height - th);
         btRect.y = th;
