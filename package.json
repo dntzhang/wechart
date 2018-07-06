@@ -11,6 +11,7 @@
     "pie-simple": "webpack -w",
     "axis-simple": "webpack -w",
     "bar-simple": "webpack -w",
+    "cylinder-simple": "webpack -w",
     "build": "webpack",
     "build-min": "webpack",
     "test": "karma start test/karma.conf.js"
