@@ -1,9 +1,8 @@
-
 import cax from 'cax'
+
 const { Graphics, Group, Button, ArrowPath } = cax
 
 class Graph extends Group {
-
   constructor(data) {
     super()
     this.data = data
@@ -32,7 +31,6 @@ class Graph extends Group {
   }
 
   render(g) {
-
     g.edges().forEach((e) => {
       const path = g.edge(e).points
       const ap = new ArrowPath(path)
