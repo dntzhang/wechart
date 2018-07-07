@@ -12,6 +12,7 @@
 * [Cylinder](https://dntzhang.github.io/wechart/packages/cylinder/examples/simple/) | [Source](https://github.com/dntzhang/wechart/blob/master/packages/cylinder/examples/simple/main.js) | [Cylinder Source](https://github.com/dntzhang/wechart/blob/master/packages/cylinder/src/index.js) 
 * [Line](https://dntzhang.github.io/wechart/packages/line/examples/simple/) | [Source](https://github.com/dntzhang/wechart/blob/master/packages/line/examples/simple/main.js) | [Line Source](https://github.com/dntzhang/wechart/blob/master/packages/line/src/index.js) 
 * [Graph](https://dntzhang.github.io/wechart/packages/graph/examples/simple/) | [Source](https://github.com/dntzhang/wechart/blob/master/packages/graph/examples/simple/main.js) | [Graph Source](https://github.com/dntzhang/wechart/blob/master/packages/graph/src/index.js) 
+* [Map](https://dntzhang.github.io/wechart/packages/map/examples/simple/) | [Source](https://github.com/dntzhang/wechart/blob/master/packages/map/examples/simple/main.js) | [Map Source](https://github.com/dntzhang/wechart/blob/master/packages/map/src/index.js) 
 
 ## 谁在使用？
 

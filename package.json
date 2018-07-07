@@ -12,6 +12,7 @@
     "axis-simple": "webpack -w",
     "bar-simple": "webpack -w",
     "line-simple": "webpack -w",
+    "map-simple": "webpack -w",
     "graph-simple": "webpack -w",
     "cylinder-simple": "webpack -w",
     "build": "webpack",
