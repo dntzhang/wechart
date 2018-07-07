@@ -60,85 +60,11 @@
 /******/ 	__webpack_require__.p = "";
 /******/
 /******/ 	// Load entry module and return exports
-/******/ 	return __webpack_require__(__webpack_require__.s = 0);
+/******/ 	return __webpack_require__(__webpack_require__.s = 1);
 /******/ })
 /************************************************************************/
 /******/ ([
 /* 0 */
-/***/ (function(module, exports, __webpack_require__) {
-
-"use strict";
-
-
-var _cax = __webpack_require__(2);
-
-var _cax2 = _interopRequireDefault(_cax);
-
-var _china = __webpack_require__(4);
-
-var _china2 = _interopRequireDefault(_china);
-
-var _src = __webpack_require__(1);
-
-var _src2 = _interopRequireDefault(_src);
-
-function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
-
-var stage = new _cax2.default.Stage(600, 500, 'body');
-
-var map = new _src2.default(_china2.default);
-map.x = 20;
-map.y = 15;
-stage.add(map);
-
-stage.update();
-
-/***/ }),
-/* 1 */
-/***/ (function(module, exports, __webpack_require__) {
-
-"use strict";
-
-
-Object.defineProperty(exports, "__esModule", {
-    value: true
-});
-
-var _cax = __webpack_require__(2);
-
-var _cax2 = _interopRequireDefault(_cax);
-
-function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
-
-function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
-
-function _possibleConstructorReturn(self, call) { if (!self) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return call && (typeof call === "object" || typeof call === "function") ? call : self; }
-
-function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
-
-var Map = function (_cax$Group) {
-    _inherits(Map, _cax$Group);
-
-    function Map(data) {
-        _classCallCheck(this, Map);
-
-        var _this = _possibleConstructorReturn(this, (Map.__proto__ || Object.getPrototypeOf(Map)).call(this));
-
-        var shapes = data.shapes;
-        Object.keys(shapes).forEach(function (key) {
-            var p = new _cax2.default.Path(shapes[key]);
-            _this.add(p);
-        });
-        return _this;
-    }
-
-    return Map;
-}(_cax2.default.Group);
-
-exports.default = Map;
-
-/***/ }),
-/* 2 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -147,7 +73,7 @@ exports.default = Map;
 var _typeof2 = typeof Symbol === "function" && typeof Symbol.iterator === "symbol" ? function (obj) { return typeof obj; } : function (obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj; };
 
 /*!
- *  cax v1.1.3
+ *  cax v1.1.4
  *  By https://github.com/dntzhang 
  *  Github: https://github.com/dntzhang/cax
  *  MIT Licensed.
@@ -5596,15 +5522,14 @@ var _typeof2 = typeof Symbol === "function" && typeof Symbol.iterator === "symbo
 
           var _this = _possibleConstructorReturn(this, (Path.__proto__ || Object.getPrototypeOf(Path)).call(this));
 
-          _this.type = 'path';
           _this.d = d;
-          _this.fillColor = 'black';
-          _this.strokeColor = 'white';
-          _this.strokeWidth = 1;
 
-          option && Object.keys(option).forEach(function (key) {
-            _this[key] = option[key];
-          });
+          option = Object.assign({
+            fillStyle: 'black',
+            strokeStyle: 'black',
+            lineWidth: 1
+          }, option);
+          _this.option = option;
           return _this;
         }
 
@@ -5614,9 +5539,7 @@ var _typeof2 = typeof Symbol === "function" && typeof Symbol.iterator === "symbo
             var _this2 = this;
 
             var cmds = (0, _pathParser2.default)(this.d);
-            this.lineWidth(this.strokeWidth);
-            this.strokeStyle(this.strokeColor);
-            this.fillStyle(this.fillColor);
+
             this.beginPath();
             // https://developer.mozilla.org/zh-CN/docs/Web/SVG/Tutorial/Paths
             // M = moveto
@@ -5815,9 +5738,16 @@ var _typeof2 = typeof Symbol === "function" && typeof Symbol.iterator === "symbo
                   break;
               }
             }
+            if (this.option.fillStyle) {
+              this.fillStyle(this.option.fillStyle);
+              this.fill();
+            }
 
-            this.fill();
-            this.stroke();
+            if (this.option.strokeStyle) {
+              this.lineWidth(this.option.lineWidth);
+              this.strokeStyle(this.option.strokeStyle);
+              this.stroke();
+            }
           }
         }]);
 
@@ -6579,10 +6509,48 @@ var _typeof2 = typeof Symbol === "function" && typeof Symbol.iterator === "symbo
     /******/)
   );
 });
-/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(3)(module)))
+/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(2)(module)))
 
 /***/ }),
-/* 3 */
+/* 1 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
+var _cax = __webpack_require__(0);
+
+var _cax2 = _interopRequireDefault(_cax);
+
+var _china = __webpack_require__(3);
+
+var _china2 = _interopRequireDefault(_china);
+
+var _src = __webpack_require__(4);
+
+var _src2 = _interopRequireDefault(_src);
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+var stage = new _cax2.default.Stage(600, 500, 'body');
+
+var map = new _src2.default(_china2.default, {
+    fillStyle: '#555',
+    strokeStyle: 'white',
+    overFillStyle: 'red',
+    overStrokeStyle: 'green',
+    tooltip: function tooltip(key) {
+        return _china2.default.names[key];
+    }
+});
+map.x = 20;
+map.y = 15;
+stage.add(map);
+
+_cax2.default.tick(stage.update.bind(stage));
+
+/***/ }),
+/* 2 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -6612,7 +6580,7 @@ module.exports = function (module) {
 };
 
 /***/ }),
-/* 4 */
+/* 3 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -6697,6 +6665,89 @@ exports.default = {
         macau: '澳门'
     }
 };
+
+/***/ }),
+/* 4 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+
+var _cax = __webpack_require__(0);
+
+var _cax2 = _interopRequireDefault(_cax);
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+
+function _possibleConstructorReturn(self, call) { if (!self) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return call && (typeof call === "object" || typeof call === "function") ? call : self; }
+
+function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
+
+var Map = function (_cax$Group) {
+  _inherits(Map, _cax$Group);
+
+  function Map(data, option) {
+    _classCallCheck(this, Map);
+
+    var _this = _possibleConstructorReturn(this, (Map.__proto__ || Object.getPrototypeOf(Map)).call(this));
+
+    var tooltip = document.createElement('div');
+    document.body.appendChild(tooltip);
+    if (option.tooltipClass) {
+      tooltip.className = option.tooltipClass;
+    } else {
+      tooltip.style.position = 'absolute';
+      tooltip.style.width = 'auto';
+      tooltip.style.maxWidth = '400px';
+      tooltip.style.height = 'auto';
+      tooltip.style.padding = '4px 8px';
+      tooltip.style.display = 'none';
+      tooltip.style.minWidth = '100px';
+      tooltip.style.pointerEvents = 'none';
+      tooltip.style.transition = 'all .6s';
+      tooltip.style.backgroundColor = 'rgba(0,0,0,.5)';
+      tooltip.style.color = 'white';
+      tooltip.style.textAlign = 'center';
+    }
+
+    _this.tooltip = tooltip;
+
+    var shapes = data.shapes;
+    Object.keys(shapes).forEach(function (key) {
+      var p = new _cax2.default.Path(shapes[key], option);
+      p.hover(function (evt) {
+        evt.target.option.fillStyle = option.overFillStyle;
+        evt.target.option.strokeStyle = option.overStrokeStyle;
+
+        tooltip.style.left = evt.pureEvent.pageX + 5 + 'px';
+        tooltip.style.top = evt.pureEvent.pageY + 5 + 'px';
+        tooltip.innerHTML = option.tooltip(key);
+        tooltip.style.display = 'block';
+      }, function (evt) {
+        evt.target.option.fillStyle = option.fillStyle;
+        evt.target.option.strokeStyle = option.strokeStyle;
+
+        tooltip.style.display = 'none';
+      }, function (evt) {
+
+        tooltip.style.left = evt.pureEvent.pageX + 5 + 'px';
+        tooltip.style.top = evt.pureEvent.pageY + 5 + 'px';
+      });
+      _this.add(p);
+    });
+    return _this;
+  }
+
+  return Map;
+}(_cax2.default.Group);
+
+exports.default = Map;
 
 /***/ })
 /******/ ]);

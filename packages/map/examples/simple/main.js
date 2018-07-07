@@ -4,9 +4,17 @@ import Map from '../../src'
 
 const stage = new cax.Stage(600, 500, 'body')
 
-const map = new Map(china)
+const map = new Map(china,{
+    fillStyle:'#555',
+    strokeStyle:'white',
+    overFillStyle: 'red',
+    overStrokeStyle: 'green',
+    tooltip:(key)=>{
+        return china.names[key]
+    }
+})
 map.x = 20
 map.y = 15
 stage.add(map)
 
-stage.update()
+cax.tick(stage.update.bind(stage))
