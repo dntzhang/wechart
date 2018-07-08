@@ -15,6 +15,7 @@
     "map-simple": "webpack -w",
     "radar-simple": "webpack -w",
     "graph-simple": "webpack -w",
+    "path-simple": "webpack -w",
     "map-tiger": "webpack -w",
     "cylinder-simple": "webpack -w",
     "build": "webpack",
