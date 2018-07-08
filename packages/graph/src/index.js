@@ -3,7 +3,7 @@ import cax from 'cax'
 const { Graphics, Group, Button, ArrowPath } = cax
 
 class Graph extends Group {
-  constructor(data) {
+  constructor (data) {
     super()
     this.data = data
     const g = new dagre.graphlib.Graph()
@@ -12,30 +12,30 @@ class Graph extends Group {
     g.setGraph({
       // ranksep: 80,
       // nodesep: 10
-    });
+    })
 
     // Default to assigning a new object as a label for each new edge.
-    g.setDefaultEdgeLabel(function () { return {}; });
+    g.setDefaultEdgeLabel(function () { return {} })
 
     this.data.nodes.forEach(node => {
-      g.setNode(node.id, { label: node.name, width: node.width || 50, height: node.height || 50 });
+      g.setNode(node.id, { label: node.name, width: node.width || 50, height: node.height || 50 })
     })
 
     this.data.edges.forEach(edge => {
-      g.setEdge(edge[0], edge[1]);
+      g.setEdge(edge[0], edge[1])
     })
 
-    dagre.layout(g);
+    dagre.layout(g)
 
     this.render(g)
   }
 
-  render(g) {
+  render (g) {
     g.edges().forEach((e) => {
       const path = g.edge(e).points
       const ap = new ArrowPath(path)
       this.add(ap)
-    });
+    })
 
     g.nodes().forEach((v) => {
       const node = g.node(v)
@@ -56,7 +56,7 @@ class Graph extends Group {
       rr.x = node.x
       rr.y = node.y
       this.add(rr)
-    });
+    })
   }
 }
 

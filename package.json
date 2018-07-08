@@ -4,8 +4,8 @@
   "description": "Build Chart with cax.",
   "main": "dist/wechart.js",
   "scripts": {
-    "lint": "eslint src",
-    "fix": "eslint src --fix",
+    "lint": "eslint packages",
+    "fix": "eslint packages --fix",
     "fixweapp": "eslint ../cax-weapp --fix",
     "lint:example": "eslint example --fix",
     "pie-simple": "webpack -w",

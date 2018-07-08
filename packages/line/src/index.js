@@ -4,7 +4,7 @@ import { getControlPoint } from './get-control-point'
 const { TWEEN, Graphics, Circle, Group, Stage, To } = cax
 
 export default class Line extends Group {
-  constructor(data, lines) {
+  constructor (data, lines) {
     super()
     lines.forEach(item => {
       item.processedData = item.processing ? data.map(item.processing) : data
@@ -19,8 +19,7 @@ const defaultOption = {
 }
 
 class OneLine extends Group {
-  constructor(option, data) {
-
+  constructor (option, data) {
     super()
     const path = []
     option = Object.assign({}, defaultOption, option)
@@ -63,7 +62,6 @@ class OneLine extends Group {
       const py = { py: 0 }
 
       path.forEach((p, index) => {
-
         To.get(p)
           .wait(index * 50)
           .to(option.endPoints[index], 2000, option.show.easing)
@@ -186,14 +184,12 @@ class OneLine extends Group {
   }
 }
 
-
-function fadeIn(obj) {
+function fadeIn (obj) {
   obj.alpha = 0
   To.get(obj).to({ alpha: 1 }, 600).start()
 }
 
-
-function createCircles(eps, option) {
+function createCircles (eps, option) {
   const group = new Group()
   eps.forEach((ep, index) => {
     const circle = new Circle(4, { fillStyle: option.color })
@@ -207,7 +203,7 @@ function createCircles(eps, option) {
   return group
 }
 
-function walkPath(g, path, cps) {
+function walkPath (g, path, cps) {
   g.moveTo(path[0].x, path[0].y)
   g.bezierCurveTo(path[0].x, path[0].y, cps[0].x, cps[0].y, path[1].x, path[1].y)
 
@@ -221,7 +217,7 @@ function walkPath(g, path, cps) {
   g.bezierCurveTo(cps[cpLen - 1].x, cps[cpLen - 1].y, path[len - 1].x, path[len - 1].y, path[len - 1].x, path[len - 1].y)
 }
 
-export function hideLine(group, options, callback) {
+export function hideLine (group, options, callback) {
   let cpt = false
 
   group.children.forEach((subGroup, index) => {
@@ -252,7 +248,7 @@ export function hideLine(group, options, callback) {
   })
 }
 
-function update(projectionY, path, g, pg, option) {
+function update (projectionY, path, g, pg, option) {
   const cps = getControlPoint(path)
 
   g.clear().beginPath().strokeStyle(option.color)

@@ -3,8 +3,7 @@ import cax from 'cax'
 const { Ellipse, Graphics, Group } = cax
 
 class Cylinder extends Group {
-
-  constructor(width, height, percent, color, bottleColor) {
+  constructor (width, height, percent, color, bottleColor) {
     super()
 
     this.width = width
@@ -22,7 +21,6 @@ class Cylinder extends Group {
     const btRect = new Graphics()
     btRect.beginPath().fillStyle(color).fillRect(0, 0, width, height - th)
     btRect.y = th
-
 
     const topEllipse = new Ellipse(width, width / 2.5, {
       fillStyle: bottleColor

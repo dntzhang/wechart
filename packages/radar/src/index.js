@@ -1,10 +1,9 @@
 import cax from 'cax'
 
-const { Polygon, EquilateralPolygon, To, Graphics, Circle ,Group} = cax
-
+const { Polygon, EquilateralPolygon, To, Graphics, Circle, Group} = cax
 
 class Radar extends Group {
-  constructor(data, option) {
+  constructor (data, option) {
     super()
     const arr = Object.keys(data)
 
@@ -69,10 +68,10 @@ class Radar extends Group {
       circles.forEach((circle, index) => {
         To.get({ ratio })
           .wait(typeof option.show.delay === 'number'
-              ? option.show.delay
-              : option.show.delay(index))
-          .to({ ratio: 1 }, option.show.duration, option.show.easing )
-          
+            ? option.show.delay
+            : option.show.delay(index))
+          .to({ ratio: 1 }, option.show.duration, option.show.easing)
+
           .progress(function (object) {
             let pos = p.vertex[index]
             let x = pos[0] / option.r
@@ -116,6 +115,4 @@ class Radar extends Group {
   }
 }
 
-
 export default Radar
-

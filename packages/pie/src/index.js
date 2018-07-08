@@ -8,7 +8,7 @@ const defaultOption = {
 }
 
 class Pie extends Group {
-  constructor(data, option) {
+  constructor (data, option) {
     super()
 
     option = Object.assign({}, defaultOption, option)
@@ -42,17 +42,16 @@ class Pie extends Group {
     this.tooltip = tooltip
   }
 
-  show() {
+  show () {
     this._init()
     this._to(0, Math.PI * 2, 1000, cax.easing.bounceOut, true)
   }
 
-  hide() {
+  hide () {
     this._to(Math.PI * 2, 0, 600, null, false)
   }
 
-  _init() {
-
+  _init () {
     const option = this.option
     const data = this.data
     const { x, y, r } = option
@@ -81,7 +80,6 @@ class Pie extends Group {
       sector.y = y
       this.sectorGroup.add(sector)
 
-
       if (option.tooltip) {
         sector.hover(function (evt) {
           bounceIn(sector, 1, 1.1)
@@ -89,22 +87,18 @@ class Pie extends Group {
           tooltip.style.top = (evt.pureEvent.pageY + 5) + 'px'
           tooltip.innerHTML = option.tooltip(data[index])
           tooltip.style.display = 'block'
-
         }, function (evt) {
           bounceOut(sector, 1.1, 1)
           tooltip.style.display = 'none'
-
         }, function (evt) {
           tooltip.style.left = (evt.pureEvent.pageX + 5) + 'px'
           tooltip.style.top = (evt.pureEvent.pageY + 5) + 'px'
         })
       }
     })
-
   }
 
-  _to(from, to, duration, easing, show) {
-
+  _to (from, to, duration, easing, show) {
     const option = this.option
     const sectorGroup = this.sectorGroup
     const { x, y, r } = option
@@ -121,7 +115,6 @@ class Pie extends Group {
     To.get({ totalAngle: from })
       .to({ totalAngle: to }, duration, easing)
       .progress((object) => {
-
         current = option.begin
         sectorGroup.children.forEach((item, index) => {
           item
@@ -147,8 +140,6 @@ class Pie extends Group {
           arr.push(center)
         })
         if (show) {
-
-
           this.textGroup.alpha = 0
           arr.forEach((angle, index) => {
             angle %= Math.PI * 2
@@ -203,33 +194,30 @@ class Pie extends Group {
           })
           fadeIn(this.textGroup)
         } else {
-
           this.sectorGroup.empty()
         }
-
       })
       .start()
   }
 }
 
-
-function fadeIn(obj) {
+function fadeIn (obj) {
   obj.alpha = 0
   To.get(obj).to({ alpha: 1 }, 600).start()
 }
 
-function fadeOut(obj, callback) {
+function fadeOut (obj, callback) {
   obj.alpha = 1
   To.get(obj).to({ alpha: 0 }, 600).end(function () { callback() }).start()
 }
 
-function bounceIn(obj, from, to) {
+function bounceIn (obj, from, to) {
   from = from || 0
   obj.from = from
   To.get(obj).to({ scaleX: to || 1, scaleY: to || 1 }, 300, cax.easing.bounceOut).start()
 }
 
-function bounceOut(obj, from, to) {
+function bounceOut (obj, from, to) {
   from = from || 1
   obj.from = from
   To.get(obj).to({ scaleX: to || 0, scaleY: to || 0 }, 300, cax.easing.bounceOut).start()

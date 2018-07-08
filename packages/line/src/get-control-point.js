@@ -1,7 +1,7 @@
 
 import Vector2 from './vector2'
 
-export function getControlPoint(path) {
+export function getControlPoint (path) {
   let rt = 0.382
   let i = 0, count = path.length - 2
   let arr = []
@@ -36,4 +36,3 @@ export function getControlPoint(path) {
   }
   return arr
 }
-

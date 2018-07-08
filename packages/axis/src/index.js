@@ -1,9 +1,7 @@
-import cax  from 'cax'
+import cax from 'cax'
 const { Graphics, Text, Group } = cax
 
-
 class Axis extends Group {
-
   constructor (axis, orient) {
     super()
     const f = axis.from
@@ -30,21 +28,21 @@ class Axis extends Group {
         lineTo[1] = y
         break
     }
-  
+
     g.beginPath().strokeStyle(axis.color).moveTo(x, y).lineTo(lineTo[0], lineTo[1]).stroke()
-  
+
     let current
     switch (orient) {
       case 'bottom':
         for (let i = f; i <= t; i += axis.interval) {
           current = x + (i - f) / axis.mapping[0] * axis.mapping[1]
-  
+
           g.beginPath().strokeStyle(axis.color).moveTo(current, y).lineTo(current, y + 5).stroke()
-  
+
           if (axis.gird && i > f) {
             g.beginPath().strokeStyle(axis.gird.color).moveTo(current, y - 1).lineTo(current, y - axis.gird.length).stroke()
           }
-  
+
           if (!axis.text.range || i >= axis.text.range[0] && i <= axis.text.range[1]) {
             const text = new Text(axis.text.value ? axis.text.value(i) : i, axis.text.font, axis.text.color)
             text.x = current + axis.text.x
@@ -55,12 +53,12 @@ class Axis extends Group {
         }
         break
       case 'left':
-  
+
         for (let i = f; i <= t; i += axis.interval) {
           current = y - (i - f) / axis.mapping[0] * axis.mapping[1]
-  
+
           g.beginPath().strokeStyle(axis.color).moveTo(x, current).lineTo(x - 5, current).stroke()
-  
+
           if (axis.gird && i > f) {
             g.beginPath().strokeStyle(axis.gird.color).moveTo(x + 1, current).lineTo(x + axis.gird.length, current).stroke()
           }
@@ -73,17 +71,17 @@ class Axis extends Group {
           }
         }
         break
-  
+
       case 'top':
         for (let i = f; i <= t; i += axis.interval) {
           current = x + (i - f) / axis.mapping[0] * axis.mapping[1]
-  
+
           g.beginPath().strokeStyle(axis.color).moveTo(current, y).lineTo(current, y - 5).stroke()
-  
+
           if (axis.gird && i > f) {
             g.beginPath().strokeStyle(axis.gird.color).moveTo(current, y - 1).lineTo(current, y - axis.gird.length).stroke()
           }
-  
+
           if (!axis.text.range || i >= axis.text.range[0] && i <= axis.text.range[1]) {
             const text = new Text(axis.text.value ? axis.text.value(i) : i, axis.text.font, axis.text.color)
             text.x = current + axis.text.x
@@ -93,14 +91,14 @@ class Axis extends Group {
           }
         }
         break
-  
+
       case 'right':
-  
+
         for (let i = f; i <= t; i += axis.interval) {
           current = y - (i - f) / axis.mapping[0] * axis.mapping[1]
-  
+
           g.beginPath().strokeStyle(axis.color).moveTo(x, current).lineTo(x + 5, current).stroke()
-  
+
           if (axis.gird && i > f) {
             g.beginPath().strokeStyle(axis.gird.color).moveTo(x + 1, current).lineTo(x + axis.gird.length, current).stroke()
           }
@@ -114,7 +112,7 @@ class Axis extends Group {
         }
         break
     }
-  
+
     this.add(g)
   }
 }

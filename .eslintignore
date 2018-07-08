@@ -1,17 +1,6 @@
 
 dist
 node_modules
-
-example/hyperscript/bundler.js
-example/life-cycle/bundler.js
-example/nest/bundler.js
-example/pagination/bundler.js
-example/perfs
-example/plugin/bundler.js
-example/ref/bundler.js
-example/simple/bundler.js
-example/slot/bundler.js
-example/todo/bundler.js
-example/tree/bundler.js
-
-../cax-weapp/cax/index.js
+packages/graph/examples/simple/dagre.js
+packages/graph/examples/simple/graphlib.js
+packages/*/examples/*/bundler.js

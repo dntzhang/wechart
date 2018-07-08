@@ -1,18 +1,14 @@
 
 import cax from 'cax'
 
-
 const { Rect, Group } = cax
 
 const defaultOption = {
   vertical: true
 }
 
-
-
-
 class Bar extends Group {
-  constructor(data, config) {
+  constructor (data, config) {
     super()
 
     const tooltip = document.createElement('div')
@@ -30,10 +26,8 @@ class Bar extends Group {
     tooltip.style.color = 'white'
     tooltip.style.textAlign = 'center'
 
-
     config.forEach(rect => {
       rect.processedData = rect.processing ? data.map(rect.processing) : data
-
 
       rect.processedData.forEach((value, index) => {
         this.add(new OneBar(value, rect, index, tooltip, data))
@@ -42,9 +36,8 @@ class Bar extends Group {
   }
 }
 
-
 class OneBar extends Group {
-  constructor(value, option, index, tooltip, data) {
+  constructor (value, option, index, tooltip, data) {
     super()
     option = Object.assign({}, defaultOption, option)
     let rect
@@ -115,14 +108,12 @@ class OneBar extends Group {
         : option.show.delay(index))
       .to(to, option.show.duration, option.show.easing)
       .progress(function (object) {
-
         Object.assign(rect, object)
       }).start()
   }
 }
 
-
-export function hideRects(group, options, callback) {
+export function hideRects (group, options, callback) {
   let cpt = false
 
   group.children.forEach((subGroup, index) => {
@@ -152,7 +143,7 @@ export function hideRects(group, options, callback) {
   })
 }
 
-export function getRectsInfo(value, option, index, stage) {
+export function getRectsInfo (value, option, index, stage) {
   // const option = options.rects
 
   const height = option.mapping[1] * value / option.mapping[0]
@@ -176,7 +167,7 @@ export function getRectsInfo(value, option, index, stage) {
 
 // color 待定
 // A-> B
-export function animateRect(rectA, rectB, transition) {
+export function animateRect (rectA, rectB, transition) {
   const to = {};
 
   ['left', 'top', 'width', 'height', 'alpha', 'scaleX', 'scaleY', 'x', 'y', 'rotation', 'skewX', 'skewY', 'originX', 'originY'].forEach(key => {
@@ -189,7 +180,5 @@ export function animateRect(rectA, rectB, transition) {
     .to(to, transition.duration, transition.easing)
     .start()
 }
-
-
 
 export default Bar
