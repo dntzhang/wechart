@@ -7,10 +7,15 @@ const shapes = pasition.path2shapes('M595,82.1c1,1-1,2-1,2s-6.9,2-8.9,4.9c-2,2-4
 const g = new cax.Graphics()
 g.beginPath()
 shapes.forEach(shape => {
+  shape.pathLen = 0
   shape.forEach((c, index) => {
     if (index === 0) g.moveTo(c[0], c[1]);
     g.bezierCurveTo(c[2], c[3], c[4], c[5], c[6], c[7])
+    c.bzLen = getLength(c[0], c[1], c[2], c[3], c[4], c[5], c[6], c[7], 50)
+    shape.pathLen += c.bzLen
   })
+
+
   g.stroke()
 })
 
@@ -25,13 +30,13 @@ function lerp(p1, p2, t) {
 }
 
 function dca(points, t) {
-  var len = points.length
+  let len = points.length
 
   if (len === 2) {
     return lerp(points[0], points[1], t)
   }
 
-  var i = 0,
+  let i = 0,
     next = []
   for (; i < len - 1; i++) {
     next.push(lerp(points[i], points[i + 1], t))
@@ -42,15 +47,15 @@ function dca(points, t) {
 
 function slope(p1x, p1y, c1x, c1y, c2x, c2y, p2x, p2y, t) {
 
-  var ax = p1x * 3 - c1x * 9 + 9 * c2x - 3 * p2x
-  var bx = c1x * 6 - 12 * c2x + 6 * p2x
-  var cx = 3 * c2x - 3 * p2x
+  let ax = p1x * 3 - c1x * 9 + 9 * c2x - 3 * p2x
+  let bx = c1x * 6 - 12 * c2x + 6 * p2x
+  let cx = 3 * c2x - 3 * p2x
 
-  var ay = p1y * 3 - c1y * 9 + 9 * c2y - 3 * p2y
-  var by = c1y * 6 - 12 * c2y + 6 * p2y
-  var cy = 3 * c2y - 3 * p2y
+  let ay = p1y * 3 - c1y * 9 + 9 * c2y - 3 * p2y
+  let by = c1y * 6 - 12 * c2y + 6 * p2y
+  let cy = 3 * c2y - 3 * p2y
 
-  var sqt = t * t
+  let sqt = t * t
 
   return Math.atan((ay * sqt + by * t + cy) / (ax * sqt + bx * t + cx))
 }
@@ -59,23 +64,46 @@ function getValue(p1x, p1y, c1x, c1y, c2x, c2y, p2x, p2y, t) {
   return dca([{ x: p1x, y: p1y }, { x: c1x, y: c1y }, { x: c2x, y: c2y }, { x: p2x, y: p2y }], t)
 }
 
+//steps 根据起点和终点自动计算？
 function getLength(p1x, p1y, c1x, c1y, c2x, c2y, p2x, p2y, steps) {
-  var step = 1 / steps;
-  var points = []
+  let step = 1 / steps;
+  let points = []
 
 
-  var len = 0
-  for (var t = 0; t < 1.0 + step; t += step) {
+  let len = 0
+  for (let t = 0; t < 1.0 + step; t += step) {
     points.push(getValue(p1x, p1y, c1x, c1y, c2x, c2y, p2x, p2y, Math.min(t, 1)))
   }
-  let p0,p1,dx,dy
-  for (var i = 0; i < points.length - 1; i++) {
-     p0 = points[i];
-     p1 = points[i + 1];
-     dx = p1.x - p0.x;
-     dy = p1.y - p0.y;
+  let p0, p1, dx, dy
+  for (let i = 0; i < points.length - 1; i++) {
+    p0 = points[i];
+    p1 = points[i + 1];
+    dx = p1.x - p0.x;
+    dy = p1.y - p0.y;
     len += Math.sqrt(dx * dx + dy * dy);
   }
 
   return len
+}
+
+function getPosition(len, shape) {
+  let current = 0
+  //const total = shape.pathLen
+  let index = 0
+  let t = 0
+
+  for (let i = 0, len = shape.length; i < len; i++) {
+    let c = shape[i]
+    current += c.bzLen
+    if (current > len) {
+      index = i
+      t = (current - len) / c.bzLen
+      break
+    }
+  }
+
+  return {
+    t,
+    index
+  }
 }
