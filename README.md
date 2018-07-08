@@ -14,6 +14,7 @@
 * [Graph](https://dntzhang.github.io/wechart/packages/graph/examples/simple/) | [Source](https://github.com/dntzhang/wechart/blob/master/packages/graph/examples/simple/main.js) | [Graph Source](https://github.com/dntzhang/wechart/blob/master/packages/graph/src/index.js) 
 * [Map](https://dntzhang.github.io/wechart/packages/map/examples/simple/) | [Source](https://github.com/dntzhang/wechart/blob/master/packages/map/examples/simple/main.js) | [Map Source](https://github.com/dntzhang/wechart/blob/master/packages/map/src/index.js) 
 * [Radar](https://dntzhang.github.io/wechart/packages/radar/examples/simple/) | [Source](https://github.com/dntzhang/wechart/blob/master/packages/radar/examples/simple/main.js) | [Radar Source](https://github.com/dntzhang/wechart/blob/master/packages/radar/src/index.js) 
+* [Tiger](https://dntzhang.github.io/wechart/packages/map/examples/tiger/) | [Source](https://github.com/dntzhang/wechart/blob/master/packages/map/examples/tiger/main.js) 
 
 ## 谁在使用？
 
