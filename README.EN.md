@@ -17,6 +17,8 @@ English | [简体中文](./README.md)
 |[Map](https://dntzhang.github.io/wechart/packages/map/examples/simple/) | [Source](https://github.com/dntzhang/wechart/blob/master/packages/map/examples/simple/main.js) | [Map Source](https://github.com/dntzhang/wechart/blob/master/packages/map/src/index.js) | Tutorial| 
 |[Radar](https://dntzhang.github.io/wechart/packages/radar/examples/simple/) | [Source](https://github.com/dntzhang/wechart/blob/master/packages/radar/examples/simple/main.js) | [Radar Source](https://github.com/dntzhang/wechart/blob/master/packages/radar/src/index.js) | Tutorial| 
 |[Tiger](https://dntzhang.github.io/wechart/packages/map/examples/tiger/) | [Source](https://github.com/dntzhang/wechart/blob/master/packages/map/examples/tiger/main.js) |  |  Tutorial| 
+|[Path](https://dntzhang.github.io/wechart/packages/path/examples/map/) | [Source](https://github.com/dntzhang/wechart/blob/master/packages/path/examples/map/main.js) |  |  Tutorial| 
+|[Draw](https://dntzhang.github.io/wechart/packages/path/examples/simple/) | [Source](https://github.com/dntzhang/wechart/blob/master/packages/path/examples/simple/main.js) |  |  Tutorial| 
 
 # Who is using cax?
 
