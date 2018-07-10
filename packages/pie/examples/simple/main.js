@@ -26,12 +26,8 @@ const pie = new Pie([
   font: '20px Arial',
   tooltip: (item) => {
     return item.name + '<br/>' + item.value
-  },
-  textColor: (index) => {
-    return ['#4BC0C0', '#FF6485', '#FFA07A', '#ADACB9', '#A37AC1'][index]
   }
-}
-)
+})
 
 pie.show()
 stage.add(pie)

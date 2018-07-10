@@ -1,10 +1,13 @@
-## Pie
-
-Cax 渲染的精致响应式饼图
-
-* [Simple Demo Preview](https://dntzhang.github.io/wechart/packages/pie/examples/simple/)
+## Cax 渲染的精致响应式饼图
 
 ![Pie](./asset/pie.png)
+
+* [Preview](https://dntzhang.github.io/wechart/packages/pie/examples/simple/) | [Usage Source](https://github.com/dntzhang/wechart/blob/master/packages/pie/examples/simple/main.js) | [Pie Source](https://github.com/dntzhang/wechart/blob/master/packages/pie/src/index.js) | [Tutorial](https://github.com/dntzhang/wechart/blob/master/packages/pie/README.md)
+* [Wechart by Cax](https://github.com/dntzhang/wechart) 
+* [Cax](https://github.com/dntzhang/cax)
+
+众所周知 Cax 既能开发游戏、又能开发图表。本文将从饼图开始 Wechart 的图表之旅。
+Wechart 完全基于 Group 体系构建(自定义 Element) ，以维护、可插拔使用，可扩展。
 
 ## 快速开始
 
@@ -18,32 +21,29 @@ const pie = new Pie([
     { name: 'Tencent', value: 7 },
     { name: 'Wepay', value: 22 }
 ], {
-        processing: (item) => { return item.value },
+        processing: (item) => { 
+            return item.value 
+        },
         x: 200,
         y: 200,
         r: 160,
+        circleColor: 'white',
+        textOffsetY: -12,
+        font: '20px Arial',
         color: (index) => {
             return ['#4BC0C0', '#FF6485', '#FFA07A', '#ADACB9', '#A37AC1'][index]
         },
-        circleColor: 'white',
-        duration: 1000,
         label: (item) => {
             return item.name
         },
-        easing: cax.easing.bounceOut,
-        textOffsetY: -12,
-        font: '20px Arial',
         tooltip: (item) => {
             return item.name + '<br/>' + item.value
-        },
-        textColor: (index) => {
-            return ['#4BC0C0', '#FF6485', '#FFA07A', '#ADACB9', '#A37AC1'][index]
         }
     }
 )
 ```
 
-添加到舞台:
+上面各项配置项很清晰明了，不做解释，开发者可自行修改参数看饼图的变化，下面把饼图添加到舞台:
 
 ```js
 const stage = new cax.Stage(640, 400, 'body')
@@ -51,7 +51,7 @@ stage.add(pie)
 stage.update()
 ```
 
-显示和隐藏:
+显示和隐藏饼图:
 
 ```js
 pie.show()
@@ -62,6 +62,7 @@ pie.hide()
 
 看到上面的 DEMO 可以会有几方面技术需要讲解：
 
+* Pie 对象和 Group 的关系
 * Cax 扇形绘制
 * 展开和收缩动画实现
 * 文字和文字走线显示在对应扇形的中间
@@ -69,6 +70,35 @@ pie.hide()
 * 交互兼容 PC 和 Mobile 
 * 渐变和点击弹出和移除收缩实现
 * Tooltip 实现
+
+### Pie 对象和 Group 的关系
+
+先看 cax 内置的 Group 对象, Group 用于分组， group 也可以嵌套 group，父容器的属性会叠加在子属性上, 比如：
+
+* group 的 x 是 100, group 里的 bitmap 的 x 是 200， 最后 bitmap 渲染到 stage 上的 x 是 300
+* group 的 alpha 是 0.7, group 里的 bitmap 的 alpha 是 0.6, 最后 bitmap 渲染到 stage 上的 alpha 是 0.42
+
+```js
+const group = new cax.Group()
+const rect = new cax.Rect(100, 100 {
+  fillStyle: 'black'
+})
+group.add(rect)
+stage.add(group)
+stage.update()
+```
+
+Pie 对象正是自定义 Element，继承自 Group:
+
+``` js
+class Pie extends Group {
+  constructor (data, option) {
+    super()
+```
+
+一般情况下，稍微复杂组合体都建议使用继承自 Group，这样利于扩展也方便管理自身内部的元件。
+可以看到小游戏的 DEMO 里的 [Player、Bullet、Enemy、Background](https://github.com/dntzhang/cax/tree/master/packages/cax-wegame/js) 全都是继承自 Group。
+
 
 ### 扇形绘制
 
@@ -94,7 +124,7 @@ stage.add(sector)
 
 ![sector.png](./asset/sector.png)
 
-所以一个饼图就是把圆分成若干个扇形。怎么分？ arc 方法传入动态数据：
+所以一个饼图就是把圆分成若干个扇形。怎么分？ arc 方法传入动态数据：
 
 ```js
 let current = 0
@@ -183,7 +213,7 @@ if (angle >= 0 && angle < Math.PI / 2) {
 需要注意的是：
 
 * 落在左边的文字的 x 坐标需要减去文件的宽度。 Cax 内置的 Text 可以使用 getWidth() 方法获取到文字的宽度
-* 走线的第一根线角度也分两种情况，1、3象限平行，2、4象限平行，走线的第二根先角度都是平行于 y 轴
+* 走线的第一根线角度也分两种情况，1、3象限平行，2、4象限平行，走线的第二根先角度都是平行于 y 轴（如上图所示，相同颜色圈中的线是平行的）
 
 ### 显示与交互兼容 PC 和 Mobile
 
@@ -262,3 +292,15 @@ sector.hover(function (evt) {
 Cax 内置对象拥有 `hover(over, out, move)` 方法来监听鼠标或者手指 over、out 和 move。
 
 Tooltip 也是完全基于 DOM 来实现的，这样可以浮在 Canvas 外面，而不会限制在 Canvas 里面。
+
+## 谁在使用？
+
+![Tencent Wechat](https://github.com/dntzhang/wechart/raw/master/asset/wx.png)  ![Tencent QQ](https://github.com/dntzhang/wechart/raw/master/asset/qq.png)
+
+## Cax 和 Wechart 微信交流群
+
+![](https://raw.githubusercontent.com/dntzhang/wechart/master/asset/group.png)
+
+## License
+
+MIT

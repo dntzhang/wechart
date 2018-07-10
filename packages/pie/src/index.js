@@ -146,7 +146,7 @@ class Pie extends Group {
             let centerX = x + r * Math.cos(angle)
             let centerY = y + r * Math.sin(angle)
 
-            const currentColor = option.textColor(index)
+            const currentColor = option.color(index)
             const label = option.label(data[index])
             const text = new Text(label, { color: currentColor, font: option.font })
 

@@ -26,7 +26,7 @@
 
 ## 微信交流群
 
-![](https://raw.githubusercontent.com/dntzhang/cax/master/asset/cax0712.png)
+![Tencent Wechat](./asset/group.png) 
 
 ## License
 
