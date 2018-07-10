@@ -1,8 +1,8 @@
 简体中文 | [English](./README.EN.md) 
 
-# Wechart
+# Wechart by [Cax](https://github.com/dntzhang/cax)
 
-> [Cax](https://github.com/dntzhang/cax) 渲染精巧图表
+> Cax 渲染精巧图表
 
 ![](./asset/wechart-idea.png)
 

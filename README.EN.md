@@ -1,8 +1,8 @@
 English | [简体中文](./README.md) 
 
-# Wechart 
+# Wechart by [Cax](https://github.com/dntzhang/cax)
 
-> Lightweight but powerful charts by [cax](https://github.com/dntzhang/cax). 
+> Lightweight but powerful charts by cax. 
 
 ![](./asset/wechart-idea.png)
 
