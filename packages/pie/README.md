@@ -51,6 +51,8 @@ stage.add(pie)
 stage.update()
 ```
 
+stage 是最大的容器，通过 add 方法往里面加对象，然后 update 舞台就能显示。
+
 显示和隐藏饼图:
 
 ```js
@@ -102,7 +104,7 @@ class Pie extends Group {
 
 ### 扇形绘制
 
-Cax 内置 Graphics，可以使用连缀 Canvas API 的方式绘制图形:
+Cax 内置 Graphics，可以使用连缀 Canvas API 的方式绘制图形:
 
 ```js
 const sector = new cax.Graphics()
@@ -241,7 +243,7 @@ if (window.innerWidth <= 500) {
 }
 ```
 
-搞定！
+搞定！这样不管是在 PC 鼠标还是移动 Mobile 触摸都能精准触发事件。
 
 ### 渐变和点击弹出和移除收缩实现
 
