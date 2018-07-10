@@ -4,12 +4,13 @@ var geometry, material, mesh
 var targetRotationX = 0
 var preX = 0
 
-var group = new THREE.Group()
+var group
 
 init()
 animate()
 
 function init() {
+  group = new THREE.Group()
   camera = new THREE.PerspectiveCamera(45, window.innerWidth / window.innerHeight, 0.01, 500)
   camera.position.set(0, 0, 100)
 
