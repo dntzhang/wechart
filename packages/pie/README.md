@@ -7,7 +7,7 @@
 * [Cax](https://github.com/dntzhang/cax)
 
 众所周知 Cax 既能开发游戏、又能开发图表。本文将从饼图开始 Wechart 的图表之旅。
-Wechart 完全基于 Group 体系构建(自定义 Element) ，以维护、可插拔使用，可扩展。
+Wechart 完全基于 Group 体系构建(自定义 Element) ，易维护，可扩展，任何场景可插拔使用。
 
 ## 快速开始
 
