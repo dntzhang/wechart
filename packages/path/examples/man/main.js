@@ -9,7 +9,6 @@ const mapPath = []
 const list = []
 const allShape = []
 
-
 paths.forEach(path => {
   mapPath.push(path.getAttribute('d'))
 })
