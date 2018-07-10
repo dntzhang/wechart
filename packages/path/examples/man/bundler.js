@@ -6565,7 +6565,6 @@ function dca(points, t) {
 }
 
 function slope(p1x, p1y, c1x, c1y, c2x, c2y, p2x, p2y, t) {
-
   var ax = p1x * 3 - c1x * 9 + 9 * c2x - 3 * p2x;
   var bx = c1x * 6 - 12 * c2x + 6 * p2x;
   var cx = 3 * c2x - 3 * p2x;
@@ -6583,7 +6582,7 @@ function getValue(p1x, p1y, c1x, c1y, c2x, c2y, p2x, p2y, t) {
   return dca([{ x: p1x, y: p1y }, { x: c1x, y: c1y }, { x: c2x, y: c2y }, { x: p2x, y: p2y }], t);
 }
 
-//steps 根据起点和终点自动计算？
+// steps 根据起点和终点自动计算？
 function getLength(p1x, p1y, c1x, c1y, c2x, c2y, p2x, p2y, steps) {
   var step = 1 / steps;
   var points = [];
@@ -6652,28 +6651,25 @@ var _pasition = __webpack_require__(4);
 
 var _pasition2 = _interopRequireDefault(_pasition);
 
-var _player = __webpack_require__(5);
+var _pen = __webpack_require__(5);
 
-var _player2 = _interopRequireDefault(_player);
+var _pen2 = _interopRequireDefault(_pen);
 
 var _bezier = __webpack_require__(1);
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
 var paths = document.querySelectorAll('path');
-
 var mapPath = [];
-paths.forEach(function (path) {
+var list = [];
+var allShape = [];
 
+paths.forEach(function (path) {
   mapPath.push(path.getAttribute('d'));
 });
 
-var stage = new _cax2.default.Stage(660, 600, 'body');
+var stage = new _cax2.default.Stage(430, 430, 'body');
 
-var shapes = _pasition2.default.path2shapes('M595,82.1c1,1-1,2-1,2s-6.9,2-8.9,4.9c-2,2-4.9,8.8-4.9,8.8c3.9-1,8.9-2,13.8-4c1,0,2,1,3,2c1,0-11.8,4.9-14.8,6.9c-2,2-11.8,9.9-14.8,9.9c-2.9,0-9.9,1-9.9,1c1,2,2,3.9,3.9,6.9c0,0-6.9,4-6.9,4.9c-1,1-5.9,6.9-5.9,6.9s17.7,1.9,23.6-7.9c-5.9,9.8-19.7,19.7-48.2,19.7c-29.5,0-53.1-11.8-68.9-17.7c-16.7-6.9-38.4-14.8-56.1-14.8c-16.7,0-36.4,4.9-49.2,16.8c-22.6-8.8-54.1-4-68.9,9.8c-13.8,13.8-27.5,30.5-29.5,42.3c-2.9,12.9-9.8,43.3-19.7,57.2c-13.8,22.5-29.5,28.5-34.5,38.3c-4.9,9.9-4.9,30.5-4,30.5c2,1,8.9,0,12.8-2c7.9-2.9,29.5-25.6,37.4-36.4c7.9-10.9,34.5-58.1,38.4-74.8s7.9-33.5,19.7-42.3c12.8-8.8,28.5-4.9,28.5-3.9c0,0-14.7,11.8-15.7,44.3s18.7,28.6,8.8,49.2c-9.9,17.7-39.3,5.9-49.2,16.7c-7.9,8.9,0,40.3,0,46.2c0,6-3,33.5-4.9,40.4c-1,5.9,0,9.8-1,13.8c-1,3,6,3.9,6,3.9s-6,7.8-8.9,5.9c-2.9-1-4.9-1-6.9,0c-2,0-5.9,1.9-9.9,0L232.9,401c2,1,4.9,1.9,7.9,1c4-1,23.6-9.9,25.6-11.9c2.9-1,19.7-10.8,22.6-16.7c2-5.9,5.9-24.6,5.9-30.5c1-6,2-24.6,2-29.5s-1-13.8,0-17.7c2-2.9,4.9-6.9,8.9-8.9c4.9-1,10.8-1,11.8-1c2,0,18.7,2,21.6,2c3.9,0,19.7-2.9,23.6-5c4.9-0.9,7.8,0,8.9,2c2,1.9-2,4.9-2,5.9c-1,1-8.8,10.8-10.8,14.7c-2,4.9-8.8,13.8-6.9,17.7c2,3.9,2,4.9,7.8,7.9c5.9,1.9,28.5,13.8,41.3,25.6c13.8,12.7,26.6,28.4,28.6,36.4c2.9,8.9,7.8,9.8,10.8,9.8c3,1,8.9,2,8.9,5.9s-1,8.8-1,8.8l36.4,13.8c0,0,0-12.8-1-17.7c-1-5.9-6.9-11.8-11.8-17.7c-4.9-6.9-56-57.1-61-61c-4.9-3-8.9-6.9-9.8-14.7c-1-7.9,8.8-13.8,14.8-20.6c3.9-4.9,14.7-27.6,16.7-30.6c2-2.9,8.9-10.8,12.8-10.8c4.9,0,15.8,6.9,29.5,11.8c5.9,2,48.2,12.8,54.1,14.8c5.9,1,18.6,0,22.6,3.9c3.9,2.9,0,10.9-1,15.8c-1,5.9-11.8,27.5-11.8,27.5s2,7.8,2,13.8c0,6.9-2.9,31.5-5.9,39.3c-2,8.9-15.8,31.6-18.7,35.5c-2,2.9-4.9,4.9-4.9,9.9c0,4.9,8.8,6,11.8,9.8c4,3,1,8.8,0,14.8l39.4,16.7c0-2.9,2-7.9,0-9.9c-1-2.9-5.9-8.8-8.8-12.8c-2-2.9-8.9-13.8-10.8-15.8c-2-2.9-2-8.8,0-13.8c1-4.9,13.8-38.3,14.7-42.3c2-4.9,20.7-44.3,22.6-49.2c2-5.9,17.7-34.4,19.7-39.4c2-5.9,14.8-10.8,18.7-10.8c4.9,0,29.5,8.8,33.4,10.8c2.9,1,25.6,10.9,29.5,12.8c4.9,1.9,2,5.9-1,6.9c-2.9,1.9-39.4,26.5-42.3,27.5c-2.9,1-5.9,3.9-7.9,3.9c-2.9,0-6.9,3.1-6.9,4c0,2-1,5.9-5.9,5.9c-3.9,0-11.8-5.9-16.7-11.8c-6.9,3.9-11.8,6.9-14.8,12.8c-4.9,4.9-6.9,8.9-9.8,15.8c2,2,5.9,2.9,8.8,2.9h31.5c3,0,6.9-0.9,9.9-1.9c2.9-2,80.7-53.1,80.7-53.1s12.8-9.9,12.8-18.7c0-6.9-5.9-8.9-7.9-11.8c-3-1.9-20.7-13.8-23.6-15.7c-4-2.9-17.7-10.9-21.6-12.9c-3-1.9-13.8-5.8-13.8-5.8c3-8.9,5-15.8,5.9-17.7c1-2,1-19.7,2-22.7c0-2.9,5-15.7,6.9-17.7c2-2,6.9-17.7,7.9-20.7c1-1.9,8.8-24.6,12.8-24.6c3.9-1,7.9,2.9,11.8,2.9c4,1,18.7-1,26.6,0c6.9,1,15.8,9.9,17.7,10.8c2.9,1,9.8,3.9,11.8,3.9c1,0,10.8-6.9,10.8-8.8c0-2-6.9-5.9-7.9-5.9c-1-1-7.8-4.9-7.8-4.9c0,1,2.9-1.9,7.8-1.9c3.9,0,7.9,3.9,8.8,4.9c2,1,6.9,3.9,7.9,1.9c1-1,4.9-5.9,4.9-8.9c0-4-3.9-8.8-5.9-10.8s-24.6-23.6-26.6-24.6c-2.9-1-14.7-11.8-14.7-14.7c-1-2-6.9-6.9-7.9-7.9s-30.5-21.6-34.5-24.6c-3.9-2.9-7.9-7.8-7.9-12.7s-2-17.7-2-17.7s-6.9-1-9.8,1.9c-2.9,2-9.8,17.8-13.8,17.8c-10.9-2-24.6,1-24.6,2.9c1,2.9,10.8,1,10.8,1c0,1-3.9,5.9-6.9,5.9c-2,0-7.8,2-8.8,2.9c-2,0-5.9,3.1-5.9,3.1c2.9,0,5.9,0,9.8,0.9c0,0-5.9,4-8.9,4c-2.9,0-12.8,2.9-15.7,3.9c-2,1.9-9.9,7.9-9.9,7.9H589l1,2h4.9L595,82.1L595,82.1z');
-
-var list = [];
-var allShape = [];
 mapPath.forEach(function (path) {
   list.push(_pasition2.default.path2shapes(path));
 });
@@ -6690,25 +6686,25 @@ list.forEach(function (shapes) {
 });
 
 var startIndex = 0;
-var player = new _player2.default(allShape[startIndex], true, function () {
+var pen = new _pen2.default(allShape[startIndex], true, function () {
   startIndex++;
   if (startIndex < allShape.length) {
     setTimeout(function () {
-      player.shape = allShape[startIndex];
-      player.start();
+      pen.shape = allShape[startIndex];
+      pen.start();
     }, 200);
   } else {
-    player.stop();
+    pen.stop();
   }
 });
 
-player.x = 20;
-
-player.y = 20;
-stage.add(player);
+pen.x = -360;
+pen.y = -540;
+pen.scaleX = pen.scaleY = 2;
+stage.add(pen);
 
 _cax2.default.tick(function () {
-  player.update();
+  pen.update();
   stage.update();
 });
 
@@ -6758,871 +6754,863 @@ var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol
  */
 
 (function (global, factory) {
-    ( false ? 'undefined' : _typeof(exports)) === 'object' && typeof module !== 'undefined' ? module.exports = factory() :  true ? !(__WEBPACK_AMD_DEFINE_FACTORY__ = (factory),
+  ( false ? 'undefined' : _typeof(exports)) === 'object' && typeof module !== 'undefined' ? module.exports = factory() :  true ? !(__WEBPACK_AMD_DEFINE_FACTORY__ = (factory),
 				__WEBPACK_AMD_DEFINE_RESULT__ = (typeof __WEBPACK_AMD_DEFINE_FACTORY__ === 'function' ?
 				(__WEBPACK_AMD_DEFINE_FACTORY__.call(exports, __webpack_require__, exports, module)) :
 				__WEBPACK_AMD_DEFINE_FACTORY__),
 				__WEBPACK_AMD_DEFINE_RESULT__ !== undefined && (module.exports = __WEBPACK_AMD_DEFINE_RESULT__)) : global.pasition = factory();
 })(undefined, function () {
-    'use strict';
+  'use strict';
 
-    var slicedToArray = function () {
-        function sliceIterator(arr, i) {
-            var _arr = [];
-            var _n = true;
-            var _d = false;
-            var _e = undefined;
+  var slicedToArray = function () {
+    function sliceIterator(arr, i) {
+      var _arr = [];
+      var _n = true;
+      var _d = false;
+      var _e = undefined;
 
-            try {
-                for (var _i = arr[Symbol.iterator](), _s; !(_n = (_s = _i.next()).done); _n = true) {
-                    _arr.push(_s.value);
+      try {
+        for (var _i = arr[Symbol.iterator](), _s; !(_n = (_s = _i.next()).done); _n = true) {
+          _arr.push(_s.value);
 
-                    if (i && _arr.length === i) break;
-                }
-            } catch (err) {
-                _d = true;
-                _e = err;
-            } finally {
-                try {
-                    if (!_n && _i["return"]) _i["return"]();
-                } finally {
-                    if (_d) throw _e;
-                }
-            }
-
-            return _arr;
+          if (i && _arr.length === i) break;
         }
-
-        return function (arr, i) {
-            if (Array.isArray(arr)) {
-                return arr;
-            } else if (Symbol.iterator in Object(arr)) {
-                return sliceIterator(arr, i);
-            } else {
-                throw new TypeError("Invalid attempt to destructure non-iterable instance");
-            }
-        };
-    }();
-
-    //https://github.com/colinmeinke/svg-arc-to-cubic-bezier
-
-    var TAU = Math.PI * 2;
-
-    var mapToEllipse = function mapToEllipse(_ref, rx, ry, cosphi, sinphi, centerx, centery) {
-        var x = _ref.x,
-            y = _ref.y;
-
-        x *= rx;
-        y *= ry;
-
-        var xp = cosphi * x - sinphi * y;
-        var yp = sinphi * x + cosphi * y;
-
-        return {
-            x: xp + centerx,
-            y: yp + centery
-        };
-    };
-
-    var approxUnitArc = function approxUnitArc(ang1, ang2) {
-        var a = 4 / 3 * Math.tan(ang2 / 4);
-
-        var x1 = Math.cos(ang1);
-        var y1 = Math.sin(ang1);
-        var x2 = Math.cos(ang1 + ang2);
-        var y2 = Math.sin(ang1 + ang2);
-
-        return [{
-            x: x1 - y1 * a,
-            y: y1 + x1 * a
-        }, {
-            x: x2 + y2 * a,
-            y: y2 - x2 * a
-        }, {
-            x: x2,
-            y: y2
-        }];
-    };
-
-    var vectorAngle = function vectorAngle(ux, uy, vx, vy) {
-        var sign = ux * vy - uy * vx < 0 ? -1 : 1;
-        var umag = Math.sqrt(ux * ux + uy * uy);
-        var vmag = Math.sqrt(ux * ux + uy * uy);
-        var dot = ux * vx + uy * vy;
-
-        var div = dot / (umag * vmag);
-
-        if (div > 1) {
-            div = 1;
+      } catch (err) {
+        _d = true;
+        _e = err;
+      } finally {
+        try {
+          if (!_n && _i['return']) _i['return']();
+        } finally {
+          if (_d) throw _e;
         }
+      }
 
-        if (div < -1) {
-            div = -1;
-        }
-
-        return sign * Math.acos(div);
-    };
-
-    var getArcCenter = function getArcCenter(px, py, cx, cy, rx, ry, largeArcFlag, sweepFlag, sinphi, cosphi, pxp, pyp) {
-        var rxsq = Math.pow(rx, 2);
-        var rysq = Math.pow(ry, 2);
-        var pxpsq = Math.pow(pxp, 2);
-        var pypsq = Math.pow(pyp, 2);
-
-        var radicant = rxsq * rysq - rxsq * pypsq - rysq * pxpsq;
-
-        if (radicant < 0) {
-            radicant = 0;
-        }
-
-        radicant /= rxsq * pypsq + rysq * pxpsq;
-        radicant = Math.sqrt(radicant) * (largeArcFlag === sweepFlag ? -1 : 1);
-
-        var centerxp = radicant * rx / ry * pyp;
-        var centeryp = radicant * -ry / rx * pxp;
-
-        var centerx = cosphi * centerxp - sinphi * centeryp + (px + cx) / 2;
-        var centery = sinphi * centerxp + cosphi * centeryp + (py + cy) / 2;
-
-        var vx1 = (pxp - centerxp) / rx;
-        var vy1 = (pyp - centeryp) / ry;
-        var vx2 = (-pxp - centerxp) / rx;
-        var vy2 = (-pyp - centeryp) / ry;
-
-        var ang1 = vectorAngle(1, 0, vx1, vy1);
-        var ang2 = vectorAngle(vx1, vy1, vx2, vy2);
-
-        if (sweepFlag === 0 && ang2 > 0) {
-            ang2 -= TAU;
-        }
-
-        if (sweepFlag === 1 && ang2 < 0) {
-            ang2 += TAU;
-        }
-
-        return [centerx, centery, ang1, ang2];
-    };
-
-    var arcToBezier = function arcToBezier(_ref2) {
-        var px = _ref2.px,
-            py = _ref2.py,
-            cx = _ref2.cx,
-            cy = _ref2.cy,
-            rx = _ref2.rx,
-            ry = _ref2.ry,
-            _ref2$xAxisRotation = _ref2.xAxisRotation,
-            xAxisRotation = _ref2$xAxisRotation === undefined ? 0 : _ref2$xAxisRotation,
-            _ref2$largeArcFlag = _ref2.largeArcFlag,
-            largeArcFlag = _ref2$largeArcFlag === undefined ? 0 : _ref2$largeArcFlag,
-            _ref2$sweepFlag = _ref2.sweepFlag,
-            sweepFlag = _ref2$sweepFlag === undefined ? 0 : _ref2$sweepFlag;
-
-        var curves = [];
-
-        if (rx === 0 || ry === 0) {
-            return [];
-        }
-
-        var sinphi = Math.sin(xAxisRotation * TAU / 360);
-        var cosphi = Math.cos(xAxisRotation * TAU / 360);
-
-        var pxp = cosphi * (px - cx) / 2 + sinphi * (py - cy) / 2;
-        var pyp = -sinphi * (px - cx) / 2 + cosphi * (py - cy) / 2;
-
-        if (pxp === 0 && pyp === 0) {
-            return [];
-        }
-
-        rx = Math.abs(rx);
-        ry = Math.abs(ry);
-
-        var lambda = Math.pow(pxp, 2) / Math.pow(rx, 2) + Math.pow(pyp, 2) / Math.pow(ry, 2);
-
-        if (lambda > 1) {
-            rx *= Math.sqrt(lambda);
-            ry *= Math.sqrt(lambda);
-        }
-
-        var _getArcCenter = getArcCenter(px, py, cx, cy, rx, ry, largeArcFlag, sweepFlag, sinphi, cosphi, pxp, pyp),
-            _getArcCenter2 = slicedToArray(_getArcCenter, 4),
-            centerx = _getArcCenter2[0],
-            centery = _getArcCenter2[1],
-            ang1 = _getArcCenter2[2],
-            ang2 = _getArcCenter2[3];
-
-        var segments = Math.max(Math.ceil(Math.abs(ang2) / (TAU / 4)), 1);
-
-        ang2 /= segments;
-
-        for (var i = 0; i < segments; i++) {
-            curves.push(approxUnitArc(ang1, ang2));
-            ang1 += ang2;
-        }
-
-        return curves.map(function (curve) {
-            var _mapToEllipse = mapToEllipse(curve[0], rx, ry, cosphi, sinphi, centerx, centery),
-                x1 = _mapToEllipse.x,
-                y1 = _mapToEllipse.y;
-
-            var _mapToEllipse2 = mapToEllipse(curve[1], rx, ry, cosphi, sinphi, centerx, centery),
-                x2 = _mapToEllipse2.x,
-                y2 = _mapToEllipse2.y;
-
-            var _mapToEllipse3 = mapToEllipse(curve[2], rx, ry, cosphi, sinphi, centerx, centery),
-                x = _mapToEllipse3.x,
-                y = _mapToEllipse3.y;
-
-            return { x1: x1, y1: y1, x2: x2, y2: y2, x: x, y: y };
-        });
-    };
-
-    //https://github.com/jkroso/parse-svg-path/blob/master/index.js
-    /**
-     * expected argument lengths
-     * @type {Object}
-     */
-
-    var length = { a: 7, c: 6, h: 1, l: 2, m: 2, q: 4, s: 4, t: 2, v: 1, z: 0
-
-        /**
-         * segment pattern
-         * @type {RegExp}
-         */
-
-    };var segment = /([astvzqmhlc])([^astvzqmhlc]*)/ig;
-
-    /**
-     * parse an svg path data string. Generates an Array
-     * of commands where each command is an Array of the
-     * form `[command, arg1, arg2, ...]`
-     *
-     * @param {String} path
-     * @return {Array}
-     */
-
-    function parse(path) {
-        var data = [];
-        path.replace(segment, function (_, command, args) {
-            var type = command.toLowerCase();
-            args = parseValues(args);
-
-            // overloaded moveTo
-            if (type == 'm' && args.length > 2) {
-                data.push([command].concat(args.splice(0, 2)));
-                type = 'l';
-                command = command == 'm' ? 'l' : 'L';
-            }
-
-            while (true) {
-                if (args.length == length[type]) {
-                    args.unshift(command);
-                    return data.push(args);
-                }
-                if (args.length < length[type]) throw new Error('malformed path data');
-                data.push([command].concat(args.splice(0, length[type])));
-            }
-        });
-        return data;
+      return _arr;
     }
 
-    var number = /-?[0-9]*\.?[0-9]+(?:e[-+]?\d+)?/ig;
-
-    function parseValues(args) {
-        var numbers = args.match(number);
-        return numbers ? numbers.map(Number) : [];
-    }
-
-    function shapeBox(shape) {
-        var minX = shape[0][0],
-            minY = shape[0][1],
-            maxX = minX,
-            maxY = minY;
-        shape.forEach(function (curve) {
-            var x1 = curve[0],
-                x2 = curve[2],
-                x3 = curve[4],
-                x4 = curve[6],
-                y1 = curve[1],
-                y2 = curve[3],
-                y3 = curve[5],
-                y4 = curve[7];
-
-            minX = Math.min(minX, x1, x2, x3, x4);
-            minY = Math.min(minY, y1, y2, y3, y4);
-            maxX = Math.max(maxX, x1, x2, x3, x4);
-            maxY = Math.max(maxY, y1, y2, y3, y4);
-        });
-
-        return [minX, minY, maxX, maxY];
-    }
-
-    function boxDistance(boxA, boxB) {
-        return Math.sqrt(Math.pow(boxA[0] - boxB[0], 2) + Math.pow(boxA[1] - boxB[1], 2)) + Math.sqrt(Math.pow(boxA[2] - boxB[2], 2) + Math.pow(boxA[3] - boxB[3], 2));
-    }
-
-    function curveDistance(curveA, curveB) {
-        var x1 = curveA[0],
-            x2 = curveA[2],
-            x3 = curveA[4],
-            x4 = curveA[6],
-            y1 = curveA[1],
-            y2 = curveA[3],
-            y3 = curveA[5],
-            y4 = curveA[7],
-            xb1 = curveB[0],
-            xb2 = curveB[2],
-            xb3 = curveB[4],
-            xb4 = curveB[6],
-            yb1 = curveB[1],
-            yb2 = curveB[3],
-            yb3 = curveB[5],
-            yb4 = curveB[7];
-
-        return Math.sqrt(Math.pow(xb1 - x1, 2) + Math.pow(yb1 - y1, 2)) + Math.sqrt(Math.pow(xb2 - x2, 2) + Math.pow(yb2 - y2, 2)) + Math.sqrt(Math.pow(xb3 - x3, 2) + Math.pow(yb3 - y3, 2)) + Math.sqrt(Math.pow(xb4 - x4, 2) + Math.pow(yb4 - y4, 2));
-    }
-
-    function sortCurves(curvesA, curvesB) {
-
-        var arrList = permuteCurveNum(curvesA.length);
-
-        var list = [];
-        arrList.forEach(function (arr) {
-            var distance = 0;
-            var i = 0;
-            arr.forEach(function (index) {
-                distance += curveDistance(curvesA[index], curvesB[i++]);
-            });
-            list.push({ index: arr, distance: distance });
-        });
-
-        list.sort(function (a, b) {
-            return a.distance - b.distance;
-        });
-
-        var result = [];
-
-        list[0].index.forEach(function (index) {
-            result.push(curvesA[index]);
-        });
-
-        return result;
-    }
-
-    function sort(pathA, pathB) {
-
-        var arrList = permuteNum(pathA.length);
-
-        var list = [];
-        arrList.forEach(function (arr) {
-            var distance = 0;
-            arr.forEach(function (index) {
-                distance += boxDistance(shapeBox(pathA[index]), shapeBox(pathB[index]));
-            });
-            list.push({ index: arr, distance: distance });
-        });
-
-        list.sort(function (a, b) {
-            return a.distance - b.distance;
-        });
-
-        var result = [];
-
-        list[0].index.forEach(function (index) {
-            result.push(pathA[index]);
-        });
-
-        return result;
-    }
-
-    function permuteCurveNum(num) {
-        var arr = [];
-
-        for (var i = 0; i < num; i++) {
-            var indexArr = [];
-            for (var j = 0; j < num; j++) {
-                var index = j + i;
-                if (index > num - 1) index -= num;
-                indexArr[index] = j;
-            }
-
-            arr.push(indexArr);
-        }
-
+    return function (arr, i) {
+      if (Array.isArray(arr)) {
         return arr;
+      } else if (Symbol.iterator in Object(arr)) {
+        return sliceIterator(arr, i);
+      } else {
+        throw new TypeError('Invalid attempt to destructure non-iterable instance');
+      }
+    };
+  }();
+
+  // https://github.com/colinmeinke/svg-arc-to-cubic-bezier
+
+  var TAU = Math.PI * 2;
+
+  var mapToEllipse = function mapToEllipse(_ref, rx, ry, cosphi, sinphi, centerx, centery) {
+    var x = _ref.x,
+        y = _ref.y;
+
+    x *= rx;
+    y *= ry;
+
+    var xp = cosphi * x - sinphi * y;
+    var yp = sinphi * x + cosphi * y;
+
+    return {
+      x: xp + centerx,
+      y: yp + centery
+    };
+  };
+
+  var approxUnitArc = function approxUnitArc(ang1, ang2) {
+    var a = 4 / 3 * Math.tan(ang2 / 4);
+
+    var x1 = Math.cos(ang1);
+    var y1 = Math.sin(ang1);
+    var x2 = Math.cos(ang1 + ang2);
+    var y2 = Math.sin(ang1 + ang2);
+
+    return [{
+      x: x1 - y1 * a,
+      y: y1 + x1 * a
+    }, {
+      x: x2 + y2 * a,
+      y: y2 - x2 * a
+    }, {
+      x: x2,
+      y: y2
+    }];
+  };
+
+  var vectorAngle = function vectorAngle(ux, uy, vx, vy) {
+    var sign = ux * vy - uy * vx < 0 ? -1 : 1;
+    var umag = Math.sqrt(ux * ux + uy * uy);
+    var vmag = Math.sqrt(ux * ux + uy * uy);
+    var dot = ux * vx + uy * vy;
+
+    var div = dot / (umag * vmag);
+
+    if (div > 1) {
+      div = 1;
     }
 
-    function permuteNum(num) {
-        var arr = [];
-        for (var i = 0; i < num; i++) {
-            arr.push(i);
-        }
-
-        return permute(arr);
+    if (div < -1) {
+      div = -1;
     }
 
-    function permute(input) {
-        var permArr = [],
-            usedChars = [];
-        function main(input) {
-            var i, ch;
-            for (i = 0; i < input.length; i++) {
-                ch = input.splice(i, 1)[0];
-                usedChars.push(ch);
-                if (input.length == 0) {
-                    permArr.push(usedChars.slice());
-                }
-                main(input);
-                input.splice(i, 0, ch);
-                usedChars.pop();
-            }
-            return permArr;
-        }
-        return main(input);
+    return sign * Math.acos(div);
+  };
+
+  var getArcCenter = function getArcCenter(px, py, cx, cy, rx, ry, largeArcFlag, sweepFlag, sinphi, cosphi, pxp, pyp) {
+    var rxsq = Math.pow(rx, 2);
+    var rysq = Math.pow(ry, 2);
+    var pxpsq = Math.pow(pxp, 2);
+    var pypsq = Math.pow(pyp, 2);
+
+    var radicant = rxsq * rysq - rxsq * pypsq - rysq * pxpsq;
+
+    if (radicant < 0) {
+      radicant = 0;
     }
 
-    var pasition = {};
-    pasition.parser = parse;
+    radicant /= rxsq * pypsq + rysq * pxpsq;
+    radicant = Math.sqrt(radicant) * (largeArcFlag === sweepFlag ? -1 : 1);
 
-    pasition.lerpCurve = function (pathA, pathB, t) {
+    var centerxp = radicant * rx / ry * pyp;
+    var centeryp = radicant * -ry / rx * pxp;
 
-        return pasition.lerpPoints(pathA[0], pathA[1], pathB[0], pathB[1], t).concat(pasition.lerpPoints(pathA[2], pathA[3], pathB[2], pathB[3], t)).concat(pasition.lerpPoints(pathA[4], pathA[5], pathB[4], pathB[5], t)).concat(pasition.lerpPoints(pathA[6], pathA[7], pathB[6], pathB[7], t));
-    };
+    var centerx = cosphi * centerxp - sinphi * centeryp + (px + cx) / 2;
+    var centery = sinphi * centerxp + cosphi * centeryp + (py + cy) / 2;
 
-    pasition.lerpPoints = function (x1, y1, x2, y2, t) {
-        return [x1 + (x2 - x1) * t, y1 + (y2 - y1) * t];
-    };
+    var vx1 = (pxp - centerxp) / rx;
+    var vy1 = (pyp - centeryp) / ry;
+    var vx2 = (-pxp - centerxp) / rx;
+    var vy2 = (-pyp - centeryp) / ry;
 
-    pasition.q2b = function (x1, y1, x2, y2, x3, y3) {
-        return [x1, y1, (x1 + 2 * x2) / 3, (y1 + 2 * y2) / 3, (x3 + 2 * x2) / 3, (y3 + 2 * y2) / 3, x3, y3];
-    };
+    var ang1 = vectorAngle(1, 0, vx1, vy1);
+    var ang2 = vectorAngle(vx1, vy1, vx2, vy2);
 
-    pasition.path2shapes = function (path) {
-        //https://developer.mozilla.org/zh-CN/docs/Web/SVG/Tutorial/Paths
-        //M = moveto
-        //L = lineto
-        //H = horizontal lineto
-        //V = vertical lineto
-        //C = curveto
-        //S = smooth curveto
-        //Q = quadratic Belzier curve
-        //T = smooth quadratic Belzier curveto
-        //A = elliptical Arc
-        //Z = closepath
-        //以上所有命令均允许小写字母。大写表示绝对定位，小写表示相对定位(从上一个点开始)。
-        var cmds = pasition.parser(path),
-            preX = 0,
-            preY = 0,
-            j = 0,
-            len = cmds.length,
-            shapes = [],
-            current = null,
-            closeX = void 0,
-            closeY = void 0,
-            preCX = void 0,
-            preCY = void 0,
-            sLen = void 0,
-            curves = void 0,
-            lastCurve = void 0;
-
-        for (; j < len; j++) {
-            var item = cmds[j];
-            var action = item[0];
-            var preItem = cmds[j - 1];
-
-            switch (action) {
-                case 'm':
-                    sLen = shapes.length;
-                    shapes[sLen] = [];
-                    current = shapes[sLen];
-                    preX = preX + item[1];
-                    preY = preY + item[2];
-                    break;
-                case 'M':
-
-                    sLen = shapes.length;
-                    shapes[sLen] = [];
-                    current = shapes[sLen];
-                    preX = item[1];
-                    preY = item[2];
-                    break;
-
-                case 'l':
-                    current.push([preX, preY, preX, preY, preX, preY, preX + item[1], preY + item[2]]);
-                    preX += item[1];
-                    preY += item[2];
-                    break;
-
-                case 'L':
-
-                    current.push([preX, preY, item[1], item[2], item[1], item[2], item[1], item[2]]);
-                    preX = item[1];
-                    preY = item[2];
-
-                    break;
-
-                case 'h':
-
-                    current.push([preX, preY, preX, preY, preX, preY, preX + item[1], preY]);
-                    preX += item[1];
-                    break;
-
-                case 'H':
-                    current.push([preX, preY, item[1], preY, item[1], preY, item[1], preY]);
-                    preX = item[1];
-                    break;
-
-                case 'v':
-                    current.push([preX, preY, preX, preY, preX, preY, preX, preY + item[1]]);
-                    preY += item[1];
-                    break;
-
-                case 'V':
-                    current.push([preX, preY, preX, item[1], preX, item[1], preX, item[1]]);
-                    preY = item[1];
-                    break;
-
-                case 'C':
-
-                    current.push([preX, preY, item[1], item[2], item[3], item[4], item[5], item[6]]);
-                    preX = item[5];
-                    preY = item[6];
-                    break;
-                case 'S':
-                    if (preItem[0] === 'C' || preItem[0] === 'c') {
-                        current.push([preX, preY, preX + preItem[5] - preItem[3], preY + preItem[6] - preItem[4], item[1], item[2], item[3], item[4]]);
-                    } else if (preItem[0] === 'S' || preItem[0] === 's') {
-                        current.push([preX, preY, preX + preItem[3] - preItem[1], preY + preItem[4] - preItem[2], item[1], item[2], item[3], item[4]]);
-                    }
-                    preX = item[3];
-                    preY = item[4];
-                    break;
-
-                case 'c':
-                    current.push([preX, preY, preX + item[1], preY + item[2], preX + item[3], preY + item[4], preX + item[5], preY + item[6]]);
-                    preX = preX + item[5];
-                    preY = preY + item[6];
-                    break;
-                case 's':
-                    if (preItem[0] === 'C' || preItem[0] === 'c') {
-
-                        current.push([preX, preY, preX + preItem[5] - preItem[3], preY + preItem[6] - preItem[4], preX + item[1], preY + item[2], preX + item[3], preY + item[4]]);
-                    } else if (preItem[0] === 'S' || preItem[0] === 's') {
-                        current.push([preX, preY, preX + preItem[3] - preItem[1], preY + preItem[4] - preItem[2], preX + item[1], preY + item[2], preX + item[3], preY + item[4]]);
-                    }
-
-                    preX = preX + item[3];
-                    preY = preY + item[4];
-
-                    break;
-                case 'a':
-                    curves = arcToBezier({
-                        rx: item[1],
-                        ry: item[2],
-                        px: preX,
-                        py: preY,
-                        xAxisRotation: item[3],
-                        largeArcFlag: item[4],
-                        sweepFlag: item[5],
-                        cx: preX + item[6],
-                        cy: preX + item[7]
-                    });
-                    lastCurve = curves[curves.length - 1];
-
-                    curves.forEach(function (curve, index) {
-                        if (index === 0) {
-                            current.push([preX, preY, curve.x1, curve.y1, curve.x2, curve.y2, curve.x, curve.y]);
-                        } else {
-                            current.push([curves[index - 1].x, curves[index - 1].y, curve.x1, curve.y1, curve.x2, curve.y2, curve.x, curve.y]);
-                        }
-                    });
-
-                    preX = lastCurve.x;
-                    preY = lastCurve.y;
-
-                    break;
-
-                case 'A':
-
-                    curves = arcToBezier({
-                        rx: item[1],
-                        ry: item[2],
-                        px: preX,
-                        py: preY,
-                        xAxisRotation: item[3],
-                        largeArcFlag: item[4],
-                        sweepFlag: item[5],
-                        cx: item[6],
-                        cy: item[7]
-                    });
-                    lastCurve = curves[curves.length - 1];
-
-                    curves.forEach(function (curve, index) {
-                        if (index === 0) {
-                            current.push([preX, preY, curve.x1, curve.y1, curve.x2, curve.y2, curve.x, curve.y]);
-                        } else {
-                            current.push([curves[index - 1].x, curves[index - 1].y, curve.x1, curve.y1, curve.x2, curve.y2, curve.x, curve.y]);
-                        }
-                    });
-
-                    preX = lastCurve.x;
-                    preY = lastCurve.y;
-
-                    break;
-                case 'Q':
-                    current.push(pasition.q2b(preX, preY, item[1], item[2], item[3], item[4]));
-                    preX = item[3];
-                    preY = item[4];
-
-                    break;
-                case 'q':
-                    current.push(pasition.q2b(preX, preY, preX + item[1], preY + item[2], item[3] + preX, item[4] + preY));
-                    preX += item[3];
-                    preY += item[4];
-                    break;
-
-                case 'T':
-
-                    if (preItem[0] === 'Q' || preItem[0] === 'q') {
-                        preCX = preX + preItem[3] - preItem[1];
-                        preCY = preY + preItem[4] - preItem[2];
-                        current.push(pasition.q2b(preX, preY, preCX, preCY, item[1], item[2]));
-                    } else if (preItem[0] === 'T' || preItem[0] === 't') {
-                        current.push(pasition.q2b(preX, preY, preX + preX - preCX, preY + preY - preCY, item[1], item[2]));
-                        preCX = preX + preX - preCX;
-                        preCY = preY + preY - preCY;
-                    }
-
-                    preX = item[1];
-                    preY = item[2];
-                    break;
-
-                case 't':
-                    if (preItem[0] === 'Q' || preItem[0] === 'q') {
-                        preCX = preX + preItem[3] - preItem[1];
-                        preCY = preY + preItem[4] - preItem[2];
-                        current.push(pasition.q2b(preX, preY, preCX, preCY, preX + item[1], preY + item[2]));
-                    } else if (preItem[0] === 'T' || preItem[0] === 't') {
-                        current.push(pasition.q2b(preX, preY, preX + preX - preCX, preY + preY - preCY, preX + item[1], preY + item[2]));
-                        preCX = preX + preX - preCX;
-                        preCY = preY + preY - preCY;
-                    }
-
-                    preX += item[1];
-                    preY += item[2];
-                    break;
-
-                case 'Z':
-                    closeX = current[0][0];
-                    closeY = current[0][1];
-                    current.push([preX, preY, closeX, closeY, closeX, closeY, closeX, closeY]);
-                    break;
-                case 'z':
-                    closeX = current[0][0];
-                    closeY = current[0][1];
-                    current.push([preX, preY, closeX, closeY, closeX, closeY, closeX, closeY]);
-                    break;
-            }
-        }
-
-        return shapes;
-    };
-
-    pasition._upCurves = function (curves, count) {
-        var i = 0,
-            index = 0,
-            len = curves.length;
-        for (; i < count; i++) {
-            curves.push(curves[index].slice(0));
-            index++;
-            if (index > len - 1) {
-                index -= len;
-            }
-        }
-    };
-
-    function split(x1, y1, x2, y2, x3, y3, x4, y4, t) {
-        return {
-            left: _split(x1, y1, x2, y2, x3, y3, x4, y4, t),
-            right: _split(x4, y4, x3, y3, x2, y2, x1, y1, 1 - t, true)
-        };
+    if (sweepFlag === 0 && ang2 > 0) {
+      ang2 -= TAU;
     }
 
-    function _split(x1, y1, x2, y2, x3, y3, x4, y4, t, reverse) {
-
-        var x12 = (x2 - x1) * t + x1;
-        var y12 = (y2 - y1) * t + y1;
-
-        var x23 = (x3 - x2) * t + x2;
-        var y23 = (y3 - y2) * t + y2;
-
-        var x34 = (x4 - x3) * t + x3;
-        var y34 = (y4 - y3) * t + y3;
-
-        var x123 = (x23 - x12) * t + x12;
-        var y123 = (y23 - y12) * t + y12;
-
-        var x234 = (x34 - x23) * t + x23;
-        var y234 = (y34 - y23) * t + y23;
-
-        var x1234 = (x234 - x123) * t + x123;
-        var y1234 = (y234 - y123) * t + y123;
-
-        if (reverse) {
-            return [x1234, y1234, x123, y123, x12, y12, x1, y1];
-        }
-        return [x1, y1, x12, y12, x123, y123, x1234, y1234];
+    if (sweepFlag === 1 && ang2 < 0) {
+      ang2 += TAU;
     }
 
-    pasition._splitCurves = function (curves, count) {
-        var i = 0,
-            index = 0;
+    return [centerx, centery, ang1, ang2];
+  };
 
-        for (; i < count; i++) {
-            var curve = curves[index];
-            var cs = split(curve[0], curve[1], curve[2], curve[3], curve[4], curve[5], curve[6], curve[7], 0.5);
-            curves.splice(index, 1);
-            curves.splice(index, 0, cs.left, cs.right);
+  var arcToBezier = function arcToBezier(_ref2) {
+    var px = _ref2.px,
+        py = _ref2.py,
+        cx = _ref2.cx,
+        cy = _ref2.cy,
+        rx = _ref2.rx,
+        ry = _ref2.ry,
+        _ref2$xAxisRotation = _ref2.xAxisRotation,
+        xAxisRotation = _ref2$xAxisRotation === undefined ? 0 : _ref2$xAxisRotation,
+        _ref2$largeArcFlag = _ref2.largeArcFlag,
+        largeArcFlag = _ref2$largeArcFlag === undefined ? 0 : _ref2$largeArcFlag,
+        _ref2$sweepFlag = _ref2.sweepFlag,
+        sweepFlag = _ref2$sweepFlag === undefined ? 0 : _ref2$sweepFlag;
 
-            index += 2;
-            if (index >= curves.length - 1) {
-                index = 0;
+    var curves = [];
+
+    if (rx === 0 || ry === 0) {
+      return [];
+    }
+
+    var sinphi = Math.sin(xAxisRotation * TAU / 360);
+    var cosphi = Math.cos(xAxisRotation * TAU / 360);
+
+    var pxp = cosphi * (px - cx) / 2 + sinphi * (py - cy) / 2;
+    var pyp = -sinphi * (px - cx) / 2 + cosphi * (py - cy) / 2;
+
+    if (pxp === 0 && pyp === 0) {
+      return [];
+    }
+
+    rx = Math.abs(rx);
+    ry = Math.abs(ry);
+
+    var lambda = Math.pow(pxp, 2) / Math.pow(rx, 2) + Math.pow(pyp, 2) / Math.pow(ry, 2);
+
+    if (lambda > 1) {
+      rx *= Math.sqrt(lambda);
+      ry *= Math.sqrt(lambda);
+    }
+
+    var _getArcCenter = getArcCenter(px, py, cx, cy, rx, ry, largeArcFlag, sweepFlag, sinphi, cosphi, pxp, pyp),
+        _getArcCenter2 = slicedToArray(_getArcCenter, 4),
+        centerx = _getArcCenter2[0],
+        centery = _getArcCenter2[1],
+        ang1 = _getArcCenter2[2],
+        ang2 = _getArcCenter2[3];
+
+    var segments = Math.max(Math.ceil(Math.abs(ang2) / (TAU / 4)), 1);
+
+    ang2 /= segments;
+
+    for (var i = 0; i < segments; i++) {
+      curves.push(approxUnitArc(ang1, ang2));
+      ang1 += ang2;
+    }
+
+    return curves.map(function (curve) {
+      var _mapToEllipse = mapToEllipse(curve[0], rx, ry, cosphi, sinphi, centerx, centery),
+          x1 = _mapToEllipse.x,
+          y1 = _mapToEllipse.y;
+
+      var _mapToEllipse2 = mapToEllipse(curve[1], rx, ry, cosphi, sinphi, centerx, centery),
+          x2 = _mapToEllipse2.x,
+          y2 = _mapToEllipse2.y;
+
+      var _mapToEllipse3 = mapToEllipse(curve[2], rx, ry, cosphi, sinphi, centerx, centery),
+          x = _mapToEllipse3.x,
+          y = _mapToEllipse3.y;
+
+      return { x1: x1, y1: y1, x2: x2, y2: y2, x: x, y: y };
+    });
+  };
+
+  // https://github.com/jkroso/parse-svg-path/blob/master/index.js
+  /**
+   * expected argument lengths
+   * @type {Object}
+   */
+
+  var length = { a: 7, c: 6, h: 1, l: 2, m: 2, q: 4, s: 4, t: 2, v: 1, z: 0
+
+    /**
+       * segment pattern
+       * @type {RegExp}
+       */
+
+  };var segment = /([astvzqmhlc])([^astvzqmhlc]*)/ig;
+
+  /**
+   * parse an svg path data string. Generates an Array
+   * of commands where each command is an Array of the
+   * form `[command, arg1, arg2, ...]`
+   *
+   * @param {String} path
+   * @return {Array}
+   */
+
+  function parse(path) {
+    var data = [];
+    path.replace(segment, function (_, command, args) {
+      var type = command.toLowerCase();
+      args = parseValues(args);
+
+      // overloaded moveTo
+      if (type == 'm' && args.length > 2) {
+        data.push([command].concat(args.splice(0, 2)));
+        type = 'l';
+        command = command == 'm' ? 'l' : 'L';
+      }
+
+      while (true) {
+        if (args.length == length[type]) {
+          args.unshift(command);
+          return data.push(args);
+        }
+        if (args.length < length[type]) throw new Error('malformed path data');
+        data.push([command].concat(args.splice(0, length[type])));
+      }
+    });
+    return data;
+  }
+
+  var number = /-?[0-9]*\.?[0-9]+(?:e[-+]?\d+)?/ig;
+
+  function parseValues(args) {
+    var numbers = args.match(number);
+    return numbers ? numbers.map(Number) : [];
+  }
+
+  function shapeBox(shape) {
+    var minX = shape[0][0],
+        minY = shape[0][1],
+        maxX = minX,
+        maxY = minY;
+    shape.forEach(function (curve) {
+      var x1 = curve[0],
+          x2 = curve[2],
+          x3 = curve[4],
+          x4 = curve[6],
+          y1 = curve[1],
+          y2 = curve[3],
+          y3 = curve[5],
+          y4 = curve[7];
+
+      minX = Math.min(minX, x1, x2, x3, x4);
+      minY = Math.min(minY, y1, y2, y3, y4);
+      maxX = Math.max(maxX, x1, x2, x3, x4);
+      maxY = Math.max(maxY, y1, y2, y3, y4);
+    });
+
+    return [minX, minY, maxX, maxY];
+  }
+
+  function boxDistance(boxA, boxB) {
+    return Math.sqrt(Math.pow(boxA[0] - boxB[0], 2) + Math.pow(boxA[1] - boxB[1], 2)) + Math.sqrt(Math.pow(boxA[2] - boxB[2], 2) + Math.pow(boxA[3] - boxB[3], 2));
+  }
+
+  function curveDistance(curveA, curveB) {
+    var x1 = curveA[0],
+        x2 = curveA[2],
+        x3 = curveA[4],
+        x4 = curveA[6],
+        y1 = curveA[1],
+        y2 = curveA[3],
+        y3 = curveA[5],
+        y4 = curveA[7],
+        xb1 = curveB[0],
+        xb2 = curveB[2],
+        xb3 = curveB[4],
+        xb4 = curveB[6],
+        yb1 = curveB[1],
+        yb2 = curveB[3],
+        yb3 = curveB[5],
+        yb4 = curveB[7];
+
+    return Math.sqrt(Math.pow(xb1 - x1, 2) + Math.pow(yb1 - y1, 2)) + Math.sqrt(Math.pow(xb2 - x2, 2) + Math.pow(yb2 - y2, 2)) + Math.sqrt(Math.pow(xb3 - x3, 2) + Math.pow(yb3 - y3, 2)) + Math.sqrt(Math.pow(xb4 - x4, 2) + Math.pow(yb4 - y4, 2));
+  }
+
+  function sortCurves(curvesA, curvesB) {
+    var arrList = permuteCurveNum(curvesA.length);
+
+    var list = [];
+    arrList.forEach(function (arr) {
+      var distance = 0;
+      var i = 0;
+      arr.forEach(function (index) {
+        distance += curveDistance(curvesA[index], curvesB[i++]);
+      });
+      list.push({ index: arr, distance: distance });
+    });
+
+    list.sort(function (a, b) {
+      return a.distance - b.distance;
+    });
+
+    var result = [];
+
+    list[0].index.forEach(function (index) {
+      result.push(curvesA[index]);
+    });
+
+    return result;
+  }
+
+  function sort(pathA, pathB) {
+    var arrList = permuteNum(pathA.length);
+
+    var list = [];
+    arrList.forEach(function (arr) {
+      var distance = 0;
+      arr.forEach(function (index) {
+        distance += boxDistance(shapeBox(pathA[index]), shapeBox(pathB[index]));
+      });
+      list.push({ index: arr, distance: distance });
+    });
+
+    list.sort(function (a, b) {
+      return a.distance - b.distance;
+    });
+
+    var result = [];
+
+    list[0].index.forEach(function (index) {
+      result.push(pathA[index]);
+    });
+
+    return result;
+  }
+
+  function permuteCurveNum(num) {
+    var arr = [];
+
+    for (var i = 0; i < num; i++) {
+      var indexArr = [];
+      for (var j = 0; j < num; j++) {
+        var index = j + i;
+        if (index > num - 1) index -= num;
+        indexArr[index] = j;
+      }
+
+      arr.push(indexArr);
+    }
+
+    return arr;
+  }
+
+  function permuteNum(num) {
+    var arr = [];
+    for (var i = 0; i < num; i++) {
+      arr.push(i);
+    }
+
+    return permute(arr);
+  }
+
+  function permute(input) {
+    var permArr = [],
+        usedChars = [];
+    function main(input) {
+      var i, ch;
+      for (i = 0; i < input.length; i++) {
+        ch = input.splice(i, 1)[0];
+        usedChars.push(ch);
+        if (input.length == 0) {
+          permArr.push(usedChars.slice());
+        }
+        main(input);
+        input.splice(i, 0, ch);
+        usedChars.pop();
+      }
+      return permArr;
+    }
+    return main(input);
+  }
+
+  var pasition = {};
+  pasition.parser = parse;
+
+  pasition.lerpCurve = function (pathA, pathB, t) {
+    return pasition.lerpPoints(pathA[0], pathA[1], pathB[0], pathB[1], t).concat(pasition.lerpPoints(pathA[2], pathA[3], pathB[2], pathB[3], t)).concat(pasition.lerpPoints(pathA[4], pathA[5], pathB[4], pathB[5], t)).concat(pasition.lerpPoints(pathA[6], pathA[7], pathB[6], pathB[7], t));
+  };
+
+  pasition.lerpPoints = function (x1, y1, x2, y2, t) {
+    return [x1 + (x2 - x1) * t, y1 + (y2 - y1) * t];
+  };
+
+  pasition.q2b = function (x1, y1, x2, y2, x3, y3) {
+    return [x1, y1, (x1 + 2 * x2) / 3, (y1 + 2 * y2) / 3, (x3 + 2 * x2) / 3, (y3 + 2 * y2) / 3, x3, y3];
+  };
+
+  pasition.path2shapes = function (path) {
+    // https://developer.mozilla.org/zh-CN/docs/Web/SVG/Tutorial/Paths
+    // M = moveto
+    // L = lineto
+    // H = horizontal lineto
+    // V = vertical lineto
+    // C = curveto
+    // S = smooth curveto
+    // Q = quadratic Belzier curve
+    // T = smooth quadratic Belzier curveto
+    // A = elliptical Arc
+    // Z = closepath
+    // 以上所有命令均允许小写字母。大写表示绝对定位，小写表示相对定位(从上一个点开始)。
+    var cmds = pasition.parser(path),
+        preX = 0,
+        preY = 0,
+        j = 0,
+        len = cmds.length,
+        shapes = [],
+        current = null,
+        closeX = void 0,
+        closeY = void 0,
+        preCX = void 0,
+        preCY = void 0,
+        sLen = void 0,
+        curves = void 0,
+        lastCurve = void 0;
+
+    for (; j < len; j++) {
+      var item = cmds[j];
+      var action = item[0];
+      var preItem = cmds[j - 1];
+
+      switch (action) {
+        case 'm':
+          sLen = shapes.length;
+          shapes[sLen] = [];
+          current = shapes[sLen];
+          preX = preX + item[1];
+          preY = preY + item[2];
+          break;
+        case 'M':
+
+          sLen = shapes.length;
+          shapes[sLen] = [];
+          current = shapes[sLen];
+          preX = item[1];
+          preY = item[2];
+          break;
+
+        case 'l':
+          current.push([preX, preY, preX, preY, preX, preY, preX + item[1], preY + item[2]]);
+          preX += item[1];
+          preY += item[2];
+          break;
+
+        case 'L':
+
+          current.push([preX, preY, item[1], item[2], item[1], item[2], item[1], item[2]]);
+          preX = item[1];
+          preY = item[2];
+
+          break;
+
+        case 'h':
+
+          current.push([preX, preY, preX, preY, preX, preY, preX + item[1], preY]);
+          preX += item[1];
+          break;
+
+        case 'H':
+          current.push([preX, preY, item[1], preY, item[1], preY, item[1], preY]);
+          preX = item[1];
+          break;
+
+        case 'v':
+          current.push([preX, preY, preX, preY, preX, preY, preX, preY + item[1]]);
+          preY += item[1];
+          break;
+
+        case 'V':
+          current.push([preX, preY, preX, item[1], preX, item[1], preX, item[1]]);
+          preY = item[1];
+          break;
+
+        case 'C':
+
+          current.push([preX, preY, item[1], item[2], item[3], item[4], item[5], item[6]]);
+          preX = item[5];
+          preY = item[6];
+          break;
+        case 'S':
+          if (preItem[0] === 'C' || preItem[0] === 'c') {
+            current.push([preX, preY, preX + preItem[5] - preItem[3], preY + preItem[6] - preItem[4], item[1], item[2], item[3], item[4]]);
+          } else if (preItem[0] === 'S' || preItem[0] === 's') {
+            current.push([preX, preY, preX + preItem[3] - preItem[1], preY + preItem[4] - preItem[2], item[1], item[2], item[3], item[4]]);
+          }
+          preX = item[3];
+          preY = item[4];
+          break;
+
+        case 'c':
+          current.push([preX, preY, preX + item[1], preY + item[2], preX + item[3], preY + item[4], preX + item[5], preY + item[6]]);
+          preX = preX + item[5];
+          preY = preY + item[6];
+          break;
+        case 's':
+          if (preItem[0] === 'C' || preItem[0] === 'c') {
+            current.push([preX, preY, preX + preItem[5] - preItem[3], preY + preItem[6] - preItem[4], preX + item[1], preY + item[2], preX + item[3], preY + item[4]]);
+          } else if (preItem[0] === 'S' || preItem[0] === 's') {
+            current.push([preX, preY, preX + preItem[3] - preItem[1], preY + preItem[4] - preItem[2], preX + item[1], preY + item[2], preX + item[3], preY + item[4]]);
+          }
+
+          preX = preX + item[3];
+          preY = preY + item[4];
+
+          break;
+        case 'a':
+          curves = arcToBezier({
+            rx: item[1],
+            ry: item[2],
+            px: preX,
+            py: preY,
+            xAxisRotation: item[3],
+            largeArcFlag: item[4],
+            sweepFlag: item[5],
+            cx: preX + item[6],
+            cy: preX + item[7]
+          });
+          lastCurve = curves[curves.length - 1];
+
+          curves.forEach(function (curve, index) {
+            if (index === 0) {
+              current.push([preX, preY, curve.x1, curve.y1, curve.x2, curve.y2, curve.x, curve.y]);
+            } else {
+              current.push([curves[index - 1].x, curves[index - 1].y, curve.x1, curve.y1, curve.x2, curve.y2, curve.x, curve.y]);
             }
-        }
-    };
+          });
 
-    pasition._upShapes = function (shapes, count) {
-        var _loop = function _loop(i) {
-            var shape = shapes[shapes.length - 1];
-            var newShape = [];
+          preX = lastCurve.x;
+          preY = lastCurve.y;
 
-            shape.forEach(function (curve) {
-                newShape.push(curve.slice(0));
-            });
-            shapes.push(newShape);
-        };
+          break;
 
-        for (var i = 0; i < count; i++) {
-            _loop(i);
-        }
-    };
+        case 'A':
 
-    pasition._subShapes = function (shapes, count) {
-        var _loop2 = function _loop2(i) {
-            var shape = shapes[shapes.length - 1];
-            var newShape = [];
-            var x = shape[0][0],
-                y = shape[0][1];
-            shape.forEach(function () {
-                newShape.push([x, y, x, y, x, y, x, y]);
-            });
+          curves = arcToBezier({
+            rx: item[1],
+            ry: item[2],
+            px: preX,
+            py: preY,
+            xAxisRotation: item[3],
+            largeArcFlag: item[4],
+            sweepFlag: item[5],
+            cx: item[6],
+            cy: item[7]
+          });
+          lastCurve = curves[curves.length - 1];
 
-            shapes.push(newShape);
-        };
-
-        for (var i = 0; i < count; i++) {
-            _loop2(i);
-        }
-    };
-
-    pasition.lerp = function (pathA, pathB, t) {
-        return pasition._lerp(pasition.path2shapes(pathA), pasition.path2shapes(pathB), t);
-    };
-
-    pasition.MIM_CURVES_COUNT = 100;
-
-    pasition._preprocessing = function (pathA, pathB) {
-
-        var lenA = pathA.length,
-            lenB = pathB.length,
-            clonePathA = JSON.parse(JSON.stringify(pathA)),
-            clonePathB = JSON.parse(JSON.stringify(pathB));
-
-        if (lenA > lenB) {
-            pasition._subShapes(clonePathB, lenA - lenB);
-        } else if (lenA < lenB) {
-            pasition._upShapes(clonePathA, lenB - lenA);
-        }
-
-        clonePathA = sort(clonePathA, clonePathB);
-
-        clonePathA.forEach(function (curves, index) {
-
-            var lenA = curves.length,
-                lenB = clonePathB[index].length;
-
-            if (lenA > lenB) {
-                if (lenA < pasition.MIM_CURVES_COUNT) {
-                    pasition._splitCurves(curves, pasition.MIM_CURVES_COUNT - lenA);
-                    pasition._splitCurves(clonePathB[index], pasition.MIM_CURVES_COUNT - lenB);
-                } else {
-                    pasition._splitCurves(clonePathB[index], lenA - lenB);
-                }
-            } else if (lenA < lenB) {
-                if (lenB < pasition.MIM_CURVES_COUNT) {
-                    pasition._splitCurves(curves, pasition.MIM_CURVES_COUNT - lenA);
-                    pasition._splitCurves(clonePathB[index], pasition.MIM_CURVES_COUNT - lenB);
-                } else {
-                    pasition._splitCurves(curves, lenB - lenA);
-                }
+          curves.forEach(function (curve, index) {
+            if (index === 0) {
+              current.push([preX, preY, curve.x1, curve.y1, curve.x2, curve.y2, curve.x, curve.y]);
+            } else {
+              current.push([curves[index - 1].x, curves[index - 1].y, curve.x1, curve.y1, curve.x2, curve.y2, curve.x, curve.y]);
             }
-        });
+          });
 
-        clonePathA.forEach(function (curves, index) {
-            clonePathA[index] = sortCurves(curves, clonePathB[index]);
-        });
+          preX = lastCurve.x;
+          preY = lastCurve.y;
 
-        return [clonePathA, clonePathB];
+          break;
+        case 'Q':
+          current.push(pasition.q2b(preX, preY, item[1], item[2], item[3], item[4]));
+          preX = item[3];
+          preY = item[4];
+
+          break;
+        case 'q':
+          current.push(pasition.q2b(preX, preY, preX + item[1], preY + item[2], item[3] + preX, item[4] + preY));
+          preX += item[3];
+          preY += item[4];
+          break;
+
+        case 'T':
+
+          if (preItem[0] === 'Q' || preItem[0] === 'q') {
+            preCX = preX + preItem[3] - preItem[1];
+            preCY = preY + preItem[4] - preItem[2];
+            current.push(pasition.q2b(preX, preY, preCX, preCY, item[1], item[2]));
+          } else if (preItem[0] === 'T' || preItem[0] === 't') {
+            current.push(pasition.q2b(preX, preY, preX + preX - preCX, preY + preY - preCY, item[1], item[2]));
+            preCX = preX + preX - preCX;
+            preCY = preY + preY - preCY;
+          }
+
+          preX = item[1];
+          preY = item[2];
+          break;
+
+        case 't':
+          if (preItem[0] === 'Q' || preItem[0] === 'q') {
+            preCX = preX + preItem[3] - preItem[1];
+            preCY = preY + preItem[4] - preItem[2];
+            current.push(pasition.q2b(preX, preY, preCX, preCY, preX + item[1], preY + item[2]));
+          } else if (preItem[0] === 'T' || preItem[0] === 't') {
+            current.push(pasition.q2b(preX, preY, preX + preX - preCX, preY + preY - preCY, preX + item[1], preY + item[2]));
+            preCX = preX + preX - preCX;
+            preCY = preY + preY - preCY;
+          }
+
+          preX += item[1];
+          preY += item[2];
+          break;
+
+        case 'Z':
+          closeX = current[0][0];
+          closeY = current[0][1];
+          current.push([preX, preY, closeX, closeY, closeX, closeY, closeX, closeY]);
+          break;
+        case 'z':
+          closeX = current[0][0];
+          closeY = current[0][1];
+          current.push([preX, preY, closeX, closeY, closeX, closeY, closeX, closeY]);
+          break;
+      }
+    }
+
+    return shapes;
+  };
+
+  pasition._upCurves = function (curves, count) {
+    var i = 0,
+        index = 0,
+        len = curves.length;
+    for (; i < count; i++) {
+      curves.push(curves[index].slice(0));
+      index++;
+      if (index > len - 1) {
+        index -= len;
+      }
+    }
+  };
+
+  function split(x1, y1, x2, y2, x3, y3, x4, y4, t) {
+    return {
+      left: _split(x1, y1, x2, y2, x3, y3, x4, y4, t),
+      right: _split(x4, y4, x3, y3, x2, y2, x1, y1, 1 - t, true)
+    };
+  }
+
+  function _split(x1, y1, x2, y2, x3, y3, x4, y4, t, reverse) {
+    var x12 = (x2 - x1) * t + x1;
+    var y12 = (y2 - y1) * t + y1;
+
+    var x23 = (x3 - x2) * t + x2;
+    var y23 = (y3 - y2) * t + y2;
+
+    var x34 = (x4 - x3) * t + x3;
+    var y34 = (y4 - y3) * t + y3;
+
+    var x123 = (x23 - x12) * t + x12;
+    var y123 = (y23 - y12) * t + y12;
+
+    var x234 = (x34 - x23) * t + x23;
+    var y234 = (y34 - y23) * t + y23;
+
+    var x1234 = (x234 - x123) * t + x123;
+    var y1234 = (y234 - y123) * t + y123;
+
+    if (reverse) {
+      return [x1234, y1234, x123, y123, x12, y12, x1, y1];
+    }
+    return [x1, y1, x12, y12, x123, y123, x1234, y1234];
+  }
+
+  pasition._splitCurves = function (curves, count) {
+    var i = 0,
+        index = 0;
+
+    for (; i < count; i++) {
+      var curve = curves[index];
+      var cs = split(curve[0], curve[1], curve[2], curve[3], curve[4], curve[5], curve[6], curve[7], 0.5);
+      curves.splice(index, 1);
+      curves.splice(index, 0, cs.left, cs.right);
+
+      index += 2;
+      if (index >= curves.length - 1) {
+        index = 0;
+      }
+    }
+  };
+
+  pasition._upShapes = function (shapes, count) {
+    var _loop = function _loop(i) {
+      var shape = shapes[shapes.length - 1];
+      var newShape = [];
+
+      shape.forEach(function (curve) {
+        newShape.push(curve.slice(0));
+      });
+      shapes.push(newShape);
     };
 
-    pasition._lerp = function (pathA, pathB, t) {
+    for (var i = 0; i < count; i++) {
+      _loop(i);
+    }
+  };
 
-        var shapes = [];
-        pathA.forEach(function (curves, index) {
-            var newCurves = [];
-            curves.forEach(function (curve, curveIndex) {
-                newCurves.push(pasition.lerpCurve(curve, pathB[index][curveIndex], t));
-            });
-            shapes.push(newCurves);
-        });
-        return shapes;
+  pasition._subShapes = function (shapes, count) {
+    var _loop2 = function _loop2(i) {
+      var shape = shapes[shapes.length - 1];
+      var newShape = [];
+      var x = shape[0][0],
+          y = shape[0][1];
+      shape.forEach(function () {
+        newShape.push([x, y, x, y, x, y, x, y]);
+      });
+
+      shapes.push(newShape);
     };
 
-    pasition.animate = function (option) {
-        var pathA = pasition.path2shapes(option.from);
-        var pathB = pasition.path2shapes(option.to);
-        var pathArr = pasition._preprocessing(pathA, pathB);
+    for (var i = 0; i < count; i++) {
+      _loop2(i);
+    }
+  };
 
-        var beginTime = new Date(),
-            end = option.end || function () {},
-            progress = option.progress || function () {},
-            begin = option.begin || function () {},
-            easing = option.easing || function (v) {
-            return v;
-        },
-            tickId = null,
-            outShape = null,
-            time = option.time;
+  pasition.lerp = function (pathA, pathB, t) {
+    return pasition._lerp(pasition.path2shapes(pathA), pasition.path2shapes(pathB), t);
+  };
 
-        begin(pathA);
+  pasition.MIM_CURVES_COUNT = 100;
 
-        var tick = function tick() {
-            var dt = new Date() - beginTime;
-            if (dt >= time) {
-                outShape = pathB;
-                progress(outShape, 1);
-                end(outShape);
-                cancelAnimationFrame(tickId);
-                return;
-            }
-            var percent = easing(dt / time);
-            outShape = pasition._lerp(pathArr[0], pathArr[1], percent);
-            progress(outShape, percent);
-            tickId = requestAnimationFrame(tick);
-        };
-        tick();
+  pasition._preprocessing = function (pathA, pathB) {
+    var lenA = pathA.length,
+        lenB = pathB.length,
+        clonePathA = JSON.parse(JSON.stringify(pathA)),
+        clonePathB = JSON.parse(JSON.stringify(pathB));
+
+    if (lenA > lenB) {
+      pasition._subShapes(clonePathB, lenA - lenB);
+    } else if (lenA < lenB) {
+      pasition._upShapes(clonePathA, lenB - lenA);
+    }
+
+    clonePathA = sort(clonePathA, clonePathB);
+
+    clonePathA.forEach(function (curves, index) {
+      var lenA = curves.length,
+          lenB = clonePathB[index].length;
+
+      if (lenA > lenB) {
+        if (lenA < pasition.MIM_CURVES_COUNT) {
+          pasition._splitCurves(curves, pasition.MIM_CURVES_COUNT - lenA);
+          pasition._splitCurves(clonePathB[index], pasition.MIM_CURVES_COUNT - lenB);
+        } else {
+          pasition._splitCurves(clonePathB[index], lenA - lenB);
+        }
+      } else if (lenA < lenB) {
+        if (lenB < pasition.MIM_CURVES_COUNT) {
+          pasition._splitCurves(curves, pasition.MIM_CURVES_COUNT - lenA);
+          pasition._splitCurves(clonePathB[index], pasition.MIM_CURVES_COUNT - lenB);
+        } else {
+          pasition._splitCurves(curves, lenB - lenA);
+        }
+      }
+    });
+
+    clonePathA.forEach(function (curves, index) {
+      clonePathA[index] = sortCurves(curves, clonePathB[index]);
+    });
+
+    return [clonePathA, clonePathB];
+  };
+
+  pasition._lerp = function (pathA, pathB, t) {
+    var shapes = [];
+    pathA.forEach(function (curves, index) {
+      var newCurves = [];
+      curves.forEach(function (curve, curveIndex) {
+        newCurves.push(pasition.lerpCurve(curve, pathB[index][curveIndex], t));
+      });
+      shapes.push(newCurves);
+    });
+    return shapes;
+  };
+
+  pasition.animate = function (option) {
+    var pathA = pasition.path2shapes(option.from);
+    var pathB = pasition.path2shapes(option.to);
+    var pathArr = pasition._preprocessing(pathA, pathB);
+
+    var beginTime = new Date(),
+        end = option.end || function () {},
+        progress = option.progress || function () {},
+        begin = option.begin || function () {},
+        easing = option.easing || function (v) {
+      return v;
+    },
+        tickId = null,
+        outShape = null,
+        time = option.time;
+
+    begin(pathA);
+
+    var tick = function tick() {
+      var dt = new Date() - beginTime;
+      if (dt >= time) {
+        outShape = pathB;
+        progress(outShape, 1);
+        end(outShape);
+        cancelAnimationFrame(tickId);
+        return;
+      }
+      var percent = easing(dt / time);
+      outShape = pasition._lerp(pathArr[0], pathArr[1], percent);
+      progress(outShape, percent);
+      tickId = requestAnimationFrame(tick);
     };
+    tick();
+  };
 
-    return pasition;
+  return pasition;
 });
 
 /***/ }),
@@ -7652,13 +7640,13 @@ function _possibleConstructorReturn(self, call) { if (!self) { throw new Referen
 
 function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
 
-var Player = function (_cax$Group) {
-  _inherits(Player, _cax$Group);
+var Pen = function (_cax$Group) {
+  _inherits(Pen, _cax$Group);
 
-  function Player(shape, once, callback) {
-    _classCallCheck(this, Player);
+  function Pen(shape, once, callback) {
+    _classCallCheck(this, Pen);
 
-    var _this = _possibleConstructorReturn(this, (Player.__proto__ || Object.getPrototypeOf(Player)).call(this));
+    var _this = _possibleConstructorReturn(this, (Pen.__proto__ || Object.getPrototypeOf(Pen)).call(this));
 
     _this.g = new _cax2.default.Graphics();
     _this.g.beginPath();
@@ -7683,7 +7671,7 @@ var Player = function (_cax$Group) {
     return _this;
   }
 
-  _createClass(Player, [{
+  _createClass(Pen, [{
     key: 'stop',
     value: function stop() {
       this.remove(this.g);
@@ -7725,7 +7713,6 @@ var Player = function (_cax$Group) {
 
       if (this.length > this.shape.pathLen) {
         if (this.once) {
-
           this.length = 0;
           this.isStop = true;
           this.drawPoints.length = 0;
@@ -7740,10 +7727,10 @@ var Player = function (_cax$Group) {
     }
   }]);
 
-  return Player;
+  return Pen;
 }(_cax2.default.Group);
 
-exports.default = Player;
+exports.default = Pen;
 
 /***/ })
 /******/ ]);

@@ -2,7 +2,7 @@ import cax from 'cax'
 import { getPoint, getPosition } from './bezier'
 
 class Player extends cax.Group {
-  constructor(shape, once, callback) {
+  constructor (shape, once, callback) {
     super()
     this.g = new cax.Graphics()
     this.g.beginPath()
@@ -26,22 +26,21 @@ class Player extends cax.Group {
     this.isStop = false
   }
 
-  stop(){
+  stop () {
     this.remove(this.g)
     this.isStop = true
   }
 
-  start(){
+  start () {
     this.isStop = false
     this.drawGraphics = new cax.Graphics()
     this.drawGraphics.beginPath()
     this.drawPoints = []
-   
+
     this.add(this.drawGraphics)
-   
   }
 
-  update() {
+  update () {
     if (this.isStop) {
       return
     }
@@ -61,10 +60,8 @@ class Player extends cax.Group {
       this.drawGraphics[index === 0 ? 'moveTo' : 'lineTo'](p.x, p.y)
     })
 
-
     if (this.length > this.shape.pathLen) {
       if (this.once) {
-     
         this.length = 0
         this.isStop = true
         this.drawPoints.length = 0
@@ -73,13 +70,10 @@ class Player extends cax.Group {
       } else {
         this.length -= this.shape.pathLen
       }
-
     }
 
     this.drawGraphics.stroke()
-
   }
 }
-
 
 export default Player

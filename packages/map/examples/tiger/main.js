@@ -29,13 +29,12 @@ if (window.innerWidth <= 500) {
   stage.scaleEventPoint(320 / 600, 320 / 600)
 }
 
-
-document.querySelector('#subScaleBtn').addEventListener('click',()=>{
+document.querySelector('#subScaleBtn').addEventListener('click', () => {
   tiger.scaleX -= 0.1
   tiger.scaleY -= 0.1
 })
 
-document.querySelector('#addScaleBtn').addEventListener('click',()=>{
+document.querySelector('#addScaleBtn').addEventListener('click', () => {
   tiger.scaleX += 0.1
   tiger.scaleY += 0.1
 })
