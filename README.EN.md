@@ -19,6 +19,7 @@ English | [简体中文](./README.md)
 |[Tiger](https://dntzhang.github.io/wechart/packages/map/examples/tiger/) | [Source](https://github.com/dntzhang/wechart/blob/master/packages/map/examples/tiger/main.js) |  |  Tutorial| 
 |[Path](https://dntzhang.github.io/wechart/packages/path/examples/map/) | [Source](https://github.com/dntzhang/wechart/blob/master/packages/path/examples/map/main.js) |  |  Tutorial| 
 |[Draw](https://dntzhang.github.io/wechart/packages/path/examples/simple/) | [Source](https://github.com/dntzhang/wechart/blob/master/packages/path/examples/simple/main.js) |  |  Tutorial| 
+|[Bar3d](https://dntzhang.github.io/wechart/packages/bar3d/examples/simple/) | [Source](https://github.com/dntzhang/wechart/blob/master/packages/bar3d/examples/simple/main.js) |  |  Tutorial| 
 
 # Who is using cax?
 
