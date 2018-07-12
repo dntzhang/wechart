@@ -10,7 +10,6 @@ English | [简体中文](./README.md)
 |:---:|:---:|:----:|:---:|
 |[Pie](https://dntzhang.github.io/wechart/packages/pie/examples/simple/) | [Source](https://github.com/dntzhang/wechart/blob/master/packages/pie/examples/simple/main.js) | [Pie Source](https://github.com/dntzhang/wechart/blob/master/packages/pie/src/index.js) | [Tutorial](https://github.com/dntzhang/wechart/blob/master/packages/pie/README.md)| 
 |[Axis](https://dntzhang.github.io/wechart/packages/axis/examples/simple/) | [Source](https://github.com/dntzhang/wechart/blob/master/packages/axis/examples/simple/main.js) | [Axis Source](https://github.com/dntzhang/wechart/blob/master/packages/axis/src/index.js) | Tutorial| 
-|[Axis3d](https://dntzhang.github.io/wechart/packages/axis3d/examples/simple/) | [Source](https://github.com/dntzhang/wechart/blob/master/packages/axis3d/examples/simple/main.js) | [Axis3d Source](https://github.com/dntzhang/wechart/blob/master/packages/axis3d/src/index.js) | Tutorial| 
 |[Bar](https://dntzhang.github.io/wechart/packages/bar/examples/simple/) | [Source](https://github.com/dntzhang/wechart/blob/master/packages/bar/examples/simple/main.js) | [Bar Source](https://github.com/dntzhang/wechart/blob/master/packages/bar/src/index.js) | Tutorial| 
 |[Cylinder](https://dntzhang.github.io/wechart/packages/cylinder/examples/simple/) | [Source](https://github.com/dntzhang/wechart/blob/master/packages/cylinder/examples/simple/main.js) | [Cylinder Source](https://github.com/dntzhang/wechart/blob/master/packages/cylinder/src/index.js) | Tutorial| 
 |[Line](https://dntzhang.github.io/wechart/packages/line/examples/simple/) | [Source](https://github.com/dntzhang/wechart/blob/master/packages/line/examples/simple/main.js) | [Line Source](https://github.com/dntzhang/wechart/blob/master/packages/line/src/index.js) | Tutorial| 
@@ -20,6 +19,8 @@ English | [简体中文](./README.md)
 |[Tiger](https://dntzhang.github.io/wechart/packages/map/examples/tiger/) | [Source](https://github.com/dntzhang/wechart/blob/master/packages/map/examples/tiger/main.js) |  |  Tutorial| 
 |[Path](https://dntzhang.github.io/wechart/packages/path/examples/map/) | [Source](https://github.com/dntzhang/wechart/blob/master/packages/path/examples/map/main.js) |  |  Tutorial| 
 |[Draw](https://dntzhang.github.io/wechart/packages/path/examples/simple/) | [Source](https://github.com/dntzhang/wechart/blob/master/packages/path/examples/simple/main.js) |  |  Tutorial| 
+|[Axis3d](https://dntzhang.github.io/wechart/packages/axis3d/examples/simple/) | [Source](https://github.com/dntzhang/wechart/blob/master/packages/axis3d/examples/simple/main.js) | [Axis3d Source](https://github.com/dntzhang/wechart/blob/master/packages/axis3d/src/index.js) | Tutorial| 
+|[Pyramid3d](https://dntzhang.github.io/wechart/packages/pyramid3d/examples/simple/) | [Source](https://github.com/dntzhang/wechart/blob/master/packages/pyramid3d/examples/simple/main.js) | [Pyramid3d Source](https://github.com/dntzhang/wechart/blob/master/packages/pyramid3d/src/index.js) | Tutorial| 
 |[Bar3d](https://dntzhang.github.io/wechart/packages/bar3d/examples/simple/) | [Source](https://github.com/dntzhang/wechart/blob/master/packages/bar3d/examples/simple/main.js) |  |  Tutorial| 
 
 # Who is using cax?
