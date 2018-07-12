@@ -80,13 +80,17 @@ var _font2 = _interopRequireDefault(_font);
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
-var camera, scene, renderer;
-var geometry, material, mesh;
+var camera = void 0,
+    scene = void 0,
+    renderer = void 0;
+var geometry = void 0,
+    material = void 0,
+    mesh = void 0;
 
 var targetRotationX = 0;
 var preX = 0;
 
-var group;
+var group = void 0;
 
 init();
 animate();
@@ -105,7 +109,7 @@ function init() {
   document.body.appendChild(renderer.domElement);
 
   var groundGeometry = new THREE.PlaneGeometry(50, 50, 5);
-  // var ground = new THREE.Mesh(groundGeometry, [
+  // const ground = new THREE.Mesh(groundGeometry, [
   //   new THREE.MeshBasicMaterial({ color: 'white', side: THREE.DoubleSide })
   // ])
 
@@ -121,35 +125,52 @@ function init() {
   group.rotation.y = -0.2 * Math.PI;
   var material = new THREE.LineBasicMaterial({ color: '#ccc' });
 
-  var geometry = new THREE.Geometry();
+  geometry = new THREE.Geometry();
   geometry.vertices.push(new THREE.Vector3(0, -25, 0));
   geometry.vertices.push(new THREE.Vector3(0, 25, 0));
-
+  var line = void 0;
   for (var i = 0; i <= 20; i++) {
     // 画横线
-    var line = new THREE.Line(geometry, material);
+    line = new THREE.Line(geometry, material);
     line.position.y = i * 2.5 - 25;
     line.rotation.z = 90 * Math.PI / 180; // 转90度
     //group.add(line)
 
     // 画竖线
-    var line = new THREE.Line(geometry, material);
+    line = new THREE.Line(geometry, material);
     line.position.x = i * 2.5 - 25;
 
     // group.add(line)
 
   }
 
-  var a = new _axis2.default(10, 10, 10, 2.5);
-  group.add(a.obj3d);
+  var axis = new _axis2.default(10, 10, 10, 2.5, {
+    x: {
+      from: 10,
+      gridValue: 3,
+      interval: 0
+    },
+    y: {
+      from: 0,
+      gridValue: 1,
+      interval: 1
+    },
+    z: {
+      from: 0,
+      gridValue: 1,
+      interval: 2
+    }
 
-  var geometry = new THREE.Geometry();
+  });
+  group.add(axis);
+
+  geometry = new THREE.Geometry();
   geometry.vertices.push(new THREE.Vector3(-25, -25, 0));
   geometry.vertices.push(new THREE.Vector3(-25, 25, 0));
 
   scene.add(group);
 
-  //var loader = new THREE.FontLoader();
+  //const loader = new THREE.FontLoader();
 
   // loader.load('font.json', function (font) {
 
@@ -234,94 +255,163 @@ function randomHexColor() {
 
 
 Object.defineProperty(exports, "__esModule", {
-    value: true
+        value: true
 });
-var Axis = function Axis(gridX, gridY, gridZ, gridSize) {
-    this.gridX = gridX;
-    this.gridY = gridY;
-    this.gridZ = gridZ;
-    this.gridSize = gridSize;
 
-    this.obj3d = new THREE.Group();
+var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
 
-    this.material = new THREE.LineBasicMaterial({ color: '#ccc' });
-    this.obj3d.position.x = gridX * gridSize / -2;
-    this.obj3d.position.z = gridZ * gridSize / -2;
+var _font = __webpack_require__(2);
 
-    this.addXY();
-    this.addXZ();
-    this.addYZ();
+var _font2 = _interopRequireDefault(_font);
 
-    //this.addXText()
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
-};
+function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
 
-Axis.prototype = {
-    addXY: function addXY() {
+function _possibleConstructorReturn(self, call) { if (!self) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return call && (typeof call === "object" || typeof call === "function") ? call : self; }
 
-        for (var i = 0; i < this.gridX + 1; i++) {
+function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
 
-            var geometry = new THREE.Geometry();
-            geometry.vertices.push(new THREE.Vector3(this.gridSize * i, 0, 0));
-            geometry.vertices.push(new THREE.Vector3(this.gridSize * i, this.gridSize * this.gridY, 0));
-            var line = new THREE.Line(geometry, this.material);
+var Axis = function (_THREE$Group) {
+        _inherits(Axis, _THREE$Group);
 
-            this.obj3d.add(line);
+        function Axis(gridX, gridY, gridZ, gridSize, option) {
+                _classCallCheck(this, Axis);
+
+                var _this = _possibleConstructorReturn(this, (Axis.__proto__ || Object.getPrototypeOf(Axis)).call(this));
+
+                _this.gridX = gridX;
+                _this.gridY = gridY;
+                _this.gridZ = gridZ;
+                _this.gridSize = gridSize;
+
+                _this.option = option;
+
+                _this.material = new THREE.LineBasicMaterial({ color: '#ccc' });
+                _this.position.x = gridX * gridSize / -2;
+                _this.position.z = gridZ * gridSize / -2;
+
+                _this.addXY();
+                _this.addXZ();
+                _this.addYZ();
+
+                _this.addTexts();
+
+                return _this;
         }
 
-        for (var j = 0; j < this.gridY + 1; j++) {
+        _createClass(Axis, [{
+                key: 'addText',
+                value: function addText(text, x, y, z) {
+                        var gem = new THREE.TextGeometry(text + '', {
+                                font: _font2.default, //字体，默认是'helvetiker'，需对应引用的字体文件
+                                size: 1, //字号大小，一般为大写字母的高度
+                                height: 0.1
+                        });
 
-            var geometry = new THREE.Geometry();
-            geometry.vertices.push(new THREE.Vector3(0, this.gridSize * j, 0));
-            geometry.vertices.push(new THREE.Vector3(this.gridSize * this.gridX, this.gridSize * j, 0));
-            var line = new THREE.Line(geometry, this.material);
+                        var mat = new THREE.MeshPhongMaterial({
+                                color: 0x000000
+                        });
 
-            this.obj3d.add(line);
-        }
-    },
-    addXZ: function addXZ() {
-        for (var i = 0; i < this.gridX + 1; i++) {
+                        gem.center();
+                        var textObj = new THREE.Mesh(gem, mat);
 
-            var geometry = new THREE.Geometry();
-            geometry.vertices.push(new THREE.Vector3(this.gridSize * i, 0, 0));
-            geometry.vertices.push(new THREE.Vector3(this.gridSize * i, 0, this.gridSize * this.gridZ));
-            var line = new THREE.Line(geometry, this.material);
+                        textObj.position.x = x;
+                        textObj.position.y = y;
+                        textObj.position.z = z;
 
-            this.obj3d.add(line);
-        }
+                        this.add(textObj);
+                }
+        }, {
+                key: 'addTexts',
+                value: function addTexts() {
+                        for (var i = 0; i < this.gridX; this.option.x.interval ? i += this.option.x.interval : i++) {
+                                this.addText(this.option.x.from + i * this.option.x.gridValue, this.gridSize * i + this.gridSize / 2, this.gridSize / -2, this.gridSize * this.gridZ);
+                        }
 
-        for (var j = 0; j < this.gridZ + 1; j++) {
+                        for (var _i = 0; _i < this.gridY + 1; this.option.y.interval ? _i += this.option.y.interval : _i++) {
+                                this.addText(this.option.y.from + _i * this.option.y.gridValue, this.gridSize / -2, this.gridSize * _i, this.gridSize * this.gridZ);
+                        }
 
-            var geometry = new THREE.Geometry();
-            geometry.vertices.push(new THREE.Vector3(0, 0, this.gridSize * j));
-            geometry.vertices.push(new THREE.Vector3(this.gridSize * this.gridX, 0, this.gridSize * j));
-            var line = new THREE.Line(geometry, this.material);
+                        for (var _i2 = this.gridZ - 1; _i2 > -1; this.option.z.interval ? _i2 -= this.option.z.interval : _i2--) {
 
-            this.obj3d.add(line);
-        }
-    },
-    addYZ: function addYZ() {
-        for (var i = 0; i < this.gridY + 1; i++) {
+                                this.addText(this.option.z.from + (this.gridZ - _i2 - 1) * this.option.z.gridValue, this.gridSize * this.gridX + this.gridSize / 2, 0, this.gridSize * _i2 + this.gridSize / 2);
+                        }
+                }
+        }, {
+                key: 'addXY',
+                value: function addXY() {
 
-            var geometry = new THREE.Geometry();
-            geometry.vertices.push(new THREE.Vector3(0, this.gridSize * i, 0));
-            geometry.vertices.push(new THREE.Vector3(0, this.gridSize * i, this.gridSize * this.gridZ));
-            var line = new THREE.Line(geometry, this.material);
+                        for (var i = 0; i < this.gridX + 1; i++) {
 
-            this.obj3d.add(line);
-        }
+                                var geometry = new THREE.Geometry();
+                                geometry.vertices.push(new THREE.Vector3(this.gridSize * i, 0, 0));
+                                geometry.vertices.push(new THREE.Vector3(this.gridSize * i, this.gridSize * this.gridY, 0));
+                                var line = new THREE.Line(geometry, this.material);
 
-        for (var j = 0; j < this.gridZ + 1; j++) {
+                                this.add(line);
+                        }
 
-            var geometry = new THREE.Geometry();
-            geometry.vertices.push(new THREE.Vector3(0, 0, this.gridSize * j));
-            geometry.vertices.push(new THREE.Vector3(0, this.gridSize * this.gridX, this.gridSize * j));
-            var line = new THREE.Line(geometry, this.material);
+                        for (var j = 0; j < this.gridY + 1; j++) {
 
-            this.obj3d.add(line);
-        }
-    }
-};
+                                var _geometry = new THREE.Geometry();
+                                _geometry.vertices.push(new THREE.Vector3(0, this.gridSize * j, 0));
+                                _geometry.vertices.push(new THREE.Vector3(this.gridSize * this.gridX, this.gridSize * j, 0));
+                                var _line = new THREE.Line(_geometry, this.material);
+
+                                this.add(_line);
+                        }
+                }
+        }, {
+                key: 'addXZ',
+                value: function addXZ() {
+                        for (var i = 0; i < this.gridX + 1; i++) {
+
+                                var geometry = new THREE.Geometry();
+                                geometry.vertices.push(new THREE.Vector3(this.gridSize * i, 0, 0));
+                                geometry.vertices.push(new THREE.Vector3(this.gridSize * i, 0, this.gridSize * this.gridZ));
+                                var line = new THREE.Line(geometry, this.material);
+
+                                this.add(line);
+                        }
+
+                        for (var j = 0; j < this.gridZ + 1; j++) {
+
+                                var _geometry2 = new THREE.Geometry();
+                                _geometry2.vertices.push(new THREE.Vector3(0, 0, this.gridSize * j));
+                                _geometry2.vertices.push(new THREE.Vector3(this.gridSize * this.gridX, 0, this.gridSize * j));
+                                var _line2 = new THREE.Line(_geometry2, this.material);
+
+                                this.add(_line2);
+                        }
+                }
+        }, {
+                key: 'addYZ',
+                value: function addYZ() {
+                        for (var i = 0; i < this.gridY + 1; i++) {
+
+                                var geometry = new THREE.Geometry();
+                                geometry.vertices.push(new THREE.Vector3(0, this.gridSize * i, 0));
+                                geometry.vertices.push(new THREE.Vector3(0, this.gridSize * i, this.gridSize * this.gridZ));
+                                var line = new THREE.Line(geometry, this.material);
+
+                                this.add(line);
+                        }
+
+                        for (var j = 0; j < this.gridZ + 1; j++) {
+
+                                var _geometry3 = new THREE.Geometry();
+                                _geometry3.vertices.push(new THREE.Vector3(0, 0, this.gridSize * j));
+                                _geometry3.vertices.push(new THREE.Vector3(0, this.gridSize * this.gridX, this.gridSize * j));
+                                var _line3 = new THREE.Line(_geometry3, this.material);
+
+                                this.add(_line3);
+                        }
+                }
+        }]);
+
+        return Axis;
+}(THREE.Group);
 
 exports.default = Axis;
 
