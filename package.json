@@ -18,6 +18,7 @@
     "path-simple": "webpack -w",
     "path-man": "webpack -w",
     "path-map": "webpack -w",
+    "pyramid3d-simple": "webpack -w",
     "axis3d-simple": "webpack -w",
     "map-tiger": "webpack -w",
     "cylinder-simple": "webpack -w",
