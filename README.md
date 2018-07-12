@@ -25,7 +25,7 @@
 
 ![Tencent Wechat](./asset/wx.png)  ![Tencent QQ](./asset/qq.png)
 
-## 微信交流群
+## 微信交流群2
 
 ![Tencent Wechat](./asset/g2.png) 
 
