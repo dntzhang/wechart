@@ -1,3 +1,6 @@
+import Axis from './axis'
+import font from './font'
+
 var camera, scene, renderer
 var geometry, material, mesh
 
@@ -56,29 +59,29 @@ function init() {
     var line = new THREE.Line(geometry, material)
     line.position.x = (i * 2.5) - 25
 
-   // group.add(line)
+    // group.add(line)
 
 
   }
 
 
-  var a = new Axis(10,10,10,2.5)
+  var a = new Axis(10, 10, 10, 2.5)
   group.add(a.obj3d)
 
   var geometry = new THREE.Geometry()
   geometry.vertices.push(new THREE.Vector3(-25, -25, 0))
   geometry.vertices.push(new THREE.Vector3(-25, 25, 0))
 
- 
+
 
 
   scene.add(group)
 
 
 
-  var loader = new THREE.FontLoader();
+  //var loader = new THREE.FontLoader();
 
-  loader.load('font.json', function (font) {
+ // loader.load('font.json', function (font) {
 
     var gem = new THREE.TextGeometry('Wechart', {
       font: font, //字体，默认是'helvetiker'，需对应引用的字体文件
@@ -98,12 +101,11 @@ function init() {
     });
     gem.center()
     var text = new THREE.Mesh(gem, mat);
-    text.position.y = 20
-    text.position.x = 14
-    // text.position.z = -40
+    text.position.y = 23
+    text.position.z = -12
     //text.scale.x = text.scale.y = 0.2
     group.add(text)
-  });
+  //});
 
 }
 
