@@ -1,6 +1,5 @@
 import font from './font'
 
-
 class Axis extends THREE.Group {
     constructor(gridX, gridY, gridZ, gridSize, option) {
 
@@ -12,9 +11,6 @@ class Axis extends THREE.Group {
 
         this.option = option
 
-
-
-
         this.material = new THREE.LineBasicMaterial({ color: '#ccc' })
         this.position.x = gridX * gridSize / -2
         this.position.z = gridZ * gridSize / -2
@@ -23,9 +19,7 @@ class Axis extends THREE.Group {
         this.addXZ()
         this.addYZ()
 
-
         this.addTexts()
-
     }
 
 
@@ -42,7 +36,6 @@ class Axis extends THREE.Group {
 
         gem.center()
         const textObj = new THREE.Mesh(gem, mat);
-
 
         textObj.position.x = x
         textObj.position.y = y
@@ -61,7 +54,6 @@ class Axis extends THREE.Group {
         }
 
         for (let i = this.gridZ - 1; i > -1; (this.option.z.interval ? i -= this.option.z.interval : i--)) {
-
             this.addText(this.option.z.from + (this.gridZ - i - 1) * this.option.z.gridValue, this.gridSize * this.gridX + this.gridSize / 2, 0, this.gridSize * i + this.gridSize / 2)
         }
     }
@@ -75,13 +67,10 @@ class Axis extends THREE.Group {
             geometry.vertices.push(new THREE.Vector3(this.gridSize * i, 0, 0))
             geometry.vertices.push(new THREE.Vector3(this.gridSize * i, this.gridSize * this.gridY, 0))
             let line = new THREE.Line(geometry, this.material)
-
             this.add(line)
-
         }
 
         for (let j = 0; j < this.gridY + 1; j++) {
-
             let geometry = new THREE.Geometry()
             geometry.vertices.push(new THREE.Vector3(0, this.gridSize * j, 0))
             geometry.vertices.push(new THREE.Vector3(this.gridSize * this.gridX, this.gridSize * j, 0))
@@ -93,25 +82,19 @@ class Axis extends THREE.Group {
 
     addXZ() {
         for (let i = 0; i < this.gridX + 1; i++) {
-
             let geometry = new THREE.Geometry()
             geometry.vertices.push(new THREE.Vector3(this.gridSize * i, 0, 0))
             geometry.vertices.push(new THREE.Vector3(this.gridSize * i, 0, this.gridSize * this.gridZ))
             let line = new THREE.Line(geometry, this.material)
-
             this.add(line)
         }
 
         for (let j = 0; j < this.gridZ + 1; j++) {
-
             let geometry = new THREE.Geometry()
             geometry.vertices.push(new THREE.Vector3(0, 0, this.gridSize * j))
             geometry.vertices.push(new THREE.Vector3(this.gridSize * this.gridX, 0, this.gridSize * j))
             let line = new THREE.Line(geometry, this.material)
-
             this.add(line)
-
-
         }
     }
 
@@ -119,24 +102,18 @@ class Axis extends THREE.Group {
 
     addYZ() {
         for (let i = 0; i < this.gridY + 1; i++) {
-
             let geometry = new THREE.Geometry()
             geometry.vertices.push(new THREE.Vector3(0, this.gridSize * i, 0))
             geometry.vertices.push(new THREE.Vector3(0, this.gridSize * i, this.gridSize * this.gridZ))
             let line = new THREE.Line(geometry, this.material)
-
             this.add(line)
-
-
         }
 
         for (let j = 0; j < this.gridZ + 1; j++) {
-
             let geometry = new THREE.Geometry()
             geometry.vertices.push(new THREE.Vector3(0, 0, this.gridSize * j))
             geometry.vertices.push(new THREE.Vector3(0, this.gridSize * this.gridX, this.gridSize * j))
             let line = new THREE.Line(geometry, this.material)
-
             this.add(line)
         }
     }
