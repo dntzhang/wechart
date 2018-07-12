@@ -27,7 +27,7 @@
 
 ## 微信交流群
 
-![Tencent Wechat](./asset/group.png) 
+![Tencent Wechat](./asset/g2.png) 
 
 ## License
 
