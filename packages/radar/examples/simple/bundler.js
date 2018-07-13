@@ -60,63 +60,11 @@
 /******/ 	__webpack_require__.p = "";
 /******/
 /******/ 	// Load entry module and return exports
-/******/ 	return __webpack_require__(__webpack_require__.s = 0);
+/******/ 	return __webpack_require__(__webpack_require__.s = 1);
 /******/ })
 /************************************************************************/
 /******/ ([
 /* 0 */
-/***/ (function(module, exports, __webpack_require__) {
-
-"use strict";
-
-
-var _cax = __webpack_require__(1);
-
-var _cax2 = _interopRequireDefault(_cax);
-
-var _src = __webpack_require__(3);
-
-var _src2 = _interopRequireDefault(_src);
-
-function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
-
-var stage = new _cax2.default.Stage(1080, 540, 'body');
-
-var bitmap = new _cax2.default.Bitmap('./bg.png');
-
-var radar = new _src2.default({
-    output: { value: _cax2.default.util.randomInt(30, 100), describe: '输出' },
-    live: { value: _cax2.default.util.randomInt(30, 100), describe: '生存' },
-    team: { value: _cax2.default.util.randomInt(30, 100), describe: '团战' },
-    growth: { value: _cax2.default.util.randomInt(30, 100), describe: '发育' },
-    kda: { value: _cax2.default.util.randomInt(30, 100), describe: 'KDA' }
-}, {
-    x: 820,
-    y: 280,
-    r: 60,
-    startR: 20,
-    count: 3,
-    netColor: '#1F3F57',
-    fillColor: '#78D5FD',
-    dotColor: '#78D5FD',
-    dotR: 3,
-    mouseover: function mouseover(evt, item, value, target) {},
-    mouseout: function mouseout() {},
-    show: {
-        duration: 2000, //动画的时间
-        easing: _cax2.default.easing.elasticOut, //缓动函数
-        delay: function delay(i) {
-            return i * 100;
-        } //每个柱子的动画依次开始
-    }
-});
-
-stage.add(bitmap, radar);
-
-_cax2.default.tick(stage.update.bind(stage));
-
-/***/ }),
-/* 1 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -125,7 +73,7 @@ _cax2.default.tick(stage.update.bind(stage));
 var _typeof2 = typeof Symbol === "function" && typeof Symbol.iterator === "symbol" ? function (obj) { return typeof obj; } : function (obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj; };
 
 /*!
- *  cax v1.1.3
+ *  cax v1.1.4
  *  By https://github.com/dntzhang 
  *  Github: https://github.com/dntzhang/cax
  *  MIT Licensed.
@@ -987,51 +935,91 @@ var _typeof2 = typeof Symbol === "function" && typeof Symbol.iterator === "symbo
         }subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } });if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass;
       }
 
-      var measureCtx = void 0;
+      var Bitmap = function (_DisplayObject) {
+        _inherits(Bitmap, _DisplayObject);
 
-      if (_util2.default.isWeapp) {
-        measureCtx = wx.createCanvasContext('measure0');
-      } else if (typeof document !== 'undefined') {
-        measureCtx = document.createElement('canvas').getContext('2d');
-      }
+        function Bitmap(img, onLoad) {
+          _classCallCheck(this, Bitmap);
 
-      var Text = function (_DisplayObject) {
-        _inherits(Text, _DisplayObject);
+          var _this = _possibleConstructorReturn(this, (Bitmap.__proto__ || Object.getPrototypeOf(Bitmap)).call(this));
 
-        function Text(text, option) {
-          _classCallCheck(this, Text);
-
-          var _this = _possibleConstructorReturn(this, (Text.__proto__ || Object.getPrototypeOf(Text)).call(this));
-
-          _this.text = text;
-          option = option || {};
-          _this.font = option.font || '10px sans-serif';
-          _this.color = option.color || 'black';
-
-          _this.baseline = option.baseline || 'top';
+          if (typeof img === 'string') {
+            if (Bitmap.cache[img]) {
+              if (_util2.default.isWeapp) {
+                _this.img = Bitmap.cache[img].img;
+                _this.rect = [0, 0, Bitmap.cache[img].width, Bitmap.cache[img].height];
+                _this.width = _this.rect[2];
+                _this.height = _this.rect[3];
+              } else {
+                _this.img = Bitmap.cache[img];
+                _this.rect = [0, 0, _this.img.width, _this.img.height];
+                _this.width = _this.img.width;
+                _this.height = _this.img.height;
+              }
+              onLoad && onLoad.call(_this);
+            } else if (_util2.default.isWeapp) {
+              _util2.default.getImageInWx(img, function (result) {
+                _this.img = result.img;
+                if (!_this.rect) {
+                  _this.rect = [0, 0, result.width, result.height];
+                }
+                _this.width = result.width;
+                _this.height = result.height;
+                onLoad && onLoad.call(_this);
+                Bitmap.cache[img] = result;
+              });
+            } else {
+              _this.img = _util2.default.isWegame ? wx.createImage() : new window.Image();
+              _this.visible = false;
+              _this.img.onload = function () {
+                _this.visible = true;
+                if (!_this.rect) {
+                  _this.rect = [0, 0, _this.img.width, _this.img.height];
+                }
+                _this.width = _this.img.width;
+                _this.height = _this.img.height;
+                onLoad && onLoad.call(_this);
+                Bitmap.cache[img] = _this.img;
+              };
+              _this.img.src = img;
+            }
+          } else {
+            _this.img = img;
+            _this.rect = [0, 0, img.width, img.height];
+            _this.width = img.width;
+            _this.height = img.height;
+            Bitmap.cache[img.src] = img;
+          }
           return _this;
         }
 
-        _createClass(Text, [{
-          key: 'getWidth',
-          value: function getWidth() {
-            if (!measureCtx) {
-              if (_util2.default.isWegame) {
-                measureCtx = wx.createCanvas().getContext('2d');
-              }
-            }
+        _createClass(Bitmap, [{
+          key: 'clone',
+          value: function clone() {
+            var bitmap = new Bitmap(this.img);
+            bitmap.x = this.x;
+            bitmap.y = this.y;
 
-            if (this.font) {
-              measureCtx.font = this.font;
-            }
-            return measureCtx.measureText(this.text).width;
+            bitmap.scaleX = this.scaleX;
+            bitmap.scaleY = this.scaleY;
+            bitmap.rotation = this.rotation;
+            bitmap.skewX = this.skewX;
+            bitmap.skewY = this.skewY;
+            bitmap.originX = this.originX;
+            bitmap.originY = this.originY;
+            bitmap.width = this.width;
+            bitmap.height = this.height;
+
+            return bitmap;
           }
         }]);
 
-        return Text;
+        return Bitmap;
       }(_displayObject2.default);
 
-      exports.default = Text;
+      Bitmap.cache = {};
+
+      exports.default = Bitmap;
 
       /***/
     },
@@ -1084,6 +1072,107 @@ var _typeof2 = typeof Symbol === "function" && typeof Symbol.iterator === "symbo
         }subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } });if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass;
       }
 
+      var measureCtx = void 0;
+
+      if (_util2.default.isWeapp) {
+        measureCtx = wx.createCanvasContext('measure0');
+      } else if (typeof document !== 'undefined') {
+        measureCtx = document.createElement('canvas').getContext('2d');
+      }
+
+      var Text = function (_DisplayObject) {
+        _inherits(Text, _DisplayObject);
+
+        function Text(text, option) {
+          _classCallCheck(this, Text);
+
+          var _this = _possibleConstructorReturn(this, (Text.__proto__ || Object.getPrototypeOf(Text)).call(this));
+
+          _this.text = text;
+          option = option || {};
+          _this.font = option.font || '10px sans-serif';
+          _this.color = option.color || 'black';
+
+          _this.baseline = option.baseline || 'top';
+          return _this;
+        }
+
+        _createClass(Text, [{
+          key: 'getWidth',
+          value: function getWidth() {
+            if (!measureCtx) {
+              if (_util2.default.isWegame) {
+                measureCtx = wx.createCanvas().getContext('2d');
+              }
+            }
+
+            if (this.font) {
+              measureCtx.font = this.font;
+            }
+            return measureCtx.measureText(this.text).width;
+          }
+        }]);
+
+        return Text;
+      }(_displayObject2.default);
+
+      exports.default = Text;
+
+      /***/
+    },
+    /* 6 */
+    /***/function (module, exports, __webpack_require__) {
+
+      "use strict";
+
+      Object.defineProperty(exports, "__esModule", {
+        value: true
+      });
+
+      var _createClass = function () {
+        function defineProperties(target, props) {
+          for (var i = 0; i < props.length; i++) {
+            var descriptor = props[i];descriptor.enumerable = descriptor.enumerable || false;descriptor.configurable = true;if ("value" in descriptor) descriptor.writable = true;Object.defineProperty(target, descriptor.key, descriptor);
+          }
+        }return function (Constructor, protoProps, staticProps) {
+          if (protoProps) defineProperties(Constructor.prototype, protoProps);if (staticProps) defineProperties(Constructor, staticProps);return Constructor;
+        };
+      }();
+
+      var _displayObject = __webpack_require__(2);
+
+      var _displayObject2 = _interopRequireDefault(_displayObject);
+
+      var _util = __webpack_require__(9);
+
+      var _util2 = _interopRequireDefault(_util);
+
+      var _bitmap = __webpack_require__(4);
+
+      var _bitmap2 = _interopRequireDefault(_bitmap);
+
+      function _interopRequireDefault(obj) {
+        return obj && obj.__esModule ? obj : { default: obj };
+      }
+
+      function _classCallCheck(instance, Constructor) {
+        if (!(instance instanceof Constructor)) {
+          throw new TypeError("Cannot call a class as a function");
+        }
+      }
+
+      function _possibleConstructorReturn(self, call) {
+        if (!self) {
+          throw new ReferenceError("this hasn't been initialised - super() hasn't been called");
+        }return call && ((typeof call === 'undefined' ? 'undefined' : _typeof2(call)) === "object" || typeof call === "function") ? call : self;
+      }
+
+      function _inherits(subClass, superClass) {
+        if (typeof superClass !== "function" && superClass !== null) {
+          throw new TypeError("Super expression must either be null or a function, not " + (typeof superClass === 'undefined' ? 'undefined' : _typeof2(superClass)));
+        }subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } });if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass;
+      }
+
       var Sprite = function (_DisplayObject) {
         _inherits(Sprite, _DisplayObject);
 
@@ -1095,7 +1184,7 @@ var _typeof2 = typeof Symbol === "function" && typeof Symbol.iterator === "symbo
           _this.option = option;
           var len = _this.option.imgs.length;
           var count = 0;
-
+          var firstImg = _this.option.imgs[0];
           _this.imgMap = {};
 
           if (_util2.default.isWeapp) {
@@ -1104,30 +1193,43 @@ var _typeof2 = typeof Symbol === "function" && typeof Symbol.iterator === "symbo
                 _this.imgMap[img] = result.img;
                 count++;
                 if (count === len) {
-                  _this.img = _this.imgMap[_this.option.imgs[0]];
+                  _this.img = _this.imgMap[firstImg];
                   _this.rect = [0, 0, 0, 0];
                 }
               });
             });
           } else {
-            if (typeof _this.option.imgs[0] === 'string') {
+            if (typeof firstImg === 'string') {
               var _len = _this.option.imgs.length;
               var loadedCount = 0;
               _this.option.imgs.forEach(function (src) {
-                var img = _util2.default.isWegame ? wx.createImage() : new window.Image();
-                img.onload = function () {
-                  _this.imgMap[src] = img;
+                if (_bitmap2.default.cache[src]) {
+                  _this.imgMap[src] = _bitmap2.default.cache[src];
                   loadedCount++;
                   if (loadedCount === _len) {
-                    _this.img = _this.imgMap[_this.option.imgs[0]];
+                    _this.img = _this.imgMap[firstImg];
                     _this.rect = [0, 0, 0, 0];
                   }
-                };
-                img.src = src;
+                } else {
+                  var img = _util2.default.isWegame ? wx.createImage() : new window.Image();
+                  img.onload = function () {
+                    _this.imgMap[src] = img;
+                    loadedCount++;
+                    if (loadedCount === _len) {
+                      _this.img = _this.imgMap[firstImg];
+                      _this.rect = [0, 0, 0, 0];
+                    }
+                    _bitmap2.default.cache[src] = img;
+                  };
+                  img.src = src;
+                }
               });
+            } else if (firstImg instanceof _bitmap2.default) {
+              _this.rect = [0, 0, 0, 0];
+              _this.img = firstImg.img;
             } else {
               _this.rect = [0, 0, 0, 0];
-              _this.img = _this.option.imgs[0];
+              _this.img = firstImg;
             }
           }
 
@@ -1229,143 +1331,6 @@ var _typeof2 = typeof Symbol === "function" && typeof Symbol.iterator === "symbo
       }(_displayObject2.default);
 
       exports.default = Sprite;
-
-      /***/
-    },
-    /* 6 */
-    /***/function (module, exports, __webpack_require__) {
-
-      "use strict";
-
-      Object.defineProperty(exports, "__esModule", {
-        value: true
-      });
-
-      var _createClass = function () {
-        function defineProperties(target, props) {
-          for (var i = 0; i < props.length; i++) {
-            var descriptor = props[i];descriptor.enumerable = descriptor.enumerable || false;descriptor.configurable = true;if ("value" in descriptor) descriptor.writable = true;Object.defineProperty(target, descriptor.key, descriptor);
-          }
-        }return function (Constructor, protoProps, staticProps) {
-          if (protoProps) defineProperties(Constructor.prototype, protoProps);if (staticProps) defineProperties(Constructor, staticProps);return Constructor;
-        };
-      }();
-
-      var _displayObject = __webpack_require__(2);
-
-      var _displayObject2 = _interopRequireDefault(_displayObject);
-
-      var _util = __webpack_require__(9);
-
-      var _util2 = _interopRequireDefault(_util);
-
-      function _interopRequireDefault(obj) {
-        return obj && obj.__esModule ? obj : { default: obj };
-      }
-
-      function _classCallCheck(instance, Constructor) {
-        if (!(instance instanceof Constructor)) {
-          throw new TypeError("Cannot call a class as a function");
-        }
-      }
-
-      function _possibleConstructorReturn(self, call) {
-        if (!self) {
-          throw new ReferenceError("this hasn't been initialised - super() hasn't been called");
-        }return call && ((typeof call === 'undefined' ? 'undefined' : _typeof2(call)) === "object" || typeof call === "function") ? call : self;
-      }
-
-      function _inherits(subClass, superClass) {
-        if (typeof superClass !== "function" && superClass !== null) {
-          throw new TypeError("Super expression must either be null or a function, not " + (typeof superClass === 'undefined' ? 'undefined' : _typeof2(superClass)));
-        }subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } });if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass;
-      }
-
-      var Bitmap = function (_DisplayObject) {
-        _inherits(Bitmap, _DisplayObject);
-
-        function Bitmap(img, onLoad) {
-          _classCallCheck(this, Bitmap);
-
-          var _this = _possibleConstructorReturn(this, (Bitmap.__proto__ || Object.getPrototypeOf(Bitmap)).call(this));
-
-          if (typeof img === 'string') {
-            if (Bitmap.cache[img]) {
-              if (_util2.default.isWeapp) {
-                _this.img = Bitmap.cache[img].img;
-                _this.rect = [0, 0, Bitmap.cache[img].width, Bitmap.cache[img].height];
-                _this.width = _this.rect[2];
-                _this.height = _this.rect[3];
-              } else {
-                _this.img = Bitmap.cache[img];
-                _this.rect = [0, 0, _this.img.width, _this.img.height];
-                _this.width = _this.img.width;
-                _this.height = _this.img.height;
-              }
-              onLoad && onLoad.call(_this);
-            } else if (_util2.default.isWeapp) {
-              _util2.default.getImageInWx(img, function (result) {
-                _this.img = result.img;
-                if (!_this.rect) {
-                  _this.rect = [0, 0, result.width, result.height];
-                }
-                _this.width = result.width;
-                _this.height = result.height;
-                onLoad && onLoad.call(_this);
-                Bitmap.cache[img] = result;
-              });
-            } else {
-              _this.img = _util2.default.isWegame ? wx.createImage() : new window.Image();
-              _this.visible = false;
-              _this.img.onload = function () {
-                _this.visible = true;
-                if (!_this.rect) {
-                  _this.rect = [0, 0, _this.img.width, _this.img.height];
-                }
-                _this.width = _this.img.width;
-                _this.height = _this.img.height;
-                onLoad && onLoad.call(_this);
-                Bitmap.cache[img] = _this.img;
-              };
-              _this.img.src = img;
-            }
-          } else {
-            _this.img = img;
-            _this.rect = [0, 0, img.width, img.height];
-            _this.width = img.width;
-            _this.height = img.height;
-            Bitmap.cache[img.src] = img;
-          }
-          return _this;
-        }
-
-        _createClass(Bitmap, [{
-          key: 'clone',
-          value: function clone() {
-            var bitmap = new Bitmap(this.img);
-            bitmap.x = this.x;
-            bitmap.y = this.y;
-
-            bitmap.scaleX = this.scaleX;
-            bitmap.scaleY = this.scaleY;
-            bitmap.rotation = this.rotation;
-            bitmap.skewX = this.skewX;
-            bitmap.skewY = this.skewY;
-            bitmap.originX = this.originX;
-            bitmap.originY = this.originY;
-            bitmap.width = this.width;
-            bitmap.height = this.height;
-
-            return bitmap;
-          }
-        }]);
-
-        return Bitmap;
-      }(_displayObject2.default);
-
-      Bitmap.cache = {};
-
-      exports.default = Bitmap;
 
       /***/
     },
@@ -3297,11 +3262,11 @@ var _typeof2 = typeof Symbol === "function" && typeof Symbol.iterator === "symbo
 
       var _graphics2 = _interopRequireDefault(_graphics);
 
-      var _bitmap = __webpack_require__(6);
+      var _bitmap = __webpack_require__(4);
 
       var _bitmap2 = _interopRequireDefault(_bitmap);
 
-      var _text = __webpack_require__(4);
+      var _text = __webpack_require__(5);
 
       var _text2 = _interopRequireDefault(_text);
 
@@ -3309,7 +3274,7 @@ var _typeof2 = typeof Symbol === "function" && typeof Symbol.iterator === "symbo
 
       var _group2 = _interopRequireDefault(_group);
 
-      var _sprite = __webpack_require__(5);
+      var _sprite = __webpack_require__(6);
 
       var _sprite2 = _interopRequireDefault(_sprite);
 
@@ -4449,15 +4414,15 @@ var _typeof2 = typeof Symbol === "function" && typeof Symbol.iterator === "symbo
 
       var _render3 = _interopRequireDefault(_render2);
 
-      var _sprite = __webpack_require__(5);
+      var _sprite = __webpack_require__(6);
 
       var _sprite2 = _interopRequireDefault(_sprite);
 
-      var _bitmap = __webpack_require__(6);
+      var _bitmap = __webpack_require__(4);
 
       var _bitmap2 = _interopRequireDefault(_bitmap);
 
-      var _text = __webpack_require__(4);
+      var _text = __webpack_require__(5);
 
       var _text2 = _interopRequireDefault(_text);
 
@@ -4886,15 +4851,15 @@ var _typeof2 = typeof Symbol === "function" && typeof Symbol.iterator === "symbo
 
       var _event2 = _interopRequireDefault(_event);
 
-      var _sprite = __webpack_require__(5);
+      var _sprite = __webpack_require__(6);
 
       var _sprite2 = _interopRequireDefault(_sprite);
 
-      var _bitmap = __webpack_require__(6);
+      var _bitmap = __webpack_require__(4);
 
       var _bitmap2 = _interopRequireDefault(_bitmap);
 
-      var _text = __webpack_require__(4);
+      var _text = __webpack_require__(5);
 
       var _text2 = _interopRequireDefault(_text);
 
@@ -5142,15 +5107,15 @@ var _typeof2 = typeof Symbol === "function" && typeof Symbol.iterator === "symbo
 
       var _event2 = _interopRequireDefault(_event);
 
-      var _sprite = __webpack_require__(5);
+      var _sprite = __webpack_require__(6);
 
       var _sprite2 = _interopRequireDefault(_sprite);
 
-      var _bitmap = __webpack_require__(6);
+      var _bitmap = __webpack_require__(4);
 
       var _bitmap2 = _interopRequireDefault(_bitmap);
 
-      var _text = __webpack_require__(4);
+      var _text = __webpack_require__(5);
 
       var _text2 = _interopRequireDefault(_text);
 
@@ -5574,15 +5539,14 @@ var _typeof2 = typeof Symbol === "function" && typeof Symbol.iterator === "symbo
 
           var _this = _possibleConstructorReturn(this, (Path.__proto__ || Object.getPrototypeOf(Path)).call(this));
 
-          _this.type = 'path';
           _this.d = d;
-          _this.fillColor = 'black';
-          _this.strokeColor = 'white';
-          _this.strokeWidth = 1;
 
-          option && Object.keys(option).forEach(function (key) {
-            _this[key] = option[key];
-          });
+          option = Object.assign({
+            fillStyle: 'black',
+            strokeStyle: 'black',
+            lineWidth: 1
+          }, option);
+          _this.option = option;
           return _this;
         }
 
@@ -5592,9 +5556,7 @@ var _typeof2 = typeof Symbol === "function" && typeof Symbol.iterator === "symbo
             var _this2 = this;
 
             var cmds = (0, _pathParser2.default)(this.d);
-            this.lineWidth(this.strokeWidth);
-            this.strokeStyle(this.strokeColor);
-            this.fillStyle(this.fillColor);
+
             this.beginPath();
             // https://developer.mozilla.org/zh-CN/docs/Web/SVG/Tutorial/Paths
             // M = moveto
@@ -5793,9 +5755,16 @@ var _typeof2 = typeof Symbol === "function" && typeof Symbol.iterator === "symbo
                   break;
               }
             }
+            if (this.option.fillStyle) {
+              this.fillStyle(this.option.fillStyle);
+              this.fill();
+            }
 
-            this.fill();
-            this.stroke();
+            if (this.option.strokeStyle) {
+              this.lineWidth(this.option.lineWidth);
+              this.strokeStyle(this.option.strokeStyle);
+              this.stroke();
+            }
           }
         }]);
 
@@ -6098,7 +6067,7 @@ var _typeof2 = typeof Symbol === "function" && typeof Symbol.iterator === "symbo
 
       var _group2 = _interopRequireDefault(_group);
 
-      var _text = __webpack_require__(4);
+      var _text = __webpack_require__(5);
 
       var _text2 = _interopRequireDefault(_text);
 
@@ -6560,6 +6529,58 @@ var _typeof2 = typeof Symbol === "function" && typeof Symbol.iterator === "symbo
 /* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(2)(module)))
 
 /***/ }),
+/* 1 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
+var _cax = __webpack_require__(0);
+
+var _cax2 = _interopRequireDefault(_cax);
+
+var _src = __webpack_require__(3);
+
+var _src2 = _interopRequireDefault(_src);
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+var stage = new _cax2.default.Stage(1080, 540, 'body');
+
+var bitmap = new _cax2.default.Bitmap('./bg.png');
+
+var radar = new _src2.default({
+  output: { value: _cax2.default.util.randomInt(30, 100), describe: '输出' },
+  live: { value: _cax2.default.util.randomInt(30, 100), describe: '生存' },
+  team: { value: _cax2.default.util.randomInt(30, 100), describe: '团战' },
+  growth: { value: _cax2.default.util.randomInt(30, 100), describe: '发育' },
+  kda: { value: _cax2.default.util.randomInt(30, 100), describe: 'KDA' }
+}, {
+  x: 820,
+  y: 280,
+  r: 60,
+  startR: 20,
+  count: 3,
+  netColor: '#1F3F57',
+  fillColor: '#78D5FD',
+  dotColor: '#78D5FD',
+  dotR: 3,
+  mouseover: function mouseover(evt, item, value, target) {},
+  mouseout: function mouseout() {},
+  show: {
+    duration: 2000, // 动画的时间
+    easing: _cax2.default.easing.elasticOut, // 缓动函数
+    delay: function delay(i) {
+      return i * 100;
+    } // 每个柱子的动画依次开始
+  }
+});
+
+stage.add(bitmap, radar);
+
+_cax2.default.tick(stage.update.bind(stage));
+
+/***/ }),
 /* 2 */
 /***/ (function(module, exports, __webpack_require__) {
 
@@ -6600,7 +6621,7 @@ Object.defineProperty(exports, "__esModule", {
   value: true
 });
 
-var _cax = __webpack_require__(1);
+var _cax = __webpack_require__(0);
 
 var _cax2 = _interopRequireDefault(_cax);
 
