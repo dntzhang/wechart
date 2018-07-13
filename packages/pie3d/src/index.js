@@ -5,8 +5,8 @@ class Pie extends THREE.Group {
     super()
 
     this.option = Object.assign({
-      intervalAngle: 0,
-      interval: 0.4,
+      intervalAngle: 3,
+      interval: 0,
       height: 3
     }, option)
 
