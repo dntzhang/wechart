@@ -13,6 +13,7 @@
     "bar-simple": "webpack -w",
     "line-simple": "webpack -w",
     "map-simple": "webpack -w",
+    "pie3d-simple": "webpack -w",
     "radar-simple": "webpack -w",
     "graph-simple": "webpack -w",
     "path-simple": "webpack -w",

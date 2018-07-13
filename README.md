@@ -2,7 +2,7 @@
 
 # Wechart by [Cax](https://github.com/dntzhang/cax)
 
-> Cax 渲染精巧图表
+> Cax 和 three.js 渲染精巧图表
 
 ![](./asset/wechart-idea.png)
 
@@ -22,6 +22,7 @@
 |[Axis3d](https://dntzhang.github.io/wechart/packages/axis3d/examples/simple/) | [Source](https://github.com/dntzhang/wechart/blob/master/packages/axis3d/examples/simple/main.js) | [Axis3d Source](https://github.com/dntzhang/wechart/blob/master/packages/axis3d/src/index.js) | Tutorial| 
 |[Pyramid3d](https://dntzhang.github.io/wechart/packages/pyramid3d/examples/simple/) | [Source](https://github.com/dntzhang/wechart/blob/master/packages/pyramid3d/examples/simple/main.js) | [Pyramid3d Source](https://github.com/dntzhang/wechart/blob/master/packages/pyramid3d/src/index.js) | Tutorial| 
 |[Bar3d](https://dntzhang.github.io/wechart/packages/bar3d/examples/simple/) | [Source](https://github.com/dntzhang/wechart/blob/master/packages/bar3d/examples/simple/main.js) |  |  Tutorial| 
+|[Pie3d](https://dntzhang.github.io/wechart/packages/pie3d/examples/simple/) | [Source](https://github.com/dntzhang/wechart/blob/master/packages/pie3d/examples/simple/main.js) | [Pie3d Source](https://github.com/dntzhang/wechart/blob/master/packages/pie3d/src/index.js) | Tutorial| 
 
 ## 谁在使用？
 
