@@ -1,8 +1,8 @@
 /*!
  *  AlloyLever v1.0.2 By dntzhang
  *  Github: https://github.com/AlloyTeam/AlloyLever
- *  MIT Licensed.
- */
+ *  MIT Licensed. 
+ */  
 ;(function (root, factory) {
     if(typeof exports === 'object' && typeof module === 'object')
         module.exports = factory()
