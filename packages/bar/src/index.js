@@ -1,15 +1,28 @@
 
 import cax from 'cax'
 
+import Axis from '../../axis/src'
+
 const { Rect, Group } = cax
 
 const defaultOption = {
   vertical: true
 }
 
+
+
 class Bar extends Group {
-  constructor (data, config) {
+  constructor(data, config, axisConfig) {
     super()
+
+
+    Object.keys(axisConfig).forEach(key => {
+      if (axisConfig[key]) {
+        const axis = new Axis(axisConfig[key], key)
+        this.add(axis)
+      }
+    })
+
 
     const tooltip = document.createElement('div')
     document.body.appendChild(tooltip)
@@ -33,11 +46,14 @@ class Bar extends Group {
         this.add(new OneBar(value, rect, index, tooltip, data))
       })
     })
+
+
+
   }
 }
 
 class OneBar extends Group {
-  constructor (value, option, index, tooltip, data) {
+  constructor(value, option, index, tooltip, data) {
     super()
     option = Object.assign({}, defaultOption, option)
     let rect
@@ -113,7 +129,7 @@ class OneBar extends Group {
   }
 }
 
-export function hideRects (group, options, callback) {
+export function hideRects(group, options, callback) {
   let cpt = false
 
   group.children.forEach((subGroup, index) => {
@@ -143,7 +159,7 @@ export function hideRects (group, options, callback) {
   })
 }
 
-export function getRectsInfo (value, option, index, stage) {
+export function getRectsInfo(value, option, index, stage) {
   // const option = options.rects
 
   const height = option.mapping[1] * value / option.mapping[0]
@@ -167,7 +183,7 @@ export function getRectsInfo (value, option, index, stage) {
 
 // color 待定
 // A-> B
-export function animateRect (rectA, rectB, transition) {
+export function animateRect(rectA, rectB, transition) {
   const to = {};
 
   ['left', 'top', 'width', 'height', 'alpha', 'scaleX', 'scaleY', 'x', 'y', 'rotation', 'skewX', 'skewY', 'originX', 'originY'].forEach(key => {

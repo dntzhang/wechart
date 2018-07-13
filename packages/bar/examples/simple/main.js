@@ -1,7 +1,7 @@
 import cax from 'cax'
 import Bar from '../../src/index'
 
-const stage = new cax.Stage(700, 420, 'body')
+const stage = new cax.Stage(800, 520, 'body')
 
 const data = [ // 数据
   { name: 'dntzhang', age: cax.util.randomInt(-20, 20), exp: cax.util.randomInt(500, 100) },
@@ -75,6 +75,53 @@ const config = [{// rects代表拆分多个rect，下面是相关的配置
   }
 }]
 
-stage.add(new Bar(data, config))
+const axisConfig = {
+  bottom: {
+    interval: 1,
+    from: 0,
+    mapping: [1, 100],
+    x: 30,
+    y: 450,
+    to: 7,
+    color: 'black',
+    text: {
+      color: '#444',
+      value: (index, data) => {
+        return 'index-' + index
+      },
+      x: 30,
+      y: 10,
+      font: '10px Verdana',
+      range: [0, 4],
+      rotation: 0
+    },
+    gird: {
+      color: '#ddd',
+
+      length: 400
+    }
+  },
+  left: {
+    color: 'black',
+    interval: 6,
+    mapping: [30, 200],
+    from: -30,
+    to: 30,
+    x: 30,
+    y: 450,
+    text: {
+      color: '#444',
+      x: -20,
+      y: 0
+    },
+    gird: {
+      color: '#ddd',
+
+      length: 700
+    }
+  }
+}
+
+stage.add(new Bar(data, config, axisConfig))
 
 cax.tick(stage.update.bind(stage))
