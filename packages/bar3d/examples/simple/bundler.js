@@ -454,6 +454,7 @@ function control(obj) {
 
     document.addEventListener('touchstart', onTouchStart, false);
     document.addEventListener('touchmove', onTouchMove, false);
+    document.addEventListener('touchend', onTouchEnd, false);
 
     function onTouchStart(event) {
         preX = event.touches[0].clientX;
@@ -465,7 +466,7 @@ function control(obj) {
             var dy = event.touches[0].pageY - event.touches[1].pageY;
             var distance = Math.sqrt(dx * dx + dy * dy);
             if (preDistance !== null) {
-                scale *= distance / preDistance;
+                scale += distance / preDistance - 1;
                 obj.scale.x = obj.scale.y = obj.scale.z = scale;
             } else {
                 preDistance = distance;
@@ -474,6 +475,10 @@ function control(obj) {
             obj.rotation.y += (event.touches[0].clientX - preX) * 0.01;
             preX = event.touches[0].clientX;
         }
+    }
+
+    function onTouchEnd() {
+        preDistance = null;
     }
 }
 
