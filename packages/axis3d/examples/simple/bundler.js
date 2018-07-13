@@ -306,7 +306,7 @@ var Axis = function (_THREE$Group) {
             for (var j = 0; j < this.gridZ + 1; j++) {
                 var _geometry3 = new THREE.Geometry();
                 _geometry3.vertices.push(new THREE.Vector3(0, 0, this.gridSize * j));
-                _geometry3.vertices.push(new THREE.Vector3(0, this.gridSize * this.gridX, this.gridSize * j));
+                _geometry3.vertices.push(new THREE.Vector3(0, this.gridSize * this.gridY, this.gridSize * j));
                 var _line3 = new THREE.Line(_geometry3, this.material);
                 this.add(_line3);
             }
@@ -332,7 +332,10 @@ exports.control = control;
 function control(obj) {
 
     var isMouseDown = false;
-    var preX = 0;
+    var preX = null;
+
+    var scale = 1;
+    var preDistance = null;
 
     document.addEventListener('mousedown', onDocumentMouseDown, false);
     document.addEventListener('mousemove', onDocumentMouseMove, false);
@@ -358,14 +361,32 @@ function control(obj) {
 
     document.addEventListener('touchstart', onTouchStart, false);
     document.addEventListener('touchmove', onTouchMove, false);
+    document.addEventListener('touchend', onTouchEnd, false);
 
     function onTouchStart(event) {
         preX = event.touches[0].clientX;
     }
 
     function onTouchMove(event) {
-        obj.rotation.y += (event.touches[0].clientX - preX) * 0.01;
-        preX = event.touches[0].clientX;
+        if (event.touches.length > 1) {
+            var dx = event.touches[0].pageX - event.touches[1].pageX;
+            var dy = event.touches[0].pageY - event.touches[1].pageY;
+            var distance = Math.sqrt(dx * dx + dy * dy);
+            if (preDistance !== null) {
+                scale += 0.1 * (distance / preDistance - 1);
+                if (scale < 0.2) scale = 0.2;
+                obj.scale.x = obj.scale.y = obj.scale.z = scale;
+            } else {
+                preDistance = distance;
+            }
+        } else {
+            obj.rotation.y += (event.touches[0].clientX - preX) * 0.01;
+            preX = event.touches[0].clientX;
+        }
+    }
+
+    function onTouchEnd() {
+        preDistance = null;
     }
 }
 
