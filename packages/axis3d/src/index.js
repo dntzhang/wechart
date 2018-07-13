@@ -112,7 +112,7 @@ class Axis extends THREE.Group {
         for (let j = 0; j < this.gridZ + 1; j++) {
             let geometry = new THREE.Geometry()
             geometry.vertices.push(new THREE.Vector3(0, 0, this.gridSize * j))
-            geometry.vertices.push(new THREE.Vector3(0, this.gridSize * this.gridX, this.gridSize * j))
+            geometry.vertices.push(new THREE.Vector3(0, this.gridSize * this.gridY, this.gridSize * j))
             let line = new THREE.Line(geometry, this.material)
             this.add(line)
         }

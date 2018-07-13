@@ -1,7 +1,10 @@
 export function control(obj) {
 
     let isMouseDown = false
-    let preX = 0
+    let preX = null
+
+    let scale = 1
+    let preDistance = null
 
     document.addEventListener('mousedown', onDocumentMouseDown, false)
     document.addEventListener('mousemove', onDocumentMouseMove, false)
@@ -33,7 +36,22 @@ export function control(obj) {
     }
 
     function onTouchMove(event) {
-        obj.rotation.y += (event.touches[0].clientX - preX) * 0.01
-        preX = event.touches[0].clientX
+        if (event.touches.length > 1) {
+            var dx = event.touches[0].pageX - event.touches[1].pageX;
+            var dy = event.touches[0].pageY - event.touches[1].pageY;
+            var distance = Math.sqrt(dx * dx + dy * dy);
+            if (preDistance !== null) {
+                scale *= distance / preDistance
+                obj.scale.x = obj.scale.y = obj.scale.z = scale
+            } else {
+                preDistance = distance
+            }
+
+
+        } else {
+            obj.rotation.y += (event.touches[0].clientX - preX) * 0.01
+            preX = event.touches[0].clientX
+        }
+
     }
 }

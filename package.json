@@ -11,6 +11,7 @@
     "pie-simple": "webpack -w",
     "axis-simple": "webpack -w",
     "bar-simple": "webpack -w",
+    "bar3d-simple": "webpack -w",
     "line-simple": "webpack -w",
     "map-simple": "webpack -w",
     "pie3d-simple": "webpack -w",
