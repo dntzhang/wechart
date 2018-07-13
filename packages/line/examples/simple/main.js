@@ -1,7 +1,7 @@
 import cax from 'cax'
 import Line from '../../src'
 
-const stage = new cax.Stage(800, 600, '#canvasCtn')
+const stage = new cax.Stage(800, 500, '#canvasCtn')
 
 const lines = [{
   // age 30 对应 200像素高
@@ -69,6 +69,53 @@ const lines = [{
 }
 ]
 
+const axisConfig = {
+  bottom: {
+    interval: 1,
+    from: 0,
+    mapping: [1, 100],
+    x: 30,
+    y: 450,
+    to: 7,
+    color: 'black',
+    text: {
+      color: '#444',
+      value: (index, data) => {
+        return 'index-' + index
+      },
+      x: 30,
+      y: 10,
+      font: '10px Verdana',
+      range: [0, 4],
+      rotation: 0
+    },
+    gird: {
+      color: '#ddd',
+
+      length: 400
+    }
+  },
+  left: {
+    color: 'black',
+    interval: 6,
+    mapping: [30, 200],
+    from: -30,
+    to: 30,
+    x: 30,
+    y: 450,
+    text: {
+      color: '#444',
+      x: -20,
+      y: 0
+    },
+    gird: {
+      color: '#ddd',
+
+      length: 700
+    }
+  }
+}
+
 function random () {
   stage.empty()
   const data = [ // 数据
@@ -82,7 +129,7 @@ function random () {
     { name: 'WebGL', age: cax.util.randomInt(-20, 20), exp: cax.util.randomInt(500, 100) }
   ]
 
-  stage.add(new Line(data, lines))
+  stage.add(new Line(data, lines, axisConfig))
 }
 
 random()
