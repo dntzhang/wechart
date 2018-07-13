@@ -28,7 +28,8 @@ const pyramid = new Pyramid({
     return 'value-'+item.value
   },
   height: 20,
-  interval: 2
+  interval: 2,
+  gradient: 0.7
 })
 group.add(pyramid)
 scene.add(group)

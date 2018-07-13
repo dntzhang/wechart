@@ -105,7 +105,8 @@ var pyramid = new _index2.default({
     return 'value-' + item.value;
   },
   height: 20,
-  interval: 2
+  interval: 2,
+  gradient: 0.7
 });
 group.add(pyramid);
 scene.add(group);
@@ -165,7 +166,7 @@ var Pyramid = function (_THREE$Group) {
         _this.height = _this.option.height / _this.option.items.length;
 
         var currentR = 0,
-            nextR = _this.height,
+            nextR = _this.height * option.gradient,
             currentHeight = 0;
 
         _this.option.items.forEach(function (item, index) {
@@ -180,8 +181,8 @@ var Pyramid = function (_THREE$Group) {
             _this.addText(_this.option.text(item), (currentR + nextR) / 2, cylinder.position.y, 0);
 
             currentHeight += _this.height;
-            currentR += _this.height;
-            nextR += _this.height;
+            currentR += _this.height * option.gradient;
+            nextR += _this.height * option.gradient;
         });
 
         return _this;

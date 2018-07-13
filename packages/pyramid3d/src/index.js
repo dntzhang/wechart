@@ -14,7 +14,7 @@ class Pyramid extends THREE.Group {
     this.height = this.option.height / this.option.items.length
 
     let currentR = 0,
-      nextR = this.height,
+      nextR = this.height * option.gradient,
       currentHeight = 0
 
 
@@ -30,8 +30,8 @@ class Pyramid extends THREE.Group {
       this.addText(this.option.text(item),(currentR+nextR)/2, cylinder.position.y,0)
 
       currentHeight += this.height
-      currentR += this.height
-      nextR += this.height
+      currentR += this.height * option.gradient
+      nextR += this.height * option.gradient
 
     })
 
