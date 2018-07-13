@@ -6,9 +6,9 @@
 
 ![](./asset/wechart-idea.png)
 
-| Demo      |Usage Source   |Group Source   |Tutorial   |Preview   |
-|:---:|:---:|:----:|:---:|:---:|
-|[Pie](https://dntzhang.github.io/wechart/packages/pie/examples/simple/) | [Source](https://github.com/dntzhang/wechart/blob/master/packages/pie/examples/simple/main.js) | [Pie Source](https://github.com/dntzhang/wechart/blob/master/packages/pie/src/index.js) | [Tutorial](https://github.com/dntzhang/wechart/blob/master/packages/pie/README.md)| ![](./asset/c1.png)|
+| Demo      |Usage Source   |Group Source   |Tutorial    |
+|:---:|:---:|:----:|:---:|
+|![](./asset/c1.png)[Pie](https://dntzhang.github.io/wechart/packages/pie/examples/simple/) | [Source](https://github.com/dntzhang/wechart/blob/master/packages/pie/examples/simple/main.js) | [Pie Source](https://github.com/dntzhang/wechart/blob/master/packages/pie/src/index.js) | [Tutorial](https://github.com/dntzhang/wechart/blob/master/packages/pie/README.md)| 
 |[Axis](https://dntzhang.github.io/wechart/packages/axis/examples/simple/) | [Source](https://github.com/dntzhang/wechart/blob/master/packages/axis/examples/simple/main.js) | [Axis Source](https://github.com/dntzhang/wechart/blob/master/packages/axis/src/index.js) | Tutorial| 
 |[Bar](https://dntzhang.github.io/wechart/packages/bar/examples/simple/) | [Source](https://github.com/dntzhang/wechart/blob/master/packages/bar/examples/simple/main.js) | [Bar Source](https://github.com/dntzhang/wechart/blob/master/packages/bar/src/index.js) | Tutorial| ![](./asset/c7.png)|
 |[Cylinder](https://dntzhang.github.io/wechart/packages/cylinder/examples/simple/) | [Source](https://github.com/dntzhang/wechart/blob/master/packages/cylinder/examples/simple/main.js) | [Cylinder Source](https://github.com/dntzhang/wechart/blob/master/packages/cylinder/src/index.js) | Tutorial| ![](./asset/c3.png)|
