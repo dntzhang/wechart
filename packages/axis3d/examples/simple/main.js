@@ -41,25 +41,21 @@ const light = new THREE.PointLight(0xffffff, 1, 1000)
 light.position.set(0, 10, 100)
 scene.add(light)
 
-
 const gem = new THREE.TextGeometry('Wechart', {
   font: font,
   size: 2,
   height: 1
-});
+})
 const mat = new THREE.MeshPhongMaterial({
-  color: 0x3DCE3D,
-});
+  color: 0x3DCE3D
+})
 gem.center()
-const text = new THREE.Mesh(gem, mat);
+const text = new THREE.Mesh(gem, mat)
 text.position.y = 23
 text.position.z = -12
 group.add(text)
 
-
-
-
-function animate() {
+function animate () {
   requestAnimationFrame(animate)
   renderer.render(scene, camera)
 }

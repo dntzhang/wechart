@@ -27,26 +27,26 @@ const bar = new Bar([
   [0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
   [0, 0, 0, 0, 0, 0, 0, 0, 0, 2]
 ], {
-    yGrid: 10,
-    gridSize: 3,
-    axis: {
-      x: {
-        from: 0,
-        gridValue: 1,
-        interval: 0
-      },
-      y: {
-        from: 0,
-        gridValue: 2,
-        interval: 1
-      },
-      z: {
-        from: 0,
-        gridValue: 1,
-        interval: 2
-      }
+  yGrid: 10,
+  gridSize: 3,
+  axis: {
+    x: {
+      from: 0,
+      gridValue: 1,
+      interval: 0
+    },
+    y: {
+      from: 0,
+      gridValue: 2,
+      interval: 1
+    },
+    z: {
+      from: 0,
+      gridValue: 1,
+      interval: 2
     }
-  })
+  }
+})
 
 group.add(bar)
 scene.add(group)
@@ -56,23 +56,21 @@ const light = new THREE.PointLight(0xffffff, 1, 1000)
 light.position.set(0, 10, 100)
 scene.add(light)
 
-
 const gem = new THREE.TextGeometry('Wechart', {
   font: font,
   size: 2,
   height: 1
-});
+})
 const mat = new THREE.MeshPhongMaterial({
-  color: 0x3DCE3D,
-});
+  color: 0x3DCE3D
+})
 gem.center()
-const text = new THREE.Mesh(gem, mat);
+const text = new THREE.Mesh(gem, mat)
 text.position.y = 23
 text.position.z = -12
 group.add(text)
 
-
-function randomHexColor() {
+function randomHexColor () {
   var hex = Math.floor(Math.random() * 16777216).toString(16)
   while (hex.length < 6) {
     hex = '0' + hex
@@ -80,8 +78,7 @@ function randomHexColor() {
   return '#' + hex
 }
 
-
-function animate() {
+function animate () {
   requestAnimationFrame(animate)
   renderer.render(scene, camera)
 }
