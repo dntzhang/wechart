@@ -1,5 +1,5 @@
 import Pie from '../../src/index'
-import '../../../_common/orbit-controls'
+import '../../../common/orbit-controls'
 
 const camera = new THREE.PerspectiveCamera(45, window.innerWidth / window.innerHeight, 0.01, 500)
 camera.position.set(0, 20, 210)
