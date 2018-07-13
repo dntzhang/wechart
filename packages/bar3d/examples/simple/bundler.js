@@ -466,7 +466,7 @@ function control(obj) {
             var dy = event.touches[0].pageY - event.touches[1].pageY;
             var distance = Math.sqrt(dx * dx + dy * dy);
             if (preDistance !== null) {
-                scale += 0.1 * (distance / preDistance) - 1;
+                scale += 0.1 * (distance / preDistance - 1);
                 if (scale < 0.2) scale = 0.2;
                 obj.scale.x = obj.scale.y = obj.scale.z = scale;
             } else {
