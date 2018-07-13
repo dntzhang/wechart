@@ -368,6 +368,7 @@ function control(obj) {
     }
 
     function onTouchMove(event) {
+        event.preventDefault();
         if (event.touches.length > 1) {
             var dx = event.touches[0].pageX - event.touches[1].pageX;
             var dy = event.touches[0].pageY - event.touches[1].pageY;
