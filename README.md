@@ -25,6 +25,12 @@
 |[Pie3d](https://dntzhang.github.io/wechart/packages/pie3d/examples/simple/) | [Source](https://github.com/dntzhang/wechart/blob/master/packages/pie3d/examples/simple/main.js) | [Pie3d Source](https://github.com/dntzhang/wechart/blob/master/packages/pie3d/src/index.js) | Tutorial| 
 |[Map3d](https://dntzhang.github.io/wechart/packages/map3d/examples/simple/) | [Source](https://github.com/dntzhang/wechart/blob/master/packages/map3d/examples/simple/main.js) | [Map3d Source](https://github.com/dntzhang/wechart/blob/master/packages/map3d/src/index.js) | Tutorial| 
 
+## 怎么贡献图表？
+
+* 在 packages 以图表的名字新建一个文件夹，比如 chart-name
+* 组件的例子放在 examples 目录，比如 simple，组件 Group 源码放在 src 目录
+* 执行 `npm run build -- chart-name simple` 进行构建调试
+
 ## 谁在使用？
 
 ![Tencent Wechat](./asset/wx.png)  ![Tencent QQ](./asset/qq.png)
