@@ -1,11 +1,23 @@
 
 import cax from 'cax'
 import { getControlPoint } from './get-control-point'
+
+import Axis from '../../axis/src'
+
 const { TWEEN, Graphics, Circle, Group, Stage, To } = cax
 
 export default class Line extends Group {
-  constructor (data, lines) {
+  constructor (data, lines, axisConfig) {
     super()
+
+
+    Object.keys(axisConfig).forEach(key => {
+      if (axisConfig[key]) {
+        const axis = new Axis(axisConfig[key], key)
+        this.add(axis)
+      }
+    })
+
     lines.forEach(item => {
       item.processedData = item.processing ? data.map(item.processing) : data
 
