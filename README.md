@@ -24,6 +24,7 @@
 |<a title ="Bar3d" href="https://dntzhang.github.io/wechart/packages/bar3d/examples/simple/"><img alt="Bar3d" src="./asset/c2.png"></a>| [Source](https://github.com/dntzhang/wechart/blob/master/packages/bar3d/examples/simple/main.js) | [Bar3d Source](https://github.com/dntzhang/wechart/blob/master/packages/bar3d/src/index.js)  |  Tutorial| 
 |[Pie3d](https://dntzhang.github.io/wechart/packages/pie3d/examples/simple/) | [Source](https://github.com/dntzhang/wechart/blob/master/packages/pie3d/examples/simple/main.js) | [Pie3d Source](https://github.com/dntzhang/wechart/blob/master/packages/pie3d/src/index.js) | Tutorial| 
 |[Map3d](https://dntzhang.github.io/wechart/packages/map3d/examples/simple/) | [Source](https://github.com/dntzhang/wechart/blob/master/packages/map3d/examples/simple/main.js) | [Map3d Source](https://github.com/dntzhang/wechart/blob/master/packages/map3d/src/index.js) | Tutorial| 
+|<a title ="Earth" href="https://dntzhang.github.io/wechart/packages/earth/examples/simple/"><img alt="Earth" src="./asset/c9.png"></a>| [Source](https://github.com/dntzhang/wechart/blob/master/packages/earth/examples/simple/main.js) | [Earth Source](https://github.com/dntzhang/wechart/blob/master/packages/earth/src/index.js) | Tutorial| 
 
 ## 怎么贡献图表？
 
