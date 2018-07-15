@@ -6,7 +6,7 @@ import Excel from '../../src/index'
 const stage = new cax.Stage(740, 520, 'body')
 
 //todo rows 里面的 text 去掉
-
+//todo 搞个漂亮的样式实现一下
 const excel = new Excel([
   [null, 'A', 'B'],
   [1, null, null],

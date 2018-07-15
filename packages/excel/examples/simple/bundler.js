@@ -6531,7 +6531,7 @@ function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { de
 var stage = new _cax2.default.Stage(740, 520, 'body');
 
 //todo rows 里面的 text 去掉
-
+//todo 搞个漂亮的样式实现一下
 var excel = new _index2.default([[null, 'A', 'B'], [1, null, null], [2, 2, '123AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA'], [3, null, null], [4, 'sdfsf', null], [5, null, null], [6, null, null], [7, 'center middle', 'bottom right']], {
   colWidth: [40, 200, 200],
   rowHeight: [20, 30, 30, 30, 50, 60, 60, 60],
