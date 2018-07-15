@@ -18,13 +18,32 @@ class Excel extends Group {
     this.grid = new Graphics()
 
 
+
     this.width = arrSum(option.colWidth)
     this.height = arrSum(option.rowHeight)
 
+    this._initStyle()
     this.offset = this._processOffset(option)
 
     this.renderGrid()
     this.renderText()
+
+  }
+
+  _initStyle() {
+    if (!this.option.style) {
+      this.option.style = []
+
+    }
+
+    for (let i = 0; i < this.rowCount; i++) {
+      let row = []
+      for (let j = 0; j < this.colCount; j++) {
+        row.push(this.getStyle(i, j))
+      }
+      this.option.style.push(row)
+    }
+
 
   }
 
@@ -49,15 +68,63 @@ class Excel extends Group {
 
     this.data.forEach((row, y) => {
       row.forEach((value, x) => {
-        const text = new Text(value, '', 'red')
-        if(value !== undefined && value !== null){
-          text.x = this.offset.x[x]
-          text.y = this.offset.y[y]
+        const style = this.option.style[y][x]
+        const text = new Text(value, { font: style.fontStyle + ' ' + style.fontWeight + ' ' + style.fontSize + 'px ' + style.fontFamily, color: style.color })
+        if (value !== undefined && value !== null) {
+
+          text.x = this._getX(style.textAlign, this.option.colWidth[x], text.getWidth(), this.offset.x[x])
+          text.y = this._getY(style.verticalAlign, this.option.rowHeight[y], style.fontSize, this.offset.y[y])
           this.add(text)
         }
       })
     })
   }
+
+  getStyle(row, col) {
+    const defaultStyle = {
+      backgroundColor: "#fff",
+      borderLeft: null,
+      borderRight: null,
+      borderTop: null,
+      borderBottom: null,
+      color: "black",
+      fontFamily: "sans-serif", //sans-serif的 bold无效
+      fontSize: 10,
+      fontStyle: 'normal', //italic oblique
+      fontWeight: 'normal', //bold 100 200 300
+      textAlign: "center",
+      verticalAlign: "middle",
+      textBreak: 'default' //default auto break
+    }
+    if (this.option.style && this.option.style[row] && this.option.style[row][col]) {
+      return Object.assign(defaultStyle, this.option.style[row][col])
+    }
+    return defaultStyle
+  }
+
+  _getX(textAlign, colWidth, textWidth, offsetX) {
+    switch (textAlign) {
+      case 'center':
+        return offsetX + colWidth / 2 - textWidth / 2
+      case 'left':
+        return offsetX + 4
+      case 'right':
+        return offsetX + colWidth - textWidth - 4
+    }
+  }
+
+
+  _getY(verticalAlign, rowHeight, fontSize, offsetY) {
+    switch (verticalAlign) {
+      case 'middle':
+        return offsetY + rowHeight / 2 - fontSize / 2
+      case 'top':
+        return offsetY + 2
+      case 'bottom':
+        return offsetY + rowHeight - fontSize - 2
+    }
+  }
+
 
   renderGrid() {
     this.grid.beginPath().strokeStyle(this.gridColor)

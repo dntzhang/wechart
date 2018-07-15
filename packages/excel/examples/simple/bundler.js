@@ -6532,340 +6532,16 @@ var stage = new _cax2.default.Stage(740, 520, 'body');
 
 //todo rows 里面的 text 去掉
 
-var excel = new _index2.default([['top left', 'top middle', 'top right'], [null, null, null], ['sdfdsf', 2, 'sdfds'], [null, null, null], [null, 'sdfsf', null], [null, null, null], [null, null, null], ['bottom left', 'bottom middle', 'bottom right']], {
-  colWidth: [200, 200, 200],
+var excel = new _index2.default([[null, 'A', 'B'], [1, null, null], [2, 2, 'sdfds'], [3, null, null], [4, 'sdfsf', null], [5, null, null], [6, null, null], [7, 'center middle', 'bottom right']], {
+  colWidth: [40, 200, 200],
   rowHeight: [20, 30, 30, 30, 50, 60, 60, 60],
   merge: [[0, 3, 2, 1], [1, 5, 1, 2]],
-  rows: [[{
-    backgroundColor: "#fff",
-    borderLeft: {
-      color: 'red',
-      level: 1,
-      type: null
-    },
-    borderRight: null,
-    borderTop: null,
-    borderBottom: null,
-    color: "red",
-    fontFamily: "Verdana",
-    fontSize: 10,
-    text: "textAlign left verticalAlign middle textBreak auto ",
-    textAlign: "left",
-    verticalAlign: "middle",
-    textBreak: 'auto'
-  }, {
-    backgroundColor: "#fff",
-    borderLeft: {
-      color: 'red',
-      level: 1
-    },
-    borderRight: null,
-    borderTop: null,
-    borderBottom: null,
-    color: "green",
-    fontFamily: "Verdana",
-    fontSize: 20,
-    text: null,
-    textAlign: "right",
-    verticalAlign: "top",
-    textBreak: 'auto'
-  }, {
-    backgroundColor: "#fff",
-    borderLeft: {
-      color: 'red',
-      level: 1
-    },
-    borderRight: null,
-    borderTop: null,
-    borderBottom: null,
-    color: "green",
-    fontFamily: "Verdana",
-    fontSize: 10,
-    text: "textAlign right verticalAlign top textBreak auto",
-    textAlign: "right",
-    verticalAlign: "top",
-    textBreak: 'auto'
-  }], [{
-    backgroundColor: "#fff",
-    borderLeft: {
-      color: 'red',
-      level: 1
-    },
-    borderRight: null,
-    borderTop: null,
-    borderBottom: null,
-    color: "blue",
-    fontFamily: "Verdana",
-    fontSize: 10,
-    text: null,
-    textAlign: "center",
-    verticalAlign: "bottom",
-    textBreak: 'hidden'
-  }, {
-    backgroundColor: "#fff",
-    borderLeft: {
-      color: 'red',
-      level: 1
-    },
-    borderRight: null,
-    borderTop: null,
-    borderBottom: null,
-    color: "black",
-    fontFamily: "Verdana",
-    fontSize: 10,
-    text: "textAlign center verticalAlign middle textBreak default",
-    textAlign: "center",
-    verticalAlign: "middle",
-    textBreak: 'hidden'
-  }, {
-    backgroundColor: "#fff",
-    borderLeft: {
-      color: 'red',
-      level: 1
-    },
-    borderRight: null,
-    borderTop: null,
-    borderBottom: null,
-    color: "green",
-    fontFamily: "Verdana",
-    fontSize: 10,
-    text: "textAlign left verticalAlign bottom textBreak auto",
-    textAlign: "left",
-    verticalAlign: "bottom",
-    textBreak: 'auto'
-  }], [{
-    backgroundColor: "#fff",
-    borderLeft: {
-      color: 'red',
-      level: 1
-    },
-    borderRight: null,
-    borderTop: null,
-    borderBottom: null,
-    color: "blue",
-    fontFamily: "Verdana",
-    fontSize: 10,
-    text: null,
-    textAlign: "center",
-    verticalAlign: "bottom",
-    textBreak: 'hidden'
-  }, {
-    backgroundColor: "#fff",
-    borderLeft: {
-      color: 'red',
-      level: 1
-    },
-    borderRight: null,
-    borderTop: null,
-    borderBottom: null,
-    color: "black",
-    fontFamily: "Verdana",
-    fontSize: 20,
-    text: "sdfsdfsdfsssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssasfdsfsdfdsaaaadsfds",
-    textAlign: "center",
-    verticalAlign: "middle",
-    textBreak: 'default'
-  }, {
-    backgroundColor: "#fff",
-    borderLeft: {
-      color: 'red',
-      level: 1
-    },
-    borderRight: null,
-    borderTop: null,
-    borderBottom: null,
-    color: "green",
-    fontFamily: "Verdana",
-    fontSize: 10,
-    text: null,
-    textAlign: "center",
-    verticalAlign: "bottom",
-    textBreak: 'auto'
-  }], [{
-    backgroundColor: "#fff",
-    borderLeft: {
-      color: 'red',
-      level: 1
-    },
-    borderRight: null,
-    borderTop: null,
-    borderBottom: null,
-    color: "blue",
-    fontFamily: "Verdana",
-    fontSize: 10,
-    text: 'textAlign center',
-    textAlign: "center",
-    verticalAlign: "bottom",
-    textBreak: 'hidden'
-  }, {
-    backgroundColor: "#fff",
-    borderLeft: {
-      color: 'red',
-      level: 1
-    },
-    borderRight: null,
-    borderTop: null,
-    borderBottom: null,
-    color: "black",
-    fontFamily: "Verdana",
-    fontSize: 15,
-    text: "textAlign center",
-    textAlign: "center",
-    verticalAlign: "middle",
-    textBreak: 'default'
-  }, {
-    backgroundColor: "#fff",
-    borderLeft: {
-      color: 'red',
-      level: 1
-    },
-    borderRight: null,
-    borderTop: null,
-    borderBottom: null,
-    color: "black",
-    fontFamily: "Verdana",
-    fontSize: 10,
-    text: 'textAlign right verticalAlign bottom textBreak auto textAlign right verticalAlign bottom textBreak auto textAlign right verticalAlign bottom textBreak auto textAlign right verticalAlign bottom textBreak auto textAlign right verticalAlign bottom textBreak auto textAlign right verticalAlign bottom textBreak auto',
-    textAlign: "right",
-    verticalAlign: "bottom",
-    textBreak: 'auto'
-  }], [{
-    backgroundColor: "#fff",
-    borderLeft: {
-      color: 'red',
-      level: 1
-    },
-    borderRight: null,
-    borderTop: null,
-    borderBottom: null,
-    color: "blue",
-    fontFamily: "Verdana",
-    fontSize: 10,
-    text: 'textAlign left',
-    textAlign: "left",
-    verticalAlign: "bottom",
-    textBreak: 'hidden'
-  }, {
-    backgroundColor: "#fff",
-    borderLeft: {
-      color: 'red',
-      level: 1
-    },
-    borderRight: null,
-    borderTop: null,
-    borderBottom: null,
-    color: "black",
-    fontFamily: "Verdana",
-    fontSize: 15,
-    text: "textAlign center",
-    textAlign: "center",
-    verticalAlign: "middle",
-    textBreak: 'default'
-  }, {
-    backgroundColor: "#fff",
-    borderLeft: null,
-    borderRight: null,
-    borderTop: null,
-    borderBottom: null,
-    color: "black",
-    fontFamily: "Verdana",
-    fontSize: 10,
-    text: 'textAlign right',
-    textAlign: "right",
-    verticalAlign: "bottom",
-    textBreak: 'auto'
-  }], [{
-    backgroundColor: "#fff",
-    borderLeft: null,
-    borderRight: null,
-    borderTop: null,
-    borderBottom: null,
-    color: "blue",
-    fontFamily: "Verdana",
-    fontSize: 10,
-    text: 'textAlign left',
-    textAlign: "left",
-    verticalAlign: "bottom",
-    textBreak: 'hidden'
-  }, {
-    backgroundColor: "#fff",
-    color: "black",
-    fontFamily: "Verdana",
-    fontSize: 15,
-    text: "textAlign center",
-    textAlign: "center",
-    verticalAlign: "middle",
-    textBreak: 'default'
-  }, {
-    backgroundColor: "#fff",
-    color: "black",
-    fontFamily: "Verdana",
-    fontSize: 10,
-    text: 'textAlign right verticalAlign bottom textBreak auto textAlign right verticalAlign bottom textBreak auto textAlign right verticalAlign bottom textBreak auto textAlign right verticalAlign bottom textBreak auto textAlign right verticalAlign bottom textBreak auto textAlign right verticalAlign bottom textBreak auto',
-    textAlign: "right",
-    verticalAlign: "bottom",
-    textBreak: 'auto'
-  }], [{
-    backgroundColor: "#fff",
-    color: "blue",
-    fontFamily: "Verdana",
-    fontSize: 10,
-    text: 'textAlign left',
-    textAlign: "left",
-    verticalAlign: "bottom",
-    textBreak: 'hidden'
-  }, {
-    backgroundColor: "#fff",
-    color: "black",
-    fontFamily: "Verdana",
-    fontSize: 15,
-    text: "textAlign center",
-    textAlign: "center",
-    verticalAlign: "middle",
-    textBreak: 'default'
-  }, {
-    backgroundColor: "#fff",
-    color: "black",
-    fontFamily: "Verdana",
-    fontSize: 10,
-    text: 'textAlign right verticalAlign bottom textBreak auto textAlign right verticalAlign bottom textBreak auto textAlign right verticalAlign bottom textBreak auto textAlign right verticalAlign bottom textBreak auto textAlign right verticalAlign bottom textBreak auto textAlign right verticalAlign bottom textBreak auto',
-    textAlign: "right",
-    verticalAlign: "bottom",
-    textBreak: 'auto'
-  }], [{
-    backgroundColor: "#fff",
-    color: "blue",
-    fontFamily: "Verdana",
-    fontSize: 10,
-    text: 'textAlign left',
-    textAlign: "left",
-    verticalAlign: "bottom",
-    textBreak: 'hidden'
-  }, {
-    backgroundColor: "#fff",
-    color: "black",
-    fontFamily: "Verdana",
-    fontSize: 15,
-    text: "textAlign center",
-    textAlign: "center",
-    verticalAlign: "middle",
-    textBreak: 'default'
-  }, {
-    backgroundColor: "#fff",
-    color: "black",
-    fontFamily: "Verdana",
-    fontSize: 10,
-    text: 'textAlign right verticalAlign bottom textBreak auto textAlign right verticalAlign bottom textBreak auto textAlign right verticalAlign bottom textBreak auto textAlign right verticalAlign bottom textBreak auto textAlign right verticalAlign bottom textBreak auto textAlign right verticalAlign bottom textBreak auto',
-    textAlign: "right",
-    verticalAlign: "bottom",
-    textBreak: 'auto'
-  }]]
+  style: null
 });
 
 excel.x = 30;
 excel.y = 30;
 //excel.hideRows([1,2])
-
 //excel.hideCols([1])
 
 stage.add(excel);
@@ -6952,6 +6628,7 @@ var Excel = function (_Group) {
     _this.width = arrSum(option.colWidth);
     _this.height = arrSum(option.rowHeight);
 
+    _this._initStyle();
     _this.offset = _this._processOffset(option);
 
     _this.renderGrid();
@@ -6961,6 +6638,21 @@ var Excel = function (_Group) {
   }
 
   _createClass(Excel, [{
+    key: '_initStyle',
+    value: function _initStyle() {
+      if (!this.option.style) {
+        this.option.style = [];
+      }
+
+      for (var i = 0; i < this.rowCount; i++) {
+        var row = [];
+        for (var j = 0; j < this.colCount; j++) {
+          row.push(this.getStyle(i, j));
+        }
+        this.option.style.push(row);
+      }
+    }
+  }, {
     key: '_processOffset',
     value: function _processOffset(option) {
       var offsetX = [0];
@@ -6984,14 +6676,63 @@ var Excel = function (_Group) {
 
       this.data.forEach(function (row, y) {
         row.forEach(function (value, x) {
-          var text = new Text(value, '', 'red');
+          var style = _this2.option.style[y][x];
+          var text = new Text(value, { font: style.fontStyle + ' ' + style.fontWeight + ' ' + style.fontSize + 'px ' + style.fontFamily, color: style.color });
           if (value !== undefined && value !== null) {
-            text.x = _this2.offset.x[x];
-            text.y = _this2.offset.y[y];
+
+            text.x = _this2._getX(style.textAlign, _this2.option.colWidth[x], text.getWidth(), _this2.offset.x[x]);
+            text.y = _this2._getY(style.verticalAlign, _this2.option.rowHeight[y], style.fontSize, _this2.offset.y[y]);
             _this2.add(text);
           }
         });
       });
+    }
+  }, {
+    key: 'getStyle',
+    value: function getStyle(row, col) {
+      var defaultStyle = {
+        backgroundColor: "#fff",
+        borderLeft: null,
+        borderRight: null,
+        borderTop: null,
+        borderBottom: null,
+        color: "black",
+        fontFamily: "sans-serif", //sans-serif的 bold无效
+        fontSize: 10,
+        fontStyle: 'normal', //italic oblique
+        fontWeight: 'normal', //bold 100 200 300
+        textAlign: "center",
+        verticalAlign: "middle",
+        textBreak: 'default' //default auto break
+      };
+      if (this.option.style && this.option.style[row] && this.option.style[row][col]) {
+        return Object.assign(defaultStyle, this.option.style[row][col]);
+      }
+      return defaultStyle;
+    }
+  }, {
+    key: '_getX',
+    value: function _getX(textAlign, colWidth, textWidth, offsetX) {
+      switch (textAlign) {
+        case 'center':
+          return offsetX + colWidth / 2 - textWidth / 2;
+        case 'left':
+          return offsetX + 4;
+        case 'right':
+          return offsetX + colWidth - textWidth - 4;
+      }
+    }
+  }, {
+    key: '_getY',
+    value: function _getY(verticalAlign, rowHeight, fontSize, offsetY) {
+      switch (verticalAlign) {
+        case 'middle':
+          return offsetY + rowHeight / 2 - fontSize / 2;
+        case 'top':
+          return offsetY + 2;
+        case 'bottom':
+          return offsetY + rowHeight - fontSize - 2;
+      }
     }
   }, {
     key: 'renderGrid',
