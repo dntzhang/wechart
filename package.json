@@ -25,8 +25,8 @@
     "axis3d-simple": "webpack -w",
     "map-tiger": "webpack -w",
     "cylinder-simple": "webpack -w",
-    "build": "webpack",
     "build-min": "webpack",
+    "build": "webpack -w &&",
     "test": "karma start test/karma.conf.js"
   },
   "dependencies": {

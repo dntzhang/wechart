@@ -7,11 +7,18 @@ var packageJSON = require('./package.json');
  */
 var ENV = process.env.npm_lifecycle_event;
 
-var config  = {
-    entry: './examples/todo/main.js',
+var argv;
+try {
+    argv = JSON.parse(process.env.npm_config_argv).original;
+} catch (ex) {
+    argv = process.argv;
+}
+
+var config = {
+    entry: path.resolve(__dirname, './packages/' + argv[3] + '/examples/' + argv[4] + '/main.js'),
     output: {
         // path: __dirname,
-        path: './examples/todo/',
+        path: path.resolve(__dirname, './packages/' + argv[3] + '/examples/' + argv[4] + '/'),
         filename: 'bundler.js'
     },
     module: {
@@ -22,13 +29,10 @@ var config  = {
                 query: {
                     presets: 'env',
                     "plugins": [
-                        "transform-class-properties",
-                        ["transform-react-jsx", {
-                          "pragma": "Cax.h" 
-                        }]
-                      ]
+                        "transform-class-properties"
+                    ]
                 },
-                
+
             }
         ]
     },
@@ -44,63 +48,7 @@ var config  = {
     // devtool: 'source-map',
 };
 
-if(ENV === 'build'||ENV === 'build-min'){
-    config = {
-        entry: {
-            'wechart': './src/index.js'
-        },
-        output: {
-            // path: __dirname,
-            path: path.resolve(__dirname,'./dist/'),
-            library:'wechart',
-            libraryTarget: 'umd',
-            filename:  '[name].js'
-            //umdNamedDefine: true
-        },
-        module: {
-            loaders: [
-                {
-                    loader: 'babel-loader',
-                    test: path.join(__dirname, 'src'),
-                    query: {
-                        presets: 'env'
-                    },
-                }
-            ]
-        },
-        plugins: [
-            // Avoid publishing files when compilation fails
-            new webpack.BannerPlugin(" wechart v"+packageJSON.version+" By dntzhang \r\n Github: https://github.com/dntzhang/cax\r\n MIT Licensed."),
-            new webpack.NoEmitOnErrorsPlugin()
-        ],
-        stats: {
-            // Nice colored output
-            colors: true
-        },
-        // Create Sourcemaps for the bundle
-       // devtool: 'source-map',
-    };
 
-     if(ENV === 'build-min'){
-        config.plugins.push(new webpack.optimize.UglifyJsPlugin({
-            compress: {
-                warnings: false,
-                screw_ie8 : false
-            },
-            mangle: {
-                screw_ie8: false
-            },
-            output: { screw_ie8: false }
-        }));
-        config.entry = {
-            'wechart.min': './src/index.js'
-        };
-    }
-}else{
-    var cmds = ENV.split('-')
-    config.entry = path.resolve(__dirname,'./packages/'+cmds[0]+'/examples/' + cmds[1] + '/main.js');
-    config.output.path = path.resolve(__dirname,'./packages/'+cmds[0]+'/examples/' + cmds[1] + '/');
-}
 
 
 //console.log(ENV);

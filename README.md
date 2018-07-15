@@ -23,6 +23,13 @@
 |<a title ="Pyramid3d" href="https://dntzhang.github.io/wechart/packages/pyramid3d/examples/simple/"><img alt="Pyramid3d" src="./asset/c6.png"></a>| [Source](https://github.com/dntzhang/wechart/blob/master/packages/pyramid3d/examples/simple/main.js) | [Pyramid3d Source](https://github.com/dntzhang/wechart/blob/master/packages/pyramid3d/src/index.js) | Tutorial| 
 |<a title ="Bar3d" href="https://dntzhang.github.io/wechart/packages/bar3d/examples/simple/"><img alt="Bar3d" src="./asset/c2.png"></a>| [Source](https://github.com/dntzhang/wechart/blob/master/packages/bar3d/examples/simple/main.js) | [Bar3d Source](https://github.com/dntzhang/wechart/blob/master/packages/bar3d/src/index.js)  |  Tutorial| 
 |[Pie3d](https://dntzhang.github.io/wechart/packages/pie3d/examples/simple/) | [Source](https://github.com/dntzhang/wechart/blob/master/packages/pie3d/examples/simple/main.js) | [Pie3d Source](https://github.com/dntzhang/wechart/blob/master/packages/pie3d/src/index.js) | Tutorial| 
+|[Map3d](https://dntzhang.github.io/wechart/packages/map3d/examples/simple/) | [Source](https://github.com/dntzhang/wechart/blob/master/packages/map3d/examples/simple/main.js) | [Map3d Source](https://github.com/dntzhang/wechart/blob/master/packages/map3d/src/index.js) | Tutorial| 
+
+## 怎么贡献图表？
+
+* 在 packages 以图表的名字新建一个文件夹，比如 chart-name
+* 组件的例子放在 examples 目录，比如 simple，组件 Group 源码放在 src 目录
+* 执行 `npm run build -- chart-name simple` 进行构建调试
 
 ## 谁在使用？
 
