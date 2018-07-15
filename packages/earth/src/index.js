@@ -53,7 +53,7 @@ class Earth extends THREE.Group {
 
         ctx.fillText(text, 0, 8);
 
-        document.body.appendChild(canvas);
+        // document.body.appendChild(canvas);
 
         return canvas;
     }
