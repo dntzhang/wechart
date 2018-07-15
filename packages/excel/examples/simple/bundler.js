@@ -6532,11 +6532,14 @@ var stage = new _cax2.default.Stage(740, 520, 'body');
 
 //todo rows 里面的 text 去掉
 
-var excel = new _index2.default([[null, 'A', 'B'], [1, null, null], [2, 2, 'sdfds'], [3, null, null], [4, 'sdfsf', null], [5, null, null], [6, null, null], [7, 'center middle', 'bottom right']], {
+var excel = new _index2.default([[null, 'A', 'B'], [1, null, null], [2, 2, '123AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA'], [3, null, null], [4, 'sdfsf', null], [5, null, null], [6, null, null], [7, 'center middle', 'bottom right']], {
   colWidth: [40, 200, 200],
   rowHeight: [20, 30, 30, 30, 50, 60, 60, 60],
   merge: [[0, 3, 2, 1], [1, 5, 1, 2]],
-  style: null
+  style: null,
+  //todo 自动标注顶部和左边,这里要自动多加一行和一列
+  autoLabelX: false,
+  autoLabelY: false
 });
 
 excel.x = 30;
@@ -6625,10 +6628,15 @@ var Excel = function (_Group) {
 
     _this.grid = new Graphics();
 
+    _this.mCtx = document.createElement('canvas').getContext('2d');
+
     _this.width = arrSum(option.colWidth);
     _this.height = arrSum(option.rowHeight);
 
     _this._initStyle();
+
+    _this._processOption(_this.option);
+
     _this.offset = _this._processOffset(option);
 
     _this.renderGrid();
@@ -6638,6 +6646,14 @@ var Excel = function (_Group) {
   }
 
   _createClass(Excel, [{
+    key: 'toColumnName',
+    value: function toColumnName(num) {
+      for (var ret = '', a = 1, b = 26; (num -= a) >= 0; a = b, b *= 26) {
+        ret = String.fromCharCode(parseInt(num % b / a) + 65) + ret;
+      }
+      return ret;
+    }
+  }, {
     key: '_initStyle',
     value: function _initStyle() {
       if (!this.option.style) {
@@ -6661,7 +6677,7 @@ var Excel = function (_Group) {
       }
       var offsetY = [0];
       for (var _i = 0, _length = option.rowHeight.length; _i < _length - 1; _i++) {
-        offsetY[_i + 1] = offsetY[_i] + option.rowHeight[_i];
+        offsetY[_i + 1] = offsetY[_i] + (option.rowAutoHeight[_i] || option.rowHeight[_i]);
       }
 
       return {
@@ -6677,12 +6693,28 @@ var Excel = function (_Group) {
       this.data.forEach(function (row, y) {
         row.forEach(function (value, x) {
           var style = _this2.option.style[y][x];
-          var text = new Text(value, { font: style.fontStyle + ' ' + style.fontWeight + ' ' + style.fontSize + 'px ' + style.fontFamily, color: style.color });
-          if (value !== undefined && value !== null) {
+          var text = null;
+          if (style.textList) {
+            style.textList.forEach(function (text, index) {
+              text = new Text(text, { font: style.fontStyle + ' ' + style.fontWeight + ' ' + style.fontSize + 'px ' + style.fontFamily, color: style.color });
 
-            text.x = _this2._getX(style.textAlign, _this2.option.colWidth[x], text.getWidth(), _this2.offset.x[x]);
-            text.y = _this2._getY(style.verticalAlign, _this2.option.rowHeight[y], style.fontSize, _this2.offset.y[y]);
-            _this2.add(text);
+              if (value !== undefined && value !== null) {
+
+                text.x = _this2._getX(style.textAlign, _this2.option.colWidth[x], text.getWidth(), _this2.offset.x[x]);
+                text.y = _this2._getY(style.verticalAlign, _this2.option.rowHeight[y], style.fontSize, _this2.offset.y[y]) + index * style.lineHeight;
+
+                _this2.add(text);
+              }
+            });
+          } else {
+            text = new Text(value, { font: style.fontStyle + ' ' + style.fontWeight + ' ' + style.fontSize + 'px ' + style.fontFamily, color: style.color });
+            if (value !== undefined && value !== null) {
+              _this2.mCtx.font = style.fontStyle + ' ' + style.fontWeight + ' ' + style.fontSize + 'px ' + style.fontFamily;
+
+              text.x = _this2._getX(style.textAlign, _this2.option.colWidth[x], text.getWidth(), _this2.offset.x[x]);
+              text.y = _this2._getY(style.verticalAlign, _this2.option.rowHeight[y], style.fontSize, _this2.offset.y[y]);
+              _this2.add(text);
+            }
           }
         });
       });
@@ -6690,6 +6722,7 @@ var Excel = function (_Group) {
   }, {
     key: 'getStyle',
     value: function getStyle(row, col) {
+
       var defaultStyle = {
         backgroundColor: "#fff",
         borderLeft: null,
@@ -6698,12 +6731,14 @@ var Excel = function (_Group) {
         borderBottom: null,
         color: "black",
         fontFamily: "sans-serif", //sans-serif的 bold无效
-        fontSize: 10,
+        fontSize: 12, //字体默认10，canvas里计算字体宽度却是按照12来，所有默认用12
         fontStyle: 'normal', //italic oblique
         fontWeight: 'normal', //bold 100 200 300
         textAlign: "center",
         verticalAlign: "middle",
-        textBreak: 'default' //default auto break
+        lineHeight: 15,
+        //TODO DEFAULT
+        textBreak: 'auto' //default auto break
       };
       if (this.option.style && this.option.style[row] && this.option.style[row][col]) {
         return Object.assign(defaultStyle, this.option.style[row][col]);
@@ -6744,7 +6779,7 @@ var Excel = function (_Group) {
           currentX = 0;
       for (var i = 0; i < this.rowCount; i++) {
 
-        currentY += this.option.rowHeight[i];
+        currentY += this.option.rowAutoHeight[i] || this.option.rowHeight[i];
         this.grid.moveTo(0, currentY).lineTo(this.width, currentY);
       }
 
@@ -6758,6 +6793,162 @@ var Excel = function (_Group) {
       this.grid.stroke();
 
       this.add(this.grid);
+    }
+  }, {
+    key: 'renderText2',
+    value: function renderText2(cell, x, y, data) {
+      var _this3 = this;
+
+      var offsetX = (data.offsetX[x] + config.rowHeaderWidth) * config.scale;
+      var offsetY = (data.offsetY[y] + config.cellHeight) * config.scale;
+      var width = data.colHeader[x] * config.scale;
+
+      //data.rowHeight[y]是被auto撑高了的行高
+      var height = (data.rowHeight[y] || data.rowHeader[y]) * config.scale;
+
+      if (cell.merge === true) {
+        return;
+      } else if (cell.merge) {
+
+        for (var i = 1; i < cell.merge[2]; i++) {
+          width += data.colHeader[x + i];
+        }
+        for (var j = 1; j < cell.merge[3]; j++) {
+          height += data.rowHeight[y + j] || data.rowHeader[y + j];
+        }
+      }
+
+      this.ctx.save();
+
+      this.ctx.font = cell.fontSize * config.scale + "px " + cell.fontFamily;
+      this.ctx.fillStyle = cell.color;
+      this.ctx.textBaseline = cell.verticalAlign;
+
+      if (cell.textList) {
+        var listLen = cell.textList.length;
+        cell.textList.forEach(function (text, index) {
+          var textWidth = _this3.ctx.measureText(text).width;
+          var textX = offsetX + _this3._computeTextX(width, textWidth, cell.textAlign);
+          if (cell.verticalAlign === 'top') {
+            _this3.ctx.fillText(text, textX, offsetY + 5 + index * cell.fontSize * config.scale);
+          } else if (cell.verticalAlign === 'bottom') {
+            _this3.ctx.fillText(text, textX, offsetY + height - 5 + index * cell.fontSize * config.scale - (listLen - 1) * cell.fontSize * config.scale);
+          } else {
+            _this3.ctx.fillText(text, textX, offsetY + height / 2 + index * cell.fontSize * config.scale - listLen * cell.fontSize * config.scale / 2);
+          }
+        });
+      } else if (cell.text) {
+        var textWidth = this.ctx.measureText(cell.text).width;
+        var textX = offsetX + this._computeTextX(width, textWidth, cell.textAlign);
+        if (cell.textBreak === 'hidden') {
+          this.ctx.rect(offsetX, offsetY, width, height);
+          this.ctx.clip();
+        } else if (cell.clip) {
+          this.ctx.rect(offsetX + cell.clip[0] * config.scale, offsetY + cell.clip[1] * config.scale, cell.clip[2] * config.scale, height);
+          this.ctx.clip();
+        }
+
+        if (cell.verticalAlign === 'top') {
+          this.ctx.fillText(cell.text, textX, offsetY + 5);
+        } else if (cell.verticalAlign === 'bottom') {
+          this.ctx.fillText(cell.text, textX, offsetY + height - 5);
+        } else {
+          this.ctx.fillText(cell.text, textX, offsetY + height / 2);
+        }
+      }
+
+      this.ctx.restore();
+    }
+  }, {
+    key: '_processOption',
+    value: function _processOption(option) {
+      var _this4 = this;
+
+      option.rowAutoHeight = {};
+      option.style.forEach(function (row, y) {
+        var maxHeight = option.rowHeight[y];
+        row.forEach(function (cell, x) {
+          var dataRow = _this4.data[y];
+          var text = dataRow[x];
+          _this4.mCtx.font = cell.fontSize + "px " + cell.fontFamily;
+          var textWidth = _this4.mCtx.measureText(text).width;
+          var cellWidth = option.colWidth[x];
+
+          if (cell.textBreak === 'default') {
+
+            var textX = _this4._computeTextX(cellWidth, textWidth, cell.textAlign);
+            var clip = [0, 0, cellWidth, option.rowAutoHeight[y]];
+            if (textX < 0 && dataRow[x - 1].text === null) {
+              cell.lb = 0;
+              var begin = x - 1;
+              row[begin].rb = 0;
+              clip[0] -= option.colWidth[begin];
+              clip[2] += option.colWidth[begin];
+              while (textX + option.colWidth[begin] > 0 && dataRow[begin].text === null && row[begin - 1]) {
+                row[begin].lb = 0;
+                row[begin - 1].rb = 0;
+                clip[0] -= option.colWidth[begin - 1];
+                clip[2] += option.colWidth[begin - 1];
+                begin--;
+              }
+            }
+
+            if (textX + textWidth > cellWidth && dataRow[x + 1] && dataRow[x + 1].text === null) {
+              cell.rb = 0;
+              var _begin = x + 1;
+              row[_begin].lb = 0;
+              clip[2] += option.colWidth[_begin];
+              while (textX + textWidth - option.colWidth[_begin] < 0 && dataRow[_begin].text === null && row[_begin + 1]) {
+                row[_begin].rb = 0;
+                row[_begin + 1].lb = 0;
+                clip[2] += option.colWidth[_begin + 1];
+                _begin++;
+              }
+            }
+
+            cell.clip = clip;
+          } else if (cell.textBreak === 'auto' && textWidth > cellWidth) {
+
+            var step = Math.round(text.length * (cellWidth - 30) / textWidth / 2);
+
+            cell.textList = _this4.stringSplit(text, step);
+
+            maxHeight = Math.max(cell.textList.length * cell.lineHeight + 8, maxHeight);
+          }
+          option.rowAutoHeight[y] = maxHeight;
+
+          _this4.height += maxHeight - option.rowHeight[y];
+        });
+      });
+    }
+  }, {
+    key: 'stringSplit',
+    value: function stringSplit(str, len) {
+      var arr = [],
+          offset = 0,
+          char_length = 0;
+      for (var i = 0; i < str.length; i++) {
+        var son_str = str.charAt(i);
+        encodeURI(son_str).length > 2 ? char_length += 1 : char_length += 0.5;
+        if (char_length >= len || char_length < len && i === str.length - 1) {
+          var sub_len = char_length == len ? i + 1 : i;
+          arr.push(str.substr(offset, sub_len - offset + (char_length < len && i === str.length - 1 ? 1 : 0)));
+          offset = i + 1;
+          char_length = 0;
+        }
+      }
+      return arr;
+    }
+  }, {
+    key: '_computeTextX',
+    value: function _computeTextX(cellWidth, textWidth, textAlign) {
+      if (textAlign === 'left') {
+        return 4;
+      } else if (textAlign === 'center') {
+        return (cellWidth - textWidth) / 2;
+      } else {
+        return cellWidth - textWidth - 4;
+      }
     }
   }]);
 

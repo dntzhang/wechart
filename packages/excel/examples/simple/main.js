@@ -10,7 +10,7 @@ const stage = new cax.Stage(740, 520, 'body')
 const excel = new Excel([
   [null, 'A', 'B'],
   [1, null, null],
-  [2, 2, 'sdfds'],
+  [2, 2, '123AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA'],
   [3, null, null],
   [4, 'sdfsf', null],
   [5, null, null],
@@ -23,7 +23,10 @@ const excel = new Excel([
       [0, 3, 2, 1],
       [1, 5, 1, 2]
     ],
-    style: null
+    style: null,
+    //todo 自动标注顶部和左边,这里要自动多加一行和一列
+    autoLabelX: false,
+    autoLabelY: false
   })
 
 excel.x = 30
