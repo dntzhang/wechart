@@ -9,6 +9,7 @@
     "fixweapp": "eslint ../cax-weapp --fix",
     "lint:example": "eslint example --fix",
     "pie-simple": "webpack -w",
+    "earth3d-simple": "webpack -w",
     "axis-simple": "webpack -w",
     "bar-simple": "webpack -w",
     "bar3d-simple": "webpack -w",
