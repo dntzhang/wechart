@@ -6539,7 +6539,9 @@ var excel = new _index2.default([[null, 'A', 'B'], [1, null, null], [2, 2, '123A
   style: null,
   //todo 自动标注顶部和左边,这里要自动多加一行和一列
   autoLabelX: false,
-  autoLabelY: false
+  autoLabelY: false,
+  //todo
+  hideGrid: false
 });
 
 excel.x = 30;

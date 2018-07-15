@@ -26,7 +26,9 @@ const excel = new Excel([
     style: null,
     //todo 自动标注顶部和左边,这里要自动多加一行和一列
     autoLabelX: false,
-    autoLabelY: false
+    autoLabelY: false,
+    //todo
+    hideGrid: false
   })
 
 excel.x = 30
