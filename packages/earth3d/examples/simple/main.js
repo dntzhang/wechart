@@ -1,4 +1,4 @@
-import Earch from '../../src/index';
+import Earth from '../../src/index';
 import '../../../common/orbit-controls';
 
 const camera = new THREE.PerspectiveCamera(60, window.innerWidth / window.innerHeight, 1, 2000);
@@ -16,7 +16,7 @@ document.body.appendChild(renderer.domElement);
 const controls = new THREE.OrbitControls(camera, renderer.domElement);
 const group = new THREE.Group();
 
-const earth = new Earch({
+const earth = new Earth({
     coord: [
         {
             text: '中国',
