@@ -6596,7 +6596,7 @@ var stage = new _cax2.default.Stage(740, 520, 'body');
 //todo 搞个漂亮的样式实现一下
 
 //不支持击穿边框！！
-var excel = new _index2.default([[null, 'A', 'B', 'C'], [1, null, null, null], [2, '123AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA123AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA123AAAAAAA', '123AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA', ''], [3, null, null, null], [4, 'sdfsf', null, null], [5, null, null, null], [6, null, null, null], [7, 'center middle', 'bottom right', null]], {
+var excel = new _index2.default([[null, 'A', 'B', 'C'], [1, null, null, null], [2, '123AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA123AAAAAAA', '123AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA', ''], [3, null, null, null], [4, 'sdfsf', null, null], [5, null, null, null], [6, null, null, null], [7, 'center middle', 'bottom right', null]], {
   colWidth: [40, 200, 200, 130],
   rowHeight: [20, 30, 100, 30, 50, 60, 60, 60],
   merge: [[0, 3, 2, 1], [1, 1, 1, 2]],
@@ -6608,14 +6608,15 @@ var excel = new _index2.default([[null, 'A', 'B', 'C'], [1, null, null, null], [
   hideGrid: false
 });
 
-// excel.x = 30
-// excel.y = 30
+excel.x = 20;
+excel.y = 20;
+excel.update();
 //excel.hideRows([1,2])
 //excel.hideCols([1])
 
 stage.add(excel);
 
-_cax2.default.tick(stage.update.bind(stage));
+stage.update();
 
 /***/ }),
 /* 2 */
@@ -6702,6 +6703,8 @@ var Excel = function (_Group) {
     _this.height = _this.getHeight();
     _this.offset = _this._processOffset(option);
 
+    _this.textGroup = new Group();
+    _this.add(_this.textGroup);
     _this.renderGrid();
     _this.renderText();
 
@@ -6766,7 +6769,7 @@ var Excel = function (_Group) {
                 text.x = _this2._getX(style.textAlign, _this2.option.colWidth[x], text.getWidth(), _this2.offset.x[x]);
                 text.y = _this2._getY(style.verticalAlign, _this2.option.rowAutoHeight[y] || _this2.option.rowHeight[y], style.lineHeight, _this2.offset.y[y]) + index * style.lineHeight - style.textList.length / 2 * style.lineHeight + style.lineHeight / 2;
 
-                _this2.add(text);
+                _this2.textGroup.add(text);
               }
             });
           } else {
@@ -6781,11 +6784,19 @@ var Excel = function (_Group) {
 
               text.x = _this2._getX(style.textAlign, _this2.option.colWidth[x], text.getWidth(), _this2.offset.x[x]);
               text.y = _this2._getY(style.verticalAlign, _this2.option.rowAutoHeight[y] || _this2.option.rowHeight[y], style.fontSize, _this2.offset.y[y]);
-              _this2.add(text);
+              _this2.textGroup.add(text);
             }
           }
         });
       });
+    }
+  }, {
+    key: 'update',
+    value: function update() {
+
+      this.textGroup.empty();
+      this.renderText();
+      this.renderGrid();
     }
   }, {
     key: 'getStyle',
@@ -6841,7 +6852,7 @@ var Excel = function (_Group) {
   }, {
     key: 'renderGrid',
     value: function renderGrid() {
-      this.grid.beginPath().strokeStyle(this.gridColor);
+      this.grid.clear().beginPath().strokeStyle(this.gridColor);
 
       this.grid.moveTo(0, 0).lineTo(this.width, 0);
       var currentY = 0,

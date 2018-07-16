@@ -25,6 +25,8 @@ class Excel extends Group {
     this.height = this.getHeight()
     this.offset = this._processOffset(option)
 
+    this.textGroup = new Group()
+    this.add(this.textGroup)
     this.renderGrid()
     this.renderText()
 
@@ -86,7 +88,7 @@ class Excel extends Group {
               text.x = this._getX(style.textAlign, this.option.colWidth[x], text.getWidth(), this.offset.x[x])
               text.y = this._getY(style.verticalAlign, this.option.rowAutoHeight[y] || this.option.rowHeight[y], style.lineHeight, this.offset.y[y]) + index * style.lineHeight - style.textList.length / 2 * style.lineHeight + style.lineHeight / 2
 
-              this.add(text)
+              this.textGroup.add(text)
             }
           })
         } else {
@@ -101,12 +103,20 @@ class Excel extends Group {
                     
             text.x = this._getX(style.textAlign, this.option.colWidth[x], text.getWidth(), this.offset.x[x])
             text.y = this._getY(style.verticalAlign, this.option.rowAutoHeight[y] || this.option.rowHeight[y], style.fontSize, this.offset.y[y])
-            this.add(text)
+            this.textGroup.add(text)
           }
         }
 
       })
     })
+  }
+
+  update(){
+   
+    this.textGroup.empty()
+    this.renderText()
+    this.renderGrid()
+
   }
 
   getStyle(row, col) {
@@ -160,7 +170,7 @@ class Excel extends Group {
 
 
   renderGrid() {
-    this.grid.beginPath().strokeStyle(this.gridColor)
+    this.grid.clear().beginPath().strokeStyle(this.gridColor)
 
     this.grid.moveTo(0, 0).lineTo(this.width, 0)
     let currentY = 0, currentX = 0
@@ -218,7 +228,7 @@ class Excel extends Group {
 
     return sum
   }
-  
+
   stringSplit(str, len) {
     let arr = [],
       offset = 0,
