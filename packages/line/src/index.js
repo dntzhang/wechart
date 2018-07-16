@@ -10,7 +10,6 @@ export default class Line extends Group {
   constructor (data, lines, axisConfig) {
     super()
 
-
     Object.keys(axisConfig).forEach(key => {
       if (axisConfig[key]) {
         const axis = new Axis(axisConfig[key], key)

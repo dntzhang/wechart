@@ -1,11 +1,9 @@
 import cax from 'cax'
 const { Graphics, Text, Group } = cax
 
-
 class Excel extends Group {
-  constructor(data, option) {
+  constructor (data, option) {
     super()
-
 
     this.data = data
 
@@ -32,19 +30,19 @@ class Excel extends Group {
 
     this.borderLevel = 0
 
+    this.style = this.option.style
   }
 
-  toColumnName(num) {
+  toColumnName (num) {
     for (var ret = '', a = 1, b = 26; (num -= a) >= 0; a = b, b *= 26) {
-      ret = String.fromCharCode(parseInt((num % b) / a) + 65) + ret;
+      ret = String.fromCharCode(parseInt((num % b) / a) + 65) + ret
     }
-    return ret;
+    return ret
   }
 
-  _initStyle() {
+  _initStyle () {
     if (!this.option.style) {
       this.option.style = []
-
     }
 
     for (let i = 0; i < this.rowCount; i++) {
@@ -54,11 +52,9 @@ class Excel extends Group {
       }
       this.option.style.push(row)
     }
-
-
   }
 
-  _processOffset(option) {
+  _processOffset (option) {
     const offsetX = [0]
     for (let i = 0, length = option.colWidth.length; i < length - 1; i++) {
       offsetX[i + 1] = offsetX[i] + option.colWidth[i]
@@ -74,83 +70,86 @@ class Excel extends Group {
     }
   }
 
-
-  renderText() {
-
+  renderText () {
     this.data.forEach((row, y) => {
       row.forEach((value, x) => {
         const style = this.option.style[y][x]
         let text = null
-        if (style.textList) {
-          style.textList.forEach((text, index) => {
-            text = new Text(text, { font: style.fontStyle + ' ' + style.fontWeight + ' ' + style.fontSize + 'px ' + style.fontFamily, color: style.color })
+        const mergeInfo = this.getMergeInfo(y, x)
+        if (!mergeInfo.isMerge || mergeInfo.isLeftTop) {
+          let boxWidth = this.option.colWidth[x]
+          let boxHeight = this.option.rowAutoHeight[y] || this.option.rowHeight[y]
+          if (mergeInfo.isLeftTop) {
+            boxWidth = mergeInfo.width
+            boxHeight = mergeInfo.height
+          }
 
+          if (style.textList) {
+            style.textList.forEach((text, index) => {
+              text = new Text(text, { font: style.fontStyle + ' ' + style.fontWeight + ' ' + style.fontSize + 'px ' + style.fontFamily, color: style.color })
+
+              if (value !== undefined && value !== null) {
+                text.x = this._getX(style.textAlign, boxWidth, text.getWidth(), this.offset.x[x])
+                text.y = this._getY(style.verticalAlign, boxHeight, style.lineHeight, this.offset.y[y]) + index * style.lineHeight - style.textList.length / 2 * style.lineHeight + style.lineHeight / 2
+
+                this.textGroup.add(text)
+              }
+            })
+          } else {
+            text = new Text(value, { font: style.fontStyle + ' ' + style.fontWeight + ' ' + style.fontSize + 'px ' + style.fontFamily, color: style.color })
             if (value !== undefined && value !== null) {
+              this.mCtx.font = style.fontStyle + ' ' + style.fontWeight + ' ' + style.fontSize + 'px ' + style.fontFamily
 
-              text.x = this._getX(style.textAlign, this.option.colWidth[x], text.getWidth(), this.offset.x[x])
-              text.y = this._getY(style.verticalAlign, this.option.rowAutoHeight[y] || this.option.rowHeight[y], style.lineHeight, this.offset.y[y]) + index * style.lineHeight - style.textList.length / 2 * style.lineHeight + style.lineHeight / 2
+              const clipPath = new cax.Graphics()
 
+              clipPath.rect(this.x + this.offset.x[x], this.y + this.offset.y[y], boxWidth, boxHeight)
+              text.absClip(clipPath)
+
+              text.x = this._getX(style.textAlign, boxWidth, text.getWidth(), this.offset.x[x])
+              text.y = this._getY(style.verticalAlign, boxHeight, style.fontSize, this.offset.y[y])
               this.textGroup.add(text)
             }
-          })
-        } else {
-          text = new Text(value, { font: style.fontStyle + ' ' + style.fontWeight + ' ' + style.fontSize + 'px ' + style.fontFamily, color: style.color })
-          if (value !== undefined && value !== null) {
-            this.mCtx.font = style.fontStyle + ' ' + style.fontWeight + ' ' + style.fontSize + 'px ' + style.fontFamily
-
-            const clipPath = new cax.Graphics()
-
-            clipPath.rect(this.x + this.offset.x[x], this.y + this.offset.y[y], this.option.colWidth[x], this.option.rowAutoHeight[y] || this.option.rowHeight[y])
-            text.absClip(clipPath)
-
-            text.x = this._getX(style.textAlign, this.option.colWidth[x], text.getWidth(), this.offset.x[x])
-            text.y = this._getY(style.verticalAlign, this.option.rowAutoHeight[y] || this.option.rowHeight[y], style.fontSize, this.offset.y[y])
-            this.textGroup.add(text)
           }
         }
-
       })
     })
   }
 
-  update() {
-
+  update () {
     this.textGroup.empty()
     this.renderText()
     this.renderGrid()
-
   }
 
-  setLeftBorder(row, col, color) {
+  setLeftBorder (row, col, color) {
     this.option.style[row][col].borderLeft = {
       color: color,
       level: this.borderLevel++
     }
   }
 
-  setRightBorder(row, col, color) {
+  setRightBorder (row, col, color) {
     this.option.style[row][col].borderRight = {
       color: color,
       level: this.borderLevel++
     }
   }
 
-  setTopBorder(row, col, color) {
+  setTopBorder (row, col, color) {
     this.option.style[row][col].borderTop = {
       color: color,
       level: this.borderLevel++
     }
   }
 
-  setBottomBorder(row, col, color) {
+  setBottomBorder (row, col, color) {
     this.option.style[row][col].borderBottom = {
       color: color,
       level: this.borderLevel++
     }
   }
 
-  setBorder(row, col, color) {
-
+  setBorder (row, col, color) {
     this.option.style[row][col].borderLeft = {
       color: color,
       level: this.borderLevel
@@ -170,27 +169,25 @@ class Excel extends Group {
       color: color,
       level: this.borderLevel++
     }
-
   }
 
-  getStyle(row, col) {
-
+  getStyle (row, col) {
     const defaultStyle = {
-      backgroundColor: "#fff",
+      backgroundColor: '#fff',
       borderLeft: null,
       borderRight: null,
       borderTop: null,
       borderBottom: null,
-      color: "black",
-      fontFamily: "sans-serif", //sans-serif的 bold无效
-      fontSize: 12,//字体默认10，canvas里计算字体宽度却是按照12来，所有默认用12
-      fontStyle: 'normal', //italic oblique
-      fontWeight: 'normal', //bold 100 200 300
-      textAlign: "center",
-      verticalAlign: "middle",
+      color: 'black',
+      fontFamily: 'sans-serif', // sans-serif的 bold无效
+      fontSize: 12, // 字体默认10，canvas里计算字体宽度却是按照12来，所有默认用12
+      fontStyle: 'normal', // italic oblique
+      fontWeight: 'normal', // bold 100 200 300
+      textAlign: 'center',
+      verticalAlign: 'middle',
       lineHeight: 15,
-      //TODO DEFAULT
-      textBreak: 'auto' //default auto 
+      // TODO DEFAULT
+      textBreak: 'auto' // default auto
     }
     if (this.option.style && this.option.style[row] && this.option.style[row][col]) {
       return Object.assign(defaultStyle, this.option.style[row][col])
@@ -198,7 +195,7 @@ class Excel extends Group {
     return defaultStyle
   }
 
-  _getX(textAlign, colWidth, textWidth, offsetX) {
+  _getX (textAlign, colWidth, textWidth, offsetX) {
     switch (textAlign) {
       case 'center':
         return offsetX + colWidth / 2 - textWidth / 2
@@ -209,8 +206,7 @@ class Excel extends Group {
     }
   }
 
-
-  _getY(verticalAlign, rowHeight, lineHeight, offsetY) {
+  _getY (verticalAlign, rowHeight, lineHeight, offsetY) {
     switch (verticalAlign) {
       case 'middle':
 
@@ -218,23 +214,14 @@ class Excel extends Group {
       case 'top':
         return offsetY + 2
       case 'bottom':
-        return offsetY + rowHeight - lineHeight - 2
+        return offsetY + rowHeight - lineHeight - 2 - lineHeight / 2
     }
   }
 
-
-  renderGrid() {
-
-
-
-
-
+  renderGrid () {
     this.grid.clear()
     for (let i = 0; i < this.rowCount; i++) {
-
       for (let j = 0; j < this.colCount; j++) {
-
-
         const h = this.option.rowAutoHeight[i] || this.option.rowHeight[i]
         if (this._borderCheck(i, j, 'left')) {
           this.grid.beginPath().moveTo(this.offset.x[j], this.offset.y[i]).lineTo(this.offset.x[j], this.offset.y[i] + h)
@@ -243,12 +230,9 @@ class Excel extends Group {
             this.grid.strokeStyle(style.color)
           } else {
             this.grid.strokeStyle(this.gridColor)
-
           }
           this.grid.stroke()
         }
-
-
 
         if (this._borderCheck(i, j, 'top')) {
           this.grid.beginPath().moveTo(this.offset.x[j], this.offset.y[i]).lineTo(this.offset.x[j] + this.option.colWidth[j], this.offset.y[i])
@@ -257,18 +241,15 @@ class Excel extends Group {
             this.grid.strokeStyle(style.color)
           } else {
             this.grid.strokeStyle(this.gridColor)
-
           }
           this.grid.stroke()
         }
-
 
         if (j === this.colCount - 1) {
           if (this._borderCheck(i, j, 'right')) {
             this.grid.beginPath().moveTo(this.offset.x[j] + this.option.colWidth[j], this.offset.y[i]).lineTo(this.offset.x[j] + this.option.colWidth[j], this.offset.y[i] + h)
             let style = this._getBorderColor(i, j, 'right')
             if (style) {
-
               this.grid.strokeStyle(style.color)
             } else {
               this.grid.strokeStyle(this.gridColor)
@@ -289,15 +270,45 @@ class Excel extends Group {
             this.grid.stroke()
           }
         }
-
       }
     }
 
     this.add(this.grid)
-
   }
 
-  _getBorderColor(y, x, dir) {
+  getMergeInfo (y, x) {
+    const result = {
+
+    }
+
+    this.option.merge.every(rect => {
+      if (x >= rect[0] && x <= rect[0] + rect[2] - 1 && y >= rect[1] && y <= rect[1] + rect[3] - 1) {
+        result.isMerge = true
+        if (x === rect[0] && y === rect[1]) {
+          result.isLeftTop = true
+          result.xEnd = rect[0] + rect[2]
+          result.yEnd = rect[1] + rect[3]
+        }
+      }
+    })
+
+    if (result.isLeftTop) {
+      result.width = 0
+      result.height = 0
+
+      for (let i = x; i < result.xEnd; i++) {
+        result.width += this.option.colWidth[i]
+      }
+
+      for (let i = y; i < result.yEnd; i++) {
+        result.height += this.option.rowAutoHeight[i] || this.option.rowHeight[i]
+      }
+    }
+
+    return result
+  }
+
+  _getBorderColor (y, x, dir) {
     let current, next
     switch (dir) {
       case 'top':
@@ -319,11 +330,9 @@ class Excel extends Group {
           } else {
             return current.borderTop
           }
-
         } else {
           return current.borderTop
         }
-
 
         break
 
@@ -333,7 +342,6 @@ class Excel extends Group {
         if (this.option.style[y + 1]) {
           next = this.option.style[y + 1][x]
         }
-
 
         if (next) {
           if (!current.borderBottom && !next.borderTop) {
@@ -347,16 +355,13 @@ class Excel extends Group {
           } else {
             return current.borderBottom
           }
-
         } else {
           return current.borderBottom
         }
 
-
         break
 
       case 'left':
-
 
         current = this.option.style[y][x]
 
@@ -374,13 +379,9 @@ class Excel extends Group {
           } else {
             return current.borderLeft
           }
-
         } else {
           return current.borderLeft
         }
-
-
-
 
         break
 
@@ -401,38 +402,30 @@ class Excel extends Group {
           } else {
             return current.borderRight
           }
-
         } else {
           return current.borderRight
         }
 
-
         break
     }
-
   }
 
-
-  _borderCheck(y, x, dir) {
+  _borderCheck (y, x, dir) {
     let result = true
     this.option.merge.every(rect => {
-
       if (x >= rect[0] && x <= rect[0] + rect[2] - 1 && y >= rect[1] && y <= rect[1] + rect[3] - 1) {
         if (x === rect[0] && dir === 'right') {
-
           result = false
 
           return false
         }
 
         if (x === rect[0] + rect[2] - 1 && dir === 'left') {
-
           result = false
           return false
         }
 
         if (x > rect[0] && x < rect[0] + rect[2] - 1 && (dir === 'left' || dir === 'right')) {
-
           result = false
           return false
         }
@@ -443,13 +436,11 @@ class Excel extends Group {
         }
 
         if (y === rect[1] + rect[3] - 1 && dir === 'top') {
-
           result = false
           return false
         }
 
         if (y > rect[1] && y < rect[1] + rect[3] - 1 && (dir === 'top' || dir === 'bottom')) {
-
           result = false
           return false
         }
@@ -457,23 +448,19 @@ class Excel extends Group {
     })
 
     return result
-
   }
 
-  _processOption(option) {
+  _processOption (option) {
     option.rowAutoHeight = {}
     option.style.forEach((row, y) => {
       let maxHeight = option.rowHeight[y]
       row.forEach((cell, x) => {
         const dataRow = this.data[y]
         const text = dataRow[x]
-        this.mCtx.font = cell.fontSize + "px " + cell.fontFamily
+        this.mCtx.font = cell.fontSize + 'px ' + cell.fontFamily
         const textWidth = this.mCtx.measureText(text).width
         const cellWidth = option.colWidth[x]
         if (cell.textBreak === 'auto' && textWidth > cellWidth) {
-
-
-
           const step = Math.round(text.length * (cellWidth - 30) / textWidth / 2)
 
           cell.textList = this.stringSplit(text, step)
@@ -481,13 +468,11 @@ class Excel extends Group {
           maxHeight = Math.max(cell.textList.length * cell.lineHeight + 8, maxHeight)
         }
         option.rowAutoHeight[y] = maxHeight
-
-
       })
     })
   }
 
-  getHeight() {
+  getHeight () {
     let sum = 0
     this.option.rowHeight.forEach((height, y) => {
       sum += (this.option.rowAutoHeight[y] ? this.option.rowAutoHeight[y] : height)
@@ -496,15 +481,15 @@ class Excel extends Group {
     return sum
   }
 
-  stringSplit(str, len) {
+  stringSplit (str, len) {
     let arr = [],
       offset = 0,
       char_length = 0
     for (let i = 0; i < str.length; i++) {
-      let son_str = str.charAt(i);
-      encodeURI(son_str).length > 2 ? char_length += 1 : char_length += 0.5;
+      let son_str = str.charAt(i)
+      encodeURI(son_str).length > 2 ? char_length += 1 : char_length += 0.5
       if (char_length >= len || (char_length < len && i === str.length - 1)) {
-        let sub_len = char_length == len ? i + 1 : i;
+        let sub_len = char_length == len ? i + 1 : i
         arr.push(str.substr(offset, sub_len - offset + ((char_length < len && i === str.length - 1) ? 1 : 0)))
         offset = i + 1
         char_length = 0
@@ -512,15 +497,12 @@ class Excel extends Group {
     }
     return arr
   }
-
-
 }
 
-function arrSum(arr) {
+function arrSum (arr) {
   let sum = 0
   arr.forEach(value => {
     sum += value
-
   })
   return sum
 }

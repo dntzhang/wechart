@@ -4,3 +4,4 @@ node_modules
 packages/graph/examples/simple/dagre.js
 packages/graph/examples/simple/graphlib.js
 packages/*/examples/*/bundler.js
+packages/common

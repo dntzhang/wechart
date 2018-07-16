@@ -6592,29 +6592,28 @@ function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { de
 
 var stage = new _cax2.default.Stage(740, 520, 'body');
 
-//todo 搞个漂亮的样式实现一下
-
-var excel = new _index2.default([[null, 'A', 'B', 'C'], [1, null, null, null], [2, '123AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA123AAAAAAA', '123AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA', ''], [3, 'merge1', 'merge2', null], [4, 'merge3', 'merge3', null], [5, null, null, null], [6, null, null, null], [7, 'center middle', 'bottom right', null]], {
+var excel = new _index2.default([[null, 'A', 'B', 'C'], [1, null, null, null], [2, ' textBreak auto textBreak auto textBreak auto textBreak auto textBreak auto', 'textBreak auto textBreak auto textBreak auto textBreak auto textBreak auto textBreak auto textBreak auto textBreak auto textBreak auto textBreak auto textBreak auto textBreak auto textBreak auto textBreak auto textBreak auto textBreak auto', ''], [3, 'merge main(show me)', 'merge2', null], [4, 'merge3', 'merge4', null], [5, null, null, null], [6, null, null, null], [7, 'center middle', 'bottom right', null]], {
   colWidth: [40, 200, 200, 130],
   rowHeight: [20, 30, 100, 30, 50, 60, 60, 60],
   merge: [[1, 3, 2, 2]],
-  style: null,
+  style: null
   //todo 自动标注顶部和左边,这里要自动多加一行和一列
-  autoLabelX: false,
-  autoLabelY: false,
+  // autoLabelX: false,
+  // autoLabelY: false,
   //todo
-  hideGrid: false
+  //hideGrid: false
 });
 
 excel.x = 20;
 excel.y = 20;
 
-excel.setBorder(1, 2, 'green');
 excel.setBorder(1, 1, 'red');
+//后设置覆盖前设置的
+excel.setBorder(1, 2, 'green');
 
+excel.style[7][2].textAlign = 'right';
+excel.style[7][2].verticalAlign = 'top';
 excel.update();
-//excel.hideRows([1,2])
-//excel.hideCols([1])
 
 stage.add(excel);
 
@@ -6712,6 +6711,8 @@ var Excel = function (_Group) {
 
     _this.borderLevel = 0;
 
+    _this.style = _this.option.style;
+
     return _this;
   }
 
@@ -6764,31 +6765,41 @@ var Excel = function (_Group) {
         row.forEach(function (value, x) {
           var style = _this2.option.style[y][x];
           var text = null;
-          if (style.textList) {
-            style.textList.forEach(function (text, index) {
-              text = new Text(text, { font: style.fontStyle + ' ' + style.fontWeight + ' ' + style.fontSize + 'px ' + style.fontFamily, color: style.color });
+          var mergeInfo = _this2.getMergeInfo(y, x);
+          if (!mergeInfo.isMerge || mergeInfo.isLeftTop) {
+            var boxWidth = _this2.option.colWidth[x];
+            var boxHeight = _this2.option.rowAutoHeight[y] || _this2.option.rowHeight[y];
+            if (mergeInfo.isLeftTop) {
+              boxWidth = mergeInfo.width;
+              boxHeight = mergeInfo.height;
+            }
 
+            if (style.textList) {
+              style.textList.forEach(function (text, index) {
+                text = new Text(text, { font: style.fontStyle + ' ' + style.fontWeight + ' ' + style.fontSize + 'px ' + style.fontFamily, color: style.color });
+
+                if (value !== undefined && value !== null) {
+
+                  text.x = _this2._getX(style.textAlign, boxWidth, text.getWidth(), _this2.offset.x[x]);
+                  text.y = _this2._getY(style.verticalAlign, boxHeight, style.lineHeight, _this2.offset.y[y]) + index * style.lineHeight - style.textList.length / 2 * style.lineHeight + style.lineHeight / 2;
+
+                  _this2.textGroup.add(text);
+                }
+              });
+            } else {
+              text = new Text(value, { font: style.fontStyle + ' ' + style.fontWeight + ' ' + style.fontSize + 'px ' + style.fontFamily, color: style.color });
               if (value !== undefined && value !== null) {
+                _this2.mCtx.font = style.fontStyle + ' ' + style.fontWeight + ' ' + style.fontSize + 'px ' + style.fontFamily;
 
-                text.x = _this2._getX(style.textAlign, _this2.option.colWidth[x], text.getWidth(), _this2.offset.x[x]);
-                text.y = _this2._getY(style.verticalAlign, _this2.option.rowAutoHeight[y] || _this2.option.rowHeight[y], style.lineHeight, _this2.offset.y[y]) + index * style.lineHeight - style.textList.length / 2 * style.lineHeight + style.lineHeight / 2;
+                var clipPath = new _cax2.default.Graphics();
 
+                clipPath.rect(_this2.x + _this2.offset.x[x], _this2.y + _this2.offset.y[y], boxWidth, boxHeight);
+                text.absClip(clipPath);
+
+                text.x = _this2._getX(style.textAlign, boxWidth, text.getWidth(), _this2.offset.x[x]);
+                text.y = _this2._getY(style.verticalAlign, boxHeight, style.fontSize, _this2.offset.y[y]);
                 _this2.textGroup.add(text);
               }
-            });
-          } else {
-            text = new Text(value, { font: style.fontStyle + ' ' + style.fontWeight + ' ' + style.fontSize + 'px ' + style.fontFamily, color: style.color });
-            if (value !== undefined && value !== null) {
-              _this2.mCtx.font = style.fontStyle + ' ' + style.fontWeight + ' ' + style.fontSize + 'px ' + style.fontFamily;
-
-              var clipPath = new _cax2.default.Graphics();
-
-              clipPath.rect(_this2.x + _this2.offset.x[x], _this2.y + _this2.offset.y[y], _this2.option.colWidth[x], _this2.option.rowAutoHeight[y] || _this2.option.rowHeight[y]);
-              text.absClip(clipPath);
-
-              text.x = _this2._getX(style.textAlign, _this2.option.colWidth[x], text.getWidth(), _this2.offset.x[x]);
-              text.y = _this2._getY(style.verticalAlign, _this2.option.rowAutoHeight[y] || _this2.option.rowHeight[y], style.fontSize, _this2.offset.y[y]);
-              _this2.textGroup.add(text);
             }
           }
         });
@@ -6906,7 +6917,7 @@ var Excel = function (_Group) {
         case 'top':
           return offsetY + 2;
         case 'bottom':
-          return offsetY + rowHeight - lineHeight - 2;
+          return offsetY + rowHeight - lineHeight - 2 - lineHeight / 2;
       }
     }
   }, {
@@ -6971,6 +6982,38 @@ var Excel = function (_Group) {
       }
 
       this.add(this.grid);
+    }
+  }, {
+    key: 'getMergeInfo',
+    value: function getMergeInfo(y, x) {
+      var result = {};
+
+      this.option.merge.every(function (rect) {
+        if (x >= rect[0] && x <= rect[0] + rect[2] - 1 && y >= rect[1] && y <= rect[1] + rect[3] - 1) {
+
+          result.isMerge = true;
+          if (x === rect[0] && y === rect[1]) {
+            result.isLeftTop = true;
+            result.xEnd = rect[0] + rect[2];
+            result.yEnd = rect[1] + rect[3];
+          }
+        }
+      });
+
+      if (result.isLeftTop) {
+        result.width = 0;
+        result.height = 0;
+
+        for (var i = x; i < result.xEnd; i++) {
+          result.width += this.option.colWidth[i];
+        }
+
+        for (var _i2 = y; _i2 < result.yEnd; _i2++) {
+          result.height += this.option.rowAutoHeight[_i2] || this.option.rowHeight[_i2];
+        }
+      }
+
+      return result;
     }
   }, {
     key: '_getBorderColor',
