@@ -6592,23 +6592,23 @@ function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { de
 
 var stage = new _cax2.default.Stage(740, 520, 'body');
 
-var excel = new _index2.default([[null, 'A', 'B', 'C'], [1, null, null, null], [2, ' textBreak auto textBreak auto textBreak auto textBreak auto textBreak auto', 'textBreak auto textBreak auto textBreak auto textBreak auto textBreak auto textBreak auto textBreak auto textBreak auto textBreak auto textBreak auto textBreak auto textBreak auto textBreak auto textBreak auto textBreak auto textBreak auto', ''], [3, 'merge main(show me)', 'merge2', null], [4, 'merge3', 'merge4', null], [5, null, null, null], [6, null, null, null], [7, 'center middle', 'bottom right', null]], {
+var excel = new _index2.default([[null, 'A', 'B', 'C'], [1, 'red border', 'green border including the left border', null], [2, ' textBreak auto textBreak auto textBreak auto textBreak auto textBreak auto', 'textBreak auto textBreak auto textBreak auto textBreak auto textBreak auto textBreak auto textBreak auto textBreak auto textBreak auto textBreak auto textBreak auto textBreak auto textBreak auto textBreak auto textBreak auto textBreak auto', ''], [3, 'merge main(show me)', 'merge2', null], [4, 'merge3', 'merge4', null], [5, null, null, null], [6, null, null, null], [7, 'center middle', 'bottom right', null]], {
   colWidth: [40, 200, 200, 130],
   rowHeight: [20, 30, 100, 30, 50, 60, 60, 60],
   merge: [[1, 3, 2, 2]],
   style: null
-  //todo 自动标注顶部和左边,这里要自动多加一行和一列
+  // todo 自动标注顶部和左边,这里要自动多加一行和一列
   // autoLabelX: false,
   // autoLabelY: false,
-  //todo
-  //hideGrid: false
+  // todo
+  // hideGrid: false
 });
 
 excel.x = 20;
 excel.y = 20;
 
 excel.setBorder(1, 1, 'red');
-//后设置覆盖前设置的
+// 后设置覆盖前设置的
 excel.setBorder(1, 2, 'green');
 
 excel.style[7][2].textAlign = 'right';
@@ -6712,7 +6712,6 @@ var Excel = function (_Group) {
     _this.borderLevel = 0;
 
     _this.style = _this.option.style;
-
     return _this;
   }
 
@@ -6779,7 +6778,6 @@ var Excel = function (_Group) {
                 text = new Text(text, { font: style.fontStyle + ' ' + style.fontWeight + ' ' + style.fontSize + 'px ' + style.fontFamily, color: style.color });
 
                 if (value !== undefined && value !== null) {
-
                   text.x = _this2._getX(style.textAlign, boxWidth, text.getWidth(), _this2.offset.x[x]);
                   text.y = _this2._getY(style.verticalAlign, boxHeight, style.lineHeight, _this2.offset.y[y]) + index * style.lineHeight - style.textList.length / 2 * style.lineHeight + style.lineHeight / 2;
 
@@ -6808,7 +6806,6 @@ var Excel = function (_Group) {
   }, {
     key: 'update',
     value: function update() {
-
       this.textGroup.empty();
       this.renderText();
       this.renderGrid();
@@ -6848,7 +6845,6 @@ var Excel = function (_Group) {
   }, {
     key: 'setBorder',
     value: function setBorder(row, col, color) {
-
       this.option.style[row][col].borderLeft = {
         color: color,
         level: this.borderLevel
@@ -6872,23 +6868,22 @@ var Excel = function (_Group) {
   }, {
     key: 'getStyle',
     value: function getStyle(row, col) {
-
       var defaultStyle = {
-        backgroundColor: "#fff",
+        backgroundColor: '#fff',
         borderLeft: null,
         borderRight: null,
         borderTop: null,
         borderBottom: null,
-        color: "black",
-        fontFamily: "sans-serif", //sans-serif的 bold无效
-        fontSize: 12, //字体默认10，canvas里计算字体宽度却是按照12来，所有默认用12
-        fontStyle: 'normal', //italic oblique
-        fontWeight: 'normal', //bold 100 200 300
-        textAlign: "center",
-        verticalAlign: "middle",
+        color: 'black',
+        fontFamily: 'sans-serif', // sans-serif的 bold无效
+        fontSize: 12, // 字体默认10，canvas里计算字体宽度却是按照12来，所有默认用12
+        fontStyle: 'normal', // italic oblique
+        fontWeight: 'normal', // bold 100 200 300
+        textAlign: 'center',
+        verticalAlign: 'middle',
         lineHeight: 15,
-        //TODO DEFAULT
-        textBreak: 'auto' //default auto 
+        // TODO DEFAULT
+        textBreak: 'auto' // default auto
       };
       if (this.option.style && this.option.style[row] && this.option.style[row][col]) {
         return Object.assign(defaultStyle, this.option.style[row][col]);
@@ -6923,12 +6918,9 @@ var Excel = function (_Group) {
   }, {
     key: 'renderGrid',
     value: function renderGrid() {
-
       this.grid.clear();
       for (var i = 0; i < this.rowCount; i++) {
-
         for (var j = 0; j < this.colCount; j++) {
-
           var h = this.option.rowAutoHeight[i] || this.option.rowHeight[i];
           if (this._borderCheck(i, j, 'left')) {
             this.grid.beginPath().moveTo(this.offset.x[j], this.offset.y[i]).lineTo(this.offset.x[j], this.offset.y[i] + h);
@@ -6957,7 +6949,6 @@ var Excel = function (_Group) {
               this.grid.beginPath().moveTo(this.offset.x[j] + this.option.colWidth[j], this.offset.y[i]).lineTo(this.offset.x[j] + this.option.colWidth[j], this.offset.y[i] + h);
               var _style2 = this._getBorderColor(i, j, 'right');
               if (_style2) {
-
                 this.grid.strokeStyle(_style2.color);
               } else {
                 this.grid.strokeStyle(this.gridColor);
@@ -6990,7 +6981,6 @@ var Excel = function (_Group) {
 
       this.option.merge.every(function (rect) {
         if (x >= rect[0] && x <= rect[0] + rect[2] - 1 && y >= rect[1] && y <= rect[1] + rect[3] - 1) {
-
           result.isMerge = true;
           if (x === rect[0] && y === rect[1]) {
             result.isLeftTop = true;
@@ -7124,23 +7114,19 @@ var Excel = function (_Group) {
     value: function _borderCheck(y, x, dir) {
       var result = true;
       this.option.merge.every(function (rect) {
-
         if (x >= rect[0] && x <= rect[0] + rect[2] - 1 && y >= rect[1] && y <= rect[1] + rect[3] - 1) {
           if (x === rect[0] && dir === 'right') {
-
             result = false;
 
             return false;
           }
 
           if (x === rect[0] + rect[2] - 1 && dir === 'left') {
-
             result = false;
             return false;
           }
 
           if (x > rect[0] && x < rect[0] + rect[2] - 1 && (dir === 'left' || dir === 'right')) {
-
             result = false;
             return false;
           }
@@ -7151,13 +7137,11 @@ var Excel = function (_Group) {
           }
 
           if (y === rect[1] + rect[3] - 1 && dir === 'top') {
-
             result = false;
             return false;
           }
 
           if (y > rect[1] && y < rect[1] + rect[3] - 1 && (dir === 'top' || dir === 'bottom')) {
-
             result = false;
             return false;
           }
@@ -7177,11 +7161,10 @@ var Excel = function (_Group) {
         row.forEach(function (cell, x) {
           var dataRow = _this3.data[y];
           var text = dataRow[x];
-          _this3.mCtx.font = cell.fontSize + "px " + cell.fontFamily;
+          _this3.mCtx.font = cell.fontSize + 'px ' + cell.fontFamily;
           var textWidth = _this3.mCtx.measureText(text).width;
           var cellWidth = option.colWidth[x];
           if (cell.textBreak === 'auto' && textWidth > cellWidth) {
-
             var step = Math.round(text.length * (cellWidth - 30) / textWidth / 2);
 
             cell.textList = _this3.stringSplit(text, step);

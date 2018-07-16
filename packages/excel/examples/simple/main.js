@@ -7,7 +7,7 @@ const stage = new cax.Stage(740, 520, 'body')
 
 const excel = new Excel([
   [null, 'A', 'B', 'C'],
-  [1, null, null, null],
+  [1, 'red border', 'green border including the left border', null],
   [2, ' textBreak auto textBreak auto textBreak auto textBreak auto textBreak auto', 'textBreak auto textBreak auto textBreak auto textBreak auto textBreak auto textBreak auto textBreak auto textBreak auto textBreak auto textBreak auto textBreak auto textBreak auto textBreak auto textBreak auto textBreak auto textBreak auto', ''],
   [3, 'merge main(show me)', 'merge2', null],
   [4, 'merge3', 'merge4', null],
