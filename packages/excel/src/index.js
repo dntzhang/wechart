@@ -32,7 +32,7 @@ class Excel extends Group {
     this._initStyle()
 
     this._processOption(this.option)
-    
+
     this.offset = this._processOffset(option)
 
     this.renderGrid()
@@ -94,7 +94,7 @@ class Excel extends Group {
             if (value !== undefined && value !== null) {
 
               text.x = this._getX(style.textAlign, this.option.colWidth[x], text.getWidth(), this.offset.x[x])
-              text.y = this._getY(style.verticalAlign, this.option.rowHeight[y], style.fontSize, this.offset.y[y]) + index * style.lineHeight
+              text.y = this._getY(style.verticalAlign, this.option.rowAutoHeight[y] || this.option.rowHeight[y], style.lineHeight, this.offset.y[y]) + index * style.lineHeight - style.textList.length / 2 * style.lineHeight + style.lineHeight / 2
 
               this.add(text)
             }
@@ -106,7 +106,7 @@ class Excel extends Group {
 
 
             text.x = this._getX(style.textAlign, this.option.colWidth[x], text.getWidth(), this.offset.x[x])
-            text.y = this._getY(style.verticalAlign, this.option.rowHeight[y], style.fontSize, this.offset.y[y])
+            text.y = this._getY(style.verticalAlign, this.option.rowAutoHeight[y] || this.option.rowHeight[y], style.fontSize, this.offset.y[y])
             this.add(text)
           }
         }
@@ -152,14 +152,15 @@ class Excel extends Group {
   }
 
 
-  _getY(verticalAlign, rowHeight, fontSize, offsetY) {
+  _getY(verticalAlign, rowHeight, lineHeight, offsetY) {
     switch (verticalAlign) {
       case 'middle':
-        return offsetY + rowHeight / 2 - fontSize / 2
+
+        return offsetY + rowHeight / 2 - lineHeight / 2
       case 'top':
         return offsetY + 2
       case 'bottom':
-        return offsetY + rowHeight - fontSize - 2
+        return offsetY + rowHeight - lineHeight - 2
     }
   }
 

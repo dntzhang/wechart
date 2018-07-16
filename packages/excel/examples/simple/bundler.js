@@ -935,51 +935,91 @@ var _typeof2 = typeof Symbol === "function" && typeof Symbol.iterator === "symbo
         }subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } });if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass;
       }
 
-      var measureCtx = void 0;
+      var Bitmap = function (_DisplayObject) {
+        _inherits(Bitmap, _DisplayObject);
 
-      if (_util2.default.isWeapp) {
-        measureCtx = wx.createCanvasContext('measure0');
-      } else if (typeof document !== 'undefined') {
-        measureCtx = document.createElement('canvas').getContext('2d');
-      }
+        function Bitmap(img, onLoad) {
+          _classCallCheck(this, Bitmap);
 
-      var Text = function (_DisplayObject) {
-        _inherits(Text, _DisplayObject);
+          var _this = _possibleConstructorReturn(this, (Bitmap.__proto__ || Object.getPrototypeOf(Bitmap)).call(this));
 
-        function Text(text, option) {
-          _classCallCheck(this, Text);
-
-          var _this = _possibleConstructorReturn(this, (Text.__proto__ || Object.getPrototypeOf(Text)).call(this));
-
-          _this.text = text;
-          option = option || {};
-          _this.font = option.font || '10px sans-serif';
-          _this.color = option.color || 'black';
-
-          _this.baseline = option.baseline || 'top';
+          if (typeof img === 'string') {
+            if (Bitmap.cache[img]) {
+              if (_util2.default.isWeapp) {
+                _this.img = Bitmap.cache[img].img;
+                _this.rect = [0, 0, Bitmap.cache[img].width, Bitmap.cache[img].height];
+                _this.width = _this.rect[2];
+                _this.height = _this.rect[3];
+              } else {
+                _this.img = Bitmap.cache[img];
+                _this.rect = [0, 0, _this.img.width, _this.img.height];
+                _this.width = _this.img.width;
+                _this.height = _this.img.height;
+              }
+              onLoad && onLoad.call(_this);
+            } else if (_util2.default.isWeapp) {
+              _util2.default.getImageInWx(img, function (result) {
+                _this.img = result.img;
+                if (!_this.rect) {
+                  _this.rect = [0, 0, result.width, result.height];
+                }
+                _this.width = result.width;
+                _this.height = result.height;
+                onLoad && onLoad.call(_this);
+                Bitmap.cache[img] = result;
+              });
+            } else {
+              _this.img = _util2.default.isWegame ? wx.createImage() : new window.Image();
+              _this.visible = false;
+              _this.img.onload = function () {
+                _this.visible = true;
+                if (!_this.rect) {
+                  _this.rect = [0, 0, _this.img.width, _this.img.height];
+                }
+                _this.width = _this.img.width;
+                _this.height = _this.img.height;
+                onLoad && onLoad.call(_this);
+                Bitmap.cache[img] = _this.img;
+              };
+              _this.img.src = img;
+            }
+          } else {
+            _this.img = img;
+            _this.rect = [0, 0, img.width, img.height];
+            _this.width = img.width;
+            _this.height = img.height;
+            Bitmap.cache[img.src] = img;
+          }
           return _this;
         }
 
-        _createClass(Text, [{
-          key: 'getWidth',
-          value: function getWidth() {
-            if (!measureCtx) {
-              if (_util2.default.isWegame) {
-                measureCtx = wx.createCanvas().getContext('2d');
-              }
-            }
+        _createClass(Bitmap, [{
+          key: 'clone',
+          value: function clone() {
+            var bitmap = new Bitmap(this.img);
+            bitmap.x = this.x;
+            bitmap.y = this.y;
 
-            if (this.font) {
-              measureCtx.font = this.font;
-            }
-            return measureCtx.measureText(this.text).width;
+            bitmap.scaleX = this.scaleX;
+            bitmap.scaleY = this.scaleY;
+            bitmap.rotation = this.rotation;
+            bitmap.skewX = this.skewX;
+            bitmap.skewY = this.skewY;
+            bitmap.originX = this.originX;
+            bitmap.originY = this.originY;
+            bitmap.width = this.width;
+            bitmap.height = this.height;
+
+            return bitmap;
           }
         }]);
 
-        return Text;
+        return Bitmap;
       }(_displayObject2.default);
 
-      exports.default = Text;
+      Bitmap.cache = {};
+
+      exports.default = Bitmap;
 
       /***/
     },
@@ -1032,6 +1072,107 @@ var _typeof2 = typeof Symbol === "function" && typeof Symbol.iterator === "symbo
         }subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } });if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass;
       }
 
+      var measureCtx = void 0;
+
+      if (_util2.default.isWeapp) {
+        measureCtx = wx.createCanvasContext('measure0');
+      } else if (typeof document !== 'undefined') {
+        measureCtx = document.createElement('canvas').getContext('2d');
+      }
+
+      var Text = function (_DisplayObject) {
+        _inherits(Text, _DisplayObject);
+
+        function Text(text, option) {
+          _classCallCheck(this, Text);
+
+          var _this = _possibleConstructorReturn(this, (Text.__proto__ || Object.getPrototypeOf(Text)).call(this));
+
+          _this.text = text;
+          option = option || {};
+          _this.font = option.font || '10px sans-serif';
+          _this.color = option.color || 'black';
+
+          _this.baseline = option.baseline || 'top';
+          return _this;
+        }
+
+        _createClass(Text, [{
+          key: 'getWidth',
+          value: function getWidth() {
+            if (!measureCtx) {
+              if (_util2.default.isWegame) {
+                measureCtx = wx.createCanvas().getContext('2d');
+              }
+            }
+
+            if (this.font) {
+              measureCtx.font = this.font;
+            }
+            return measureCtx.measureText(this.text).width;
+          }
+        }]);
+
+        return Text;
+      }(_displayObject2.default);
+
+      exports.default = Text;
+
+      /***/
+    },
+    /* 6 */
+    /***/function (module, exports, __webpack_require__) {
+
+      "use strict";
+
+      Object.defineProperty(exports, "__esModule", {
+        value: true
+      });
+
+      var _createClass = function () {
+        function defineProperties(target, props) {
+          for (var i = 0; i < props.length; i++) {
+            var descriptor = props[i];descriptor.enumerable = descriptor.enumerable || false;descriptor.configurable = true;if ("value" in descriptor) descriptor.writable = true;Object.defineProperty(target, descriptor.key, descriptor);
+          }
+        }return function (Constructor, protoProps, staticProps) {
+          if (protoProps) defineProperties(Constructor.prototype, protoProps);if (staticProps) defineProperties(Constructor, staticProps);return Constructor;
+        };
+      }();
+
+      var _displayObject = __webpack_require__(2);
+
+      var _displayObject2 = _interopRequireDefault(_displayObject);
+
+      var _util = __webpack_require__(9);
+
+      var _util2 = _interopRequireDefault(_util);
+
+      var _bitmap = __webpack_require__(4);
+
+      var _bitmap2 = _interopRequireDefault(_bitmap);
+
+      function _interopRequireDefault(obj) {
+        return obj && obj.__esModule ? obj : { default: obj };
+      }
+
+      function _classCallCheck(instance, Constructor) {
+        if (!(instance instanceof Constructor)) {
+          throw new TypeError("Cannot call a class as a function");
+        }
+      }
+
+      function _possibleConstructorReturn(self, call) {
+        if (!self) {
+          throw new ReferenceError("this hasn't been initialised - super() hasn't been called");
+        }return call && ((typeof call === 'undefined' ? 'undefined' : _typeof2(call)) === "object" || typeof call === "function") ? call : self;
+      }
+
+      function _inherits(subClass, superClass) {
+        if (typeof superClass !== "function" && superClass !== null) {
+          throw new TypeError("Super expression must either be null or a function, not " + (typeof superClass === 'undefined' ? 'undefined' : _typeof2(superClass)));
+        }subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } });if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass;
+      }
+
       var Sprite = function (_DisplayObject) {
         _inherits(Sprite, _DisplayObject);
 
@@ -1043,7 +1184,7 @@ var _typeof2 = typeof Symbol === "function" && typeof Symbol.iterator === "symbo
           _this.option = option;
           var len = _this.option.imgs.length;
           var count = 0;
-
+          var firstImg = _this.option.imgs[0];
           _this.imgMap = {};
 
           if (_util2.default.isWeapp) {
@@ -1052,30 +1193,43 @@ var _typeof2 = typeof Symbol === "function" && typeof Symbol.iterator === "symbo
                 _this.imgMap[img] = result.img;
                 count++;
                 if (count === len) {
-                  _this.img = _this.imgMap[_this.option.imgs[0]];
+                  _this.img = _this.imgMap[firstImg];
                   _this.rect = [0, 0, 0, 0];
                 }
               });
             });
           } else {
-            if (typeof _this.option.imgs[0] === 'string') {
+            if (typeof firstImg === 'string') {
               var _len = _this.option.imgs.length;
               var loadedCount = 0;
               _this.option.imgs.forEach(function (src) {
-                var img = _util2.default.isWegame ? wx.createImage() : new window.Image();
-                img.onload = function () {
-                  _this.imgMap[src] = img;
+                if (_bitmap2.default.cache[src]) {
+                  _this.imgMap[src] = _bitmap2.default.cache[src];
                   loadedCount++;
                   if (loadedCount === _len) {
-                    _this.img = _this.imgMap[_this.option.imgs[0]];
+                    _this.img = _this.imgMap[firstImg];
                     _this.rect = [0, 0, 0, 0];
                   }
-                };
-                img.src = src;
+                } else {
+                  var img = _util2.default.isWegame ? wx.createImage() : new window.Image();
+                  img.onload = function () {
+                    _this.imgMap[src] = img;
+                    loadedCount++;
+                    if (loadedCount === _len) {
+                      _this.img = _this.imgMap[firstImg];
+                      _this.rect = [0, 0, 0, 0];
+                    }
+                    _bitmap2.default.cache[src] = img;
+                  };
+                  img.src = src;
+                }
               });
+            } else if (firstImg instanceof _bitmap2.default) {
+              _this.rect = [0, 0, 0, 0];
+              _this.img = firstImg.img;
             } else {
               _this.rect = [0, 0, 0, 0];
-              _this.img = _this.option.imgs[0];
+              _this.img = firstImg;
             }
           }
 
@@ -1177,143 +1331,6 @@ var _typeof2 = typeof Symbol === "function" && typeof Symbol.iterator === "symbo
       }(_displayObject2.default);
 
       exports.default = Sprite;
-
-      /***/
-    },
-    /* 6 */
-    /***/function (module, exports, __webpack_require__) {
-
-      "use strict";
-
-      Object.defineProperty(exports, "__esModule", {
-        value: true
-      });
-
-      var _createClass = function () {
-        function defineProperties(target, props) {
-          for (var i = 0; i < props.length; i++) {
-            var descriptor = props[i];descriptor.enumerable = descriptor.enumerable || false;descriptor.configurable = true;if ("value" in descriptor) descriptor.writable = true;Object.defineProperty(target, descriptor.key, descriptor);
-          }
-        }return function (Constructor, protoProps, staticProps) {
-          if (protoProps) defineProperties(Constructor.prototype, protoProps);if (staticProps) defineProperties(Constructor, staticProps);return Constructor;
-        };
-      }();
-
-      var _displayObject = __webpack_require__(2);
-
-      var _displayObject2 = _interopRequireDefault(_displayObject);
-
-      var _util = __webpack_require__(9);
-
-      var _util2 = _interopRequireDefault(_util);
-
-      function _interopRequireDefault(obj) {
-        return obj && obj.__esModule ? obj : { default: obj };
-      }
-
-      function _classCallCheck(instance, Constructor) {
-        if (!(instance instanceof Constructor)) {
-          throw new TypeError("Cannot call a class as a function");
-        }
-      }
-
-      function _possibleConstructorReturn(self, call) {
-        if (!self) {
-          throw new ReferenceError("this hasn't been initialised - super() hasn't been called");
-        }return call && ((typeof call === 'undefined' ? 'undefined' : _typeof2(call)) === "object" || typeof call === "function") ? call : self;
-      }
-
-      function _inherits(subClass, superClass) {
-        if (typeof superClass !== "function" && superClass !== null) {
-          throw new TypeError("Super expression must either be null or a function, not " + (typeof superClass === 'undefined' ? 'undefined' : _typeof2(superClass)));
-        }subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } });if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass;
-      }
-
-      var Bitmap = function (_DisplayObject) {
-        _inherits(Bitmap, _DisplayObject);
-
-        function Bitmap(img, onLoad) {
-          _classCallCheck(this, Bitmap);
-
-          var _this = _possibleConstructorReturn(this, (Bitmap.__proto__ || Object.getPrototypeOf(Bitmap)).call(this));
-
-          if (typeof img === 'string') {
-            if (Bitmap.cache[img]) {
-              if (_util2.default.isWeapp) {
-                _this.img = Bitmap.cache[img].img;
-                _this.rect = [0, 0, Bitmap.cache[img].width, Bitmap.cache[img].height];
-                _this.width = _this.rect[2];
-                _this.height = _this.rect[3];
-              } else {
-                _this.img = Bitmap.cache[img];
-                _this.rect = [0, 0, _this.img.width, _this.img.height];
-                _this.width = _this.img.width;
-                _this.height = _this.img.height;
-              }
-              onLoad && onLoad.call(_this);
-            } else if (_util2.default.isWeapp) {
-              _util2.default.getImageInWx(img, function (result) {
-                _this.img = result.img;
-                if (!_this.rect) {
-                  _this.rect = [0, 0, result.width, result.height];
-                }
-                _this.width = result.width;
-                _this.height = result.height;
-                onLoad && onLoad.call(_this);
-                Bitmap.cache[img] = result;
-              });
-            } else {
-              _this.img = _util2.default.isWegame ? wx.createImage() : new window.Image();
-              _this.visible = false;
-              _this.img.onload = function () {
-                _this.visible = true;
-                if (!_this.rect) {
-                  _this.rect = [0, 0, _this.img.width, _this.img.height];
-                }
-                _this.width = _this.img.width;
-                _this.height = _this.img.height;
-                onLoad && onLoad.call(_this);
-                Bitmap.cache[img] = _this.img;
-              };
-              _this.img.src = img;
-            }
-          } else {
-            _this.img = img;
-            _this.rect = [0, 0, img.width, img.height];
-            _this.width = img.width;
-            _this.height = img.height;
-            Bitmap.cache[img.src] = img;
-          }
-          return _this;
-        }
-
-        _createClass(Bitmap, [{
-          key: 'clone',
-          value: function clone() {
-            var bitmap = new Bitmap(this.img);
-            bitmap.x = this.x;
-            bitmap.y = this.y;
-
-            bitmap.scaleX = this.scaleX;
-            bitmap.scaleY = this.scaleY;
-            bitmap.rotation = this.rotation;
-            bitmap.skewX = this.skewX;
-            bitmap.skewY = this.skewY;
-            bitmap.originX = this.originX;
-            bitmap.originY = this.originY;
-            bitmap.width = this.width;
-            bitmap.height = this.height;
-
-            return bitmap;
-          }
-        }]);
-
-        return Bitmap;
-      }(_displayObject2.default);
-
-      Bitmap.cache = {};
-
-      exports.default = Bitmap;
 
       /***/
     },
@@ -3245,11 +3262,11 @@ var _typeof2 = typeof Symbol === "function" && typeof Symbol.iterator === "symbo
 
       var _graphics2 = _interopRequireDefault(_graphics);
 
-      var _bitmap = __webpack_require__(6);
+      var _bitmap = __webpack_require__(4);
 
       var _bitmap2 = _interopRequireDefault(_bitmap);
 
-      var _text = __webpack_require__(4);
+      var _text = __webpack_require__(5);
 
       var _text2 = _interopRequireDefault(_text);
 
@@ -3257,7 +3274,7 @@ var _typeof2 = typeof Symbol === "function" && typeof Symbol.iterator === "symbo
 
       var _group2 = _interopRequireDefault(_group);
 
-      var _sprite = __webpack_require__(5);
+      var _sprite = __webpack_require__(6);
 
       var _sprite2 = _interopRequireDefault(_sprite);
 
@@ -4397,15 +4414,15 @@ var _typeof2 = typeof Symbol === "function" && typeof Symbol.iterator === "symbo
 
       var _render3 = _interopRequireDefault(_render2);
 
-      var _sprite = __webpack_require__(5);
+      var _sprite = __webpack_require__(6);
 
       var _sprite2 = _interopRequireDefault(_sprite);
 
-      var _bitmap = __webpack_require__(6);
+      var _bitmap = __webpack_require__(4);
 
       var _bitmap2 = _interopRequireDefault(_bitmap);
 
-      var _text = __webpack_require__(4);
+      var _text = __webpack_require__(5);
 
       var _text2 = _interopRequireDefault(_text);
 
@@ -4834,15 +4851,15 @@ var _typeof2 = typeof Symbol === "function" && typeof Symbol.iterator === "symbo
 
       var _event2 = _interopRequireDefault(_event);
 
-      var _sprite = __webpack_require__(5);
+      var _sprite = __webpack_require__(6);
 
       var _sprite2 = _interopRequireDefault(_sprite);
 
-      var _bitmap = __webpack_require__(6);
+      var _bitmap = __webpack_require__(4);
 
       var _bitmap2 = _interopRequireDefault(_bitmap);
 
-      var _text = __webpack_require__(4);
+      var _text = __webpack_require__(5);
 
       var _text2 = _interopRequireDefault(_text);
 
@@ -5090,15 +5107,15 @@ var _typeof2 = typeof Symbol === "function" && typeof Symbol.iterator === "symbo
 
       var _event2 = _interopRequireDefault(_event);
 
-      var _sprite = __webpack_require__(5);
+      var _sprite = __webpack_require__(6);
 
       var _sprite2 = _interopRequireDefault(_sprite);
 
-      var _bitmap = __webpack_require__(6);
+      var _bitmap = __webpack_require__(4);
 
       var _bitmap2 = _interopRequireDefault(_bitmap);
 
-      var _text = __webpack_require__(4);
+      var _text = __webpack_require__(5);
 
       var _text2 = _interopRequireDefault(_text);
 
@@ -6050,7 +6067,7 @@ var _typeof2 = typeof Symbol === "function" && typeof Symbol.iterator === "symbo
 
       var _group2 = _interopRequireDefault(_group);
 
-      var _text = __webpack_require__(4);
+      var _text = __webpack_require__(5);
 
       var _text2 = _interopRequireDefault(_text);
 
@@ -6534,7 +6551,7 @@ var stage = new _cax2.default.Stage(740, 520, 'body');
 //todo 搞个漂亮的样式实现一下
 var excel = new _index2.default([[null, 'A', 'B'], [1, null, null], [2, 2, '123AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA'], [3, null, null], [4, 'sdfsf', null], [5, null, null], [6, null, null], [7, 'center middle', 'bottom right']], {
   colWidth: [40, 200, 200],
-  rowHeight: [20, 30, 30, 30, 50, 60, 60, 60],
+  rowHeight: [20, 30, 100, 30, 50, 60, 60, 60],
   merge: [[0, 3, 2, 1], [1, 5, 1, 2]],
   style: null,
   //todo 自动标注顶部和左边,这里要自动多加一行和一列
@@ -6703,7 +6720,7 @@ var Excel = function (_Group) {
               if (value !== undefined && value !== null) {
 
                 text.x = _this2._getX(style.textAlign, _this2.option.colWidth[x], text.getWidth(), _this2.offset.x[x]);
-                text.y = _this2._getY(style.verticalAlign, _this2.option.rowHeight[y], style.fontSize, _this2.offset.y[y]) + index * style.lineHeight;
+                text.y = _this2._getY(style.verticalAlign, _this2.option.rowAutoHeight[y] || _this2.option.rowHeight[y], style.lineHeight, _this2.offset.y[y]) + index * style.lineHeight - style.textList.length / 2 * style.lineHeight + style.lineHeight / 2;
 
                 _this2.add(text);
               }
@@ -6714,7 +6731,7 @@ var Excel = function (_Group) {
               _this2.mCtx.font = style.fontStyle + ' ' + style.fontWeight + ' ' + style.fontSize + 'px ' + style.fontFamily;
 
               text.x = _this2._getX(style.textAlign, _this2.option.colWidth[x], text.getWidth(), _this2.offset.x[x]);
-              text.y = _this2._getY(style.verticalAlign, _this2.option.rowHeight[y], style.fontSize, _this2.offset.y[y]);
+              text.y = _this2._getY(style.verticalAlign, _this2.option.rowAutoHeight[y] || _this2.option.rowHeight[y], style.fontSize, _this2.offset.y[y]);
               _this2.add(text);
             }
           }
@@ -6761,14 +6778,15 @@ var Excel = function (_Group) {
     }
   }, {
     key: '_getY',
-    value: function _getY(verticalAlign, rowHeight, fontSize, offsetY) {
+    value: function _getY(verticalAlign, rowHeight, lineHeight, offsetY) {
       switch (verticalAlign) {
         case 'middle':
-          return offsetY + rowHeight / 2 - fontSize / 2;
+
+          return offsetY + rowHeight / 2 - lineHeight / 2;
         case 'top':
           return offsetY + 2;
         case 'bottom':
-          return offsetY + rowHeight - fontSize - 2;
+          return offsetY + rowHeight - lineHeight - 2;
       }
     }
   }, {

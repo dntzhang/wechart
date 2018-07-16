@@ -18,7 +18,7 @@ const excel = new Excel([
   [7, 'center middle', 'bottom right']
 ], {
     colWidth: [40, 200, 200],
-    rowHeight: [20, 30, 30, 30, 50, 60, 60, 60],
+    rowHeight: [20, 30, 100, 30, 50, 60, 60, 60],
     merge: [
       [0, 3, 2, 1],
       [1, 5, 1, 2]
