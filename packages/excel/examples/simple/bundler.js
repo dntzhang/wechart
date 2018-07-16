@@ -73,7 +73,7 @@
 var _typeof2 = typeof Symbol === "function" && typeof Symbol.iterator === "symbol" ? function (obj) { return typeof obj; } : function (obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj; };
 
 /*!
- *  cax v1.1.4
+ *  cax v1.1.7
  *  By https://github.com/dntzhang 
  *  Github: https://github.com/dntzhang/cax
  *  MIT Licensed.
@@ -475,6 +475,9 @@ var _typeof2 = typeof Symbol === "function" && typeof Symbol.iterator === "symbo
           _this.clipGraphics = null;
           _this.clipRuleNonzero = true;
           _this.fixed = false;
+
+          _this.absClipGraphics = null;
+          _this.absClipRuleNonzero = true;
           return _this;
         }
 
@@ -576,6 +579,17 @@ var _typeof2 = typeof Symbol === "function" && typeof Symbol.iterator === "symbo
           key: 'unclip',
           value: function unclip() {
             this.clipGraphics = null;
+          }
+        }, {
+          key: 'absClip',
+          value: function absClip(graphics, notClipRuleNonzero) {
+            this.absClipGraphics = graphics;
+            this.absClipRuleNonzero = !notClipRuleNonzero;
+          }
+        }, {
+          key: 'unAbsClip',
+          value: function unAbsClip() {
+            this.absClipGraphics = null;
           }
         }, {
           key: 'cache',
@@ -1455,7 +1469,7 @@ var _typeof2 = typeof Symbol === "function" && typeof Symbol.iterator === "symbo
 
         exports.getImageInWx = getImageInWx;
         function getImageInWx(img, callback) {
-          if (img.indexOf('https://') === -1 && img.indexOf('http://') === -1) {
+          if (img.indexOf('https://') === -1 && img.indexOf('http://') === -1 || img.indexOf('http://tmp/') === 0) {
             wx.getImageInfo({
               src: img,
               success: function success(info) {
@@ -3837,9 +3851,13 @@ var _typeof2 = typeof Symbol === "function" && typeof Symbol.iterator === "symbo
             });
 
             _this.canvas.addEventListener('dblclick', function (evt) {
-              return _this._handlDblClick(evt);
+              return _this._handleDblClick(evt);
             });
             // this.addEvent(this.canvas, "mousewheel", this._handleMouseWheel.bind(this));
+
+            document.addEventListener('contextmenu', function (evt) {
+              return _this._handleContextmenu(evt);
+            });
           }
 
           _this.borderTopWidth = 0;
@@ -3869,8 +3887,13 @@ var _typeof2 = typeof Symbol === "function" && typeof Symbol.iterator === "symbo
         }
 
         _createClass(Stage, [{
-          key: '_handlDblClick',
-          value: function _handlDblClick(evt) {
+          key: '_handleContextmenu',
+          value: function _handleContextmenu(evt) {
+            this._getObjectUnderPoint(evt);
+          }
+        }, {
+          key: '_handleDblClick',
+          value: function _handleDblClick(evt) {
             this._getObjectUnderPoint(evt);
           }
         }, {
@@ -3883,6 +3906,9 @@ var _typeof2 = typeof Symbol === "function" && typeof Symbol.iterator === "symbo
         }, {
           key: '_handleMouseDown',
           value: function _handleMouseDown(evt) {
+            if (this.isWegame) {
+              evt.type = 'touchstart';
+            }
             this.offset = this._getOffset(this.canvas);
             var obj = this._getObjectUnderPoint(evt);
             this.willDragObject = obj;
@@ -3900,6 +3926,9 @@ var _typeof2 = typeof Symbol === "function" && typeof Symbol.iterator === "symbo
         }, {
           key: '_handleMouseUp',
           value: function _handleMouseUp(evt) {
+            if (this.isWegame) {
+              evt.type = 'touchend';
+            }
             var obj = this._getObjectUnderPoint(evt);
             this._mouseUpX = evt.stageX;
             this._mouseUpY = evt.stageY;
@@ -3932,6 +3961,9 @@ var _typeof2 = typeof Symbol === "function" && typeof Symbol.iterator === "symbo
         }, {
           key: '_handleMouseMove',
           value: function _handleMouseMove(evt) {
+            if (this.isWegame) {
+              evt.type = 'touchmove';
+            }
             if (this.disableMoveDetection) return;
             var obj = this._getObjectUnderPoint(evt);
             var mockEvt = new _event2.default();
@@ -4473,9 +4505,6 @@ var _typeof2 = typeof Symbol === "function" && typeof Symbol.iterator === "symbo
         _createClass(CanvasRender, [{
           key: 'clear',
           value: function clear(ctx, width, height) {
-            //restore cache cavans transform
-            ctx.restore();
-
             ctx.clearRect(0, 0, width, height);
           }
         }, {
@@ -4522,6 +4551,16 @@ var _typeof2 = typeof Symbol === "function" && typeof Symbol.iterator === "symbo
               ctx.clip(o.clipRuleNonzero ? 'nonzero' : 'evenodd');
             }
 
+            var oacg = o.absClipGraphics;
+            if (oacg) {
+              ctx.beginPath();
+              oacg._matrix.initialize(1, 0, 0, 1, 0, 0);
+              oacg._matrix.appendTransform(oacg.x, oacg.y, oacg.scaleX, oacg.scaleY, oacg.rotation, oacg.skewX, oacg.skewY, oacg.originX, oacg.originY);
+              ctx.setTransform(oacg._matrix.a, oacg._matrix.b, oacg._matrix.c, oacg._matrix.d, oacg._matrix.tx, oacg._matrix.ty);
+              oacg.render(ctx);
+              ctx.clip(o.absClipRuleNonzero ? 'nonzero' : 'evenodd');
+            }
+
             o.complexCompositeOperation = ctx.globalCompositeOperation = this.getCompositeOperation(o);
             o.complexAlpha = ctx.globalAlpha = this.getAlpha(o, 1);
             if (!cacheRender) {
@@ -4546,8 +4585,7 @@ var _typeof2 = typeof Symbol === "function" && typeof Symbol.iterator === "symbo
                   l = list.length;
               for (var i = 0; i < l; i++) {
                 ctx.save();
-                var target = this._render(ctx, list[i], mtx);
-                if (target) return target;
+                this._render(ctx, list[i], mtx);
                 ctx.restore();
               }
             } else if (o instanceof _graphics2.default) {
@@ -4969,9 +5007,6 @@ var _typeof2 = typeof Symbol === "function" && typeof Symbol.iterator === "symbo
           key: 'hitPixel',
           value: function hitPixel(o, evt) {
             var ctx = this.ctx;
-            //CanvasRenderingContext2D.restore() 是 Canvas 2D API 通过在绘图状态栈中弹出顶端的状态，将 canvas 恢复到最近的保存状态的方法。 如果没有保存状态，此方法不做任何改变。
-            //避免 save restore嵌套导致的 clip 区域影响 clearRect 擦除的区域
-            ctx.restore();
             ctx.clearRect(0, 0, 2, 2);
             var mtx = o._hitMatrix;
             var list = o.children.slice(0),
@@ -5010,6 +5045,16 @@ var _typeof2 = typeof Symbol === "function" && typeof Symbol.iterator === "symbo
               ctx.clip(o.clipRuleNonzero ? 'nonzero' : 'evenodd');
             }
 
+            var oacg = o.absClipGraphics;
+            if (oacg) {
+              ctx.beginPath();
+              oacg._matrix.initialize(1, 0, 0, 1, 0, 0);
+              oacg._matrix.appendTransform(oacg.x, oacg.y, oacg.scaleX, oacg.scaleY, oacg.rotation, oacg.skewX, oacg.skewY, oacg.originX, oacg.originY);
+              ctx.setTransform(oacg._matrix.a, oacg._matrix.b, oacg._matrix.c, oacg._matrix.d, oacg._matrix.tx, oacg._matrix.ty);
+              oacg.render(ctx);
+              ctx.clip(o.absClipRuleNonzero ? 'nonzero' : 'evenodd');
+            }
+
             if (o.cacheCanvas) {
               ctx.setTransform(mtx.a, mtx.b, mtx.c, mtx.d, mtx.tx, mtx.ty);
               ctx.drawImage(o.cacheCanvas, o._cacheData.x, o._cacheData.y);
@@ -5019,8 +5064,8 @@ var _typeof2 = typeof Symbol === "function" && typeof Symbol.iterator === "symbo
               for (var i = l - 1; i >= 0; i--) {
                 ctx.save();
                 var target = this._hitPixel(list[i], evt, mtx);
-                if (target) return target;
                 ctx.restore();
+                if (target) return target;
               }
             } else {
 
@@ -6549,10 +6594,12 @@ var stage = new _cax2.default.Stage(740, 520, 'body');
 
 //todo rows 里面的 text 去掉
 //todo 搞个漂亮的样式实现一下
-var excel = new _index2.default([[null, 'A', 'B'], [1, null, null], [2, 2, '123AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA'], [3, null, null], [4, 'sdfsf', null], [5, null, null], [6, null, null], [7, 'center middle', 'bottom right']], {
-  colWidth: [40, 200, 200],
+
+//不支持击穿边框！！
+var excel = new _index2.default([[null, 'A', 'B', 'C'], [1, null, null, null], [2, '123AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA123AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA123AAAAAAA', '123AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA', ''], [3, null, null, null], [4, 'sdfsf', null, null], [5, null, null, null], [6, null, null, null], [7, 'center middle', 'bottom right', null]], {
+  colWidth: [40, 200, 200, 130],
   rowHeight: [20, 30, 100, 30, 50, 60, 60, 60],
-  merge: [[0, 3, 2, 1], [1, 5, 1, 2]],
+  merge: [[0, 3, 2, 1], [1, 1, 1, 2]],
   style: null,
   //todo 自动标注顶部和左边,这里要自动多加一行和一列
   autoLabelX: false,
@@ -6561,13 +6608,14 @@ var excel = new _index2.default([[null, 'A', 'B'], [1, null, null], [2, 2, '123A
   hideGrid: false
 });
 
-excel.x = 30;
-excel.y = 30;
+// excel.x = 30
+// excel.y = 30
 //excel.hideRows([1,2])
 //excel.hideCols([1])
 
 stage.add(excel);
-stage.update();
+
+_cax2.default.tick(stage.update.bind(stage));
 
 /***/ }),
 /* 2 */
@@ -6646,16 +6694,12 @@ var Excel = function (_Group) {
     _this.gridColor = option.gridColor || '#cccccc';
 
     _this.grid = new Graphics();
-
     _this.mCtx = document.createElement('canvas').getContext('2d');
-
     _this.width = arrSum(option.colWidth);
-    _this.height = arrSum(option.rowHeight);
-
     _this._initStyle();
 
     _this._processOption(_this.option);
-
+    _this.height = _this.getHeight();
     _this.offset = _this._processOffset(option);
 
     _this.renderGrid();
@@ -6730,6 +6774,11 @@ var Excel = function (_Group) {
             if (value !== undefined && value !== null) {
               _this2.mCtx.font = style.fontStyle + ' ' + style.fontWeight + ' ' + style.fontSize + 'px ' + style.fontFamily;
 
+              var clipPath = new _cax2.default.Graphics();
+
+              clipPath.rect(_this2.x + _this2.offset.x[x], _this2.y + _this2.offset.y[y], _this2.option.colWidth[x], _this2.option.rowAutoHeight[y] || _this2.option.rowHeight[y]);
+              text.absClip(clipPath);
+
               text.x = _this2._getX(style.textAlign, _this2.option.colWidth[x], text.getWidth(), _this2.offset.x[x]);
               text.y = _this2._getY(style.verticalAlign, _this2.option.rowAutoHeight[y] || _this2.option.rowHeight[y], style.fontSize, _this2.offset.y[y]);
               _this2.add(text);
@@ -6757,7 +6806,7 @@ var Excel = function (_Group) {
         verticalAlign: "middle",
         lineHeight: 15,
         //TODO DEFAULT
-        textBreak: 'auto' //default auto break
+        textBreak: 'auto' //default auto 
       };
       if (this.option.style && this.option.style[row] && this.option.style[row][col]) {
         return Object.assign(defaultStyle, this.option.style[row][col]);
@@ -6815,131 +6864,42 @@ var Excel = function (_Group) {
       this.add(this.grid);
     }
   }, {
-    key: 'renderText2',
-    value: function renderText2(cell, x, y, data) {
-      var _this3 = this;
-
-      var offsetX = (data.offsetX[x] + config.rowHeaderWidth) * config.scale;
-      var offsetY = (data.offsetY[y] + config.cellHeight) * config.scale;
-      var width = data.colHeader[x] * config.scale;
-
-      //data.rowHeight[y]是被auto撑高了的行高
-      var height = (data.rowHeight[y] || data.rowHeader[y]) * config.scale;
-
-      if (cell.merge === true) {
-        return;
-      } else if (cell.merge) {
-
-        for (var i = 1; i < cell.merge[2]; i++) {
-          width += data.colHeader[x + i];
-        }
-        for (var j = 1; j < cell.merge[3]; j++) {
-          height += data.rowHeight[y + j] || data.rowHeader[y + j];
-        }
-      }
-
-      this.ctx.save();
-
-      this.ctx.font = cell.fontSize * config.scale + "px " + cell.fontFamily;
-      this.ctx.fillStyle = cell.color;
-      this.ctx.textBaseline = cell.verticalAlign;
-
-      if (cell.textList) {
-        var listLen = cell.textList.length;
-        cell.textList.forEach(function (text, index) {
-          var textWidth = _this3.ctx.measureText(text).width;
-          var textX = offsetX + _this3._computeTextX(width, textWidth, cell.textAlign);
-          if (cell.verticalAlign === 'top') {
-            _this3.ctx.fillText(text, textX, offsetY + 5 + index * cell.fontSize * config.scale);
-          } else if (cell.verticalAlign === 'bottom') {
-            _this3.ctx.fillText(text, textX, offsetY + height - 5 + index * cell.fontSize * config.scale - (listLen - 1) * cell.fontSize * config.scale);
-          } else {
-            _this3.ctx.fillText(text, textX, offsetY + height / 2 + index * cell.fontSize * config.scale - listLen * cell.fontSize * config.scale / 2);
-          }
-        });
-      } else if (cell.text) {
-        var textWidth = this.ctx.measureText(cell.text).width;
-        var textX = offsetX + this._computeTextX(width, textWidth, cell.textAlign);
-        if (cell.textBreak === 'hidden') {
-          this.ctx.rect(offsetX, offsetY, width, height);
-          this.ctx.clip();
-        } else if (cell.clip) {
-          this.ctx.rect(offsetX + cell.clip[0] * config.scale, offsetY + cell.clip[1] * config.scale, cell.clip[2] * config.scale, height);
-          this.ctx.clip();
-        }
-
-        if (cell.verticalAlign === 'top') {
-          this.ctx.fillText(cell.text, textX, offsetY + 5);
-        } else if (cell.verticalAlign === 'bottom') {
-          this.ctx.fillText(cell.text, textX, offsetY + height - 5);
-        } else {
-          this.ctx.fillText(cell.text, textX, offsetY + height / 2);
-        }
-      }
-
-      this.ctx.restore();
-    }
-  }, {
     key: '_processOption',
     value: function _processOption(option) {
-      var _this4 = this;
+      var _this3 = this;
 
       option.rowAutoHeight = {};
       option.style.forEach(function (row, y) {
         var maxHeight = option.rowHeight[y];
         row.forEach(function (cell, x) {
-          var dataRow = _this4.data[y];
+          var dataRow = _this3.data[y];
           var text = dataRow[x];
-          _this4.mCtx.font = cell.fontSize + "px " + cell.fontFamily;
-          var textWidth = _this4.mCtx.measureText(text).width;
+          _this3.mCtx.font = cell.fontSize + "px " + cell.fontFamily;
+          var textWidth = _this3.mCtx.measureText(text).width;
           var cellWidth = option.colWidth[x];
-
-          if (cell.textBreak === 'default') {
-
-            var textX = _this4._computeTextX(cellWidth, textWidth, cell.textAlign);
-            var clip = [0, 0, cellWidth, option.rowAutoHeight[y]];
-            if (textX < 0 && dataRow[x - 1].text === null) {
-              cell.lb = 0;
-              var begin = x - 1;
-              row[begin].rb = 0;
-              clip[0] -= option.colWidth[begin];
-              clip[2] += option.colWidth[begin];
-              while (textX + option.colWidth[begin] > 0 && dataRow[begin].text === null && row[begin - 1]) {
-                row[begin].lb = 0;
-                row[begin - 1].rb = 0;
-                clip[0] -= option.colWidth[begin - 1];
-                clip[2] += option.colWidth[begin - 1];
-                begin--;
-              }
-            }
-
-            if (textX + textWidth > cellWidth && dataRow[x + 1] && dataRow[x + 1].text === null) {
-              cell.rb = 0;
-              var _begin = x + 1;
-              row[_begin].lb = 0;
-              clip[2] += option.colWidth[_begin];
-              while (textX + textWidth - option.colWidth[_begin] < 0 && dataRow[_begin].text === null && row[_begin + 1]) {
-                row[_begin].rb = 0;
-                row[_begin + 1].lb = 0;
-                clip[2] += option.colWidth[_begin + 1];
-                _begin++;
-              }
-            }
-
-            cell.clip = clip;
-          } else if (cell.textBreak === 'auto' && textWidth > cellWidth) {
+          if (cell.textBreak === 'auto' && textWidth > cellWidth) {
 
             var step = Math.round(text.length * (cellWidth - 30) / textWidth / 2);
 
-            cell.textList = _this4.stringSplit(text, step);
+            cell.textList = _this3.stringSplit(text, step);
 
             maxHeight = Math.max(cell.textList.length * cell.lineHeight + 8, maxHeight);
           }
           option.rowAutoHeight[y] = maxHeight;
-
-          _this4.height += maxHeight - option.rowHeight[y];
         });
       });
+    }
+  }, {
+    key: 'getHeight',
+    value: function getHeight() {
+      var _this4 = this;
+
+      var sum = 0;
+      this.option.rowHeight.forEach(function (height, y) {
+        sum += _this4.option.rowAutoHeight[y] ? _this4.option.rowAutoHeight[y] : height;
+      });
+
+      return sum;
     }
   }, {
     key: 'stringSplit',
@@ -6958,17 +6918,6 @@ var Excel = function (_Group) {
         }
       }
       return arr;
-    }
-  }, {
-    key: '_computeTextX',
-    value: function _computeTextX(cellWidth, textWidth, textAlign) {
-      if (textAlign === 'left') {
-        return 4;
-      } else if (textAlign === 'center') {
-        return (cellWidth - textWidth) / 2;
-      } else {
-        return cellWidth - textWidth - 4;
-      }
     }
   }]);
 

@@ -17,22 +17,12 @@ class Excel extends Group {
     this.gridColor = option.gridColor || '#cccccc'
 
     this.grid = new Graphics()
-
-
-
     this.mCtx = document.createElement('canvas').getContext('2d')
-
-
-
-
     this.width = arrSum(option.colWidth)
-    this.height = arrSum(option.rowHeight)
-
-
     this._initStyle()
 
     this._processOption(this.option)
-
+    this.height = this.getHeight()
     this.offset = this._processOffset(option)
 
     this.renderGrid()
@@ -104,7 +94,11 @@ class Excel extends Group {
           if (value !== undefined && value !== null) {
             this.mCtx.font = style.fontStyle + ' ' + style.fontWeight + ' ' + style.fontSize + 'px ' + style.fontFamily
 
+            const clipPath = new cax.Graphics()
 
+            clipPath.rect(this.x+this.offset.x[x], this.y+this.offset.y[y], this.option.colWidth[x],  this.option.rowAutoHeight[y] || this.option.rowHeight[y])
+            text.absClip(clipPath)
+                    
             text.x = this._getX(style.textAlign, this.option.colWidth[x], text.getWidth(), this.offset.x[x])
             text.y = this._getY(style.verticalAlign, this.option.rowAutoHeight[y] || this.option.rowHeight[y], style.fontSize, this.offset.y[y])
             this.add(text)
@@ -132,7 +126,7 @@ class Excel extends Group {
       verticalAlign: "middle",
       lineHeight: 15,
       //TODO DEFAULT
-      textBreak: 'auto' //default auto break
+      textBreak: 'auto' //default auto 
     }
     if (this.option.style && this.option.style[row] && this.option.style[row][col]) {
       return Object.assign(defaultStyle, this.option.style[row][col])
@@ -188,75 +182,6 @@ class Excel extends Group {
     this.add(this.grid)
   }
 
-  renderText2(cell, x, y, data) {
-    const offsetX = (data.offsetX[x] + config.rowHeaderWidth) * config.scale
-    const offsetY = (data.offsetY[y] + config.cellHeight) * config.scale
-    let width = data.colHeader[x] * config.scale
-
-    //data.rowHeight[y]是被auto撑高了的行高
-    let height = (data.rowHeight[y] || data.rowHeader[y]) * config.scale
-
-    if (cell.merge === true) {
-      return
-    } else if (cell.merge) {
-
-      for (let i = 1; i < cell.merge[2]; i++) {
-        width += data.colHeader[x + i]
-      }
-      for (let j = 1; j < cell.merge[3]; j++) {
-        height += data.rowHeight[y + j] || data.rowHeader[y + j]
-      }
-
-    }
-
-
-
-
-    this.ctx.save()
-
-    this.ctx.font = cell.fontSize * config.scale + "px " + cell.fontFamily;
-    this.ctx.fillStyle = cell.color
-    this.ctx.textBaseline = cell.verticalAlign
-
-
-
-
-    if (cell.textList) {
-      const listLen = cell.textList.length
-      cell.textList.forEach((text, index) => {
-        const textWidth = this.ctx.measureText(text).width
-        const textX = offsetX + this._computeTextX(width, textWidth, cell.textAlign)
-        if (cell.verticalAlign === 'top') {
-          this.ctx.fillText(text, textX, offsetY + 5 + index * cell.fontSize * config.scale)
-        } else if (cell.verticalAlign === 'bottom') {
-          this.ctx.fillText(text, textX, offsetY + height - 5 + index * cell.fontSize * config.scale - (listLen - 1) * cell.fontSize * config.scale)
-        } else {
-          this.ctx.fillText(text, textX, offsetY + height / 2 + index * cell.fontSize * config.scale - listLen * cell.fontSize * config.scale / 2)
-        }
-      })
-    } else if (cell.text) {
-      const textWidth = this.ctx.measureText(cell.text).width
-      const textX = offsetX + this._computeTextX(width, textWidth, cell.textAlign)
-      if (cell.textBreak === 'hidden') {
-        this.ctx.rect(offsetX, offsetY, width, height)
-        this.ctx.clip()
-      } else if (cell.clip) {
-        this.ctx.rect(offsetX + cell.clip[0] * config.scale, offsetY + cell.clip[1] * config.scale, cell.clip[2] * config.scale, height)
-        this.ctx.clip()
-      }
-
-      if (cell.verticalAlign === 'top') {
-        this.ctx.fillText(cell.text, textX, offsetY + 5)
-      } else if (cell.verticalAlign === 'bottom') {
-        this.ctx.fillText(cell.text, textX, offsetY + height - 5)
-      } else {
-        this.ctx.fillText(cell.text, textX, offsetY + height / 2)
-      }
-    }
-
-    this.ctx.restore()
-
-  }
 
   _processOption(option) {
     option.rowAutoHeight = {}
@@ -268,42 +193,7 @@ class Excel extends Group {
         this.mCtx.font = cell.fontSize + "px " + cell.fontFamily
         const textWidth = this.mCtx.measureText(text).width
         const cellWidth = option.colWidth[x]
-
-        if (cell.textBreak === 'default') {
-
-          const textX = this._computeTextX(cellWidth, textWidth, cell.textAlign)
-          const clip = [0, 0, cellWidth, option.rowAutoHeight[y]]
-          if (textX < 0 && dataRow[x - 1].text === null) {
-            cell.lb = 0
-            let begin = x - 1
-            row[begin].rb = 0
-            clip[0] -= option.colWidth[begin]
-            clip[2] += option.colWidth[begin]
-            while (textX + option.colWidth[begin] > 0 && dataRow[begin].text === null && row[begin - 1]) {
-              row[begin].lb = 0
-              row[begin - 1].rb = 0
-              clip[0] -= option.colWidth[begin - 1]
-              clip[2] += option.colWidth[begin - 1]
-              begin--
-            }
-          }
-
-
-          if (textX + textWidth > cellWidth && dataRow[x + 1] && dataRow[x + 1].text === null) {
-            cell.rb = 0
-            let begin = x + 1
-            row[begin].lb = 0
-            clip[2] += option.colWidth[begin]
-            while (textX + textWidth - option.colWidth[begin] < 0 && dataRow[begin].text === null && row[begin + 1]) {
-              row[begin].rb = 0
-              row[begin + 1].lb = 0
-              clip[2] += option.colWidth[begin + 1]
-              begin++
-            }
-          }
-
-          cell.clip = clip
-        } else if (cell.textBreak === 'auto' && textWidth > cellWidth) {
+        if (cell.textBreak === 'auto' && textWidth > cellWidth) {
 
 
 
@@ -314,13 +204,21 @@ class Excel extends Group {
           maxHeight = Math.max(cell.textList.length * cell.lineHeight + 8, maxHeight)
         }
         option.rowAutoHeight[y] = maxHeight
-
-        this.height += (maxHeight - option.rowHeight[y])
+      
 
       })
     })
   }
 
+  getHeight(){
+    let sum = 0
+    this.option.rowHeight.forEach((height,y)=>{
+      sum+=( this.option.rowAutoHeight[y]? this.option.rowAutoHeight[y]:height)
+    })
+
+    return sum
+  }
+  
   stringSplit(str, len) {
     let arr = [],
       offset = 0,
@@ -338,15 +236,7 @@ class Excel extends Group {
     return arr
   }
 
-  _computeTextX(cellWidth, textWidth, textAlign) {
-    if (textAlign === 'left') {
-      return 4
-    } else if (textAlign === 'center') {
-      return (cellWidth - textWidth) / 2
-    } else {
-      return cellWidth - textWidth - 4
-    }
-  }
+ 
 }
 
 function arrSum(arr) {
