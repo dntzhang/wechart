@@ -30,6 +30,8 @@ class Excel extends Group {
     this.renderGrid()
     this.renderText()
 
+    this.borderLevel = 0
+
   }
 
   toColumnName(num) {
@@ -98,9 +100,9 @@ class Excel extends Group {
 
             const clipPath = new cax.Graphics()
 
-            clipPath.rect(this.x+this.offset.x[x], this.y+this.offset.y[y], this.option.colWidth[x],  this.option.rowAutoHeight[y] || this.option.rowHeight[y])
+            clipPath.rect(this.x + this.offset.x[x], this.y + this.offset.y[y], this.option.colWidth[x], this.option.rowAutoHeight[y] || this.option.rowHeight[y])
             text.absClip(clipPath)
-                    
+
             text.x = this._getX(style.textAlign, this.option.colWidth[x], text.getWidth(), this.offset.x[x])
             text.y = this._getY(style.verticalAlign, this.option.rowAutoHeight[y] || this.option.rowHeight[y], style.fontSize, this.offset.y[y])
             this.textGroup.add(text)
@@ -111,11 +113,63 @@ class Excel extends Group {
     })
   }
 
-  update(){
-   
+  update() {
+
     this.textGroup.empty()
     this.renderText()
     this.renderGrid()
+
+  }
+
+  setLeftBorder(row, col, color) {
+    this.option.style[row][col].borderLeft = {
+      color: color,
+      level: this.borderLevel++
+    }
+  }
+
+  setRightBorder(row, col, color) {
+    this.option.style[row][col].borderRight = {
+      color: color,
+      level: this.borderLevel++
+    }
+  }
+
+  setTopBorder(row, col, color) {
+    this.option.style[row][col].borderTop = {
+      color: color,
+      level: this.borderLevel++
+    }
+  }
+
+  setBottomBorder(row, col, color) {
+    this.option.style[row][col].borderBottom = {
+      color: color,
+      level: this.borderLevel++
+    }
+  }
+
+  setBorder(row, col, color) {
+
+    this.option.style[row][col].borderLeft = {
+      color: color,
+      level: this.borderLevel
+    }
+
+    this.option.style[row][col].borderRight = {
+      color: color,
+      level: this.borderLevel
+    }
+
+    this.option.style[row][col].borderTop = {
+      color: color,
+      level: this.borderLevel
+    }
+
+    this.option.style[row][col].borderBottom = {
+      color: color,
+      level: this.borderLevel++
+    }
 
   }
 
@@ -170,28 +224,241 @@ class Excel extends Group {
 
 
   renderGrid() {
-    this.grid.clear().beginPath().strokeStyle(this.gridColor)
 
-    this.grid.moveTo(0, 0).lineTo(this.width, 0)
-    let currentY = 0, currentX = 0
+
+
+
+
+    this.grid.clear()
     for (let i = 0; i < this.rowCount; i++) {
 
-      currentY += this.option.rowAutoHeight[i] || this.option.rowHeight[i]
-      this.grid.moveTo(0, currentY).lineTo(this.width, currentY)
+      for (let j = 0; j < this.colCount; j++) {
+
+
+        const h = this.option.rowAutoHeight[i] || this.option.rowHeight[i]
+        if (this._borderCheck(i, j, 'left')) {
+          this.grid.beginPath().moveTo(this.offset.x[j], this.offset.y[i]).lineTo(this.offset.x[j], this.offset.y[i] + h)
+          let style = this._getBorderColor(i, j, 'left')
+          if (style) {
+            this.grid.strokeStyle(style.color)
+          } else {
+            this.grid.strokeStyle(this.gridColor)
+
+          }
+          this.grid.stroke()
+        }
+
+
+
+        if (this._borderCheck(i, j, 'top')) {
+          this.grid.beginPath().moveTo(this.offset.x[j], this.offset.y[i]).lineTo(this.offset.x[j] + this.option.colWidth[j], this.offset.y[i])
+          let style = this._getBorderColor(i, j, 'top')
+          if (style) {
+            this.grid.strokeStyle(style.color)
+          } else {
+            this.grid.strokeStyle(this.gridColor)
+
+          }
+          this.grid.stroke()
+        }
+
+
+        if (j === this.colCount - 1) {
+          if (this._borderCheck(i, j, 'right')) {
+            this.grid.beginPath().moveTo(this.offset.x[j] + this.option.colWidth[j], this.offset.y[i]).lineTo(this.offset.x[j] + this.option.colWidth[j], this.offset.y[i] + h)
+            let style = this._getBorderColor(i, j, 'right')
+            if (style) {
+
+              this.grid.strokeStyle(style.color)
+            } else {
+              this.grid.strokeStyle(this.gridColor)
+            }
+            this.grid.stroke()
+          }
+        }
+
+        if (i === this.rowCount - 1) {
+          if (this._borderCheck(i, j, 'bottom')) {
+            this.grid.beginPath().moveTo(this.offset.x[j], this.offset.y[i] + h).lineTo(this.offset.x[j] + this.option.colWidth[j], this.offset.y[i] + h)
+            let style = this._getBorderColor(i, j, 'bottom')
+            if (style) {
+              this.grid.strokeStyle(style.color)
+            } else {
+              this.grid.strokeStyle(this.gridColor)
+            }
+            this.grid.stroke()
+          }
+        }
+
+      }
     }
-
-    this.grid.moveTo(0, 0).lineTo(0, this.height)
-    for (let i = 0; i < this.colCount; i++) {
-
-      currentX += this.option.colWidth[i]
-      this.grid.moveTo(currentX, 0).lineTo(currentX, this.height)
-    }
-
-    this.grid.stroke()
 
     this.add(this.grid)
+
   }
 
+  _getBorderColor(y, x, dir) {
+    let current, next
+    switch (dir) {
+      case 'top':
+
+        current = this.option.style[y][x]
+        if (this.option.style[y - 1]) {
+          next = this.option.style[y - 1][x]
+        }
+
+        if (next) {
+          if (!current.borderTop && !next.borderBottom) {
+            return null
+          } else if (current.borderTop && !next.borderBottom) {
+            return current.borderTop
+          } else if (!current.borderTop && next.borderBottom) {
+            return next.borderBottom
+          } else if (next.borderBottom.level > current.borderTop.level) {
+            return next.borderBottom
+          } else {
+            return current.borderTop
+          }
+
+        } else {
+          return current.borderTop
+        }
+
+
+        break
+
+      case 'bottom':
+
+        current = this.option.style[y][x]
+        if (this.option.style[y + 1]) {
+          next = this.option.style[y + 1][x]
+        }
+
+
+        if (next) {
+          if (!current.borderBottom && !next.borderTop) {
+            return null
+          } else if (current.borderBottom && !next.borderTop) {
+            return current.borderBottom
+          } else if (!current.borderBottom && next.borderTop) {
+            return next.borderTop
+          } else if (next.borderTop.level > current.borderBottom.level) {
+            return next.borderTop
+          } else {
+            return current.borderBottom
+          }
+
+        } else {
+          return current.borderBottom
+        }
+
+
+        break
+
+      case 'left':
+
+
+        current = this.option.style[y][x]
+
+        next = this.option.style[y][x - 1]
+
+        if (next) {
+          if (!current.borderLeft && !next.borderRight) {
+            return null
+          } else if (current.borderLeft && !next.borderRight) {
+            return current.borderLeft
+          } else if (!current.borderLeft && next.borderRight) {
+            return next.borderRight
+          } else if (next.borderRight.level > current.borderLeft.level) {
+            return next.borderRight
+          } else {
+            return current.borderLeft
+          }
+
+        } else {
+          return current.borderLeft
+        }
+
+
+
+
+        break
+
+      case 'right':
+        current = this.option.style[y][x]
+
+        next = this.option.style[y][x + 1]
+
+        if (next) {
+          if (!current.borderRight && !next.borderLeft) {
+            return null
+          } else if (current.borderRight && !next.borderLeft) {
+            return current.borderRight
+          } else if (!current.borderRight && next.borderLeft) {
+            return next.borderLeft
+          } else if (next.borderLeft.level > current.borderLeft1.level) {
+            return next.borderLeft
+          } else {
+            return current.borderRight
+          }
+
+        } else {
+          return current.borderRight
+        }
+
+
+        break
+    }
+
+  }
+
+
+  _borderCheck(y, x, dir) {
+    let result = true
+    this.option.merge.every(rect => {
+
+      if (x >= rect[0] && x <= rect[0] + rect[2] - 1 && y >= rect[1] && y <= rect[1] + rect[3] - 1) {
+        if (x === rect[0] && dir === 'right') {
+
+          result = false
+
+          return false
+        }
+
+        if (x === rect[0] + rect[2] - 1 && dir === 'left') {
+
+          result = false
+          return false
+        }
+
+        if (x > rect[0] && x < rect[0] + rect[2] - 1 && (dir === 'left' || dir === 'right')) {
+
+          result = false
+          return false
+        }
+
+        if (y === rect[1] && dir === 'bottom') {
+          result = false
+          return false
+        }
+
+        if (y === rect[1] + rect[3] - 1 && dir === 'top') {
+
+          result = false
+          return false
+        }
+
+        if (y > rect[1] && y < rect[1] + rect[3] - 1 && (dir === 'top' || dir === 'bottom')) {
+
+          result = false
+          return false
+        }
+      }
+    })
+
+    return result
+
+  }
 
   _processOption(option) {
     option.rowAutoHeight = {}
@@ -214,16 +481,16 @@ class Excel extends Group {
           maxHeight = Math.max(cell.textList.length * cell.lineHeight + 8, maxHeight)
         }
         option.rowAutoHeight[y] = maxHeight
-      
+
 
       })
     })
   }
 
-  getHeight(){
+  getHeight() {
     let sum = 0
-    this.option.rowHeight.forEach((height,y)=>{
-      sum+=( this.option.rowAutoHeight[y]? this.option.rowAutoHeight[y]:height)
+    this.option.rowHeight.forEach((height, y) => {
+      sum += (this.option.rowAutoHeight[y] ? this.option.rowAutoHeight[y] : height)
     })
 
     return sum
@@ -246,7 +513,7 @@ class Excel extends Group {
     return arr
   }
 
- 
+
 }
 
 function arrSum(arr) {

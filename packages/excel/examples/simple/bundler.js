@@ -6592,14 +6592,12 @@ function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { de
 
 var stage = new _cax2.default.Stage(740, 520, 'body');
 
-//todo rows 里面的 text 去掉
 //todo 搞个漂亮的样式实现一下
 
-//不支持击穿边框！！
-var excel = new _index2.default([[null, 'A', 'B', 'C'], [1, null, null, null], [2, '123AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA123AAAAAAA', '123AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA', ''], [3, null, null, null], [4, 'sdfsf', null, null], [5, null, null, null], [6, null, null, null], [7, 'center middle', 'bottom right', null]], {
+var excel = new _index2.default([[null, 'A', 'B', 'C'], [1, null, null, null], [2, '123AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA123AAAAAAA', '123AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA', ''], [3, 'merge1', 'merge2', null], [4, 'merge3', 'merge3', null], [5, null, null, null], [6, null, null, null], [7, 'center middle', 'bottom right', null]], {
   colWidth: [40, 200, 200, 130],
   rowHeight: [20, 30, 100, 30, 50, 60, 60, 60],
-  merge: [[0, 3, 2, 1], [1, 1, 1, 2]],
+  merge: [[1, 3, 2, 2]],
   style: null,
   //todo 自动标注顶部和左边,这里要自动多加一行和一列
   autoLabelX: false,
@@ -6610,6 +6608,10 @@ var excel = new _index2.default([[null, 'A', 'B', 'C'], [1, null, null, null], [
 
 excel.x = 20;
 excel.y = 20;
+
+excel.setBorder(1, 2, 'green');
+excel.setBorder(1, 1, 'red');
+
 excel.update();
 //excel.hideRows([1,2])
 //excel.hideCols([1])
@@ -6708,6 +6710,8 @@ var Excel = function (_Group) {
     _this.renderGrid();
     _this.renderText();
 
+    _this.borderLevel = 0;
+
     return _this;
   }
 
@@ -6799,6 +6803,62 @@ var Excel = function (_Group) {
       this.renderGrid();
     }
   }, {
+    key: 'setLeftBorder',
+    value: function setLeftBorder(row, col, color) {
+      this.option.style[row][col].borderLeft = {
+        color: color,
+        level: this.borderLevel++
+      };
+    }
+  }, {
+    key: 'setRightBorder',
+    value: function setRightBorder(row, col, color) {
+      this.option.style[row][col].borderRight = {
+        color: color,
+        level: this.borderLevel++
+      };
+    }
+  }, {
+    key: 'setTopBorder',
+    value: function setTopBorder(row, col, color) {
+      this.option.style[row][col].borderTop = {
+        color: color,
+        level: this.borderLevel++
+      };
+    }
+  }, {
+    key: 'setBottomBorder',
+    value: function setBottomBorder(row, col, color) {
+      this.option.style[row][col].borderBottom = {
+        color: color,
+        level: this.borderLevel++
+      };
+    }
+  }, {
+    key: 'setBorder',
+    value: function setBorder(row, col, color) {
+
+      this.option.style[row][col].borderLeft = {
+        color: color,
+        level: this.borderLevel
+      };
+
+      this.option.style[row][col].borderRight = {
+        color: color,
+        level: this.borderLevel
+      };
+
+      this.option.style[row][col].borderTop = {
+        color: color,
+        level: this.borderLevel
+      };
+
+      this.option.style[row][col].borderBottom = {
+        color: color,
+        level: this.borderLevel++
+      };
+    }
+  }, {
     key: 'getStyle',
     value: function getStyle(row, col) {
 
@@ -6852,27 +6912,216 @@ var Excel = function (_Group) {
   }, {
     key: 'renderGrid',
     value: function renderGrid() {
-      this.grid.clear().beginPath().strokeStyle(this.gridColor);
 
-      this.grid.moveTo(0, 0).lineTo(this.width, 0);
-      var currentY = 0,
-          currentX = 0;
+      this.grid.clear();
       for (var i = 0; i < this.rowCount; i++) {
 
-        currentY += this.option.rowAutoHeight[i] || this.option.rowHeight[i];
-        this.grid.moveTo(0, currentY).lineTo(this.width, currentY);
+        for (var j = 0; j < this.colCount; j++) {
+
+          var h = this.option.rowAutoHeight[i] || this.option.rowHeight[i];
+          if (this._borderCheck(i, j, 'left')) {
+            this.grid.beginPath().moveTo(this.offset.x[j], this.offset.y[i]).lineTo(this.offset.x[j], this.offset.y[i] + h);
+            var style = this._getBorderColor(i, j, 'left');
+            if (style) {
+              this.grid.strokeStyle(style.color);
+            } else {
+              this.grid.strokeStyle(this.gridColor);
+            }
+            this.grid.stroke();
+          }
+
+          if (this._borderCheck(i, j, 'top')) {
+            this.grid.beginPath().moveTo(this.offset.x[j], this.offset.y[i]).lineTo(this.offset.x[j] + this.option.colWidth[j], this.offset.y[i]);
+            var _style = this._getBorderColor(i, j, 'top');
+            if (_style) {
+              this.grid.strokeStyle(_style.color);
+            } else {
+              this.grid.strokeStyle(this.gridColor);
+            }
+            this.grid.stroke();
+          }
+
+          if (j === this.colCount - 1) {
+            if (this._borderCheck(i, j, 'right')) {
+              this.grid.beginPath().moveTo(this.offset.x[j] + this.option.colWidth[j], this.offset.y[i]).lineTo(this.offset.x[j] + this.option.colWidth[j], this.offset.y[i] + h);
+              var _style2 = this._getBorderColor(i, j, 'right');
+              if (_style2) {
+
+                this.grid.strokeStyle(_style2.color);
+              } else {
+                this.grid.strokeStyle(this.gridColor);
+              }
+              this.grid.stroke();
+            }
+          }
+
+          if (i === this.rowCount - 1) {
+            if (this._borderCheck(i, j, 'bottom')) {
+              this.grid.beginPath().moveTo(this.offset.x[j], this.offset.y[i] + h).lineTo(this.offset.x[j] + this.option.colWidth[j], this.offset.y[i] + h);
+              var _style3 = this._getBorderColor(i, j, 'bottom');
+              if (_style3) {
+                this.grid.strokeStyle(_style3.color);
+              } else {
+                this.grid.strokeStyle(this.gridColor);
+              }
+              this.grid.stroke();
+            }
+          }
+        }
       }
-
-      this.grid.moveTo(0, 0).lineTo(0, this.height);
-      for (var _i2 = 0; _i2 < this.colCount; _i2++) {
-
-        currentX += this.option.colWidth[_i2];
-        this.grid.moveTo(currentX, 0).lineTo(currentX, this.height);
-      }
-
-      this.grid.stroke();
 
       this.add(this.grid);
+    }
+  }, {
+    key: '_getBorderColor',
+    value: function _getBorderColor(y, x, dir) {
+      var current = void 0,
+          next = void 0;
+      switch (dir) {
+        case 'top':
+
+          current = this.option.style[y][x];
+          if (this.option.style[y - 1]) {
+            next = this.option.style[y - 1][x];
+          }
+
+          if (next) {
+            if (!current.borderTop && !next.borderBottom) {
+              return null;
+            } else if (current.borderTop && !next.borderBottom) {
+              return current.borderTop;
+            } else if (!current.borderTop && next.borderBottom) {
+              return next.borderBottom;
+            } else if (next.borderBottom.level > current.borderTop.level) {
+              return next.borderBottom;
+            } else {
+              return current.borderTop;
+            }
+          } else {
+            return current.borderTop;
+          }
+
+          break;
+
+        case 'bottom':
+
+          current = this.option.style[y][x];
+          if (this.option.style[y + 1]) {
+            next = this.option.style[y + 1][x];
+          }
+
+          if (next) {
+            if (!current.borderBottom && !next.borderTop) {
+              return null;
+            } else if (current.borderBottom && !next.borderTop) {
+              return current.borderBottom;
+            } else if (!current.borderBottom && next.borderTop) {
+              return next.borderTop;
+            } else if (next.borderTop.level > current.borderBottom.level) {
+              return next.borderTop;
+            } else {
+              return current.borderBottom;
+            }
+          } else {
+            return current.borderBottom;
+          }
+
+          break;
+
+        case 'left':
+
+          current = this.option.style[y][x];
+
+          next = this.option.style[y][x - 1];
+
+          if (next) {
+            if (!current.borderLeft && !next.borderRight) {
+              return null;
+            } else if (current.borderLeft && !next.borderRight) {
+              return current.borderLeft;
+            } else if (!current.borderLeft && next.borderRight) {
+              return next.borderRight;
+            } else if (next.borderRight.level > current.borderLeft.level) {
+              return next.borderRight;
+            } else {
+              return current.borderLeft;
+            }
+          } else {
+            return current.borderLeft;
+          }
+
+          break;
+
+        case 'right':
+          current = this.option.style[y][x];
+
+          next = this.option.style[y][x + 1];
+
+          if (next) {
+            if (!current.borderRight && !next.borderLeft) {
+              return null;
+            } else if (current.borderRight && !next.borderLeft) {
+              return current.borderRight;
+            } else if (!current.borderRight && next.borderLeft) {
+              return next.borderLeft;
+            } else if (next.borderLeft.level > current.borderLeft1.level) {
+              return next.borderLeft;
+            } else {
+              return current.borderRight;
+            }
+          } else {
+            return current.borderRight;
+          }
+
+          break;
+      }
+    }
+  }, {
+    key: '_borderCheck',
+    value: function _borderCheck(y, x, dir) {
+      var result = true;
+      this.option.merge.every(function (rect) {
+
+        if (x >= rect[0] && x <= rect[0] + rect[2] - 1 && y >= rect[1] && y <= rect[1] + rect[3] - 1) {
+          if (x === rect[0] && dir === 'right') {
+
+            result = false;
+
+            return false;
+          }
+
+          if (x === rect[0] + rect[2] - 1 && dir === 'left') {
+
+            result = false;
+            return false;
+          }
+
+          if (x > rect[0] && x < rect[0] + rect[2] - 1 && (dir === 'left' || dir === 'right')) {
+
+            result = false;
+            return false;
+          }
+
+          if (y === rect[1] && dir === 'bottom') {
+            result = false;
+            return false;
+          }
+
+          if (y === rect[1] + rect[3] - 1 && dir === 'top') {
+
+            result = false;
+            return false;
+          }
+
+          if (y > rect[1] && y < rect[1] + rect[3] - 1 && (dir === 'top' || dir === 'bottom')) {
+
+            result = false;
+            return false;
+          }
+        }
+      });
+
+      return result;
     }
   }, {
     key: '_processOption',
