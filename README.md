@@ -42,4 +42,4 @@
 
 ## License
 
-MIT
+MIT @腾讯微信支付 @腾讯AlloyTeam
