@@ -32,4 +32,4 @@ English | [简体中文](./README.md)
 
 ## License
 
-MIT @腾讯微信支付 @腾讯AlloyTeam
+MIT @Tencent Wepay @Tencent AlloyTeam
