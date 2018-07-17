@@ -8,6 +8,7 @@
 
 | Demo      |Usage Source   |Group Source   |Tutorial    |
 |:---:|:---:|:----:|:---:|
+|<a title ="Clock" href="https://dntzhang.github.io/wechart/packages/clock/examples/simple/"><img alt="Clock" src="./asset/c20.png"></a>| [Source](https://github.com/dntzhang/wechart/blob/master/packages/clock/examples/simple/main.js) | [Excel Source](https://github.com/dntzhang/wechart/blob/master/packages/clock/src/index.js) | Tutorial| 
 |<a title ="Excel" href="https://dntzhang.github.io/wechart/packages/excel/examples/simple/"><img alt="Excel" src="./asset/c18.png"></a>| [Source](https://github.com/dntzhang/wechart/blob/master/packages/excel/examples/simple/main.js) | [Excel Source](https://github.com/dntzhang/wechart/blob/master/packages/excel/src/index.js) | Tutorial| 
 |<a title ="Pie" href="https://dntzhang.github.io/wechart/packages/pie/examples/simple/"><img alt="Pie" src="./asset/c1.png"></a> | [Source](https://github.com/dntzhang/wechart/blob/master/packages/pie/examples/simple/main.js) | [Pie Source](https://github.com/dntzhang/wechart/blob/master/packages/pie/src/index.js) | [Tutorial](https://github.com/dntzhang/wechart/blob/master/packages/pie/README.md)| 
 |<a title ="Axis" href="https://dntzhang.github.io/wechart/packages/axis/examples/simple/"><img alt="Axis" src="./asset/c10.png"></a> | [Source](https://github.com/dntzhang/wechart/blob/master/packages/axis/examples/simple/main.js) | [Axis Source](https://github.com/dntzhang/wechart/blob/master/packages/axis/src/index.js) | Tutorial| 
