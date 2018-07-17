@@ -29,6 +29,8 @@ export function scaleLinear(domain, range) {
         return instance.calculate(v)
     }
 
+    calculate.domain = domain
+    calculate.range = range
     calculate.invert = instance.invert.bind(instance)
 
 

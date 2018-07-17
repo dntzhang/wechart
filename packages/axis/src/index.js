@@ -4,39 +4,41 @@ const { Graphics, Text, Group } = cax
 class Axis extends Group {
   constructor (axis, orient) {
     super()
-    const f = axis.from
-    const t = axis.to
+    const scale = axis.scale
+    const f = scale.domain[0]
+    const t = scale.domain[1]
+    const rf = scale.range[0]
+    const rt = scale.range[1]
+
     const x = axis.x
     const y = axis.y
     const g = new Graphics()
+    const moveTo = [0, 0]
     const lineTo = [0, 0]
     switch (orient) {
       case 'left':
-        lineTo[0] = x
-        lineTo[1] = y - (t - f) / axis.mapping[0] * axis.mapping[1]
-        break
-      case 'bottom':
-        lineTo[0] = x + (t - f) / axis.mapping[0] * axis.mapping[1]
-        lineTo[1] = y
-        break
       case 'right':
+        moveTo[0] = x 
+        moveTo[1] = y+ rf
         lineTo[0] = x
-        lineTo[1] = y - (t - f) / axis.mapping[0] * axis.mapping[1]
+        lineTo[1] = y + rt
         break
       case 'top':
-        lineTo[0] = x + (t - f) / axis.mapping[0] * axis.mapping[1]
+      case 'bottom':
+        moveTo[0] = x + rf
+        moveTo[1] = y
+        lineTo[0] = x + rt
         lineTo[1] = y
         break
     }
 
-    g.beginPath().strokeStyle(axis.color).moveTo(x, y).lineTo(lineTo[0], lineTo[1]).stroke()
+    g.beginPath().strokeStyle(axis.color).moveTo( moveTo[0],  moveTo[1]).lineTo(lineTo[0], lineTo[1]).stroke()
 
     let current
     switch (orient) {
       case 'bottom':
         for (let i = f; i <= t; i += axis.interval) {
-          current = x + (i - f) / axis.mapping[0] * axis.mapping[1]
-
+          current = scale(i) + x
           g.beginPath().strokeStyle(axis.color).moveTo(current, y).lineTo(current, y + 5).stroke()
 
           if (axis.gird && i > f) {
@@ -55,8 +57,8 @@ class Axis extends Group {
       case 'left':
 
         for (let i = f; i <= t; i += axis.interval) {
-          current = y - (i - f) / axis.mapping[0] * axis.mapping[1]
-
+       
+          current = scale(i)+y
           g.beginPath().strokeStyle(axis.color).moveTo(x, current).lineTo(x - 5, current).stroke()
 
           if (axis.gird && i > f) {
@@ -74,8 +76,8 @@ class Axis extends Group {
 
       case 'top':
         for (let i = f; i <= t; i += axis.interval) {
-          current = x + (i - f) / axis.mapping[0] * axis.mapping[1]
-
+          
+          current = scale(i) + x
           g.beginPath().strokeStyle(axis.color).moveTo(current, y).lineTo(current, y - 5).stroke()
 
           if (axis.gird && i > f) {
@@ -95,8 +97,7 @@ class Axis extends Group {
       case 'right':
 
         for (let i = f; i <= t; i += axis.interval) {
-          current = y - (i - f) / axis.mapping[0] * axis.mapping[1]
-
+          current = scale(i) + y
           g.beginPath().strokeStyle(axis.color).moveTo(x, current).lineTo(x + 5, current).stroke()
 
           if (axis.gird && i > f) {

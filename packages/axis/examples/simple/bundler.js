@@ -6588,19 +6588,19 @@ var _index = __webpack_require__(3);
 
 var _index2 = _interopRequireDefault(_index);
 
+var _scale = __webpack_require__(4);
+
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
 var stage = new _cax2.default.Stage(740, 520, 'body');
 
 var config = {
   bottom: {
+    color: 'black',
     interval: 1,
-    from: 0,
-    mapping: [1, 100],
+    scale: (0, _scale.scaleLinear)([0, 7], [0, 700]),
     x: 30,
     y: 450,
-    to: 7,
-    color: 'black',
     text: {
       color: '#444',
       value: function value(index, data) {
@@ -6621,11 +6621,9 @@ var config = {
   left: {
     color: 'black',
     interval: 6,
-    mapping: [30, 200],
-    from: -30,
-    to: 30,
+    scale: (0, _scale.scaleLinear)([-30, 30], [400, 0]),
     x: 30,
-    y: 450,
+    y: 50,
     text: {
       color: '#444',
       x: -20,
@@ -6633,7 +6631,6 @@ var config = {
     },
     gird: {
       color: '#ddd',
-
       length: 700
     }
   }
@@ -6713,39 +6710,41 @@ var Axis = function (_Group) {
 
     var _this = _possibleConstructorReturn(this, (Axis.__proto__ || Object.getPrototypeOf(Axis)).call(this));
 
-    var f = axis.from;
-    var t = axis.to;
+    var scale = axis.scale;
+    var f = scale.domain[0];
+    var t = scale.domain[1];
+    var rf = scale.range[0];
+    var rt = scale.range[1];
+
     var x = axis.x;
     var y = axis.y;
     var g = new Graphics();
+    var moveTo = [0, 0];
     var lineTo = [0, 0];
     switch (orient) {
       case 'left':
-        lineTo[0] = x;
-        lineTo[1] = y - (t - f) / axis.mapping[0] * axis.mapping[1];
-        break;
-      case 'bottom':
-        lineTo[0] = x + (t - f) / axis.mapping[0] * axis.mapping[1];
-        lineTo[1] = y;
-        break;
       case 'right':
+        moveTo[0] = x;
+        moveTo[1] = y + rf;
         lineTo[0] = x;
-        lineTo[1] = y - (t - f) / axis.mapping[0] * axis.mapping[1];
+        lineTo[1] = y + rt;
         break;
       case 'top':
-        lineTo[0] = x + (t - f) / axis.mapping[0] * axis.mapping[1];
+      case 'bottom':
+        moveTo[0] = x + rf;
+        moveTo[1] = y;
+        lineTo[0] = x + rt;
         lineTo[1] = y;
         break;
     }
 
-    g.beginPath().strokeStyle(axis.color).moveTo(x, y).lineTo(lineTo[0], lineTo[1]).stroke();
+    g.beginPath().strokeStyle(axis.color).moveTo(moveTo[0], moveTo[1]).lineTo(lineTo[0], lineTo[1]).stroke();
 
     var current = void 0;
     switch (orient) {
       case 'bottom':
         for (var i = f; i <= t; i += axis.interval) {
-          current = x + (i - f) / axis.mapping[0] * axis.mapping[1];
-
+          current = scale(i) + x;
           g.beginPath().strokeStyle(axis.color).moveTo(current, y).lineTo(current, y + 5).stroke();
 
           if (axis.gird && i > f) {
@@ -6764,8 +6763,8 @@ var Axis = function (_Group) {
       case 'left':
 
         for (var _i = f; _i <= t; _i += axis.interval) {
-          current = y - (_i - f) / axis.mapping[0] * axis.mapping[1];
 
+          current = scale(_i) + y;
           g.beginPath().strokeStyle(axis.color).moveTo(x, current).lineTo(x - 5, current).stroke();
 
           if (axis.gird && _i > f) {
@@ -6783,8 +6782,8 @@ var Axis = function (_Group) {
 
       case 'top':
         for (var _i2 = f; _i2 <= t; _i2 += axis.interval) {
-          current = x + (_i2 - f) / axis.mapping[0] * axis.mapping[1];
 
+          current = scale(_i2) + x;
           g.beginPath().strokeStyle(axis.color).moveTo(current, y).lineTo(current, y - 5).stroke();
 
           if (axis.gird && _i2 > f) {
@@ -6804,8 +6803,7 @@ var Axis = function (_Group) {
       case 'right':
 
         for (var _i3 = f; _i3 <= t; _i3 += axis.interval) {
-          current = y - (_i3 - f) / axis.mapping[0] * axis.mapping[1];
-
+          current = scale(_i3) + y;
           g.beginPath().strokeStyle(axis.color).moveTo(x, current).lineTo(x + 5, current).stroke();
 
           if (axis.gird && _i3 > f) {
@@ -6830,6 +6828,85 @@ var Axis = function (_Group) {
 }(Group);
 
 exports.default = Axis;
+
+/***/ }),
+/* 4 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
+Object.defineProperty(exports, "__esModule", {
+    value: true
+});
+exports.scaleLinear = undefined;
+
+var _linear = __webpack_require__(5);
+
+exports.scaleLinear = _linear.scaleLinear;
+exports.default = {
+    scaleLinear: _linear.scaleLinear
+};
+
+/***/ }),
+/* 5 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
+Object.defineProperty(exports, "__esModule", {
+    value: true
+});
+
+var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
+
+exports.scaleLinear = scaleLinear;
+
+function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+
+var ScaleLinear = function () {
+    function ScaleLinear(domain, range) {
+        _classCallCheck(this, ScaleLinear);
+
+        this.domainFrom = domain[0];
+        this.domainTo = domain[1];
+        this.domainInterval = this.domainTo - this.domainFrom;
+
+        this.rangeFrom = range[0];
+        this.rangeTo = range[1];
+        this.rangeInterval = this.rangeTo - this.rangeFrom;
+    }
+
+    _createClass(ScaleLinear, [{
+        key: "calculate",
+        value: function calculate(value) {
+            return this.rangeFrom + (value - this.domainFrom) / this.domainInterval * this.rangeInterval;
+        }
+    }, {
+        key: "invert",
+        value: function invert(value) {
+
+            return this.domainFrom + (value - this.rangeFrom) / this.rangeInterval * this.domainInterval;
+        }
+    }]);
+
+    return ScaleLinear;
+}();
+
+function scaleLinear(domain, range) {
+    var instance = new ScaleLinear(domain, range);
+
+    var calculate = function calculate(v) {
+        return instance.calculate(v);
+    };
+
+    calculate.domain = domain;
+    calculate.range = range;
+    calculate.invert = instance.invert.bind(instance);
+
+    return calculate;
+}
 
 /***/ })
 /******/ ]);
