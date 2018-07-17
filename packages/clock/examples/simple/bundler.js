@@ -73,7 +73,7 @@
 var _typeof2 = typeof Symbol === "function" && typeof Symbol.iterator === "symbol" ? function (obj) { return typeof obj; } : function (obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj; };
 
 /*!
- *  cax v1.1.7
+ *  cax v1.1.8
  *  By https://github.com/dntzhang 
  *  Github: https://github.com/dntzhang/cax
  *  MIT Licensed.
@@ -475,6 +475,7 @@ var _typeof2 = typeof Symbol === "function" && typeof Symbol.iterator === "symbo
           _this.clipGraphics = null;
           _this.clipRuleNonzero = true;
           _this.fixed = false;
+          _this.shadow = null;
 
           _this.absClipGraphics = null;
           _this.absClipRuleNonzero = true;
@@ -4561,12 +4562,11 @@ var _typeof2 = typeof Symbol === "function" && typeof Symbol.iterator === "symbo
               ctx.clip(o.absClipRuleNonzero ? 'nonzero' : 'evenodd');
             }
 
-            o.complexCompositeOperation = ctx.globalCompositeOperation = this.getCompositeOperation(o);
-            o.complexAlpha = ctx.globalAlpha = this.getAlpha(o, 1);
             if (!cacheRender) {
               ctx.setTransform(mtx.a, mtx.b, mtx.c, mtx.d, mtx.tx, mtx.ty);
             }
             if (o._readyToCache) {
+              this.setComplexProps(ctx, o);
               o._readyToCache = false;
               o.cacheCtx.setTransform(o._cacheData.scale, 0, 0, o._cacheData.scale, o._cacheData.x * -1, o._cacheData.y * -1);
               this.render(o.cacheCtx, o, true);
@@ -4579,6 +4579,7 @@ var _typeof2 = typeof Symbol === "function" && typeof Symbol.iterator === "symbo
 
               ctx.drawImage(o.cacheCanvas, o._cacheData.x, o._cacheData.y);
             } else if (o.cacheCanvas && !cacheRender) {
+              this.setComplexProps(ctx, o);
               ctx.drawImage(o.cacheCanvas, o._cacheData.x, o._cacheData.y);
             } else if (o instanceof _group2.default) {
               var list = o.children.slice(0),
@@ -4589,19 +4590,37 @@ var _typeof2 = typeof Symbol === "function" && typeof Symbol.iterator === "symbo
                 ctx.restore();
               }
             } else if (o instanceof _graphics2.default) {
+              this.setComplexProps(ctx, o);
               o.render(ctx);
             } else if (o instanceof _sprite2.default && o.rect) {
+              this.setComplexProps(ctx, o);
               o.updateFrame();
               var rect = o.rect;
               ctx.drawImage(o.img, rect[0], rect[1], rect[2], rect[3], 0, 0, rect[2], rect[3]);
             } else if (o instanceof _bitmap2.default && o.rect) {
+              this.setComplexProps(ctx, o);
               var bRect = o.rect;
               ctx.drawImage(o.img, bRect[0], bRect[1], bRect[2], bRect[3], 0, 0, bRect[2], bRect[3]);
             } else if (o instanceof _text2.default) {
+              this.setComplexProps(ctx, o);
               ctx.font = o.font;
               ctx.fillStyle = o.color;
               ctx.textBaseline = o.baseline;
               ctx.fillText(o.text, 0, 0);
+            }
+          }
+        }, {
+          key: 'setComplexProps',
+          value: function setComplexProps(ctx, o) {
+            o.complexCompositeOperation = ctx.globalCompositeOperation = this.getCompositeOperation(o);
+            o.complexAlpha = ctx.globalAlpha = this.getAlpha(o, 1);
+
+            o.complexShadow = this.getShadow(o);
+            if (o.complexShadow) {
+              ctx.shadowColor = o.complexShadow.color;
+              ctx.shadowOffsetX = o.complexShadow.offsetX;
+              ctx.shadowOffsetY = o.complexShadow.offsetY;
+              ctx.shadowBlur = o.complexShadow.blur;
             }
           }
         }, {
@@ -4618,6 +4637,12 @@ var _typeof2 = typeof Symbol === "function" && typeof Symbol.iterator === "symbo
               return this.getAlpha(o.parent, result);
             }
             return result;
+          }
+        }, {
+          key: 'getShadow',
+          value: function getShadow(o) {
+            if (o.shadow) return o.shadow;
+            if (o.parent) return this.getShadow(o.parent);
           }
         }]);
 
@@ -5071,23 +5096,22 @@ var _typeof2 = typeof Symbol === "function" && typeof Symbol.iterator === "symbo
 
               ctx.setTransform(mtx.a, mtx.b, mtx.c, mtx.d, mtx.tx, mtx.ty);
               if (o instanceof _graphics2.default) {
-                ctx.globalCompositeOperation = o.complexCompositeOperation;
-                ctx.globalAlpha = o.complexAlpha;
+                this.setComplexProps(ctx, o);
+
                 o.render(ctx);
               } else if (o instanceof _sprite2.default && o.rect) {
-                ctx.globalCompositeOperation = o.complexCompositeOperation;
-                ctx.globalAlpha = o.complexAlpha;
+                this.setComplexProps(ctx, o);
+
                 o.updateFrame();
                 var rect = o.rect;
                 ctx.drawImage(o.img, rect[0], rect[1], rect[2], rect[3], 0, 0, rect[2], rect[3]);
               } else if (o instanceof _bitmap2.default && o.rect) {
-                ctx.globalCompositeOperation = o.complexCompositeOperation;
-                ctx.globalAlpha = o.complexAlpha;
+                this.setComplexProps(ctx, o);
+
                 var bRect = o.rect;
                 ctx.drawImage(o.img, bRect[0], bRect[1], bRect[2], bRect[3], 0, 0, bRect[2], bRect[3]);
               } else if (o instanceof _text2.default) {
-                ctx.globalCompositeOperation = o.complexCompositeOperation;
-                ctx.globalAlpha = o.complexAlpha;
+                this.setComplexProps(ctx, o);
 
                 ctx.font = o.font;
                 ctx.fillStyle = o.color;
@@ -5100,6 +5124,19 @@ var _typeof2 = typeof Symbol === "function" && typeof Symbol.iterator === "symbo
               this._dispatchEvent(o, evt);
               return o;
             }
+          }
+        }, {
+          key: 'setComplexProps',
+          value: function setComplexProps(ctx, o) {
+            ctx.globalCompositeOperation = o.complexCompositeOperation;
+            ctx.globalAlpha = o.complexAlpha;
+            //The shadow does not trigger the event, so remove it
+            // if(o.complexShadow){
+            //   ctx.shadowColor = o.complexShadow.color
+            //   ctx.shadowOffsetX = o.complexShadow.offsetX
+            //   ctx.shadowOffsetY = o.complexShadow.offsetY
+            //   ctx.shadowBlur = o.complexShadow.blur
+            // }
           }
         }, {
           key: '_dispatchEvent',
@@ -6656,22 +6693,38 @@ function _possibleConstructorReturn(self, call) { if (!self) { throw new Referen
 function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
 
 var Graphics = _cax2.default.Graphics,
-    Group = _cax2.default.Group;
+    Group = _cax2.default.Group,
+    Text = _cax2.default.Text;
 
 var Clock = function (_Group) {
     _inherits(Clock, _Group);
 
-    function Clock(data, config, axisConfig) {
+    function Clock(option) {
         _classCallCheck(this, Clock);
 
         var _this = _possibleConstructorReturn(this, (Clock.__proto__ || Object.getPrototypeOf(Clock)).call(this));
 
+        _this.option = Object.assign({
+            fontSize: 50,
+            r: 60,
+            textA: 'POWERED BY CAX',
+            textB: 'dntzhang & wechart'
+
+        }, option);
         _this.graphics = new Graphics();
+        _this.minuteGraphics = new Graphics();
+        _this.hourGraphics = new Graphics();
 
-        _this.add(_this.graphics);
+        _this.secondGraphics = new Graphics();
 
-        _this.graphics.x = 400;
-        _this.graphics.y = 400;
+        _this.drawBg();
+        _this.add(_this.graphics, _this.minuteGraphics, _this.hourGraphics, _this.secondGraphics);
+
+        _this.x = 400;
+        _this.y = 400;
+
+        _this.scaleX = _this.scaleY = 0.5;
+
         return _this;
     }
 
@@ -6681,8 +6734,15 @@ var Clock = function (_Group) {
             this.nowDate = new Date();
             var second = this.nowDate.getSeconds();
             var minute = this.nowDate.getMinutes();
-            var hour = this.nowDate.getHours();
 
+            this.drawHour(minute, this.nowDate.getHours());
+            this.drawMinute(minute, second);
+            this.drawSecond(second);
+        }
+    }, {
+        key: 'drawBg',
+        value: function drawBg() {
+            var r = this.option.r;
             this.graphics.clear().beginPath();
             this.graphics.lineCap("round");
             for (var i = 0; i < 60; i++) {
@@ -6694,10 +6754,7 @@ var Clock = function (_Group) {
             }
 
             this.graphics.closePath();
-            // ctx.shadowOffsetX=-5;
-            // ctx.shadowOffsetY=2;
-            // ctx.shadowBlur = 20;
-            // ctx.shadowColor = "#000";
+
             this.graphics.lineWidth(7);
             this.graphics.strokeStyle('#000');
             this.graphics.stroke();
@@ -6707,80 +6764,114 @@ var Clock = function (_Group) {
             for (var _i = 1; _i < 13; _i++) {
                 this.graphics.moveTo(Math.cos(_i * 30 / 180 * Math.PI) * 350, -Math.sin(_i * 30 / 180 * Math.PI) * 350);
                 this.graphics.lineTo(Math.cos(_i * 30 / 180 * Math.PI) * 320, -Math.sin(_i * 30 / 180 * Math.PI) * 320);
-                // ctx.font = "50px Arial";
-                // if (i > 9) {
-                //     ctx.fillText(i, Math.cos((i * 30 - 90) / 180 * Math.PI) * 280 + 400 - 25, Math.sin((i * 30 - 90) / 180 * Math.PI) * 280 + 400 + 25);
-                // } else {
-                //     ctx.fillText(i, Math.cos((i * 30 - 90) / 180 * Math.PI) * 280 + 388, Math.sin((i * 30 - 90) / 180 * Math.PI) * 280 + 400 + 20);
-                // }
             }
             this.graphics.lineWidth(11);
             this.graphics.strokeStyle('#000');
             this.graphics.stroke();
             this.graphics.closePath();
 
-            // ctx.beginPath();
-            // ctx.font = "24px Arial";
-            // ctx.fillText('LOVE LELE', 333, 540)
-            // ctx.font = "18px Arial";
-            // ctx.fillText('Rourou', 370, 570)
-            // ctx.closePath();
+            for (var _i2 = 1; _i2 < 13; _i2++) {
+                var text = new Text(_i2, {
+                    color: 'black',
+                    font: this.option.fontSize + "px Arial"
+                });
+                if (_i2 > 9) {
+                    text.x = Math.cos((_i2 * 30 - 90) / 180 * Math.PI) * 280 - 25;
+                    text.y = Math.sin((_i2 * 30 - 90) / 180 * Math.PI) * 280 - 25;
+                } else {
+                    text.x = Math.cos((_i2 * 30 - 90) / 180 * Math.PI) * 280 - 12;
+                    text.y = Math.sin((_i2 * 30 - 90) / 180 * Math.PI) * 280 - 25;
+                }
+                this.add(text);
+            }
 
-            this.graphics.beginPath();
-            this.graphics.moveTo(Math.cos((hour * 30 + minute / 2 - 90) / 180 * Math.PI) * 220, Math.sin((hour * 30 + minute / 2 - 90) / 180 * Math.PI) * 220);
-            this.graphics.lineTo(0, 0);
+            if (this.option.textA) {
+                var _text = new Text(this.option.textA, {
+                    color: 'black',
+                    font: "24px Arial"
+                });
+                _text.x = _text.getWidth() / 2 * -1;
+                _text.y = 130;
+                this.add(_text);
+            }
 
-            this.graphics.lineCap("round");
-            this.graphics.closePath();
+            if (this.option.textB) {
+                var _text2 = new Text(this.option.textB, {
+                    color: 'black',
+                    font: "18px Arial"
+                });
 
-            // ctx.shadowOffsetX = -5;
-            // ctx.shadowBlur = 10;
-            // ctx.shadowColor = "#000";
+                _text2.x = _text2.getWidth() / 2 * -1;
+                _text2.y = 180;
+                this.add(_text2);
+            }
+        }
+    }, {
+        key: 'drawSecond',
+        value: function drawSecond(second) {
 
+            this.secondGraphics.clear().beginPath();
+            this.secondGraphics.moveTo(Math.cos((second * 6 - 90) / 180 * Math.PI) * 345, Math.sin((second * 6 - 90) / 180 * Math.PI) * 345);
+            this.secondGraphics.lineTo(0, 0);
 
-            this.graphics.lineWidth(24);
-            this.graphics.strokeStyle('#222');
-            this.graphics.stroke();
+            this.secondGraphics.closePath();
 
-            this.graphics.beginPath();
-            this.graphics.moveTo(Math.cos((minute * 6 + second * 0.1 - 90) / 180 * Math.PI) * 300, Math.sin((minute * 6 + second * 0.1 - 90) / 180 * Math.PI) * 300);
-            this.graphics.lineTo(0, 0);
+            this.secondGraphics.shadow = {
+                offsetX: -5,
+                blur: 10,
+                color: 'black'
+            };
 
-            this.graphics.closePath();
+            this.secondGraphics.lineWidth(5);
+            this.secondGraphics.strokeStyle('rgb(213, 153, 0)');
+            this.secondGraphics.stroke();
 
-            // ctx.shadowOffsetX = -5;
-            // ctx.shadowBlur = 10;
-            // ctx.shadowColor = "#000";
+            this.secondGraphics.closePath();
 
-            this.graphics.lineWidth(13);
-            this.graphics.strokeStyle('#222');
+            this.secondGraphics.arc(0, 0, 20, 0, Math.PI * 2);
+            this.secondGraphics.fillStyle('rgb(213, 153, 0)');
+            this.secondGraphics.fill();
+        }
+    }, {
+        key: 'drawMinute',
+        value: function drawMinute(minute, second) {
 
-            this.graphics.stroke();
+            this.minuteGraphics.clear().beginPath();
+            this.minuteGraphics.moveTo(Math.cos((minute * 6 + second * 0.1 - 90) / 180 * Math.PI) * 300, Math.sin((minute * 6 + second * 0.1 - 90) / 180 * Math.PI) * 300);
+            this.minuteGraphics.lineTo(0, 0);
 
-            this.graphics.beginPath();
-            this.graphics.moveTo(Math.cos((second * 6 - 90) / 180 * Math.PI) * 345, Math.sin((second * 6 - 90) / 180 * Math.PI) * 345);
-            this.graphics.lineTo(0, 0);
+            this.minuteGraphics.closePath();
 
-            this.graphics.closePath();
+            this.minuteGraphics.shadow = {
+                offsetX: -5,
+                blur: 10,
+                color: 'black'
+            };
 
-            // ctx.shadowOffsetX = -5;
-            // ctx.shadowBlur = 10;
-            // ctx.shadowColor = "#000";
+            this.minuteGraphics.lineWidth(13);
+            this.minuteGraphics.strokeStyle('#222');
 
-            this.graphics.lineWidth(5);
-            this.graphics.strokeStyle('rgb(213, 153, 0)');
-            this.graphics.stroke();
+            this.minuteGraphics.stroke();
+        }
+    }, {
+        key: 'drawHour',
+        value: function drawHour(minute, hour) {
+            this.hourGraphics.clear().beginPath();
+            this.hourGraphics.moveTo(Math.cos((hour * 30 + minute / 2 - 90) / 180 * Math.PI) * 220, Math.sin((hour * 30 + minute / 2 - 90) / 180 * Math.PI) * 220);
+            this.hourGraphics.lineTo(0, 0);
 
-            this.graphics.closePath();
+            this.hourGraphics.lineCap("round");
+            this.hourGraphics.closePath();
 
-            this.graphics.arc(0, 0, 20, 0, Math.PI * 2);
+            this.hourGraphics.shadow = {
+                offsetX: -5,
+                blur: 10,
+                color: 'black'
+            };
 
-            // ctx.shadowOffsetX = -5;
-            // ctx.shadowBlur = 10;
-            // ctx.shadowColor = "#000";
-
-            this.graphics.fillStyle('rgb(213, 153, 0)');
-            this.graphics.fill();
+            this.hourGraphics.lineWidth(24);
+            this.hourGraphics.strokeStyle('#222');
+            this.hourGraphics.stroke();
         }
     }]);
 
