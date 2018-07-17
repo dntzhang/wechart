@@ -32,7 +32,9 @@
 
 * 在 packages 以图表的名字新建一个文件夹，比如 chart-name
 * 组件的例子放在 examples 目录，比如 simple，组件 Group 源码放在 src 目录
-* 执行 `npm run build -- chart-name simple` 进行构建调试
+* 执行 `npm install` 安装依赖
+* 执行 `npm run build -- chart-name simple` 进行构建
+* 在浏览器中以 webserver 的形式访问对应目录的 index.html 进行查看和调试
 
 ## 谁在使用？
 
