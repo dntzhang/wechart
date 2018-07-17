@@ -60,239 +60,11 @@
 /******/ 	__webpack_require__.p = "";
 /******/
 /******/ 	// Load entry module and return exports
-/******/ 	return __webpack_require__(__webpack_require__.s = 0);
+/******/ 	return __webpack_require__(__webpack_require__.s = 1);
 /******/ })
 /************************************************************************/
 /******/ ([
 /* 0 */
-/***/ (function(module, exports, __webpack_require__) {
-
-"use strict";
-
-
-var _cax = __webpack_require__(2);
-
-var _cax2 = _interopRequireDefault(_cax);
-
-var _index = __webpack_require__(1);
-
-var _index2 = _interopRequireDefault(_index);
-
-function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
-
-var stage = new _cax2.default.Stage(740, 520, 'body');
-
-var config = {
-    bottom: {
-        interval: 1,
-        from: 0,
-        mapping: [1, 100],
-        x: 30,
-        y: 450,
-        to: 7,
-        color: 'black',
-        text: {
-            color: '#444',
-            value: function value(index, data) {
-                return 'index-' + index;
-            },
-            x: 30,
-            y: 10,
-            font: '10px Verdana',
-            range: [0, 4],
-            rotation: 0
-        },
-        gird: {
-            color: '#ddd',
-
-            length: 400
-        }
-    },
-    left: {
-        color: 'black',
-        interval: 6,
-        mapping: [30, 200],
-        from: -30,
-        to: 30,
-        x: 30,
-        y: 450,
-        text: {
-            color: '#444',
-            x: -20,
-            y: 0
-        },
-        gird: {
-            color: '#ddd',
-
-            length: 700
-        }
-    }
-};
-
-Object.keys(config).forEach(function (key) {
-    if (config[key]) {
-        var axis = new _index2.default(config[key], key);
-        stage.add(axis);
-    }
-});
-
-stage.update();
-
-/***/ }),
-/* 1 */
-/***/ (function(module, exports, __webpack_require__) {
-
-"use strict";
-
-
-Object.defineProperty(exports, "__esModule", {
-  value: true
-});
-
-var _cax = __webpack_require__(2);
-
-var _cax2 = _interopRequireDefault(_cax);
-
-function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
-
-function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
-
-function _possibleConstructorReturn(self, call) { if (!self) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return call && (typeof call === "object" || typeof call === "function") ? call : self; }
-
-function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
-
-var Graphics = _cax2.default.Graphics,
-    Text = _cax2.default.Text,
-    Group = _cax2.default.Group;
-
-var Axis = function (_Group) {
-  _inherits(Axis, _Group);
-
-  function Axis(axis, orient) {
-    _classCallCheck(this, Axis);
-
-    var _this = _possibleConstructorReturn(this, (Axis.__proto__ || Object.getPrototypeOf(Axis)).call(this));
-
-    var f = axis.from;
-    var t = axis.to;
-    var x = axis.x;
-    var y = axis.y;
-    var g = new Graphics();
-    var lineTo = [0, 0];
-    switch (orient) {
-      case 'left':
-        lineTo[0] = x;
-        lineTo[1] = y - (t - f) / axis.mapping[0] * axis.mapping[1];
-        break;
-      case 'bottom':
-        lineTo[0] = x + (t - f) / axis.mapping[0] * axis.mapping[1];
-        lineTo[1] = y;
-        break;
-      case 'right':
-        lineTo[0] = x;
-        lineTo[1] = y - (t - f) / axis.mapping[0] * axis.mapping[1];
-        break;
-      case 'top':
-        lineTo[0] = x + (t - f) / axis.mapping[0] * axis.mapping[1];
-        lineTo[1] = y;
-        break;
-    }
-
-    g.beginPath().strokeStyle(axis.color).moveTo(x, y).lineTo(lineTo[0], lineTo[1]).stroke();
-
-    var current = void 0;
-    switch (orient) {
-      case 'bottom':
-        for (var i = f; i <= t; i += axis.interval) {
-          current = x + (i - f) / axis.mapping[0] * axis.mapping[1];
-
-          g.beginPath().strokeStyle(axis.color).moveTo(current, y).lineTo(current, y + 5).stroke();
-
-          if (axis.gird && i > f) {
-            g.beginPath().strokeStyle(axis.gird.color).moveTo(current, y - 1).lineTo(current, y - axis.gird.length).stroke();
-          }
-
-          if (!axis.text.range || i >= axis.text.range[0] && i <= axis.text.range[1]) {
-            var text = new Text(axis.text.value ? axis.text.value(i) : i, axis.text.font, axis.text.color);
-            text.x = current + axis.text.x;
-            text.y = y + 5 + axis.text.y;
-            text.rotation = axis.text.rotation || 0;
-            _this.add(text);
-          }
-        }
-        break;
-      case 'left':
-
-        for (var _i = f; _i <= t; _i += axis.interval) {
-          current = y - (_i - f) / axis.mapping[0] * axis.mapping[1];
-
-          g.beginPath().strokeStyle(axis.color).moveTo(x, current).lineTo(x - 5, current).stroke();
-
-          if (axis.gird && _i > f) {
-            g.beginPath().strokeStyle(axis.gird.color).moveTo(x + 1, current).lineTo(x + axis.gird.length, current).stroke();
-          }
-          if (!axis.text.range || _i >= axis.text.range[0] && _i <= axis.text.range[1]) {
-            var _text = new Text(axis.text.value ? axis.text.value(_i) : _i, axis.text.font, axis.text.color);
-            _text.x = x - 5 + axis.text.x;
-            _text.y = current + axis.text.y;
-            _text.rotation = axis.text.rotation || 0;
-            _this.add(_text);
-          }
-        }
-        break;
-
-      case 'top':
-        for (var _i2 = f; _i2 <= t; _i2 += axis.interval) {
-          current = x + (_i2 - f) / axis.mapping[0] * axis.mapping[1];
-
-          g.beginPath().strokeStyle(axis.color).moveTo(current, y).lineTo(current, y - 5).stroke();
-
-          if (axis.gird && _i2 > f) {
-            g.beginPath().strokeStyle(axis.gird.color).moveTo(current, y - 1).lineTo(current, y - axis.gird.length).stroke();
-          }
-
-          if (!axis.text.range || _i2 >= axis.text.range[0] && _i2 <= axis.text.range[1]) {
-            var _text2 = new Text(axis.text.value ? axis.text.value(_i2) : _i2, axis.text.font, axis.text.color);
-            _text2.x = current + axis.text.x;
-            _text2.y = y - 5 + axis.text.y;
-            _text2.rotation = axis.text.rotation || 0;
-            _this.add(_text2);
-          }
-        }
-        break;
-
-      case 'right':
-
-        for (var _i3 = f; _i3 <= t; _i3 += axis.interval) {
-          current = y - (_i3 - f) / axis.mapping[0] * axis.mapping[1];
-
-          g.beginPath().strokeStyle(axis.color).moveTo(x, current).lineTo(x + 5, current).stroke();
-
-          if (axis.gird && _i3 > f) {
-            g.beginPath().strokeStyle(axis.gird.color).moveTo(x + 1, current).lineTo(x + axis.gird.length, current).stroke();
-          }
-          if (!axis.text.range || _i3 >= axis.text.range[0] && _i3 <= axis.text.range[1]) {
-            var _text3 = new Text(axis.text.value ? axis.text.value(_i3) : _i3, axis.text.font, axis.text.color);
-            _text3.x = x + 5 + axis.text.x;
-            _text3.y = current + axis.text.y;
-            _text3.rotation = axis.text.rotation || 0;
-            _this.add(_text3);
-          }
-        }
-        break;
-    }
-
-    _this.add(g);
-    return _this;
-  }
-
-  return Axis;
-}(Group);
-
-exports.default = Axis;
-
-/***/ }),
-/* 2 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -301,7 +73,7 @@ exports.default = Axis;
 var _typeof2 = typeof Symbol === "function" && typeof Symbol.iterator === "symbol" ? function (obj) { return typeof obj; } : function (obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj; };
 
 /*!
- *  cax v1.1.2
+ *  cax v1.1.7
  *  By https://github.com/dntzhang 
  *  Github: https://github.com/dntzhang/cax
  *  MIT Licensed.
@@ -392,6 +164,100 @@ var _typeof2 = typeof Symbol === "function" && typeof Symbol.iterator === "symbo
     /************************************************************************/
     /******/[
     /* 0 */
+    /***/function (module, exports, __webpack_require__) {
+
+      "use strict";
+
+      Object.defineProperty(exports, "__esModule", {
+        value: true
+      });
+
+      var _createClass = function () {
+        function defineProperties(target, props) {
+          for (var i = 0; i < props.length; i++) {
+            var descriptor = props[i];descriptor.enumerable = descriptor.enumerable || false;descriptor.configurable = true;if ("value" in descriptor) descriptor.writable = true;Object.defineProperty(target, descriptor.key, descriptor);
+          }
+        }return function (Constructor, protoProps, staticProps) {
+          if (protoProps) defineProperties(Constructor.prototype, protoProps);if (staticProps) defineProperties(Constructor, staticProps);return Constructor;
+        };
+      }();
+
+      var _get = function get(object, property, receiver) {
+        if (object === null) object = Function.prototype;var desc = Object.getOwnPropertyDescriptor(object, property);if (desc === undefined) {
+          var parent = Object.getPrototypeOf(object);if (parent === null) {
+            return undefined;
+          } else {
+            return get(parent, property, receiver);
+          }
+        } else if ("value" in desc) {
+          return desc.value;
+        } else {
+          var getter = desc.get;if (getter === undefined) {
+            return undefined;
+          }return getter.call(receiver);
+        }
+      };
+
+      var _graphics = __webpack_require__(3);
+
+      var _graphics2 = _interopRequireDefault(_graphics);
+
+      function _interopRequireDefault(obj) {
+        return obj && obj.__esModule ? obj : { default: obj };
+      }
+
+      function _classCallCheck(instance, Constructor) {
+        if (!(instance instanceof Constructor)) {
+          throw new TypeError("Cannot call a class as a function");
+        }
+      }
+
+      function _possibleConstructorReturn(self, call) {
+        if (!self) {
+          throw new ReferenceError("this hasn't been initialised - super() hasn't been called");
+        }return call && ((typeof call === 'undefined' ? 'undefined' : _typeof2(call)) === "object" || typeof call === "function") ? call : self;
+      }
+
+      function _inherits(subClass, superClass) {
+        if (typeof superClass !== "function" && superClass !== null) {
+          throw new TypeError("Super expression must either be null or a function, not " + (typeof superClass === 'undefined' ? 'undefined' : _typeof2(superClass)));
+        }subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } });if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass;
+      }
+
+      var Shape = function (_Graphics) {
+        _inherits(Shape, _Graphics);
+
+        function Shape() {
+          _classCallCheck(this, Shape);
+
+          return _possibleConstructorReturn(this, (Shape.__proto__ || Object.getPrototypeOf(Shape)).apply(this, arguments));
+        }
+
+        _createClass(Shape, [{
+          key: 'draw',
+
+          // constructor() {
+          //     super()
+          // }
+
+          value: function draw() {}
+        }, {
+          key: 'render',
+          value: function render(ctx) {
+            this.clear();
+            this.draw();
+            _get(Shape.prototype.__proto__ || Object.getPrototypeOf(Shape.prototype), 'render', this).call(this, ctx);
+          }
+        }]);
+
+        return Shape;
+      }(_graphics2.default);
+
+      exports.default = Shape;
+
+      /***/
+    },
+    /* 1 */
     /***/function (module, exports, __webpack_require__) {
 
       "use strict";
@@ -538,100 +404,6 @@ var _typeof2 = typeof Symbol === "function" && typeof Symbol.iterator === "symbo
 
       /***/
     },
-    /* 1 */
-    /***/function (module, exports, __webpack_require__) {
-
-      "use strict";
-
-      Object.defineProperty(exports, "__esModule", {
-        value: true
-      });
-
-      var _createClass = function () {
-        function defineProperties(target, props) {
-          for (var i = 0; i < props.length; i++) {
-            var descriptor = props[i];descriptor.enumerable = descriptor.enumerable || false;descriptor.configurable = true;if ("value" in descriptor) descriptor.writable = true;Object.defineProperty(target, descriptor.key, descriptor);
-          }
-        }return function (Constructor, protoProps, staticProps) {
-          if (protoProps) defineProperties(Constructor.prototype, protoProps);if (staticProps) defineProperties(Constructor, staticProps);return Constructor;
-        };
-      }();
-
-      var _get = function get(object, property, receiver) {
-        if (object === null) object = Function.prototype;var desc = Object.getOwnPropertyDescriptor(object, property);if (desc === undefined) {
-          var parent = Object.getPrototypeOf(object);if (parent === null) {
-            return undefined;
-          } else {
-            return get(parent, property, receiver);
-          }
-        } else if ("value" in desc) {
-          return desc.value;
-        } else {
-          var getter = desc.get;if (getter === undefined) {
-            return undefined;
-          }return getter.call(receiver);
-        }
-      };
-
-      var _graphics = __webpack_require__(3);
-
-      var _graphics2 = _interopRequireDefault(_graphics);
-
-      function _interopRequireDefault(obj) {
-        return obj && obj.__esModule ? obj : { default: obj };
-      }
-
-      function _classCallCheck(instance, Constructor) {
-        if (!(instance instanceof Constructor)) {
-          throw new TypeError("Cannot call a class as a function");
-        }
-      }
-
-      function _possibleConstructorReturn(self, call) {
-        if (!self) {
-          throw new ReferenceError("this hasn't been initialised - super() hasn't been called");
-        }return call && ((typeof call === 'undefined' ? 'undefined' : _typeof2(call)) === "object" || typeof call === "function") ? call : self;
-      }
-
-      function _inherits(subClass, superClass) {
-        if (typeof superClass !== "function" && superClass !== null) {
-          throw new TypeError("Super expression must either be null or a function, not " + (typeof superClass === 'undefined' ? 'undefined' : _typeof2(superClass)));
-        }subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } });if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass;
-      }
-
-      var Shape = function (_Graphics) {
-        _inherits(Shape, _Graphics);
-
-        function Shape() {
-          _classCallCheck(this, Shape);
-
-          return _possibleConstructorReturn(this, (Shape.__proto__ || Object.getPrototypeOf(Shape)).apply(this, arguments));
-        }
-
-        _createClass(Shape, [{
-          key: 'draw',
-
-          // constructor() {
-          //     super()
-          // }
-
-          value: function draw() {}
-        }, {
-          key: 'render',
-          value: function render(ctx) {
-            this.clear();
-            this.draw();
-            _get(Shape.prototype.__proto__ || Object.getPrototypeOf(Shape.prototype), 'render', this).call(this, ctx);
-          }
-        }]);
-
-        return Shape;
-      }(_graphics2.default);
-
-      exports.default = Shape;
-
-      /***/
-    },
     /* 2 */
     /***/function (module, exports, __webpack_require__) {
 
@@ -703,6 +475,9 @@ var _typeof2 = typeof Symbol === "function" && typeof Symbol.iterator === "symbo
           _this.clipGraphics = null;
           _this.clipRuleNonzero = true;
           _this.fixed = false;
+
+          _this.absClipGraphics = null;
+          _this.absClipRuleNonzero = true;
           return _this;
         }
 
@@ -806,6 +581,17 @@ var _typeof2 = typeof Symbol === "function" && typeof Symbol.iterator === "symbo
             this.clipGraphics = null;
           }
         }, {
+          key: 'absClip',
+          value: function absClip(graphics, notClipRuleNonzero) {
+            this.absClipGraphics = graphics;
+            this.absClipRuleNonzero = !notClipRuleNonzero;
+          }
+        }, {
+          key: 'unAbsClip',
+          value: function unAbsClip() {
+            this.absClipGraphics = null;
+          }
+        }, {
           key: 'cache',
           value: function cache(x, y, width, height, scale) {
 
@@ -839,6 +625,11 @@ var _typeof2 = typeof Symbol === "function" && typeof Symbol.iterator === "symbo
             this.cache(filterBox.x || 0, filterBox.y || 0, filterBox.width || this.width, filterBox.height || this.height);
             this._readyToFilter = true;
             this._filterName = filterName;
+          }
+        }, {
+          key: 'unfilter',
+          value: function unfilter() {
+            this.uncache();
           }
         }]);
 
@@ -1158,51 +949,91 @@ var _typeof2 = typeof Symbol === "function" && typeof Symbol.iterator === "symbo
         }subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } });if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass;
       }
 
-      var measureCtx = void 0;
+      var Bitmap = function (_DisplayObject) {
+        _inherits(Bitmap, _DisplayObject);
 
-      if (_util2.default.isWeapp) {
-        measureCtx = wx.createCanvasContext('measure0');
-      } else if (typeof document !== 'undefined') {
-        measureCtx = document.createElement('canvas').getContext('2d');
-      }
+        function Bitmap(img, onLoad) {
+          _classCallCheck(this, Bitmap);
 
-      var Text = function (_DisplayObject) {
-        _inherits(Text, _DisplayObject);
+          var _this = _possibleConstructorReturn(this, (Bitmap.__proto__ || Object.getPrototypeOf(Bitmap)).call(this));
 
-        function Text(text, option) {
-          _classCallCheck(this, Text);
-
-          var _this = _possibleConstructorReturn(this, (Text.__proto__ || Object.getPrototypeOf(Text)).call(this));
-
-          _this.text = text;
-          option = option || {};
-          _this.font = option.font || '10px sans-serif';
-          _this.color = option.color || 'black';
-
-          _this.baseline = option.baseline || 'top';
+          if (typeof img === 'string') {
+            if (Bitmap.cache[img]) {
+              if (_util2.default.isWeapp) {
+                _this.img = Bitmap.cache[img].img;
+                _this.rect = [0, 0, Bitmap.cache[img].width, Bitmap.cache[img].height];
+                _this.width = _this.rect[2];
+                _this.height = _this.rect[3];
+              } else {
+                _this.img = Bitmap.cache[img];
+                _this.rect = [0, 0, _this.img.width, _this.img.height];
+                _this.width = _this.img.width;
+                _this.height = _this.img.height;
+              }
+              onLoad && onLoad.call(_this);
+            } else if (_util2.default.isWeapp) {
+              _util2.default.getImageInWx(img, function (result) {
+                _this.img = result.img;
+                if (!_this.rect) {
+                  _this.rect = [0, 0, result.width, result.height];
+                }
+                _this.width = result.width;
+                _this.height = result.height;
+                onLoad && onLoad.call(_this);
+                Bitmap.cache[img] = result;
+              });
+            } else {
+              _this.img = _util2.default.isWegame ? wx.createImage() : new window.Image();
+              _this.visible = false;
+              _this.img.onload = function () {
+                _this.visible = true;
+                if (!_this.rect) {
+                  _this.rect = [0, 0, _this.img.width, _this.img.height];
+                }
+                _this.width = _this.img.width;
+                _this.height = _this.img.height;
+                onLoad && onLoad.call(_this);
+                Bitmap.cache[img] = _this.img;
+              };
+              _this.img.src = img;
+            }
+          } else {
+            _this.img = img;
+            _this.rect = [0, 0, img.width, img.height];
+            _this.width = img.width;
+            _this.height = img.height;
+            Bitmap.cache[img.src] = img;
+          }
           return _this;
         }
 
-        _createClass(Text, [{
-          key: 'getWidth',
-          value: function getWidth() {
-            if (!measureCtx) {
-              if (_util2.default.isWegame) {
-                measureCtx = wx.createCanvas().getContext('2d');
-              }
-            }
+        _createClass(Bitmap, [{
+          key: 'clone',
+          value: function clone() {
+            var bitmap = new Bitmap(this.img);
+            bitmap.x = this.x;
+            bitmap.y = this.y;
 
-            if (this.font) {
-              measureCtx.font = this.font;
-            }
-            return measureCtx.measureText(this.text).width;
+            bitmap.scaleX = this.scaleX;
+            bitmap.scaleY = this.scaleY;
+            bitmap.rotation = this.rotation;
+            bitmap.skewX = this.skewX;
+            bitmap.skewY = this.skewY;
+            bitmap.originX = this.originX;
+            bitmap.originY = this.originY;
+            bitmap.width = this.width;
+            bitmap.height = this.height;
+
+            return bitmap;
           }
         }]);
 
-        return Text;
+        return Bitmap;
       }(_displayObject2.default);
 
-      exports.default = Text;
+      Bitmap.cache = {};
+
+      exports.default = Bitmap;
 
       /***/
     },
@@ -1255,6 +1086,107 @@ var _typeof2 = typeof Symbol === "function" && typeof Symbol.iterator === "symbo
         }subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } });if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass;
       }
 
+      var measureCtx = void 0;
+
+      if (_util2.default.isWeapp) {
+        measureCtx = wx.createCanvasContext('measure0');
+      } else if (typeof document !== 'undefined') {
+        measureCtx = document.createElement('canvas').getContext('2d');
+      }
+
+      var Text = function (_DisplayObject) {
+        _inherits(Text, _DisplayObject);
+
+        function Text(text, option) {
+          _classCallCheck(this, Text);
+
+          var _this = _possibleConstructorReturn(this, (Text.__proto__ || Object.getPrototypeOf(Text)).call(this));
+
+          _this.text = text;
+          option = option || {};
+          _this.font = option.font || '10px sans-serif';
+          _this.color = option.color || 'black';
+
+          _this.baseline = option.baseline || 'top';
+          return _this;
+        }
+
+        _createClass(Text, [{
+          key: 'getWidth',
+          value: function getWidth() {
+            if (!measureCtx) {
+              if (_util2.default.isWegame) {
+                measureCtx = wx.createCanvas().getContext('2d');
+              }
+            }
+
+            if (this.font) {
+              measureCtx.font = this.font;
+            }
+            return measureCtx.measureText(this.text).width;
+          }
+        }]);
+
+        return Text;
+      }(_displayObject2.default);
+
+      exports.default = Text;
+
+      /***/
+    },
+    /* 6 */
+    /***/function (module, exports, __webpack_require__) {
+
+      "use strict";
+
+      Object.defineProperty(exports, "__esModule", {
+        value: true
+      });
+
+      var _createClass = function () {
+        function defineProperties(target, props) {
+          for (var i = 0; i < props.length; i++) {
+            var descriptor = props[i];descriptor.enumerable = descriptor.enumerable || false;descriptor.configurable = true;if ("value" in descriptor) descriptor.writable = true;Object.defineProperty(target, descriptor.key, descriptor);
+          }
+        }return function (Constructor, protoProps, staticProps) {
+          if (protoProps) defineProperties(Constructor.prototype, protoProps);if (staticProps) defineProperties(Constructor, staticProps);return Constructor;
+        };
+      }();
+
+      var _displayObject = __webpack_require__(2);
+
+      var _displayObject2 = _interopRequireDefault(_displayObject);
+
+      var _util = __webpack_require__(9);
+
+      var _util2 = _interopRequireDefault(_util);
+
+      var _bitmap = __webpack_require__(4);
+
+      var _bitmap2 = _interopRequireDefault(_bitmap);
+
+      function _interopRequireDefault(obj) {
+        return obj && obj.__esModule ? obj : { default: obj };
+      }
+
+      function _classCallCheck(instance, Constructor) {
+        if (!(instance instanceof Constructor)) {
+          throw new TypeError("Cannot call a class as a function");
+        }
+      }
+
+      function _possibleConstructorReturn(self, call) {
+        if (!self) {
+          throw new ReferenceError("this hasn't been initialised - super() hasn't been called");
+        }return call && ((typeof call === 'undefined' ? 'undefined' : _typeof2(call)) === "object" || typeof call === "function") ? call : self;
+      }
+
+      function _inherits(subClass, superClass) {
+        if (typeof superClass !== "function" && superClass !== null) {
+          throw new TypeError("Super expression must either be null or a function, not " + (typeof superClass === 'undefined' ? 'undefined' : _typeof2(superClass)));
+        }subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } });if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass;
+      }
+
       var Sprite = function (_DisplayObject) {
         _inherits(Sprite, _DisplayObject);
 
@@ -1266,7 +1198,7 @@ var _typeof2 = typeof Symbol === "function" && typeof Symbol.iterator === "symbo
           _this.option = option;
           var len = _this.option.imgs.length;
           var count = 0;
-
+          var firstImg = _this.option.imgs[0];
           _this.imgMap = {};
 
           if (_util2.default.isWeapp) {
@@ -1275,30 +1207,43 @@ var _typeof2 = typeof Symbol === "function" && typeof Symbol.iterator === "symbo
                 _this.imgMap[img] = result.img;
                 count++;
                 if (count === len) {
-                  _this.img = _this.imgMap[_this.option.imgs[0]];
+                  _this.img = _this.imgMap[firstImg];
                   _this.rect = [0, 0, 0, 0];
                 }
               });
             });
           } else {
-            if (typeof _this.option.imgs[0] === 'string') {
+            if (typeof firstImg === 'string') {
               var _len = _this.option.imgs.length;
               var loadedCount = 0;
               _this.option.imgs.forEach(function (src) {
-                var img = _util2.default.isWegame ? wx.createImage() : new window.Image();
-                img.onload = function () {
-                  _this.imgMap[src] = img;
+                if (_bitmap2.default.cache[src]) {
+                  _this.imgMap[src] = _bitmap2.default.cache[src];
                   loadedCount++;
                   if (loadedCount === _len) {
-                    _this.img = _this.imgMap[_this.option.imgs[0]];
+                    _this.img = _this.imgMap[firstImg];
                     _this.rect = [0, 0, 0, 0];
                   }
-                };
-                img.src = src;
+                } else {
+                  var img = _util2.default.isWegame ? wx.createImage() : new window.Image();
+                  img.onload = function () {
+                    _this.imgMap[src] = img;
+                    loadedCount++;
+                    if (loadedCount === _len) {
+                      _this.img = _this.imgMap[firstImg];
+                      _this.rect = [0, 0, 0, 0];
+                    }
+                    _bitmap2.default.cache[src] = img;
+                  };
+                  img.src = src;
+                }
               });
+            } else if (firstImg instanceof _bitmap2.default) {
+              _this.rect = [0, 0, 0, 0];
+              _this.img = firstImg.img;
             } else {
               _this.rect = [0, 0, 0, 0];
-              _this.img = _this.option.imgs[0];
+              _this.img = firstImg;
             }
           }
 
@@ -1400,143 +1345,6 @@ var _typeof2 = typeof Symbol === "function" && typeof Symbol.iterator === "symbo
       }(_displayObject2.default);
 
       exports.default = Sprite;
-
-      /***/
-    },
-    /* 6 */
-    /***/function (module, exports, __webpack_require__) {
-
-      "use strict";
-
-      Object.defineProperty(exports, "__esModule", {
-        value: true
-      });
-
-      var _createClass = function () {
-        function defineProperties(target, props) {
-          for (var i = 0; i < props.length; i++) {
-            var descriptor = props[i];descriptor.enumerable = descriptor.enumerable || false;descriptor.configurable = true;if ("value" in descriptor) descriptor.writable = true;Object.defineProperty(target, descriptor.key, descriptor);
-          }
-        }return function (Constructor, protoProps, staticProps) {
-          if (protoProps) defineProperties(Constructor.prototype, protoProps);if (staticProps) defineProperties(Constructor, staticProps);return Constructor;
-        };
-      }();
-
-      var _displayObject = __webpack_require__(2);
-
-      var _displayObject2 = _interopRequireDefault(_displayObject);
-
-      var _util = __webpack_require__(9);
-
-      var _util2 = _interopRequireDefault(_util);
-
-      function _interopRequireDefault(obj) {
-        return obj && obj.__esModule ? obj : { default: obj };
-      }
-
-      function _classCallCheck(instance, Constructor) {
-        if (!(instance instanceof Constructor)) {
-          throw new TypeError("Cannot call a class as a function");
-        }
-      }
-
-      function _possibleConstructorReturn(self, call) {
-        if (!self) {
-          throw new ReferenceError("this hasn't been initialised - super() hasn't been called");
-        }return call && ((typeof call === 'undefined' ? 'undefined' : _typeof2(call)) === "object" || typeof call === "function") ? call : self;
-      }
-
-      function _inherits(subClass, superClass) {
-        if (typeof superClass !== "function" && superClass !== null) {
-          throw new TypeError("Super expression must either be null or a function, not " + (typeof superClass === 'undefined' ? 'undefined' : _typeof2(superClass)));
-        }subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } });if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass;
-      }
-
-      var Bitmap = function (_DisplayObject) {
-        _inherits(Bitmap, _DisplayObject);
-
-        function Bitmap(img, onLoad) {
-          _classCallCheck(this, Bitmap);
-
-          var _this = _possibleConstructorReturn(this, (Bitmap.__proto__ || Object.getPrototypeOf(Bitmap)).call(this));
-
-          if (typeof img === 'string') {
-            if (Bitmap.cache[img]) {
-              if (_util2.default.isWeapp) {
-                _this.img = Bitmap.cache[img].img;
-                _this.rect = [0, 0, Bitmap.cache[img].width, Bitmap.cache[img].height];
-                _this.width = _this.rect[2];
-                _this.height = _this.rect[3];
-              } else {
-                _this.img = Bitmap.cache[img];
-                _this.rect = [0, 0, _this.img.width, _this.img.height];
-                _this.width = _this.img.width;
-                _this.height = _this.img.height;
-              }
-              onLoad && onLoad.call(_this);
-            } else if (_util2.default.isWeapp) {
-              _util2.default.getImageInWx(img, function (result) {
-                _this.img = result.img;
-                if (!_this.rect) {
-                  _this.rect = [0, 0, result.width, result.height];
-                }
-                _this.width = result.width;
-                _this.height = result.height;
-                onLoad && onLoad.call(_this);
-                Bitmap.cache[img] = result;
-              });
-            } else {
-              _this.img = _util2.default.isWegame ? wx.createImage() : new window.Image();
-              _this.visible = false;
-              _this.img.onload = function () {
-                _this.visible = true;
-                if (!_this.rect) {
-                  _this.rect = [0, 0, _this.img.width, _this.img.height];
-                }
-                _this.width = _this.img.width;
-                _this.height = _this.img.height;
-                onLoad && onLoad.call(_this);
-                Bitmap.cache[img] = _this.img;
-              };
-              _this.img.src = img;
-            }
-          } else {
-            _this.img = img;
-            _this.rect = [0, 0, img.width, img.height];
-            _this.width = img.width;
-            _this.height = img.height;
-            Bitmap.cache[img.src] = img;
-          }
-          return _this;
-        }
-
-        _createClass(Bitmap, [{
-          key: 'clone',
-          value: function clone() {
-            var bitmap = new Bitmap(this.img);
-            bitmap.x = this.x;
-            bitmap.y = this.y;
-
-            bitmap.scaleX = this.scaleX;
-            bitmap.scaleY = this.scaleY;
-            bitmap.rotation = this.rotation;
-            bitmap.skewX = this.skewX;
-            bitmap.skewY = this.skewY;
-            bitmap.originX = this.originX;
-            bitmap.originY = this.originY;
-            bitmap.width = this.width;
-            bitmap.height = this.height;
-
-            return bitmap;
-          }
-        }]);
-
-        return Bitmap;
-      }(_displayObject2.default);
-
-      Bitmap.cache = {};
-
-      exports.default = Bitmap;
 
       /***/
     },
@@ -1661,7 +1469,7 @@ var _typeof2 = typeof Symbol === "function" && typeof Symbol.iterator === "symbo
 
         exports.getImageInWx = getImageInWx;
         function getImageInWx(img, callback) {
-          if (img.indexOf('https://') === -1 && img.indexOf('http://') === -1) {
+          if (img.indexOf('https://') === -1 && img.indexOf('http://') === -1 || img.indexOf('http://tmp/') === 0) {
             wx.getImageInfo({
               src: img,
               success: function success(info) {
@@ -2987,7 +2795,7 @@ var _typeof2 = typeof Symbol === "function" && typeof Symbol.iterator === "symbo
 
       var _canvasRender2 = _interopRequireDefault(_canvasRender);
 
-      var _group = __webpack_require__(0);
+      var _group = __webpack_require__(1);
 
       var _group2 = _interopRequireDefault(_group);
 
@@ -3142,7 +2950,7 @@ var _typeof2 = typeof Symbol === "function" && typeof Symbol.iterator === "symbo
         };
       }();
 
-      var _group = __webpack_require__(0);
+      var _group = __webpack_require__(1);
 
       var _group2 = _interopRequireDefault(_group);
 
@@ -3150,7 +2958,7 @@ var _typeof2 = typeof Symbol === "function" && typeof Symbol.iterator === "symbo
 
       var _renderer2 = _interopRequireDefault(_renderer);
 
-      var _wxHitRender = __webpack_require__(29);
+      var _wxHitRender = __webpack_require__(31);
 
       var _wxHitRender2 = _interopRequireDefault(_wxHitRender);
 
@@ -3351,7 +3159,7 @@ var _typeof2 = typeof Symbol === "function" && typeof Symbol.iterator === "symbo
         };
       }();
 
-      var _shape = __webpack_require__(1);
+      var _shape = __webpack_require__(0);
 
       var _shape2 = _interopRequireDefault(_shape);
 
@@ -3468,19 +3276,19 @@ var _typeof2 = typeof Symbol === "function" && typeof Symbol.iterator === "symbo
 
       var _graphics2 = _interopRequireDefault(_graphics);
 
-      var _bitmap = __webpack_require__(6);
+      var _bitmap = __webpack_require__(4);
 
       var _bitmap2 = _interopRequireDefault(_bitmap);
 
-      var _text = __webpack_require__(4);
+      var _text = __webpack_require__(5);
 
       var _text2 = _interopRequireDefault(_text);
 
-      var _group = __webpack_require__(0);
+      var _group = __webpack_require__(1);
 
       var _group2 = _interopRequireDefault(_group);
 
-      var _sprite = __webpack_require__(5);
+      var _sprite = __webpack_require__(6);
 
       var _sprite2 = _interopRequireDefault(_sprite);
 
@@ -3488,31 +3296,35 @@ var _typeof2 = typeof Symbol === "function" && typeof Symbol.iterator === "symbo
 
       var _roundedRect2 = _interopRequireDefault(_roundedRect);
 
-      var _arrowPath = __webpack_require__(30);
+      var _arrowPath = __webpack_require__(32);
 
       var _arrowPath2 = _interopRequireDefault(_arrowPath);
 
-      var _ellipse = __webpack_require__(31);
+      var _ellipse = __webpack_require__(33);
 
       var _ellipse2 = _interopRequireDefault(_ellipse);
 
-      var _button = __webpack_require__(32);
+      var _path = __webpack_require__(34);
+
+      var _path2 = _interopRequireDefault(_path);
+
+      var _button = __webpack_require__(37);
 
       var _button2 = _interopRequireDefault(_button);
 
-      var _rect = __webpack_require__(33);
+      var _rect = __webpack_require__(38);
 
       var _rect2 = _interopRequireDefault(_rect);
 
-      var _circle = __webpack_require__(34);
+      var _circle = __webpack_require__(39);
 
       var _circle2 = _interopRequireDefault(_circle);
 
-      var _polygon = __webpack_require__(35);
+      var _polygon = __webpack_require__(40);
 
       var _polygon2 = _interopRequireDefault(_polygon);
 
-      var _equilateralPolygon = __webpack_require__(36);
+      var _equilateralPolygon = __webpack_require__(41);
 
       var _equilateralPolygon2 = _interopRequireDefault(_equilateralPolygon);
 
@@ -3545,6 +3357,7 @@ var _typeof2 = typeof Symbol === "function" && typeof Symbol.iterator === "symbo
         Sprite: _sprite2.default,
         ArrowPath: _arrowPath2.default,
         Ellipse: _ellipse2.default,
+        Path: _path2.default,
 
         Button: _button2.default,
 
@@ -3916,7 +3729,7 @@ var _typeof2 = typeof Symbol === "function" && typeof Symbol.iterator === "symbo
 
       var _wegameCanvas2 = _interopRequireDefault(_wegameCanvas);
 
-      var _group = __webpack_require__(0);
+      var _group = __webpack_require__(1);
 
       var _group2 = _interopRequireDefault(_group);
 
@@ -3924,7 +3737,7 @@ var _typeof2 = typeof Symbol === "function" && typeof Symbol.iterator === "symbo
 
       var _renderer2 = _interopRequireDefault(_renderer);
 
-      var _hitRender = __webpack_require__(28);
+      var _hitRender = __webpack_require__(30);
 
       var _hitRender2 = _interopRequireDefault(_hitRender);
 
@@ -4038,9 +3851,13 @@ var _typeof2 = typeof Symbol === "function" && typeof Symbol.iterator === "symbo
             });
 
             _this.canvas.addEventListener('dblclick', function (evt) {
-              return _this._handlDblClick(evt);
+              return _this._handleDblClick(evt);
             });
             // this.addEvent(this.canvas, "mousewheel", this._handleMouseWheel.bind(this));
+
+            document.addEventListener('contextmenu', function (evt) {
+              return _this._handleContextmenu(evt);
+            });
           }
 
           _this.borderTopWidth = 0;
@@ -4070,8 +3887,13 @@ var _typeof2 = typeof Symbol === "function" && typeof Symbol.iterator === "symbo
         }
 
         _createClass(Stage, [{
-          key: '_handlDblClick',
-          value: function _handlDblClick(evt) {
+          key: '_handleContextmenu',
+          value: function _handleContextmenu(evt) {
+            this._getObjectUnderPoint(evt);
+          }
+        }, {
+          key: '_handleDblClick',
+          value: function _handleDblClick(evt) {
             this._getObjectUnderPoint(evt);
           }
         }, {
@@ -4084,6 +3906,9 @@ var _typeof2 = typeof Symbol === "function" && typeof Symbol.iterator === "symbo
         }, {
           key: '_handleMouseDown',
           value: function _handleMouseDown(evt) {
+            if (this.isWegame) {
+              evt.type = 'touchstart';
+            }
             this.offset = this._getOffset(this.canvas);
             var obj = this._getObjectUnderPoint(evt);
             this.willDragObject = obj;
@@ -4101,6 +3926,9 @@ var _typeof2 = typeof Symbol === "function" && typeof Symbol.iterator === "symbo
         }, {
           key: '_handleMouseUp',
           value: function _handleMouseUp(evt) {
+            if (this.isWegame) {
+              evt.type = 'touchend';
+            }
             var obj = this._getObjectUnderPoint(evt);
             this._mouseUpX = evt.stageX;
             this._mouseUpY = evt.stageY;
@@ -4133,6 +3961,9 @@ var _typeof2 = typeof Symbol === "function" && typeof Symbol.iterator === "symbo
         }, {
           key: '_handleMouseMove',
           value: function _handleMouseMove(evt) {
+            if (this.isWegame) {
+              evt.type = 'touchmove';
+            }
             if (this.disableMoveDetection) return;
             var obj = this._getObjectUnderPoint(evt);
             var mockEvt = new _event2.default();
@@ -4603,7 +4434,7 @@ var _typeof2 = typeof Symbol === "function" && typeof Symbol.iterator === "symbo
         };
       }();
 
-      var _group = __webpack_require__(0);
+      var _group = __webpack_require__(1);
 
       var _group2 = _interopRequireDefault(_group);
 
@@ -4615,15 +4446,15 @@ var _typeof2 = typeof Symbol === "function" && typeof Symbol.iterator === "symbo
 
       var _render3 = _interopRequireDefault(_render2);
 
-      var _sprite = __webpack_require__(5);
+      var _sprite = __webpack_require__(6);
 
       var _sprite2 = _interopRequireDefault(_sprite);
 
-      var _bitmap = __webpack_require__(6);
+      var _bitmap = __webpack_require__(4);
 
       var _bitmap2 = _interopRequireDefault(_bitmap);
 
-      var _text = __webpack_require__(4);
+      var _text = __webpack_require__(5);
 
       var _text2 = _interopRequireDefault(_text);
 
@@ -4720,6 +4551,16 @@ var _typeof2 = typeof Symbol === "function" && typeof Symbol.iterator === "symbo
               ctx.clip(o.clipRuleNonzero ? 'nonzero' : 'evenodd');
             }
 
+            var oacg = o.absClipGraphics;
+            if (oacg) {
+              ctx.beginPath();
+              oacg._matrix.initialize(1, 0, 0, 1, 0, 0);
+              oacg._matrix.appendTransform(oacg.x, oacg.y, oacg.scaleX, oacg.scaleY, oacg.rotation, oacg.skewX, oacg.skewY, oacg.originX, oacg.originY);
+              ctx.setTransform(oacg._matrix.a, oacg._matrix.b, oacg._matrix.c, oacg._matrix.d, oacg._matrix.tx, oacg._matrix.ty);
+              oacg.render(ctx);
+              ctx.clip(o.absClipRuleNonzero ? 'nonzero' : 'evenodd');
+            }
+
             o.complexCompositeOperation = ctx.globalCompositeOperation = this.getCompositeOperation(o);
             o.complexAlpha = ctx.globalAlpha = this.getAlpha(o, 1);
             if (!cacheRender) {
@@ -4744,8 +4585,7 @@ var _typeof2 = typeof Symbol === "function" && typeof Symbol.iterator === "symbo
                   l = list.length;
               for (var i = 0; i < l; i++) {
                 ctx.save();
-                var target = this._render(ctx, list[i], mtx);
-                if (target) return target;
+                this._render(ctx, list[i], mtx);
                 ctx.restore();
               }
             } else if (o instanceof _graphics2.default) {
@@ -4826,10 +4666,14 @@ var _typeof2 = typeof Symbol === "function" && typeof Symbol.iterator === "symbo
 
       var _invert = __webpack_require__(27);
 
+      var _blur = __webpack_require__(28);
+
       function filter(pixels, name) {
 
         if (name.indexOf('invert(') === 0) {
           return (0, _invert.invert)(pixels, Number(name.replace('invert(', '').replace('%)', '')) / 100);
+        } else if (name.indexOf('blur(') === 0) {
+          return (0, _blur.blur)(pixels, Number(name.replace('blur(', '').replace('px)', '')));
         }
       }
 
@@ -4867,6 +4711,157 @@ var _typeof2 = typeof Symbol === "function" && typeof Symbol.iterator === "symbo
       Object.defineProperty(exports, "__esModule", {
         value: true
       });
+      exports.blur = blur;
+
+      var _createImageData = __webpack_require__(29);
+
+      function blur(pixels, diameter) {
+        diameter = Math.abs(diameter);
+        if (diameter <= 1) return pixels;
+        var radius = diameter / 2;
+        var len = Math.ceil(diameter) + (1 - Math.ceil(diameter) % 2);
+        var weights = new Float32Array(len);
+        var rho = (radius + 0.5) / 3;
+        var rhoSq = rho * rho;
+        var gaussianFactor = 1 / Math.sqrt(2 * Math.PI * rhoSq);
+        var rhoFactor = -1 / (2 * rho * rho);
+        var wsum = 0;
+        var middle = Math.floor(len / 2);
+        for (var i = 0; i < len; i++) {
+          var x = i - middle;
+          var gx = gaussianFactor * Math.exp(x * x * rhoFactor);
+          weights[i] = gx;
+          wsum += gx;
+        }
+        for (var i = 0; i < weights.length; i++) {
+          weights[i] /= wsum;
+        }
+        return separableConvolve(pixels, weights, weights, false);
+      }
+
+      function separableConvolve(pixels, horizWeights, vertWeights, opaque) {
+        return horizontalConvolve(verticalConvolve(pixels, vertWeights, opaque), horizWeights, opaque);
+      }
+
+      function horizontalConvolve(pixels, weightsVector, opaque) {
+        var side = weightsVector.length;
+        var halfSide = Math.floor(side / 2);
+
+        var src = pixels.data;
+        var sw = pixels.width;
+        var sh = pixels.height;
+
+        var w = sw;
+        var h = sh;
+        var output = (0, _createImageData.createImageData)(w, h);
+        var dst = output.data;
+
+        var alphaFac = opaque ? 1 : 0;
+
+        for (var y = 0; y < h; y++) {
+          for (var x = 0; x < w; x++) {
+            var sy = y;
+            var sx = x;
+            var dstOff = (y * w + x) * 4;
+            var r = 0,
+                g = 0,
+                b = 0,
+                a = 0;
+            for (var cx = 0; cx < side; cx++) {
+              var scy = sy;
+              var scx = Math.min(sw - 1, Math.max(0, sx + cx - halfSide));
+              var srcOff = (scy * sw + scx) * 4;
+              var wt = weightsVector[cx];
+              r += src[srcOff] * wt;
+              g += src[srcOff + 1] * wt;
+              b += src[srcOff + 2] * wt;
+              a += src[srcOff + 3] * wt;
+            }
+            dst[dstOff] = r;
+            dst[dstOff + 1] = g;
+            dst[dstOff + 2] = b;
+            dst[dstOff + 3] = a + alphaFac * (255 - a);
+          }
+        }
+        return output;
+      }
+
+      function verticalConvolve(pixels, weightsVector, opaque) {
+        var side = weightsVector.length;
+        var halfSide = Math.floor(side / 2);
+
+        var src = pixels.data;
+        var sw = pixels.width;
+        var sh = pixels.height;
+
+        var w = sw;
+        var h = sh;
+        var output = (0, _createImageData.createImageData)(w, h);
+        var dst = output.data;
+
+        var alphaFac = opaque ? 1 : 0;
+
+        for (var y = 0; y < h; y++) {
+          for (var x = 0; x < w; x++) {
+            var sy = y;
+            var sx = x;
+            var dstOff = (y * w + x) * 4;
+            var r = 0,
+                g = 0,
+                b = 0,
+                a = 0;
+            for (var cy = 0; cy < side; cy++) {
+              var scy = Math.min(sh - 1, Math.max(0, sy + cy - halfSide));
+              var scx = sx;
+              var srcOff = (scy * sw + scx) * 4;
+              var wt = weightsVector[cy];
+              r += src[srcOff] * wt;
+              g += src[srcOff + 1] * wt;
+              b += src[srcOff + 2] * wt;
+              a += src[srcOff + 3] * wt;
+            }
+            dst[dstOff] = r;
+            dst[dstOff + 1] = g;
+            dst[dstOff + 2] = b;
+            dst[dstOff + 3] = a + alphaFac * (255 - a);
+          }
+        }
+        return output;
+      };
+
+      /***/
+    },
+    /* 29 */
+    /***/function (module, exports, __webpack_require__) {
+
+      "use strict";
+
+      Object.defineProperty(exports, "__esModule", {
+        value: true
+      });
+      exports.createImageData = createImageData;
+      var tmpCtx = null;
+
+      if (typeof document != 'undefined') {
+        tmpCtx = document.createElement('canvas').getContext('2d');
+      } else if (typeof wx !== 'undefined' && wx.createCanvas) {
+        tmpCtx = wx.createCanvas().getContext('2d');
+      }
+
+      function createImageData(w, h) {
+        return tmpCtx.createImageData(w, h);
+      }
+
+      /***/
+    },
+    /* 30 */
+    /***/function (module, exports, __webpack_require__) {
+
+      "use strict";
+
+      Object.defineProperty(exports, "__esModule", {
+        value: true
+      });
 
       var _createClass = function () {
         function defineProperties(target, props) {
@@ -4878,7 +4873,7 @@ var _typeof2 = typeof Symbol === "function" && typeof Symbol.iterator === "symbo
         };
       }();
 
-      var _group = __webpack_require__(0);
+      var _group = __webpack_require__(1);
 
       var _group2 = _interopRequireDefault(_group);
 
@@ -4894,15 +4889,15 @@ var _typeof2 = typeof Symbol === "function" && typeof Symbol.iterator === "symbo
 
       var _event2 = _interopRequireDefault(_event);
 
-      var _sprite = __webpack_require__(5);
+      var _sprite = __webpack_require__(6);
 
       var _sprite2 = _interopRequireDefault(_sprite);
 
-      var _bitmap = __webpack_require__(6);
+      var _bitmap = __webpack_require__(4);
 
       var _bitmap2 = _interopRequireDefault(_bitmap);
 
-      var _text = __webpack_require__(4);
+      var _text = __webpack_require__(5);
 
       var _text2 = _interopRequireDefault(_text);
 
@@ -5012,9 +5007,6 @@ var _typeof2 = typeof Symbol === "function" && typeof Symbol.iterator === "symbo
           key: 'hitPixel',
           value: function hitPixel(o, evt) {
             var ctx = this.ctx;
-            //CanvasRenderingContext2D.restore() 是 Canvas 2D API 通过在绘图状态栈中弹出顶端的状态，将 canvas 恢复到最近的保存状态的方法。 如果没有保存状态，此方法不做任何改变。
-            //避免 save restore嵌套导致的 clip 区域影响 clearRect 擦除的区域
-            ctx.restore();
             ctx.clearRect(0, 0, 2, 2);
             var mtx = o._hitMatrix;
             var list = o.children.slice(0),
@@ -5053,6 +5045,16 @@ var _typeof2 = typeof Symbol === "function" && typeof Symbol.iterator === "symbo
               ctx.clip(o.clipRuleNonzero ? 'nonzero' : 'evenodd');
             }
 
+            var oacg = o.absClipGraphics;
+            if (oacg) {
+              ctx.beginPath();
+              oacg._matrix.initialize(1, 0, 0, 1, 0, 0);
+              oacg._matrix.appendTransform(oacg.x, oacg.y, oacg.scaleX, oacg.scaleY, oacg.rotation, oacg.skewX, oacg.skewY, oacg.originX, oacg.originY);
+              ctx.setTransform(oacg._matrix.a, oacg._matrix.b, oacg._matrix.c, oacg._matrix.d, oacg._matrix.tx, oacg._matrix.ty);
+              oacg.render(ctx);
+              ctx.clip(o.absClipRuleNonzero ? 'nonzero' : 'evenodd');
+            }
+
             if (o.cacheCanvas) {
               ctx.setTransform(mtx.a, mtx.b, mtx.c, mtx.d, mtx.tx, mtx.ty);
               ctx.drawImage(o.cacheCanvas, o._cacheData.x, o._cacheData.y);
@@ -5062,8 +5064,8 @@ var _typeof2 = typeof Symbol === "function" && typeof Symbol.iterator === "symbo
               for (var i = l - 1; i >= 0; i--) {
                 ctx.save();
                 var target = this._hitPixel(list[i], evt, mtx);
-                if (target) return target;
                 ctx.restore();
+                if (target) return target;
               }
             } else {
 
@@ -5119,7 +5121,7 @@ var _typeof2 = typeof Symbol === "function" && typeof Symbol.iterator === "symbo
 
       /***/
     },
-    /* 29 */
+    /* 31 */
     /***/function (module, exports, __webpack_require__) {
 
       "use strict";
@@ -5150,15 +5152,15 @@ var _typeof2 = typeof Symbol === "function" && typeof Symbol.iterator === "symbo
 
       var _event2 = _interopRequireDefault(_event);
 
-      var _sprite = __webpack_require__(5);
+      var _sprite = __webpack_require__(6);
 
       var _sprite2 = _interopRequireDefault(_sprite);
 
-      var _bitmap = __webpack_require__(6);
+      var _bitmap = __webpack_require__(4);
 
       var _bitmap2 = _interopRequireDefault(_bitmap);
 
-      var _text = __webpack_require__(4);
+      var _text = __webpack_require__(5);
 
       var _text2 = _interopRequireDefault(_text);
 
@@ -5302,7 +5304,7 @@ var _typeof2 = typeof Symbol === "function" && typeof Symbol.iterator === "symbo
 
       /***/
     },
-    /* 30 */
+    /* 32 */
     /***/function (module, exports, __webpack_require__) {
 
       "use strict";
@@ -5321,7 +5323,7 @@ var _typeof2 = typeof Symbol === "function" && typeof Symbol.iterator === "symbo
         };
       }();
 
-      var _shape = __webpack_require__(1);
+      var _shape = __webpack_require__(0);
 
       var _shape2 = _interopRequireDefault(_shape);
 
@@ -5420,7 +5422,7 @@ var _typeof2 = typeof Symbol === "function" && typeof Symbol.iterator === "symbo
 
       /***/
     },
-    /* 31 */
+    /* 33 */
     /***/function (module, exports, __webpack_require__) {
 
       "use strict";
@@ -5439,7 +5441,7 @@ var _typeof2 = typeof Symbol === "function" && typeof Symbol.iterator === "symbo
         };
       }();
 
-      var _shape = __webpack_require__(1);
+      var _shape = __webpack_require__(0);
 
       var _shape2 = _interopRequireDefault(_shape);
 
@@ -5521,7 +5523,7 @@ var _typeof2 = typeof Symbol === "function" && typeof Symbol.iterator === "symbo
 
       /***/
     },
-    /* 32 */
+    /* 34 */
     /***/function (module, exports, __webpack_require__) {
 
       "use strict";
@@ -5530,11 +5532,587 @@ var _typeof2 = typeof Symbol === "function" && typeof Symbol.iterator === "symbo
         value: true
       });
 
-      var _group = __webpack_require__(0);
+      var _createClass = function () {
+        function defineProperties(target, props) {
+          for (var i = 0; i < props.length; i++) {
+            var descriptor = props[i];descriptor.enumerable = descriptor.enumerable || false;descriptor.configurable = true;if ("value" in descriptor) descriptor.writable = true;Object.defineProperty(target, descriptor.key, descriptor);
+          }
+        }return function (Constructor, protoProps, staticProps) {
+          if (protoProps) defineProperties(Constructor.prototype, protoProps);if (staticProps) defineProperties(Constructor, staticProps);return Constructor;
+        };
+      }();
+
+      var _pathParser = __webpack_require__(35);
+
+      var _pathParser2 = _interopRequireDefault(_pathParser);
+
+      var _shape = __webpack_require__(0);
+
+      var _shape2 = _interopRequireDefault(_shape);
+
+      var _arcToBezier = __webpack_require__(36);
+
+      var _arcToBezier2 = _interopRequireDefault(_arcToBezier);
+
+      function _interopRequireDefault(obj) {
+        return obj && obj.__esModule ? obj : { default: obj };
+      }
+
+      function _classCallCheck(instance, Constructor) {
+        if (!(instance instanceof Constructor)) {
+          throw new TypeError("Cannot call a class as a function");
+        }
+      }
+
+      function _possibleConstructorReturn(self, call) {
+        if (!self) {
+          throw new ReferenceError("this hasn't been initialised - super() hasn't been called");
+        }return call && ((typeof call === 'undefined' ? 'undefined' : _typeof2(call)) === "object" || typeof call === "function") ? call : self;
+      }
+
+      function _inherits(subClass, superClass) {
+        if (typeof superClass !== "function" && superClass !== null) {
+          throw new TypeError("Super expression must either be null or a function, not " + (typeof superClass === 'undefined' ? 'undefined' : _typeof2(superClass)));
+        }subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } });if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass;
+      }
+
+      var Path = function (_Shape) {
+        _inherits(Path, _Shape);
+
+        function Path(d, option) {
+          _classCallCheck(this, Path);
+
+          var _this = _possibleConstructorReturn(this, (Path.__proto__ || Object.getPrototypeOf(Path)).call(this));
+
+          _this.d = d;
+
+          option = Object.assign({
+            fillStyle: 'black',
+            strokeStyle: 'black',
+            lineWidth: 1
+          }, option);
+          _this.option = option;
+          return _this;
+        }
+
+        _createClass(Path, [{
+          key: 'draw',
+          value: function draw() {
+            var _this2 = this;
+
+            var cmds = (0, _pathParser2.default)(this.d);
+
+            this.beginPath();
+            // https://developer.mozilla.org/zh-CN/docs/Web/SVG/Tutorial/Paths
+            // M = moveto
+            // L = lineto
+            // H = horizontal lineto
+            // V = vertical lineto
+            // C = curveto
+            // S = smooth curveto
+            // Q = quadratic Belzier curve
+            // T = smooth quadratic Belzier curveto
+            // A = elliptical Arc  暂时未实现，用贝塞尔拟合椭圆
+            // Z = closepath
+            // 以上所有命令均允许小写字母。大写表示绝对定位，小写表示相对定位(从上一个点开始)。
+            var preX = void 0,
+                preY = void 0,
+                curves = void 0,
+                lastCurve = void 0;
+
+            // 参考我的 pasition https://github.com/AlloyTeam/pasition/blob/master/src/index.js
+            for (var j = 0, cmdLen = cmds.length; j < cmdLen; j++) {
+              var item = cmds[j];
+              var action = item[0];
+              var preItem = cmds[j - 1];
+
+              switch (action) {
+                case 'M':
+                  preX = item[1];
+                  preY = item[2];
+                  this.moveTo(preX, preY);
+                  break;
+                case 'L':
+                  preX = item[1];
+                  preY = item[2];
+                  this.lineTo(preX, preY);
+                  break;
+                case 'H':
+                  preX = item[1];
+                  this.lineTo(preX, preY);
+                  break;
+                case 'V':
+                  preY = item[1];
+                  this.lineTo(preX, preY);
+                  break;
+                case 'C':
+                  preX = item[5];
+                  preY = item[6];
+                  this.bezierCurveTo(item[1], item[2], item[3], item[4], preX, preY);
+                  break;
+                case 'S':
+
+                  if (preItem[0] === 'C' || preItem[0] === 'c') {
+                    this.bezierCurveTo(preX, preY, preX + preItem[5] - preItem[3], preY + preItem[6] - preItem[4], item[1], item[2], item[3], item[4]);
+                  } else if (preItem[0] === 'S' || preItem[0] === 's') {
+                    this.bezierCurveTo(preX, preY, preX + preItem[3] - preItem[1], preY + preItem[4] - preItem[2], item[1], item[2], item[3], item[4]);
+                  }
+                  preX = item[3];
+                  preY = item[4];
+                  break;
+
+                case 'Q':
+                  preX = item[3];
+                  preY = item[4];
+                  this.quadraticCurveTo(item[1], item[2], preX, preY);
+                  break;
+
+                case 'm':
+                  preX += item[1];
+                  preY += item[2];
+                  this.moveTo(preX, preY);
+                  break;
+                case 'l':
+                  preX += item[1];
+                  preY += item[2];
+                  this.lineTo(preX, preY);
+                  break;
+                case 'h':
+                  preX += item[1];
+                  this.lineTo(preX, preY);
+                  break;
+                case 'v':
+                  preY += item[1];
+                  this.lineTo(preX, preY);
+                  break;
+                case 'c':
+                  this.bezierCurveTo(preX + item[1], preY + item[2], preX + item[3], preY + item[4], preX + item[5], preY + item[6]);
+                  preX = preX + item[5];
+                  preY = preY + item[6];
+                  break;
+                case 's':
+                  if (preItem[0] === 'C' || preItem[0] === 'c') {
+                    this.bezierCurveTo(preX, preY, preX + preItem[5] - preItem[3], preY + preItem[6] - preItem[4], preX + item[1], preY + item[2], preX + item[3], preY + item[4]);
+                  } else if (preItem[0] === 'S' || preItem[0] === 's') {
+                    this.bezierCurveTo(preX, preY, preX + preItem[3] - preItem[1], preY + preItem[4] - preItem[2], preX + item[1], preY + item[2], preX + item[3], preY + item[4]);
+                  }
+
+                  preX += item[3];
+                  preY += item[4];
+                  break;
+                case 'q':
+
+                  this.quadraticCurveTo(preX + item[1], preY + item[2], item[3] + preX, item[4] + preY);
+                  preX += item[3];
+                  preY += item[4];
+                  break;
+                case 'Z':
+                  this.closePath();
+                  break;
+                case 'z':
+                  this.closePath();
+                  break;
+
+                case 'a':
+                  curves = (0, _arcToBezier2.default)({
+                    rx: item[1],
+                    ry: item[2],
+                    px: preX,
+                    py: preY,
+                    xAxisRotation: item[3],
+                    largeArcFlag: item[4],
+                    sweepFlag: item[5],
+                    cx: preX + item[6],
+                    cy: preX + item[7]
+                  });
+                  lastCurve = curves[curves.length - 1];
+
+                  curves.forEach(function (curve, index) {
+                    if (index === 0) {
+                      _this2.bezierCurveTo(preX, preY, curve.x1, curve.y1, curve.x2, curve.y2, curve.x, curve.y);
+                    } else {
+                      _this2.bezierCurveTo(curves[index - 1].x, curves[index - 1].y, curve.x1, curve.y1, curve.x2, curve.y2, curve.x, curve.y);
+                    }
+                  });
+
+                  preX = lastCurve.x;
+                  preY = lastCurve.y;
+
+                  break;
+
+                case 'A':
+
+                  curves = (0, _arcToBezier2.default)({
+                    rx: item[1],
+                    ry: item[2],
+                    px: preX,
+                    py: preY,
+                    xAxisRotation: item[3],
+                    largeArcFlag: item[4],
+                    sweepFlag: item[5],
+                    cx: item[6],
+                    cy: item[7]
+                  });
+                  lastCurve = curves[curves.length - 1];
+
+                  curves.forEach(function (curve, index) {
+                    if (index === 0) {
+                      _this2.bezierCurveTo(preX, preY, curve.x1, curve.y1, curve.x2, curve.y2, curve.x, curve.y);
+                    } else {
+                      _this2.bezierCurveTo(curves[index - 1].x, curves[index - 1].y, curve.x1, curve.y1, curve.x2, curve.y2, curve.x, curve.y);
+                    }
+                  });
+
+                  preX = lastCurve.x;
+                  preY = lastCurve.y;
+
+                  break;
+
+                case 'T':
+
+                  if (preItem[0] === 'Q' || preItem[0] === 'q') {
+                    preCX = preX + preItem[3] - preItem[1];
+                    preCY = preY + preItem[4] - preItem[2];
+                    this.quadraticCurveTo(preX, preY, preCX, preCY, item[1], item[2]);
+                  } else if (preItem[0] === 'T' || preItem[0] === 't') {
+                    this.quadraticCurveTo(preX, preY, preX + preX - preCX, preY + preY - preCY, item[1], item[2]);
+                    preCX = preX + preX - preCX;
+                    preCY = preY + preY - preCY;
+                  }
+
+                  preX = item[1];
+                  preY = item[2];
+                  break;
+
+                case 't':
+                  if (preItem[0] === 'Q' || preItem[0] === 'q') {
+                    preCX = preX + preItem[3] - preItem[1];
+                    preCY = preY + preItem[4] - preItem[2];
+                    this.quadraticCurveTo(preX, preY, preCX, preCY, preX + item[1], preY + item[2]);
+                  } else if (preItem[0] === 'T' || preItem[0] === 't') {
+                    this.quadraticCurveTo(preX, preY, preX + preX - preCX, preY + preY - preCY, preX + item[1], preY + item[2]);
+                    preCX = preX + preX - preCX;
+                    preCY = preY + preY - preCY;
+                  }
+
+                  preX += item[1];
+                  preY += item[2];
+                  break;
+              }
+            }
+            if (this.option.fillStyle) {
+              this.fillStyle(this.option.fillStyle);
+              this.fill();
+            }
+
+            if (this.option.strokeStyle) {
+              this.lineWidth(this.option.lineWidth);
+              this.strokeStyle(this.option.strokeStyle);
+              this.stroke();
+            }
+          }
+        }]);
+
+        return Path;
+      }(_shape2.default);
+
+      exports.default = Path;
+
+      /***/
+    },
+    /* 35 */
+    /***/function (module, exports, __webpack_require__) {
+
+      "use strict";
+
+      Object.defineProperty(exports, "__esModule", {
+        value: true
+      });
+      // https://github.com/jkroso/parse-svg-path/blob/master/index.js
+      /**
+       * expected argument lengths
+       * @type {Object}
+       */
+
+      var length = { a: 7, c: 6, h: 1, l: 2, m: 2, q: 4, s: 4, t: 2, v: 1, z: 0
+
+        /**
+         * segment pattern
+         * @type {RegExp}
+         */
+
+      };var segment = /([astvzqmhlc])([^astvzqmhlc]*)/ig;
+
+      /**
+       * parse an svg path data string. Generates an Array
+       * of commands where each command is an Array of the
+       * form `[command, arg1, arg2, ...]`
+       *
+       * @param {String} path
+       * @return {Array}
+       */
+
+      function parse(path) {
+        var data = [];
+        path.replace(segment, function (_, command, args) {
+          var type = command.toLowerCase();
+          args = parseValues(args);
+
+          // overloaded moveTo
+          if (type === 'm' && args.length > 2) {
+            data.push([command].concat(args.splice(0, 2)));
+            type = 'l';
+            command = command === 'm' ? 'l' : 'L';
+          }
+
+          while (true) {
+            if (args.length === length[type]) {
+              args.unshift(command);
+              return data.push(args);
+            }
+            if (args.length < length[type]) throw new Error('malformed path data');
+            data.push([command].concat(args.splice(0, length[type])));
+          }
+        });
+        return data;
+      }
+
+      var number = /-?[0-9]*\.?[0-9]+(?:e[-+]?\d+)?/ig;
+
+      function parseValues(args) {
+        var numbers = args.match(number);
+        return numbers ? numbers.map(Number) : [];
+      }
+
+      exports.default = parse;
+
+      /***/
+    },
+    /* 36 */
+    /***/function (module, exports, __webpack_require__) {
+
+      "use strict";
+
+      Object.defineProperty(exports, "__esModule", {
+        value: true
+      });
+
+      var _slicedToArray = function () {
+        function sliceIterator(arr, i) {
+          var _arr = [];var _n = true;var _d = false;var _e = undefined;try {
+            for (var _i = arr[Symbol.iterator](), _s; !(_n = (_s = _i.next()).done); _n = true) {
+              _arr.push(_s.value);if (i && _arr.length === i) break;
+            }
+          } catch (err) {
+            _d = true;_e = err;
+          } finally {
+            try {
+              if (!_n && _i["return"]) _i["return"]();
+            } finally {
+              if (_d) throw _e;
+            }
+          }return _arr;
+        }return function (arr, i) {
+          if (Array.isArray(arr)) {
+            return arr;
+          } else if (Symbol.iterator in Object(arr)) {
+            return sliceIterator(arr, i);
+          } else {
+            throw new TypeError("Invalid attempt to destructure non-iterable instance");
+          }
+        };
+      }();
+
+      //https://github.com/colinmeinke/svg-arc-to-cubic-bezier
+
+      var TAU = Math.PI * 2;
+
+      var mapToEllipse = function mapToEllipse(_ref, rx, ry, cosphi, sinphi, centerx, centery) {
+        var x = _ref.x,
+            y = _ref.y;
+
+        x *= rx;
+        y *= ry;
+
+        var xp = cosphi * x - sinphi * y;
+        var yp = sinphi * x + cosphi * y;
+
+        return {
+          x: xp + centerx,
+          y: yp + centery
+        };
+      };
+
+      var approxUnitArc = function approxUnitArc(ang1, ang2) {
+        var a = 4 / 3 * Math.tan(ang2 / 4);
+
+        var x1 = Math.cos(ang1);
+        var y1 = Math.sin(ang1);
+        var x2 = Math.cos(ang1 + ang2);
+        var y2 = Math.sin(ang1 + ang2);
+
+        return [{
+          x: x1 - y1 * a,
+          y: y1 + x1 * a
+        }, {
+          x: x2 + y2 * a,
+          y: y2 - x2 * a
+        }, {
+          x: x2,
+          y: y2
+        }];
+      };
+
+      var vectorAngle = function vectorAngle(ux, uy, vx, vy) {
+        var sign = ux * vy - uy * vx < 0 ? -1 : 1;
+        var umag = Math.sqrt(ux * ux + uy * uy);
+        var vmag = Math.sqrt(ux * ux + uy * uy);
+        var dot = ux * vx + uy * vy;
+
+        var div = dot / (umag * vmag);
+
+        if (div > 1) {
+          div = 1;
+        }
+
+        if (div < -1) {
+          div = -1;
+        }
+
+        return sign * Math.acos(div);
+      };
+
+      var getArcCenter = function getArcCenter(px, py, cx, cy, rx, ry, largeArcFlag, sweepFlag, sinphi, cosphi, pxp, pyp) {
+        var rxsq = Math.pow(rx, 2);
+        var rysq = Math.pow(ry, 2);
+        var pxpsq = Math.pow(pxp, 2);
+        var pypsq = Math.pow(pyp, 2);
+
+        var radicant = rxsq * rysq - rxsq * pypsq - rysq * pxpsq;
+
+        if (radicant < 0) {
+          radicant = 0;
+        }
+
+        radicant /= rxsq * pypsq + rysq * pxpsq;
+        radicant = Math.sqrt(radicant) * (largeArcFlag === sweepFlag ? -1 : 1);
+
+        var centerxp = radicant * rx / ry * pyp;
+        var centeryp = radicant * -ry / rx * pxp;
+
+        var centerx = cosphi * centerxp - sinphi * centeryp + (px + cx) / 2;
+        var centery = sinphi * centerxp + cosphi * centeryp + (py + cy) / 2;
+
+        var vx1 = (pxp - centerxp) / rx;
+        var vy1 = (pyp - centeryp) / ry;
+        var vx2 = (-pxp - centerxp) / rx;
+        var vy2 = (-pyp - centeryp) / ry;
+
+        var ang1 = vectorAngle(1, 0, vx1, vy1);
+        var ang2 = vectorAngle(vx1, vy1, vx2, vy2);
+
+        if (sweepFlag === 0 && ang2 > 0) {
+          ang2 -= TAU;
+        }
+
+        if (sweepFlag === 1 && ang2 < 0) {
+          ang2 += TAU;
+        }
+
+        return [centerx, centery, ang1, ang2];
+      };
+
+      var arcToBezier = function arcToBezier(_ref2) {
+        var px = _ref2.px,
+            py = _ref2.py,
+            cx = _ref2.cx,
+            cy = _ref2.cy,
+            rx = _ref2.rx,
+            ry = _ref2.ry,
+            _ref2$xAxisRotation = _ref2.xAxisRotation,
+            xAxisRotation = _ref2$xAxisRotation === undefined ? 0 : _ref2$xAxisRotation,
+            _ref2$largeArcFlag = _ref2.largeArcFlag,
+            largeArcFlag = _ref2$largeArcFlag === undefined ? 0 : _ref2$largeArcFlag,
+            _ref2$sweepFlag = _ref2.sweepFlag,
+            sweepFlag = _ref2$sweepFlag === undefined ? 0 : _ref2$sweepFlag;
+
+        var curves = [];
+
+        if (rx === 0 || ry === 0) {
+          return [];
+        }
+
+        var sinphi = Math.sin(xAxisRotation * TAU / 360);
+        var cosphi = Math.cos(xAxisRotation * TAU / 360);
+
+        var pxp = cosphi * (px - cx) / 2 + sinphi * (py - cy) / 2;
+        var pyp = -sinphi * (px - cx) / 2 + cosphi * (py - cy) / 2;
+
+        if (pxp === 0 && pyp === 0) {
+          return [];
+        }
+
+        rx = Math.abs(rx);
+        ry = Math.abs(ry);
+
+        var lambda = Math.pow(pxp, 2) / Math.pow(rx, 2) + Math.pow(pyp, 2) / Math.pow(ry, 2);
+
+        if (lambda > 1) {
+          rx *= Math.sqrt(lambda);
+          ry *= Math.sqrt(lambda);
+        }
+
+        var _getArcCenter = getArcCenter(px, py, cx, cy, rx, ry, largeArcFlag, sweepFlag, sinphi, cosphi, pxp, pyp),
+            _getArcCenter2 = _slicedToArray(_getArcCenter, 4),
+            centerx = _getArcCenter2[0],
+            centery = _getArcCenter2[1],
+            ang1 = _getArcCenter2[2],
+            ang2 = _getArcCenter2[3];
+
+        var segments = Math.max(Math.ceil(Math.abs(ang2) / (TAU / 4)), 1);
+
+        ang2 /= segments;
+
+        for (var i = 0; i < segments; i++) {
+          curves.push(approxUnitArc(ang1, ang2));
+          ang1 += ang2;
+        }
+
+        return curves.map(function (curve) {
+          var _mapToEllipse = mapToEllipse(curve[0], rx, ry, cosphi, sinphi, centerx, centery),
+              x1 = _mapToEllipse.x,
+              y1 = _mapToEllipse.y;
+
+          var _mapToEllipse2 = mapToEllipse(curve[1], rx, ry, cosphi, sinphi, centerx, centery),
+              x2 = _mapToEllipse2.x,
+              y2 = _mapToEllipse2.y;
+
+          var _mapToEllipse3 = mapToEllipse(curve[2], rx, ry, cosphi, sinphi, centerx, centery),
+              x = _mapToEllipse3.x,
+              y = _mapToEllipse3.y;
+
+          return { x1: x1, y1: y1, x2: x2, y2: y2, x: x, y: y };
+        });
+      };
+
+      exports.default = arcToBezier;
+
+      /***/
+    },
+    /* 37 */
+    /***/function (module, exports, __webpack_require__) {
+
+      "use strict";
+
+      Object.defineProperty(exports, "__esModule", {
+        value: true
+      });
+
+      var _group = __webpack_require__(1);
 
       var _group2 = _interopRequireDefault(_group);
 
-      var _text = __webpack_require__(4);
+      var _text = __webpack_require__(5);
 
       var _text2 = _interopRequireDefault(_text);
 
@@ -5595,7 +6173,7 @@ var _typeof2 = typeof Symbol === "function" && typeof Symbol.iterator === "symbo
 
       /***/
     },
-    /* 33 */
+    /* 38 */
     /***/function (module, exports, __webpack_require__) {
 
       "use strict";
@@ -5614,7 +6192,7 @@ var _typeof2 = typeof Symbol === "function" && typeof Symbol.iterator === "symbo
         };
       }();
 
-      var _shape = __webpack_require__(1);
+      var _shape = __webpack_require__(0);
 
       var _shape2 = _interopRequireDefault(_shape);
 
@@ -5676,7 +6254,7 @@ var _typeof2 = typeof Symbol === "function" && typeof Symbol.iterator === "symbo
 
       /***/
     },
-    /* 34 */
+    /* 39 */
     /***/function (module, exports, __webpack_require__) {
 
       "use strict";
@@ -5695,7 +6273,7 @@ var _typeof2 = typeof Symbol === "function" && typeof Symbol.iterator === "symbo
         };
       }();
 
-      var _shape = __webpack_require__(1);
+      var _shape = __webpack_require__(0);
 
       var _shape2 = _interopRequireDefault(_shape);
 
@@ -5764,7 +6342,7 @@ var _typeof2 = typeof Symbol === "function" && typeof Symbol.iterator === "symbo
 
       /***/
     },
-    /* 35 */
+    /* 40 */
     /***/function (module, exports, __webpack_require__) {
 
       "use strict";
@@ -5783,7 +6361,7 @@ var _typeof2 = typeof Symbol === "function" && typeof Symbol.iterator === "symbo
         };
       }();
 
-      var _shape = __webpack_require__(1);
+      var _shape = __webpack_require__(0);
 
       var _shape2 = _interopRequireDefault(_shape);
 
@@ -5860,7 +6438,7 @@ var _typeof2 = typeof Symbol === "function" && typeof Symbol.iterator === "symbo
 
       /***/
     },
-    /* 36 */
+    /* 41 */
     /***/function (module, exports, __webpack_require__) {
 
       "use strict";
@@ -5879,7 +6457,7 @@ var _typeof2 = typeof Symbol === "function" && typeof Symbol.iterator === "symbo
         };
       }();
 
-      var _shape = __webpack_require__(1);
+      var _shape = __webpack_require__(0);
 
       var _shape2 = _interopRequireDefault(_shape);
 
@@ -5993,10 +6571,85 @@ var _typeof2 = typeof Symbol === "function" && typeof Symbol.iterator === "symbo
     /******/)
   );
 });
-/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(3)(module)))
+/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(2)(module)))
 
 /***/ }),
-/* 3 */
+/* 1 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
+var _cax = __webpack_require__(0);
+
+var _cax2 = _interopRequireDefault(_cax);
+
+var _index = __webpack_require__(3);
+
+var _index2 = _interopRequireDefault(_index);
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+var stage = new _cax2.default.Stage(740, 520, 'body');
+
+var config = {
+  bottom: {
+    interval: 1,
+    from: 0,
+    mapping: [1, 100],
+    x: 30,
+    y: 450,
+    to: 7,
+    color: 'black',
+    text: {
+      color: '#444',
+      value: function value(index, data) {
+        return 'index-' + index;
+      },
+      x: 30,
+      y: 10,
+      font: '10px Verdana',
+      range: [0, 4],
+      rotation: 0
+    },
+    gird: {
+      color: '#ddd',
+
+      length: 400
+    }
+  },
+  left: {
+    color: 'black',
+    interval: 6,
+    mapping: [30, 200],
+    from: -30,
+    to: 30,
+    x: 30,
+    y: 450,
+    text: {
+      color: '#444',
+      x: -20,
+      y: 0
+    },
+    gird: {
+      color: '#ddd',
+
+      length: 700
+    }
+  }
+};
+
+Object.keys(config).forEach(function (key) {
+  if (config[key]) {
+    var axis = new _index2.default(config[key], key);
+    stage.add(axis);
+  }
+});
+
+stage.update();
+
+/***/ }),
+/* 2 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -6024,6 +6677,159 @@ module.exports = function (module) {
 	}
 	return module;
 };
+
+/***/ }),
+/* 3 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+
+var _cax = __webpack_require__(0);
+
+var _cax2 = _interopRequireDefault(_cax);
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+
+function _possibleConstructorReturn(self, call) { if (!self) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return call && (typeof call === "object" || typeof call === "function") ? call : self; }
+
+function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
+
+var Graphics = _cax2.default.Graphics,
+    Text = _cax2.default.Text,
+    Group = _cax2.default.Group;
+
+var Axis = function (_Group) {
+  _inherits(Axis, _Group);
+
+  function Axis(axis, orient) {
+    _classCallCheck(this, Axis);
+
+    var _this = _possibleConstructorReturn(this, (Axis.__proto__ || Object.getPrototypeOf(Axis)).call(this));
+
+    var f = axis.from;
+    var t = axis.to;
+    var x = axis.x;
+    var y = axis.y;
+    var g = new Graphics();
+    var lineTo = [0, 0];
+    switch (orient) {
+      case 'left':
+        lineTo[0] = x;
+        lineTo[1] = y - (t - f) / axis.mapping[0] * axis.mapping[1];
+        break;
+      case 'bottom':
+        lineTo[0] = x + (t - f) / axis.mapping[0] * axis.mapping[1];
+        lineTo[1] = y;
+        break;
+      case 'right':
+        lineTo[0] = x;
+        lineTo[1] = y - (t - f) / axis.mapping[0] * axis.mapping[1];
+        break;
+      case 'top':
+        lineTo[0] = x + (t - f) / axis.mapping[0] * axis.mapping[1];
+        lineTo[1] = y;
+        break;
+    }
+
+    g.beginPath().strokeStyle(axis.color).moveTo(x, y).lineTo(lineTo[0], lineTo[1]).stroke();
+
+    var current = void 0;
+    switch (orient) {
+      case 'bottom':
+        for (var i = f; i <= t; i += axis.interval) {
+          current = x + (i - f) / axis.mapping[0] * axis.mapping[1];
+
+          g.beginPath().strokeStyle(axis.color).moveTo(current, y).lineTo(current, y + 5).stroke();
+
+          if (axis.gird && i > f) {
+            g.beginPath().strokeStyle(axis.gird.color).moveTo(current, y - 1).lineTo(current, y - axis.gird.length).stroke();
+          }
+
+          if (!axis.text.range || i >= axis.text.range[0] && i <= axis.text.range[1]) {
+            var text = new Text(axis.text.value ? axis.text.value(i) : i, axis.text.font, axis.text.color);
+            text.x = current + axis.text.x;
+            text.y = y + 5 + axis.text.y;
+            text.rotation = axis.text.rotation || 0;
+            _this.add(text);
+          }
+        }
+        break;
+      case 'left':
+
+        for (var _i = f; _i <= t; _i += axis.interval) {
+          current = y - (_i - f) / axis.mapping[0] * axis.mapping[1];
+
+          g.beginPath().strokeStyle(axis.color).moveTo(x, current).lineTo(x - 5, current).stroke();
+
+          if (axis.gird && _i > f) {
+            g.beginPath().strokeStyle(axis.gird.color).moveTo(x + 1, current).lineTo(x + axis.gird.length, current).stroke();
+          }
+          if (!axis.text.range || _i >= axis.text.range[0] && _i <= axis.text.range[1]) {
+            var _text = new Text(axis.text.value ? axis.text.value(_i) : _i, axis.text.font, axis.text.color);
+            _text.x = x - 5 + axis.text.x;
+            _text.y = current + axis.text.y;
+            _text.rotation = axis.text.rotation || 0;
+            _this.add(_text);
+          }
+        }
+        break;
+
+      case 'top':
+        for (var _i2 = f; _i2 <= t; _i2 += axis.interval) {
+          current = x + (_i2 - f) / axis.mapping[0] * axis.mapping[1];
+
+          g.beginPath().strokeStyle(axis.color).moveTo(current, y).lineTo(current, y - 5).stroke();
+
+          if (axis.gird && _i2 > f) {
+            g.beginPath().strokeStyle(axis.gird.color).moveTo(current, y - 1).lineTo(current, y - axis.gird.length).stroke();
+          }
+
+          if (!axis.text.range || _i2 >= axis.text.range[0] && _i2 <= axis.text.range[1]) {
+            var _text2 = new Text(axis.text.value ? axis.text.value(_i2) : _i2, axis.text.font, axis.text.color);
+            _text2.x = current + axis.text.x;
+            _text2.y = y - 5 + axis.text.y;
+            _text2.rotation = axis.text.rotation || 0;
+            _this.add(_text2);
+          }
+        }
+        break;
+
+      case 'right':
+
+        for (var _i3 = f; _i3 <= t; _i3 += axis.interval) {
+          current = y - (_i3 - f) / axis.mapping[0] * axis.mapping[1];
+
+          g.beginPath().strokeStyle(axis.color).moveTo(x, current).lineTo(x + 5, current).stroke();
+
+          if (axis.gird && _i3 > f) {
+            g.beginPath().strokeStyle(axis.gird.color).moveTo(x + 1, current).lineTo(x + axis.gird.length, current).stroke();
+          }
+          if (!axis.text.range || _i3 >= axis.text.range[0] && _i3 <= axis.text.range[1]) {
+            var _text3 = new Text(axis.text.value ? axis.text.value(_i3) : _i3, axis.text.font, axis.text.color);
+            _text3.x = x + 5 + axis.text.x;
+            _text3.y = current + axis.text.y;
+            _text3.rotation = axis.text.rotation || 0;
+            _this.add(_text3);
+          }
+        }
+        break;
+    }
+
+    _this.add(g);
+    return _this;
+  }
+
+  return Axis;
+}(Group);
+
+exports.default = Axis;
 
 /***/ })
 /******/ ]);
