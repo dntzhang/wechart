@@ -6595,24 +6595,26 @@ function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { de
 var stage = new _cax2.default.Stage(800, 520, 'body');
 
 var data = [// 数据
-{ name: 'dntzhang', age: _cax2.default.util.randomInt(-20, 20), exp: _cax2.default.util.randomInt(500, 1000) }, { name: 'Canvas', age: _cax2.default.util.randomInt(-20, 20), exp: _cax2.default.util.randomInt(500, 1000) }, { name: 'Wechart', age: _cax2.default.util.randomInt(-20, 20), exp: _cax2.default.util.randomInt(500, 1000) }, { name: 'Tencent', age: _cax2.default.util.randomInt(-20, 20), exp: _cax2.default.util.randomInt(500, 1000) }, { name: 'Cax', age: _cax2.default.util.randomInt(-20, 20), exp: _cax2.default.util.randomInt(500, 1000) }];
+{ name: 'dntzhang', age: _cax2.default.util.randomInt(10, 20), exp: _cax2.default.util.randomInt(500, 1000) }, { name: 'Canvas', age: _cax2.default.util.randomInt(10, 20), exp: _cax2.default.util.randomInt(500, 1000) }, { name: 'Wechart', age: _cax2.default.util.randomInt(10, 20), exp: _cax2.default.util.randomInt(500, 1000) }, { name: 'Tencent', age: _cax2.default.util.randomInt(10, 20), exp: _cax2.default.util.randomInt(500, 1000) }, { name: 'Cax', age: _cax2.default.util.randomInt(10, 20), exp: _cax2.default.util.randomInt(500, 1000) }];
 var xScale = (0, _scale.scaleLinear)([0, 7], [0, 700]);
-var yScaleLeft = (0, _scale.scaleLinear)([-30, 30], [200, -200]);
-var yScaleRight = (0, _scale.scaleLinear)([500, 1000], [200, -200]);
+var yScaleLeft = (0, _scale.scaleLinear)([0, 30], [0, 700]);
+
+var scale = (0, _scale.scaleLinear)([0, 30], [0, 700]);
 
 var config = [{ // rects代表拆分多个rect，下面是相关的配置
-  scale: yScaleLeft,
-  size: 30,
-  interval: 100,
-  x: 45,
-  y: 250,
+  vertical: false,
+  scale: scale,
+  size: 10,
+  interval: 80,
+  x: 30,
+  y: 100,
   processing: function processing(item) {
     return item.age;
   }, // 数据预处理，提取影响形状的报表
   color: function color(index) {
     // 每个柱子的颜色
-    return '#4BC0C0';
-    //return ['#4BC0C0', '#FF6485', '#FFCE5C', '#ADACB9', '#A37AC1'][index]
+
+    return ['#4BC0C0', '#FF6485', '#FFCE5C', '#ADACB9', '#A37AC1'][index];
   },
   tooltip: function tooltip(item) {
     return item.name + '-age<br/>' + item.age;
@@ -6623,8 +6625,8 @@ var config = [{ // rects代表拆分多个rect，下面是相关的配置
   show: { // 过渡动画
     // from: { y: -510 },//起始点
     // to: { y: 0 },//终点
-    from: { scaleY: 0 }, // 起始点
-    to: { scaleY: 1 }, // 终点
+    from: { scaleX: 0 }, // 起始点
+    to: { scaleX: 1 }, // 终点
     duration: 2000, // 动画的时间
     easing: _cax2.default.easing.elasticOut, // 缓动函数
     delay: function delay(i) {
@@ -6632,83 +6634,30 @@ var config = [{ // rects代表拆分多个rect，下面是相关的配置
     } // 每个柱子的动画依次开始
   },
   hide: {
-    from: { scaleY: 1 }, // 起始点
-    to: { scaleY: 0 }, // 终点
+    from: { scaleX: 1 }, // 起始点
+    to: { scaleX: 0 }, // 终点
     duration: 1000 // 动画的时间
     // delay: (i) => { return i * 300 }//每个柱子的动画依次开始
-  }
-}, { // rects代表拆分多个rect，下面是相关的配置
-  // age 30 对应 200像素高
-  scale: yScaleRight,
-  size: 30,
-  interval: 100,
-  x: 85,
-  y: 250,
-  processing: function processing(item) {
-    return item.exp;
-  }, // 数据预处理，提取影响形状的报表
-  color: function color(index) {
-    // 每个柱子的颜色
-    return '#FF6485';
-    //return ['#4BC0C0', '#FF6485', '#FFCE5C', '#ADACB9', '#A37AC1'][index]
-  },
-  tooltip: function tooltip(item) {
-    return item.name + '-exp<br/>' + item.exp;
-  },
-  transition: {
-    duration: 800 // 动画的时间
-  },
-  show: { // 过渡动画
-    from: { scaleY: 0 }, // 起始点
-    to: { scaleY: 1 }, // 终点
-    duration: 2000, // 动画的时间
-    easing: _cax2.default.easing.elasticOut, // 缓动函数
-    delay: function delay(i) {
-      return i * 300 + 150;
-    } // 每个柱子的动画依次开始
-  },
-  hide: {
-    from: { scaleY: 1 }, // 起始点
-    to: { scaleY: 0 }, // 终点
-    duration: 1000 // 动画的时间
-    // delay: (i) => { return i * 300+ 150 }//每个柱子的动画依次开始
   }
 }];
 
 var axisConfig = {
-  bottom: {
-    scale: xScale,
+  left: {
+    scale: (0, _scale.scaleLinear)([0, 5], [0, 400]),
     interval: 1,
     x: 30,
-    y: 450,
+    y: 50,
     color: 'black',
     text: {
       color: '#444',
       value: function value(index, data) {
         return 'index-' + index;
       },
-      x: 30,
-      y: 10,
+      x: -40,
+      y: 50,
       font: '10px Verdana',
       range: [0, 4],
-      rotation: 0
-    },
-    gird: {
-      color: '#ddd',
-
-      length: 400
-    }
-  },
-  left: {
-    scale: yScaleLeft,
-    color: 'black',
-    interval: 6,
-    x: 30,
-    y: 250,
-    text: {
-      color: '#444',
-      x: -20,
-      y: -8
+      rotation: -30
     },
     gird: {
       color: '#ddd',
@@ -6716,26 +6665,28 @@ var axisConfig = {
       length: 700
     }
   },
-  right: {
-    scale: yScaleRight,
+  top: {
+    scale: scale,
     color: 'black',
-    interval: 60,
-    x: 730,
-    y: 250,
+    interval: 2,
+    x: 30,
+    y: 50,
     text: {
       color: '#444',
-      x: 10,
-      y: -8
-    }
-    // gird: {
-    //   color: '#eee',
+      x: -5,
+      y: -15
+    },
+    gird: {
+      color: '#ddd',
 
-    //   length: -700
-    // }
+      length: -400
+    }
   }
 };
 
-stage.add(new _index2.default(data, config, axisConfig));
+var bar = new _index2.default(data, config, axisConfig);
+bar.x = 20;
+stage.add(bar);
 
 _cax2.default.tick(stage.update.bind(stage));
 

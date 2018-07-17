@@ -18,7 +18,7 @@ const yScaleRight = scaleLinear([500, 1000], [200, -200])
 
 const config = [{// rects代表拆分多个rect，下面是相关的配置
   scale: yScaleLeft,
-  width: 30,
+  size: 30,
   interval: 100,
   x: 45,
   y: 250,
@@ -51,8 +51,7 @@ const config = [{// rects代表拆分多个rect，下面是相关的配置
 }, {// rects代表拆分多个rect，下面是相关的配置
   // age 30 对应 200像素高
   scale: yScaleRight,
-
-  width: 30,
+  size: 30,
   interval: 100,
   x: 85,
   y: 250,

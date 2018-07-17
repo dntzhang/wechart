@@ -55,9 +55,9 @@ class OneBar extends Group {
     if (option.vertical) {
       const height = option.scale(value) * -1
 
-      const width = option.width
+      const size = option.size
 
-      rect = new Rect(width, height, {
+      rect = new Rect(size, height, {
         fillStyle: option.color(index)
       })
 
@@ -65,17 +65,17 @@ class OneBar extends Group {
       rect.y = option.y
       rect.originY = height
     } else {
-      const height = option.width
-      const width = option.mapping[1] * value / option.mapping[0]
+      const size = option.size
+      const width = option.scale(value) 
 
       rect = new Rect(
         width,
-        height,
+        size,
         { fillStyle: option.color(index) })
 
       rect.x = option.x
       rect.y = index * option.interval + option.y
-      rect.originY = height
+      rect.originY = size
     }
 
     const from = Object.assign({}, option.show.from)
