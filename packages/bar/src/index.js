@@ -49,9 +49,12 @@ class OneBar extends Group {
   constructor (value, option, index, tooltip, data) {
     super()
     option = Object.assign({}, defaultOption, option)
+
+ 
     let rect
     if (option.vertical) {
-      const height = option.mapping[1] * value / option.mapping[0]
+      const height = option.scale(value) * -1
+
       const width = option.width
 
       rect = new Rect(width, height, {
