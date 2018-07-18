@@ -73,7 +73,7 @@
 var _typeof2 = typeof Symbol === "function" && typeof Symbol.iterator === "symbol" ? function (obj) { return typeof obj; } : function (obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj; };
 
 /*!
- *  cax v1.1.7
+ *  cax v1.1.8
  *  By https://github.com/dntzhang 
  *  Github: https://github.com/dntzhang/cax
  *  MIT Licensed.
@@ -475,6 +475,7 @@ var _typeof2 = typeof Symbol === "function" && typeof Symbol.iterator === "symbo
           _this.clipGraphics = null;
           _this.clipRuleNonzero = true;
           _this.fixed = false;
+          _this.shadow = null;
 
           _this.absClipGraphics = null;
           _this.absClipRuleNonzero = true;
@@ -4561,12 +4562,11 @@ var _typeof2 = typeof Symbol === "function" && typeof Symbol.iterator === "symbo
               ctx.clip(o.absClipRuleNonzero ? 'nonzero' : 'evenodd');
             }
 
-            o.complexCompositeOperation = ctx.globalCompositeOperation = this.getCompositeOperation(o);
-            o.complexAlpha = ctx.globalAlpha = this.getAlpha(o, 1);
             if (!cacheRender) {
               ctx.setTransform(mtx.a, mtx.b, mtx.c, mtx.d, mtx.tx, mtx.ty);
             }
             if (o._readyToCache) {
+              this.setComplexProps(ctx, o);
               o._readyToCache = false;
               o.cacheCtx.setTransform(o._cacheData.scale, 0, 0, o._cacheData.scale, o._cacheData.x * -1, o._cacheData.y * -1);
               this.render(o.cacheCtx, o, true);
@@ -4579,6 +4579,7 @@ var _typeof2 = typeof Symbol === "function" && typeof Symbol.iterator === "symbo
 
               ctx.drawImage(o.cacheCanvas, o._cacheData.x, o._cacheData.y);
             } else if (o.cacheCanvas && !cacheRender) {
+              this.setComplexProps(ctx, o);
               ctx.drawImage(o.cacheCanvas, o._cacheData.x, o._cacheData.y);
             } else if (o instanceof _group2.default) {
               var list = o.children.slice(0),
@@ -4589,19 +4590,37 @@ var _typeof2 = typeof Symbol === "function" && typeof Symbol.iterator === "symbo
                 ctx.restore();
               }
             } else if (o instanceof _graphics2.default) {
+              this.setComplexProps(ctx, o);
               o.render(ctx);
             } else if (o instanceof _sprite2.default && o.rect) {
+              this.setComplexProps(ctx, o);
               o.updateFrame();
               var rect = o.rect;
               ctx.drawImage(o.img, rect[0], rect[1], rect[2], rect[3], 0, 0, rect[2], rect[3]);
             } else if (o instanceof _bitmap2.default && o.rect) {
+              this.setComplexProps(ctx, o);
               var bRect = o.rect;
               ctx.drawImage(o.img, bRect[0], bRect[1], bRect[2], bRect[3], 0, 0, bRect[2], bRect[3]);
             } else if (o instanceof _text2.default) {
+              this.setComplexProps(ctx, o);
               ctx.font = o.font;
               ctx.fillStyle = o.color;
               ctx.textBaseline = o.baseline;
               ctx.fillText(o.text, 0, 0);
+            }
+          }
+        }, {
+          key: 'setComplexProps',
+          value: function setComplexProps(ctx, o) {
+            o.complexCompositeOperation = ctx.globalCompositeOperation = this.getCompositeOperation(o);
+            o.complexAlpha = ctx.globalAlpha = this.getAlpha(o, 1);
+
+            o.complexShadow = this.getShadow(o);
+            if (o.complexShadow) {
+              ctx.shadowColor = o.complexShadow.color;
+              ctx.shadowOffsetX = o.complexShadow.offsetX;
+              ctx.shadowOffsetY = o.complexShadow.offsetY;
+              ctx.shadowBlur = o.complexShadow.blur;
             }
           }
         }, {
@@ -4618,6 +4637,12 @@ var _typeof2 = typeof Symbol === "function" && typeof Symbol.iterator === "symbo
               return this.getAlpha(o.parent, result);
             }
             return result;
+          }
+        }, {
+          key: 'getShadow',
+          value: function getShadow(o) {
+            if (o.shadow) return o.shadow;
+            if (o.parent) return this.getShadow(o.parent);
           }
         }]);
 
@@ -5071,23 +5096,22 @@ var _typeof2 = typeof Symbol === "function" && typeof Symbol.iterator === "symbo
 
               ctx.setTransform(mtx.a, mtx.b, mtx.c, mtx.d, mtx.tx, mtx.ty);
               if (o instanceof _graphics2.default) {
-                ctx.globalCompositeOperation = o.complexCompositeOperation;
-                ctx.globalAlpha = o.complexAlpha;
+                this.setComplexProps(ctx, o);
+
                 o.render(ctx);
               } else if (o instanceof _sprite2.default && o.rect) {
-                ctx.globalCompositeOperation = o.complexCompositeOperation;
-                ctx.globalAlpha = o.complexAlpha;
+                this.setComplexProps(ctx, o);
+
                 o.updateFrame();
                 var rect = o.rect;
                 ctx.drawImage(o.img, rect[0], rect[1], rect[2], rect[3], 0, 0, rect[2], rect[3]);
               } else if (o instanceof _bitmap2.default && o.rect) {
-                ctx.globalCompositeOperation = o.complexCompositeOperation;
-                ctx.globalAlpha = o.complexAlpha;
+                this.setComplexProps(ctx, o);
+
                 var bRect = o.rect;
                 ctx.drawImage(o.img, bRect[0], bRect[1], bRect[2], bRect[3], 0, 0, bRect[2], bRect[3]);
               } else if (o instanceof _text2.default) {
-                ctx.globalCompositeOperation = o.complexCompositeOperation;
-                ctx.globalAlpha = o.complexAlpha;
+                this.setComplexProps(ctx, o);
 
                 ctx.font = o.font;
                 ctx.fillStyle = o.color;
@@ -5100,6 +5124,19 @@ var _typeof2 = typeof Symbol === "function" && typeof Symbol.iterator === "symbo
               this._dispatchEvent(o, evt);
               return o;
             }
+          }
+        }, {
+          key: 'setComplexProps',
+          value: function setComplexProps(ctx, o) {
+            ctx.globalCompositeOperation = o.complexCompositeOperation;
+            ctx.globalAlpha = o.complexAlpha;
+            //The shadow does not trigger the event, so remove it
+            // if(o.complexShadow){
+            //   ctx.shadowColor = o.complexShadow.color
+            //   ctx.shadowOffsetX = o.complexShadow.offsetX
+            //   ctx.shadowOffsetY = o.complexShadow.offsetY
+            //   ctx.shadowBlur = o.complexShadow.blur
+            // }
           }
         }, {
           key: '_dispatchEvent',
@@ -6592,7 +6629,7 @@ function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { de
 
 var stage = new _cax2.default.Stage(740, 520, 'body');
 
-var excel = new _index2.default([[null, 'A', 'B', 'C'], [1, 'red border', 'green border including the left border', null], [2, ' textBreak auto textBreak auto textBreak auto textBreak auto textBreak auto', 'textBreak auto textBreak auto textBreak auto textBreak auto textBreak auto textBreak auto textBreak auto textBreak auto textBreak auto textBreak auto textBreak auto textBreak auto textBreak auto textBreak auto textBreak auto textBreak auto', ''], [3, 'merge main(show me)', 'merge2', null], [4, 'merge3', 'merge4', null], [5, null, null, null], [6, null, null, null], [7, 'center middle', 'bottom right', null]], {
+var excel = new _index2.default([[null, 'A', 'B', 'C'], [1, 'red border', 'green border including the left border', null], [2, ' textBreak auto textBreak auto textBreak auto textBreak auto textBreak auto', 'textBreak auto textBreak auto textBreak auto textBreak auto textBreak auto textBreak auto textBreak auto textBreak auto textBreak auto textBreak auto textBreak auto textBreak auto textBreak auto textBreak auto textBreak auto textBreak auto', ''], [3, 'merge main(show me)', 'merge2', null], [4, 'merge3', 'merge4', null], [5, null, null, null], [6, null, null, null], [7, 'center middle', 'top right', null]], {
   colWidth: [40, 200, 200, 130],
   rowHeight: [20, 30, 100, 30, 50, 60, 60, 60],
   merge: [[1, 3, 2, 2]],

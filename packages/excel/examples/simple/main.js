@@ -13,7 +13,7 @@ const excel = new Excel([
   [4, 'merge3', 'merge4', null],
   [5, null, null, null],
   [6, null, null, null],
-  [7, 'center middle', 'bottom right', null]
+  [7, 'center middle', 'top right', null]
 ], {
   colWidth: [40, 200, 200, 130],
   rowHeight: [20, 30, 100, 30, 50, 60, 60, 60],
