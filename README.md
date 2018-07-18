@@ -42,6 +42,8 @@ build 命令会自动打开浏览器中对应目录的 html (如果3000端口没
 http://localhost:3000/chart-name/examples/simple/index.html
 ```
 
+修改目录下的文件会自动刷新网页。
+
 ## 谁在使用？
 
 ![Tencent Wechat](./asset/wx.png)  ![Tencent QQ](./asset/qq.png)
