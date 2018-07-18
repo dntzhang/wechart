@@ -17,6 +17,19 @@
 </thead>
 <tbody>
 <tr>
+<td align="center"><a title="Map3d" href="https://dntzhang.github.io/wechart/packages/map3d/examples/simple/" rel="nofollow"><img alt="Map3d" src="./asset/c14.png" style="max-width:100%;"></a></td>
+<td align="center"><a href="https://github.com/dntzhang/wechart/blob/master/packages/map3d/examples/simple/main.js">Source</a></td>
+<td align="center"><a href="https://github.com/dntzhang/wechart/blob/master/packages/map3d/src/index.js">Map3d Source</a></td>
+<td align="center">Tutorial</td>
+</tr>
+<tr>
+<td align="center"><a title="Earth" href="https://dntzhang.github.io/wechart/packages/earth/examples/simple/" rel="nofollow"><img alt="Earth" src="./asset/c9.png" style="max-width:100%;"></a></td>
+<td align="center"><a href="https://github.com/dntzhang/wechart/blob/master/packages/earth/examples/simple/main.js">Source</a></td>
+<td align="center"><a href="https://github.com/dntzhang/wechart/blob/master/packages/earth/src/index.js">Earth Source</a></td>
+<td align="center">Tutorial</td>
+</tr>
+
+<tr>
 <td align="center"><a title="WordSphere" href="https://dntzhang.github.io/wechart/packages/word-sphere/examples/simple/" rel="nofollow"><img alt="WordSphere" src="./asset/c21.png" style="max-width:100%;"></a></td>
 <td align="center"><a href="https://github.com/dntzhang/wechart/blob/master/packages/word-sphere/examples/simple/main.js">Source</a></td>
 <td align="center"><a href="https://github.com/dntzhang/wechart/blob/master/packages/word-sphere/src/index.js">WordSphere Source</a></td>
@@ -131,18 +144,7 @@
 <td align="center"><a href="https://github.com/dntzhang/wechart/blob/master/packages/pie3d/src/index.js">Pie3d Source</a></td>
 <td align="center">Tutorial</td>
 </tr>
-<tr>
-<td align="center"><a title="Map3d" href="https://dntzhang.github.io/wechart/packages/map3d/examples/simple/" rel="nofollow"><img alt="Map3d" src="./asset/c14.png" style="max-width:100%;"></a></td>
-<td align="center"><a href="https://github.com/dntzhang/wechart/blob/master/packages/map3d/examples/simple/main.js">Source</a></td>
-<td align="center"><a href="https://github.com/dntzhang/wechart/blob/master/packages/map3d/src/index.js">Map3d Source</a></td>
-<td align="center">Tutorial</td>
-</tr>
-<tr>
-<td align="center"><a title="Earth" href="https://dntzhang.github.io/wechart/packages/earth/examples/simple/" rel="nofollow"><img alt="Earth" src="./asset/c9.png" style="max-width:100%;"></a></td>
-<td align="center"><a href="https://github.com/dntzhang/wechart/blob/master/packages/earth/examples/simple/main.js">Source</a></td>
-<td align="center"><a href="https://github.com/dntzhang/wechart/blob/master/packages/earth/src/index.js">Earth Source</a></td>
-<td align="center">Tutorial</td>
-</tr></tbody></table>
+</tbody></table>
 
 ## 怎么贡献图表？
 
