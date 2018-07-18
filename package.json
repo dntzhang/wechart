@@ -45,7 +45,8 @@
     "node-libs-browser": "^0.5.3",
     "sinon": "^4.5.0",
     "sinon-chai": "^3.0.0",
-    "webpack": "^3.4.1"
+    "webpack": "^3.4.1",
+    "browser-sync": "^2.24.5"
   },
   "repository": {
     "type": "git",
