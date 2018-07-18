@@ -1,7 +1,7 @@
 
 import cax from 'cax'
 
-const { TWEEN, Text, Graphics, Circle, Group, To } = cax
+const {  Text, Group } = cax
 
 class WordSphere extends Group {
   constructor(data, option) {

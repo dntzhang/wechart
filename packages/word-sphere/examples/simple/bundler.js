@@ -6729,12 +6729,8 @@ function _possibleConstructorReturn(self, call) { if (!self) { throw new Referen
 
 function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
 
-var TWEEN = _cax2.default.TWEEN,
-    Text = _cax2.default.Text,
-    Graphics = _cax2.default.Graphics,
-    Circle = _cax2.default.Circle,
-    Group = _cax2.default.Group,
-    To = _cax2.default.To;
+var Text = _cax2.default.Text,
+    Group = _cax2.default.Group;
 
 var WordSphere = function (_Group) {
   _inherits(WordSphere, _Group);
