@@ -21,14 +21,7 @@ class WordSphere extends Group {
 
 
     this.randomPoints()
-
-    console.log(this.positions)
     this.createTexts()
-
-
-
-
-
 
 
   }
@@ -71,8 +64,6 @@ class WordSphere extends Group {
       this.rdPositions.push({ x: x, y: y, z: z });
 
     }
-
-    console.log(this.positions.length)
   }
 
 
@@ -80,15 +71,17 @@ class WordSphere extends Group {
 
 
     this.data.forEach((item, index) => {
+  
       let text = new Text(item.text, {
-        color: 'red'
+        color: this.option.color(index),
+        font: this.option.scale(item.value) +'px ' + this.option.fontFamily||'Arial'
       })
 
       this.transform(text, index)
       this.add(text)
     })
 
-    console.log(this.children.length)
+
 
   }
 

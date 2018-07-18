@@ -6625,11 +6625,46 @@ var _src = __webpack_require__(3);
 
 var _src2 = _interopRequireDefault(_src);
 
+var _scale = __webpack_require__(4);
+
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
+var fontScale = (0, _scale.scaleLinear)([0, 10], [12, 30]);
 var stage = new _cax2.default.Stage(800, 800, '#canvasCtn');
 
-var ws = new _src2.default([{ text: '紅樓夢', value: '6' }, { text: '賈寶玉', value: '3' }, { text: '林黛玉', value: '3' }, { text: '薛寶釵', value: '3' }, { text: '王熙鳳', value: '3' }, { text: '李紈', value: '3' }, { text: '賈元春', value: '3' }, { text: '賈迎春', value: '3' }, { text: '賈探春', value: '3' }, { text: '賈惜春', value: '3' }, { text: '秦可卿', value: '3' }, { text: '賈巧姐', value: '3' }, { text: '史湘雲', value: '3' }, { text: '妙玉', value: '3' }, { text: '賈政', value: '2' }, { text: '賈赦', value: '2' }, { text: '賈璉', value: '2' }, { text: '賈珍', value: '2' }, { text: '賈環', value: '2' }, { text: '賈母', value: '2' }, { text: '王夫人', value: '2' }, { text: '薛姨媽', value: '2' }, { text: '尤氏', value: '2' }, { text: '平兒', value: '2' }, { text: '鴛鴦', value: '2' }, { text: '襲人', value: '2' }, { text: '晴雯', value: '2' }, { text: '香菱', value: '2' }, { text: '紫鵑', value: '2' }, { text: '麝月', value: '2' }, { text: '小紅', value: '2' }, { text: '金釧', value: '2' }, { text: '甄士隱', value: '2' }, { text: '賈雨村', value: '2' }], {});
+var ws = new _src2.default([{ text: 'WECHART', value: '6' }, { text: 'CAX', value: '12' }, { text: '紅樓夢', value: '10' }, { text: '賈寶玉', value: '3' }, { text: '林黛玉', value: '3' }, { text: '薛寶釵', value: '3' }, { text: '王熙鳳', value: '3' }, { text: '李紈', value: '3' }, { text: '賈元春', value: '7' }, { text: '賈迎春', value: '7' }, { text: '賈探春', value: '3' }, { text: '賈惜春', value: '7' }, { text: '秦可卿', value: '3' }, { text: '賈巧姐', value: '3' }, { text: '史湘雲', value: '5' }, { text: '妙玉', value: '3' }, { text: '賈政', value: '2' }, { text: '賈赦', value: '2' }, { text: '賈璉', value: '6' }, { text: '賈珍', value: '2' }, { text: '賈環', value: '6' }, { text: '賈母', value: '2' }, { text: '王夫人', value: '2' }, { text: '薛姨媽', value: '6' }, { text: '尤氏', value: '2' }, { text: '平兒', value: '2' }, { text: '鴛鴦', value: '2' }, { text: '襲人', value: '2' }, { text: '晴雯', value: '2' }, { text: '香菱', value: '2' }, { text: '紫鵑', value: '2' }, { text: '麝月', value: '2' }, { text: '小紅', value: '2' }, { text: '金釧', value: '2' }, { text: '甄士隱', value: '0' }, { text: '賈雨村', value: '0' }], {
+  color: function color() {
+    return colorLuminance(randomHexColor(), -0.2);
+  },
+  fontFamily: 'Microsoft Jhenghei',
+  scale: fontScale
+});
+
+function colorLuminance(hex, lum) {
+  // validate hex string
+  hex = String(hex).replace(/[^0-9a-f]/gi, '');
+  if (hex.length < 6) {
+    hex = hex[0] + hex[0] + hex[1] + hex[1] + hex[2] + hex[2];
+  }
+  lum = lum || 0;
+
+  // convert to decimal and change luminosity
+  var rgb = "#",
+      c,
+      i;
+  for (i = 0; i < 3; i++) {
+    c = parseInt(hex.substr(i * 2, 2), 16);
+    c = Math.round(Math.min(Math.max(0, c + c * lum), 255)).toString(16);
+    rgb += ("00" + c).substr(c.length);
+  }
+
+  return rgb;
+}
+
+function randomHexColor() {
+  //随机生成十六进制颜色
+  return '#' + ('00000' + (Math.random() * 0x1000000 << 0).toString(16)).substr(-6);
+}
 
 stage.add(ws);
 ws.x = 100;
@@ -6721,8 +6756,6 @@ var WordSphere = function (_Group) {
     _this.stepAngle = Math.PI / 360;
 
     _this.randomPoints();
-
-    console.log(_this.positions);
     _this.createTexts();
 
     return _this;
@@ -6771,8 +6804,6 @@ var WordSphere = function (_Group) {
         this.positions.push({ x: x, y: y, z: z });
         this.rdPositions.push({ x: x, y: y, z: z });
       }
-
-      console.log(this.positions.length);
     }
   }, {
     key: 'createTexts',
@@ -6780,15 +6811,15 @@ var WordSphere = function (_Group) {
       var _this2 = this;
 
       this.data.forEach(function (item, index) {
+
         var text = new Text(item.text, {
-          color: 'red'
+          color: _this2.option.color(index),
+          font: _this2.option.scale(item.value) + 'px ' + _this2.option.fontFamily || 'Arial'
         });
 
         _this2.transform(text, index);
         _this2.add(text);
       });
-
-      console.log(this.children.length);
     }
   }, {
     key: 'render',
@@ -6857,6 +6888,85 @@ var WordSphere = function (_Group) {
 }(Group);
 
 exports.default = WordSphere;
+
+/***/ }),
+/* 4 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
+Object.defineProperty(exports, "__esModule", {
+    value: true
+});
+exports.scaleLinear = undefined;
+
+var _linear = __webpack_require__(5);
+
+exports.scaleLinear = _linear.scaleLinear;
+exports.default = {
+    scaleLinear: _linear.scaleLinear
+};
+
+/***/ }),
+/* 5 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
+Object.defineProperty(exports, "__esModule", {
+    value: true
+});
+
+var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
+
+exports.scaleLinear = scaleLinear;
+
+function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+
+var ScaleLinear = function () {
+    function ScaleLinear(domain, range) {
+        _classCallCheck(this, ScaleLinear);
+
+        this.domainFrom = domain[0];
+        this.domainTo = domain[1];
+        this.domainInterval = this.domainTo - this.domainFrom;
+
+        this.rangeFrom = range[0];
+        this.rangeTo = range[1];
+        this.rangeInterval = this.rangeTo - this.rangeFrom;
+    }
+
+    _createClass(ScaleLinear, [{
+        key: "calculate",
+        value: function calculate(value) {
+            return this.rangeFrom + (value - this.domainFrom) / this.domainInterval * this.rangeInterval;
+        }
+    }, {
+        key: "invert",
+        value: function invert(value) {
+
+            return this.domainFrom + (value - this.rangeFrom) / this.rangeInterval * this.domainInterval;
+        }
+    }]);
+
+    return ScaleLinear;
+}();
+
+function scaleLinear(domain, range) {
+    var instance = new ScaleLinear(domain, range);
+
+    var calculate = function calculate(v) {
+        return instance.calculate(v);
+    };
+
+    calculate.domain = domain;
+    calculate.range = range;
+    calculate.invert = instance.invert.bind(instance);
+
+    return calculate;
+}
 
 /***/ })
 /******/ ]);
