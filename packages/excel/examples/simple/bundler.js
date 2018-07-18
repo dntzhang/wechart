@@ -73,7 +73,7 @@
 var _typeof2 = typeof Symbol === "function" && typeof Symbol.iterator === "symbol" ? function (obj) { return typeof obj; } : function (obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj; };
 
 /*!
- *  cax v1.1.4
+ *  cax v1.1.8
  *  By https://github.com/dntzhang 
  *  Github: https://github.com/dntzhang/cax
  *  MIT Licensed.
@@ -475,6 +475,10 @@ var _typeof2 = typeof Symbol === "function" && typeof Symbol.iterator === "symbo
           _this.clipGraphics = null;
           _this.clipRuleNonzero = true;
           _this.fixed = false;
+          _this.shadow = null;
+
+          _this.absClipGraphics = null;
+          _this.absClipRuleNonzero = true;
           return _this;
         }
 
@@ -576,6 +580,17 @@ var _typeof2 = typeof Symbol === "function" && typeof Symbol.iterator === "symbo
           key: 'unclip',
           value: function unclip() {
             this.clipGraphics = null;
+          }
+        }, {
+          key: 'absClip',
+          value: function absClip(graphics, notClipRuleNonzero) {
+            this.absClipGraphics = graphics;
+            this.absClipRuleNonzero = !notClipRuleNonzero;
+          }
+        }, {
+          key: 'unAbsClip',
+          value: function unAbsClip() {
+            this.absClipGraphics = null;
           }
         }, {
           key: 'cache',
@@ -935,51 +950,91 @@ var _typeof2 = typeof Symbol === "function" && typeof Symbol.iterator === "symbo
         }subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } });if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass;
       }
 
-      var measureCtx = void 0;
+      var Bitmap = function (_DisplayObject) {
+        _inherits(Bitmap, _DisplayObject);
 
-      if (_util2.default.isWeapp) {
-        measureCtx = wx.createCanvasContext('measure0');
-      } else if (typeof document !== 'undefined') {
-        measureCtx = document.createElement('canvas').getContext('2d');
-      }
+        function Bitmap(img, onLoad) {
+          _classCallCheck(this, Bitmap);
 
-      var Text = function (_DisplayObject) {
-        _inherits(Text, _DisplayObject);
+          var _this = _possibleConstructorReturn(this, (Bitmap.__proto__ || Object.getPrototypeOf(Bitmap)).call(this));
 
-        function Text(text, option) {
-          _classCallCheck(this, Text);
-
-          var _this = _possibleConstructorReturn(this, (Text.__proto__ || Object.getPrototypeOf(Text)).call(this));
-
-          _this.text = text;
-          option = option || {};
-          _this.font = option.font || '10px sans-serif';
-          _this.color = option.color || 'black';
-
-          _this.baseline = option.baseline || 'top';
+          if (typeof img === 'string') {
+            if (Bitmap.cache[img]) {
+              if (_util2.default.isWeapp) {
+                _this.img = Bitmap.cache[img].img;
+                _this.rect = [0, 0, Bitmap.cache[img].width, Bitmap.cache[img].height];
+                _this.width = _this.rect[2];
+                _this.height = _this.rect[3];
+              } else {
+                _this.img = Bitmap.cache[img];
+                _this.rect = [0, 0, _this.img.width, _this.img.height];
+                _this.width = _this.img.width;
+                _this.height = _this.img.height;
+              }
+              onLoad && onLoad.call(_this);
+            } else if (_util2.default.isWeapp) {
+              _util2.default.getImageInWx(img, function (result) {
+                _this.img = result.img;
+                if (!_this.rect) {
+                  _this.rect = [0, 0, result.width, result.height];
+                }
+                _this.width = result.width;
+                _this.height = result.height;
+                onLoad && onLoad.call(_this);
+                Bitmap.cache[img] = result;
+              });
+            } else {
+              _this.img = _util2.default.isWegame ? wx.createImage() : new window.Image();
+              _this.visible = false;
+              _this.img.onload = function () {
+                _this.visible = true;
+                if (!_this.rect) {
+                  _this.rect = [0, 0, _this.img.width, _this.img.height];
+                }
+                _this.width = _this.img.width;
+                _this.height = _this.img.height;
+                onLoad && onLoad.call(_this);
+                Bitmap.cache[img] = _this.img;
+              };
+              _this.img.src = img;
+            }
+          } else {
+            _this.img = img;
+            _this.rect = [0, 0, img.width, img.height];
+            _this.width = img.width;
+            _this.height = img.height;
+            Bitmap.cache[img.src] = img;
+          }
           return _this;
         }
 
-        _createClass(Text, [{
-          key: 'getWidth',
-          value: function getWidth() {
-            if (!measureCtx) {
-              if (_util2.default.isWegame) {
-                measureCtx = wx.createCanvas().getContext('2d');
-              }
-            }
+        _createClass(Bitmap, [{
+          key: 'clone',
+          value: function clone() {
+            var bitmap = new Bitmap(this.img);
+            bitmap.x = this.x;
+            bitmap.y = this.y;
 
-            if (this.font) {
-              measureCtx.font = this.font;
-            }
-            return measureCtx.measureText(this.text).width;
+            bitmap.scaleX = this.scaleX;
+            bitmap.scaleY = this.scaleY;
+            bitmap.rotation = this.rotation;
+            bitmap.skewX = this.skewX;
+            bitmap.skewY = this.skewY;
+            bitmap.originX = this.originX;
+            bitmap.originY = this.originY;
+            bitmap.width = this.width;
+            bitmap.height = this.height;
+
+            return bitmap;
           }
         }]);
 
-        return Text;
+        return Bitmap;
       }(_displayObject2.default);
 
-      exports.default = Text;
+      Bitmap.cache = {};
+
+      exports.default = Bitmap;
 
       /***/
     },
@@ -1032,6 +1087,107 @@ var _typeof2 = typeof Symbol === "function" && typeof Symbol.iterator === "symbo
         }subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } });if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass;
       }
 
+      var measureCtx = void 0;
+
+      if (_util2.default.isWeapp) {
+        measureCtx = wx.createCanvasContext('measure0');
+      } else if (typeof document !== 'undefined') {
+        measureCtx = document.createElement('canvas').getContext('2d');
+      }
+
+      var Text = function (_DisplayObject) {
+        _inherits(Text, _DisplayObject);
+
+        function Text(text, option) {
+          _classCallCheck(this, Text);
+
+          var _this = _possibleConstructorReturn(this, (Text.__proto__ || Object.getPrototypeOf(Text)).call(this));
+
+          _this.text = text;
+          option = option || {};
+          _this.font = option.font || '10px sans-serif';
+          _this.color = option.color || 'black';
+
+          _this.baseline = option.baseline || 'top';
+          return _this;
+        }
+
+        _createClass(Text, [{
+          key: 'getWidth',
+          value: function getWidth() {
+            if (!measureCtx) {
+              if (_util2.default.isWegame) {
+                measureCtx = wx.createCanvas().getContext('2d');
+              }
+            }
+
+            if (this.font) {
+              measureCtx.font = this.font;
+            }
+            return measureCtx.measureText(this.text).width;
+          }
+        }]);
+
+        return Text;
+      }(_displayObject2.default);
+
+      exports.default = Text;
+
+      /***/
+    },
+    /* 6 */
+    /***/function (module, exports, __webpack_require__) {
+
+      "use strict";
+
+      Object.defineProperty(exports, "__esModule", {
+        value: true
+      });
+
+      var _createClass = function () {
+        function defineProperties(target, props) {
+          for (var i = 0; i < props.length; i++) {
+            var descriptor = props[i];descriptor.enumerable = descriptor.enumerable || false;descriptor.configurable = true;if ("value" in descriptor) descriptor.writable = true;Object.defineProperty(target, descriptor.key, descriptor);
+          }
+        }return function (Constructor, protoProps, staticProps) {
+          if (protoProps) defineProperties(Constructor.prototype, protoProps);if (staticProps) defineProperties(Constructor, staticProps);return Constructor;
+        };
+      }();
+
+      var _displayObject = __webpack_require__(2);
+
+      var _displayObject2 = _interopRequireDefault(_displayObject);
+
+      var _util = __webpack_require__(9);
+
+      var _util2 = _interopRequireDefault(_util);
+
+      var _bitmap = __webpack_require__(4);
+
+      var _bitmap2 = _interopRequireDefault(_bitmap);
+
+      function _interopRequireDefault(obj) {
+        return obj && obj.__esModule ? obj : { default: obj };
+      }
+
+      function _classCallCheck(instance, Constructor) {
+        if (!(instance instanceof Constructor)) {
+          throw new TypeError("Cannot call a class as a function");
+        }
+      }
+
+      function _possibleConstructorReturn(self, call) {
+        if (!self) {
+          throw new ReferenceError("this hasn't been initialised - super() hasn't been called");
+        }return call && ((typeof call === 'undefined' ? 'undefined' : _typeof2(call)) === "object" || typeof call === "function") ? call : self;
+      }
+
+      function _inherits(subClass, superClass) {
+        if (typeof superClass !== "function" && superClass !== null) {
+          throw new TypeError("Super expression must either be null or a function, not " + (typeof superClass === 'undefined' ? 'undefined' : _typeof2(superClass)));
+        }subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } });if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass;
+      }
+
       var Sprite = function (_DisplayObject) {
         _inherits(Sprite, _DisplayObject);
 
@@ -1043,7 +1199,7 @@ var _typeof2 = typeof Symbol === "function" && typeof Symbol.iterator === "symbo
           _this.option = option;
           var len = _this.option.imgs.length;
           var count = 0;
-
+          var firstImg = _this.option.imgs[0];
           _this.imgMap = {};
 
           if (_util2.default.isWeapp) {
@@ -1052,30 +1208,43 @@ var _typeof2 = typeof Symbol === "function" && typeof Symbol.iterator === "symbo
                 _this.imgMap[img] = result.img;
                 count++;
                 if (count === len) {
-                  _this.img = _this.imgMap[_this.option.imgs[0]];
+                  _this.img = _this.imgMap[firstImg];
                   _this.rect = [0, 0, 0, 0];
                 }
               });
             });
           } else {
-            if (typeof _this.option.imgs[0] === 'string') {
+            if (typeof firstImg === 'string') {
               var _len = _this.option.imgs.length;
               var loadedCount = 0;
               _this.option.imgs.forEach(function (src) {
-                var img = _util2.default.isWegame ? wx.createImage() : new window.Image();
-                img.onload = function () {
-                  _this.imgMap[src] = img;
+                if (_bitmap2.default.cache[src]) {
+                  _this.imgMap[src] = _bitmap2.default.cache[src];
                   loadedCount++;
                   if (loadedCount === _len) {
-                    _this.img = _this.imgMap[_this.option.imgs[0]];
+                    _this.img = _this.imgMap[firstImg];
                     _this.rect = [0, 0, 0, 0];
                   }
-                };
-                img.src = src;
+                } else {
+                  var img = _util2.default.isWegame ? wx.createImage() : new window.Image();
+                  img.onload = function () {
+                    _this.imgMap[src] = img;
+                    loadedCount++;
+                    if (loadedCount === _len) {
+                      _this.img = _this.imgMap[firstImg];
+                      _this.rect = [0, 0, 0, 0];
+                    }
+                    _bitmap2.default.cache[src] = img;
+                  };
+                  img.src = src;
+                }
               });
+            } else if (firstImg instanceof _bitmap2.default) {
+              _this.rect = [0, 0, 0, 0];
+              _this.img = firstImg.img;
             } else {
               _this.rect = [0, 0, 0, 0];
-              _this.img = _this.option.imgs[0];
+              _this.img = firstImg;
             }
           }
 
@@ -1177,143 +1346,6 @@ var _typeof2 = typeof Symbol === "function" && typeof Symbol.iterator === "symbo
       }(_displayObject2.default);
 
       exports.default = Sprite;
-
-      /***/
-    },
-    /* 6 */
-    /***/function (module, exports, __webpack_require__) {
-
-      "use strict";
-
-      Object.defineProperty(exports, "__esModule", {
-        value: true
-      });
-
-      var _createClass = function () {
-        function defineProperties(target, props) {
-          for (var i = 0; i < props.length; i++) {
-            var descriptor = props[i];descriptor.enumerable = descriptor.enumerable || false;descriptor.configurable = true;if ("value" in descriptor) descriptor.writable = true;Object.defineProperty(target, descriptor.key, descriptor);
-          }
-        }return function (Constructor, protoProps, staticProps) {
-          if (protoProps) defineProperties(Constructor.prototype, protoProps);if (staticProps) defineProperties(Constructor, staticProps);return Constructor;
-        };
-      }();
-
-      var _displayObject = __webpack_require__(2);
-
-      var _displayObject2 = _interopRequireDefault(_displayObject);
-
-      var _util = __webpack_require__(9);
-
-      var _util2 = _interopRequireDefault(_util);
-
-      function _interopRequireDefault(obj) {
-        return obj && obj.__esModule ? obj : { default: obj };
-      }
-
-      function _classCallCheck(instance, Constructor) {
-        if (!(instance instanceof Constructor)) {
-          throw new TypeError("Cannot call a class as a function");
-        }
-      }
-
-      function _possibleConstructorReturn(self, call) {
-        if (!self) {
-          throw new ReferenceError("this hasn't been initialised - super() hasn't been called");
-        }return call && ((typeof call === 'undefined' ? 'undefined' : _typeof2(call)) === "object" || typeof call === "function") ? call : self;
-      }
-
-      function _inherits(subClass, superClass) {
-        if (typeof superClass !== "function" && superClass !== null) {
-          throw new TypeError("Super expression must either be null or a function, not " + (typeof superClass === 'undefined' ? 'undefined' : _typeof2(superClass)));
-        }subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } });if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass;
-      }
-
-      var Bitmap = function (_DisplayObject) {
-        _inherits(Bitmap, _DisplayObject);
-
-        function Bitmap(img, onLoad) {
-          _classCallCheck(this, Bitmap);
-
-          var _this = _possibleConstructorReturn(this, (Bitmap.__proto__ || Object.getPrototypeOf(Bitmap)).call(this));
-
-          if (typeof img === 'string') {
-            if (Bitmap.cache[img]) {
-              if (_util2.default.isWeapp) {
-                _this.img = Bitmap.cache[img].img;
-                _this.rect = [0, 0, Bitmap.cache[img].width, Bitmap.cache[img].height];
-                _this.width = _this.rect[2];
-                _this.height = _this.rect[3];
-              } else {
-                _this.img = Bitmap.cache[img];
-                _this.rect = [0, 0, _this.img.width, _this.img.height];
-                _this.width = _this.img.width;
-                _this.height = _this.img.height;
-              }
-              onLoad && onLoad.call(_this);
-            } else if (_util2.default.isWeapp) {
-              _util2.default.getImageInWx(img, function (result) {
-                _this.img = result.img;
-                if (!_this.rect) {
-                  _this.rect = [0, 0, result.width, result.height];
-                }
-                _this.width = result.width;
-                _this.height = result.height;
-                onLoad && onLoad.call(_this);
-                Bitmap.cache[img] = result;
-              });
-            } else {
-              _this.img = _util2.default.isWegame ? wx.createImage() : new window.Image();
-              _this.visible = false;
-              _this.img.onload = function () {
-                _this.visible = true;
-                if (!_this.rect) {
-                  _this.rect = [0, 0, _this.img.width, _this.img.height];
-                }
-                _this.width = _this.img.width;
-                _this.height = _this.img.height;
-                onLoad && onLoad.call(_this);
-                Bitmap.cache[img] = _this.img;
-              };
-              _this.img.src = img;
-            }
-          } else {
-            _this.img = img;
-            _this.rect = [0, 0, img.width, img.height];
-            _this.width = img.width;
-            _this.height = img.height;
-            Bitmap.cache[img.src] = img;
-          }
-          return _this;
-        }
-
-        _createClass(Bitmap, [{
-          key: 'clone',
-          value: function clone() {
-            var bitmap = new Bitmap(this.img);
-            bitmap.x = this.x;
-            bitmap.y = this.y;
-
-            bitmap.scaleX = this.scaleX;
-            bitmap.scaleY = this.scaleY;
-            bitmap.rotation = this.rotation;
-            bitmap.skewX = this.skewX;
-            bitmap.skewY = this.skewY;
-            bitmap.originX = this.originX;
-            bitmap.originY = this.originY;
-            bitmap.width = this.width;
-            bitmap.height = this.height;
-
-            return bitmap;
-          }
-        }]);
-
-        return Bitmap;
-      }(_displayObject2.default);
-
-      Bitmap.cache = {};
-
-      exports.default = Bitmap;
 
       /***/
     },
@@ -1438,7 +1470,7 @@ var _typeof2 = typeof Symbol === "function" && typeof Symbol.iterator === "symbo
 
         exports.getImageInWx = getImageInWx;
         function getImageInWx(img, callback) {
-          if (img.indexOf('https://') === -1 && img.indexOf('http://') === -1) {
+          if (img.indexOf('https://') === -1 && img.indexOf('http://') === -1 || img.indexOf('http://tmp/') === 0) {
             wx.getImageInfo({
               src: img,
               success: function success(info) {
@@ -3245,11 +3277,11 @@ var _typeof2 = typeof Symbol === "function" && typeof Symbol.iterator === "symbo
 
       var _graphics2 = _interopRequireDefault(_graphics);
 
-      var _bitmap = __webpack_require__(6);
+      var _bitmap = __webpack_require__(4);
 
       var _bitmap2 = _interopRequireDefault(_bitmap);
 
-      var _text = __webpack_require__(4);
+      var _text = __webpack_require__(5);
 
       var _text2 = _interopRequireDefault(_text);
 
@@ -3257,7 +3289,7 @@ var _typeof2 = typeof Symbol === "function" && typeof Symbol.iterator === "symbo
 
       var _group2 = _interopRequireDefault(_group);
 
-      var _sprite = __webpack_require__(5);
+      var _sprite = __webpack_require__(6);
 
       var _sprite2 = _interopRequireDefault(_sprite);
 
@@ -3820,9 +3852,13 @@ var _typeof2 = typeof Symbol === "function" && typeof Symbol.iterator === "symbo
             });
 
             _this.canvas.addEventListener('dblclick', function (evt) {
-              return _this._handlDblClick(evt);
+              return _this._handleDblClick(evt);
             });
             // this.addEvent(this.canvas, "mousewheel", this._handleMouseWheel.bind(this));
+
+            document.addEventListener('contextmenu', function (evt) {
+              return _this._handleContextmenu(evt);
+            });
           }
 
           _this.borderTopWidth = 0;
@@ -3852,8 +3888,13 @@ var _typeof2 = typeof Symbol === "function" && typeof Symbol.iterator === "symbo
         }
 
         _createClass(Stage, [{
-          key: '_handlDblClick',
-          value: function _handlDblClick(evt) {
+          key: '_handleContextmenu',
+          value: function _handleContextmenu(evt) {
+            this._getObjectUnderPoint(evt);
+          }
+        }, {
+          key: '_handleDblClick',
+          value: function _handleDblClick(evt) {
             this._getObjectUnderPoint(evt);
           }
         }, {
@@ -3866,6 +3907,9 @@ var _typeof2 = typeof Symbol === "function" && typeof Symbol.iterator === "symbo
         }, {
           key: '_handleMouseDown',
           value: function _handleMouseDown(evt) {
+            if (this.isWegame) {
+              evt.type = 'touchstart';
+            }
             this.offset = this._getOffset(this.canvas);
             var obj = this._getObjectUnderPoint(evt);
             this.willDragObject = obj;
@@ -3883,6 +3927,9 @@ var _typeof2 = typeof Symbol === "function" && typeof Symbol.iterator === "symbo
         }, {
           key: '_handleMouseUp',
           value: function _handleMouseUp(evt) {
+            if (this.isWegame) {
+              evt.type = 'touchend';
+            }
             var obj = this._getObjectUnderPoint(evt);
             this._mouseUpX = evt.stageX;
             this._mouseUpY = evt.stageY;
@@ -3915,6 +3962,9 @@ var _typeof2 = typeof Symbol === "function" && typeof Symbol.iterator === "symbo
         }, {
           key: '_handleMouseMove',
           value: function _handleMouseMove(evt) {
+            if (this.isWegame) {
+              evt.type = 'touchmove';
+            }
             if (this.disableMoveDetection) return;
             var obj = this._getObjectUnderPoint(evt);
             var mockEvt = new _event2.default();
@@ -4397,15 +4447,15 @@ var _typeof2 = typeof Symbol === "function" && typeof Symbol.iterator === "symbo
 
       var _render3 = _interopRequireDefault(_render2);
 
-      var _sprite = __webpack_require__(5);
+      var _sprite = __webpack_require__(6);
 
       var _sprite2 = _interopRequireDefault(_sprite);
 
-      var _bitmap = __webpack_require__(6);
+      var _bitmap = __webpack_require__(4);
 
       var _bitmap2 = _interopRequireDefault(_bitmap);
 
-      var _text = __webpack_require__(4);
+      var _text = __webpack_require__(5);
 
       var _text2 = _interopRequireDefault(_text);
 
@@ -4456,9 +4506,6 @@ var _typeof2 = typeof Symbol === "function" && typeof Symbol.iterator === "symbo
         _createClass(CanvasRender, [{
           key: 'clear',
           value: function clear(ctx, width, height) {
-            //restore cache cavans transform
-            ctx.restore();
-
             ctx.clearRect(0, 0, width, height);
           }
         }, {
@@ -4505,12 +4552,21 @@ var _typeof2 = typeof Symbol === "function" && typeof Symbol.iterator === "symbo
               ctx.clip(o.clipRuleNonzero ? 'nonzero' : 'evenodd');
             }
 
-            o.complexCompositeOperation = ctx.globalCompositeOperation = this.getCompositeOperation(o);
-            o.complexAlpha = ctx.globalAlpha = this.getAlpha(o, 1);
+            var oacg = o.absClipGraphics;
+            if (oacg) {
+              ctx.beginPath();
+              oacg._matrix.initialize(1, 0, 0, 1, 0, 0);
+              oacg._matrix.appendTransform(oacg.x, oacg.y, oacg.scaleX, oacg.scaleY, oacg.rotation, oacg.skewX, oacg.skewY, oacg.originX, oacg.originY);
+              ctx.setTransform(oacg._matrix.a, oacg._matrix.b, oacg._matrix.c, oacg._matrix.d, oacg._matrix.tx, oacg._matrix.ty);
+              oacg.render(ctx);
+              ctx.clip(o.absClipRuleNonzero ? 'nonzero' : 'evenodd');
+            }
+
             if (!cacheRender) {
               ctx.setTransform(mtx.a, mtx.b, mtx.c, mtx.d, mtx.tx, mtx.ty);
             }
             if (o._readyToCache) {
+              this.setComplexProps(ctx, o);
               o._readyToCache = false;
               o.cacheCtx.setTransform(o._cacheData.scale, 0, 0, o._cacheData.scale, o._cacheData.x * -1, o._cacheData.y * -1);
               this.render(o.cacheCtx, o, true);
@@ -4523,30 +4579,48 @@ var _typeof2 = typeof Symbol === "function" && typeof Symbol.iterator === "symbo
 
               ctx.drawImage(o.cacheCanvas, o._cacheData.x, o._cacheData.y);
             } else if (o.cacheCanvas && !cacheRender) {
+              this.setComplexProps(ctx, o);
               ctx.drawImage(o.cacheCanvas, o._cacheData.x, o._cacheData.y);
             } else if (o instanceof _group2.default) {
               var list = o.children.slice(0),
                   l = list.length;
               for (var i = 0; i < l; i++) {
                 ctx.save();
-                var target = this._render(ctx, list[i], mtx);
-                if (target) return target;
+                this._render(ctx, list[i], mtx);
                 ctx.restore();
               }
             } else if (o instanceof _graphics2.default) {
+              this.setComplexProps(ctx, o);
               o.render(ctx);
             } else if (o instanceof _sprite2.default && o.rect) {
+              this.setComplexProps(ctx, o);
               o.updateFrame();
               var rect = o.rect;
               ctx.drawImage(o.img, rect[0], rect[1], rect[2], rect[3], 0, 0, rect[2], rect[3]);
             } else if (o instanceof _bitmap2.default && o.rect) {
+              this.setComplexProps(ctx, o);
               var bRect = o.rect;
               ctx.drawImage(o.img, bRect[0], bRect[1], bRect[2], bRect[3], 0, 0, bRect[2], bRect[3]);
             } else if (o instanceof _text2.default) {
+              this.setComplexProps(ctx, o);
               ctx.font = o.font;
               ctx.fillStyle = o.color;
               ctx.textBaseline = o.baseline;
               ctx.fillText(o.text, 0, 0);
+            }
+          }
+        }, {
+          key: 'setComplexProps',
+          value: function setComplexProps(ctx, o) {
+            o.complexCompositeOperation = ctx.globalCompositeOperation = this.getCompositeOperation(o);
+            o.complexAlpha = ctx.globalAlpha = this.getAlpha(o, 1);
+
+            o.complexShadow = this.getShadow(o);
+            if (o.complexShadow) {
+              ctx.shadowColor = o.complexShadow.color;
+              ctx.shadowOffsetX = o.complexShadow.offsetX;
+              ctx.shadowOffsetY = o.complexShadow.offsetY;
+              ctx.shadowBlur = o.complexShadow.blur;
             }
           }
         }, {
@@ -4563,6 +4637,12 @@ var _typeof2 = typeof Symbol === "function" && typeof Symbol.iterator === "symbo
               return this.getAlpha(o.parent, result);
             }
             return result;
+          }
+        }, {
+          key: 'getShadow',
+          value: function getShadow(o) {
+            if (o.shadow) return o.shadow;
+            if (o.parent) return this.getShadow(o.parent);
           }
         }]);
 
@@ -4834,15 +4914,15 @@ var _typeof2 = typeof Symbol === "function" && typeof Symbol.iterator === "symbo
 
       var _event2 = _interopRequireDefault(_event);
 
-      var _sprite = __webpack_require__(5);
+      var _sprite = __webpack_require__(6);
 
       var _sprite2 = _interopRequireDefault(_sprite);
 
-      var _bitmap = __webpack_require__(6);
+      var _bitmap = __webpack_require__(4);
 
       var _bitmap2 = _interopRequireDefault(_bitmap);
 
-      var _text = __webpack_require__(4);
+      var _text = __webpack_require__(5);
 
       var _text2 = _interopRequireDefault(_text);
 
@@ -4952,9 +5032,6 @@ var _typeof2 = typeof Symbol === "function" && typeof Symbol.iterator === "symbo
           key: 'hitPixel',
           value: function hitPixel(o, evt) {
             var ctx = this.ctx;
-            //CanvasRenderingContext2D.restore() 是 Canvas 2D API 通过在绘图状态栈中弹出顶端的状态，将 canvas 恢复到最近的保存状态的方法。 如果没有保存状态，此方法不做任何改变。
-            //避免 save restore嵌套导致的 clip 区域影响 clearRect 擦除的区域
-            ctx.restore();
             ctx.clearRect(0, 0, 2, 2);
             var mtx = o._hitMatrix;
             var list = o.children.slice(0),
@@ -4993,6 +5070,16 @@ var _typeof2 = typeof Symbol === "function" && typeof Symbol.iterator === "symbo
               ctx.clip(o.clipRuleNonzero ? 'nonzero' : 'evenodd');
             }
 
+            var oacg = o.absClipGraphics;
+            if (oacg) {
+              ctx.beginPath();
+              oacg._matrix.initialize(1, 0, 0, 1, 0, 0);
+              oacg._matrix.appendTransform(oacg.x, oacg.y, oacg.scaleX, oacg.scaleY, oacg.rotation, oacg.skewX, oacg.skewY, oacg.originX, oacg.originY);
+              ctx.setTransform(oacg._matrix.a, oacg._matrix.b, oacg._matrix.c, oacg._matrix.d, oacg._matrix.tx, oacg._matrix.ty);
+              oacg.render(ctx);
+              ctx.clip(o.absClipRuleNonzero ? 'nonzero' : 'evenodd');
+            }
+
             if (o.cacheCanvas) {
               ctx.setTransform(mtx.a, mtx.b, mtx.c, mtx.d, mtx.tx, mtx.ty);
               ctx.drawImage(o.cacheCanvas, o._cacheData.x, o._cacheData.y);
@@ -5002,30 +5089,29 @@ var _typeof2 = typeof Symbol === "function" && typeof Symbol.iterator === "symbo
               for (var i = l - 1; i >= 0; i--) {
                 ctx.save();
                 var target = this._hitPixel(list[i], evt, mtx);
-                if (target) return target;
                 ctx.restore();
+                if (target) return target;
               }
             } else {
 
               ctx.setTransform(mtx.a, mtx.b, mtx.c, mtx.d, mtx.tx, mtx.ty);
               if (o instanceof _graphics2.default) {
-                ctx.globalCompositeOperation = o.complexCompositeOperation;
-                ctx.globalAlpha = o.complexAlpha;
+                this.setComplexProps(ctx, o);
+
                 o.render(ctx);
               } else if (o instanceof _sprite2.default && o.rect) {
-                ctx.globalCompositeOperation = o.complexCompositeOperation;
-                ctx.globalAlpha = o.complexAlpha;
+                this.setComplexProps(ctx, o);
+
                 o.updateFrame();
                 var rect = o.rect;
                 ctx.drawImage(o.img, rect[0], rect[1], rect[2], rect[3], 0, 0, rect[2], rect[3]);
               } else if (o instanceof _bitmap2.default && o.rect) {
-                ctx.globalCompositeOperation = o.complexCompositeOperation;
-                ctx.globalAlpha = o.complexAlpha;
+                this.setComplexProps(ctx, o);
+
                 var bRect = o.rect;
                 ctx.drawImage(o.img, bRect[0], bRect[1], bRect[2], bRect[3], 0, 0, bRect[2], bRect[3]);
               } else if (o instanceof _text2.default) {
-                ctx.globalCompositeOperation = o.complexCompositeOperation;
-                ctx.globalAlpha = o.complexAlpha;
+                this.setComplexProps(ctx, o);
 
                 ctx.font = o.font;
                 ctx.fillStyle = o.color;
@@ -5038,6 +5124,19 @@ var _typeof2 = typeof Symbol === "function" && typeof Symbol.iterator === "symbo
               this._dispatchEvent(o, evt);
               return o;
             }
+          }
+        }, {
+          key: 'setComplexProps',
+          value: function setComplexProps(ctx, o) {
+            ctx.globalCompositeOperation = o.complexCompositeOperation;
+            ctx.globalAlpha = o.complexAlpha;
+            //The shadow does not trigger the event, so remove it
+            // if(o.complexShadow){
+            //   ctx.shadowColor = o.complexShadow.color
+            //   ctx.shadowOffsetX = o.complexShadow.offsetX
+            //   ctx.shadowOffsetY = o.complexShadow.offsetY
+            //   ctx.shadowBlur = o.complexShadow.blur
+            // }
           }
         }, {
           key: '_dispatchEvent',
@@ -5090,15 +5189,15 @@ var _typeof2 = typeof Symbol === "function" && typeof Symbol.iterator === "symbo
 
       var _event2 = _interopRequireDefault(_event);
 
-      var _sprite = __webpack_require__(5);
+      var _sprite = __webpack_require__(6);
 
       var _sprite2 = _interopRequireDefault(_sprite);
 
-      var _bitmap = __webpack_require__(6);
+      var _bitmap = __webpack_require__(4);
 
       var _bitmap2 = _interopRequireDefault(_bitmap);
 
-      var _text = __webpack_require__(4);
+      var _text = __webpack_require__(5);
 
       var _text2 = _interopRequireDefault(_text);
 
@@ -6050,7 +6149,7 @@ var _typeof2 = typeof Symbol === "function" && typeof Symbol.iterator === "symbo
 
       var _group2 = _interopRequireDefault(_group);
 
-      var _text = __webpack_require__(4);
+      var _text = __webpack_require__(5);
 
       var _text2 = _interopRequireDefault(_text);
 
@@ -6530,26 +6629,31 @@ function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { de
 
 var stage = new _cax2.default.Stage(740, 520, 'body');
 
-//todo rows 里面的 text 去掉
-//todo 搞个漂亮的样式实现一下
-var excel = new _index2.default([[null, 'A', 'B'], [1, null, null], [2, 2, '123AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA'], [3, null, null], [4, 'sdfsf', null], [5, null, null], [6, null, null], [7, 'center middle', 'bottom right']], {
-  colWidth: [40, 200, 200],
-  rowHeight: [20, 30, 30, 30, 50, 60, 60, 60],
-  merge: [[0, 3, 2, 1], [1, 5, 1, 2]],
-  style: null,
-  //todo 自动标注顶部和左边,这里要自动多加一行和一列
-  autoLabelX: false,
-  autoLabelY: false,
-  //todo
-  hideGrid: false
+var excel = new _index2.default([[null, 'A', 'B', 'C'], [1, 'red border', 'green border including the left border', null], [2, ' textBreak auto textBreak auto textBreak auto textBreak auto textBreak auto', 'textBreak auto textBreak auto textBreak auto textBreak auto textBreak auto textBreak auto textBreak auto textBreak auto textBreak auto textBreak auto textBreak auto textBreak auto textBreak auto textBreak auto textBreak auto textBreak auto', ''], [3, 'merge main(show me)', 'merge2', null], [4, 'merge3', 'merge4', null], [5, null, null, null], [6, null, null, null], [7, 'center middle', 'top right', null]], {
+  colWidth: [40, 200, 200, 130],
+  rowHeight: [20, 30, 100, 30, 50, 60, 60, 60],
+  merge: [[1, 3, 2, 2]],
+  style: null
+  // todo 自动标注顶部和左边,这里要自动多加一行和一列
+  // autoLabelX: false,
+  // autoLabelY: false,
+  // todo
+  // hideGrid: false
 });
 
-excel.x = 30;
-excel.y = 30;
-//excel.hideRows([1,2])
-//excel.hideCols([1])
+excel.x = 20;
+excel.y = 20;
+
+excel.setBorder(1, 1, 'red');
+// 后设置覆盖前设置的
+excel.setBorder(1, 2, 'green');
+
+excel.style[7][2].textAlign = 'right';
+excel.style[7][2].verticalAlign = 'top';
+excel.update();
 
 stage.add(excel);
+
 stage.update();
 
 /***/ }),
@@ -6629,21 +6733,22 @@ var Excel = function (_Group) {
     _this.gridColor = option.gridColor || '#cccccc';
 
     _this.grid = new Graphics();
-
     _this.mCtx = document.createElement('canvas').getContext('2d');
-
     _this.width = arrSum(option.colWidth);
-    _this.height = arrSum(option.rowHeight);
-
     _this._initStyle();
 
     _this._processOption(_this.option);
-
+    _this.height = _this.getHeight();
     _this.offset = _this._processOffset(option);
 
+    _this.textGroup = new Group();
+    _this.add(_this.textGroup);
     _this.renderGrid();
     _this.renderText();
 
+    _this.borderLevel = 0;
+
+    _this.style = _this.option.style;
     return _this;
   }
 
@@ -6696,51 +6801,126 @@ var Excel = function (_Group) {
         row.forEach(function (value, x) {
           var style = _this2.option.style[y][x];
           var text = null;
-          if (style.textList) {
-            style.textList.forEach(function (text, index) {
-              text = new Text(text, { font: style.fontStyle + ' ' + style.fontWeight + ' ' + style.fontSize + 'px ' + style.fontFamily, color: style.color });
+          var mergeInfo = _this2.getMergeInfo(y, x);
+          if (!mergeInfo.isMerge || mergeInfo.isLeftTop) {
+            var boxWidth = _this2.option.colWidth[x];
+            var boxHeight = _this2.option.rowAutoHeight[y] || _this2.option.rowHeight[y];
+            if (mergeInfo.isLeftTop) {
+              boxWidth = mergeInfo.width;
+              boxHeight = mergeInfo.height;
+            }
 
+            if (style.textList) {
+              style.textList.forEach(function (text, index) {
+                text = new Text(text, { font: style.fontStyle + ' ' + style.fontWeight + ' ' + style.fontSize + 'px ' + style.fontFamily, color: style.color });
+
+                if (value !== undefined && value !== null) {
+                  text.x = _this2._getX(style.textAlign, boxWidth, text.getWidth(), _this2.offset.x[x]);
+                  text.y = _this2._getY(style.verticalAlign, boxHeight, style.lineHeight, _this2.offset.y[y]) + index * style.lineHeight - style.textList.length / 2 * style.lineHeight + style.lineHeight / 2;
+
+                  _this2.textGroup.add(text);
+                }
+              });
+            } else {
+              text = new Text(value, { font: style.fontStyle + ' ' + style.fontWeight + ' ' + style.fontSize + 'px ' + style.fontFamily, color: style.color });
               if (value !== undefined && value !== null) {
+                _this2.mCtx.font = style.fontStyle + ' ' + style.fontWeight + ' ' + style.fontSize + 'px ' + style.fontFamily;
 
-                text.x = _this2._getX(style.textAlign, _this2.option.colWidth[x], text.getWidth(), _this2.offset.x[x]);
-                text.y = _this2._getY(style.verticalAlign, _this2.option.rowHeight[y], style.fontSize, _this2.offset.y[y]) + index * style.lineHeight;
+                var clipPath = new _cax2.default.Graphics();
 
-                _this2.add(text);
+                clipPath.rect(_this2.x + _this2.offset.x[x], _this2.y + _this2.offset.y[y], boxWidth, boxHeight);
+                text.absClip(clipPath);
+
+                text.x = _this2._getX(style.textAlign, boxWidth, text.getWidth(), _this2.offset.x[x]);
+                text.y = _this2._getY(style.verticalAlign, boxHeight, style.fontSize, _this2.offset.y[y]);
+                _this2.textGroup.add(text);
               }
-            });
-          } else {
-            text = new Text(value, { font: style.fontStyle + ' ' + style.fontWeight + ' ' + style.fontSize + 'px ' + style.fontFamily, color: style.color });
-            if (value !== undefined && value !== null) {
-              _this2.mCtx.font = style.fontStyle + ' ' + style.fontWeight + ' ' + style.fontSize + 'px ' + style.fontFamily;
-
-              text.x = _this2._getX(style.textAlign, _this2.option.colWidth[x], text.getWidth(), _this2.offset.x[x]);
-              text.y = _this2._getY(style.verticalAlign, _this2.option.rowHeight[y], style.fontSize, _this2.offset.y[y]);
-              _this2.add(text);
             }
           }
         });
       });
     }
   }, {
+    key: 'update',
+    value: function update() {
+      this.textGroup.empty();
+      this.renderText();
+      this.renderGrid();
+    }
+  }, {
+    key: 'setLeftBorder',
+    value: function setLeftBorder(row, col, color) {
+      this.option.style[row][col].borderLeft = {
+        color: color,
+        level: this.borderLevel++
+      };
+    }
+  }, {
+    key: 'setRightBorder',
+    value: function setRightBorder(row, col, color) {
+      this.option.style[row][col].borderRight = {
+        color: color,
+        level: this.borderLevel++
+      };
+    }
+  }, {
+    key: 'setTopBorder',
+    value: function setTopBorder(row, col, color) {
+      this.option.style[row][col].borderTop = {
+        color: color,
+        level: this.borderLevel++
+      };
+    }
+  }, {
+    key: 'setBottomBorder',
+    value: function setBottomBorder(row, col, color) {
+      this.option.style[row][col].borderBottom = {
+        color: color,
+        level: this.borderLevel++
+      };
+    }
+  }, {
+    key: 'setBorder',
+    value: function setBorder(row, col, color) {
+      this.option.style[row][col].borderLeft = {
+        color: color,
+        level: this.borderLevel
+      };
+
+      this.option.style[row][col].borderRight = {
+        color: color,
+        level: this.borderLevel
+      };
+
+      this.option.style[row][col].borderTop = {
+        color: color,
+        level: this.borderLevel
+      };
+
+      this.option.style[row][col].borderBottom = {
+        color: color,
+        level: this.borderLevel++
+      };
+    }
+  }, {
     key: 'getStyle',
     value: function getStyle(row, col) {
-
       var defaultStyle = {
-        backgroundColor: "#fff",
+        backgroundColor: '#fff',
         borderLeft: null,
         borderRight: null,
         borderTop: null,
         borderBottom: null,
-        color: "black",
-        fontFamily: "sans-serif", //sans-serif的 bold无效
-        fontSize: 12, //字体默认10，canvas里计算字体宽度却是按照12来，所有默认用12
-        fontStyle: 'normal', //italic oblique
-        fontWeight: 'normal', //bold 100 200 300
-        textAlign: "center",
-        verticalAlign: "middle",
+        color: 'black',
+        fontFamily: 'sans-serif', // sans-serif的 bold无效
+        fontSize: 12, // 字体默认10，canvas里计算字体宽度却是按照12来，所有默认用12
+        fontStyle: 'normal', // italic oblique
+        fontWeight: 'normal', // bold 100 200 300
+        textAlign: 'center',
+        verticalAlign: 'middle',
         lineHeight: 15,
-        //TODO DEFAULT
-        textBreak: 'auto' //default auto break
+        // TODO DEFAULT
+        textBreak: 'auto' // default auto
       };
       if (this.option.style && this.option.style[row] && this.option.style[row][col]) {
         return Object.assign(defaultStyle, this.option.style[row][col]);
@@ -6761,167 +6941,288 @@ var Excel = function (_Group) {
     }
   }, {
     key: '_getY',
-    value: function _getY(verticalAlign, rowHeight, fontSize, offsetY) {
+    value: function _getY(verticalAlign, rowHeight, lineHeight, offsetY) {
       switch (verticalAlign) {
         case 'middle':
-          return offsetY + rowHeight / 2 - fontSize / 2;
+
+          return offsetY + rowHeight / 2 - lineHeight / 2;
         case 'top':
           return offsetY + 2;
         case 'bottom':
-          return offsetY + rowHeight - fontSize - 2;
+          return offsetY + rowHeight - lineHeight - 2 - lineHeight / 2;
       }
     }
   }, {
     key: 'renderGrid',
     value: function renderGrid() {
-      this.grid.beginPath().strokeStyle(this.gridColor);
-
-      this.grid.moveTo(0, 0).lineTo(this.width, 0);
-      var currentY = 0,
-          currentX = 0;
+      this.grid.clear();
       for (var i = 0; i < this.rowCount; i++) {
+        for (var j = 0; j < this.colCount; j++) {
+          var h = this.option.rowAutoHeight[i] || this.option.rowHeight[i];
+          if (this._borderCheck(i, j, 'left')) {
+            this.grid.beginPath().moveTo(this.offset.x[j], this.offset.y[i]).lineTo(this.offset.x[j], this.offset.y[i] + h);
+            var style = this._getBorderColor(i, j, 'left');
+            if (style) {
+              this.grid.strokeStyle(style.color);
+            } else {
+              this.grid.strokeStyle(this.gridColor);
+            }
+            this.grid.stroke();
+          }
 
-        currentY += this.option.rowAutoHeight[i] || this.option.rowHeight[i];
-        this.grid.moveTo(0, currentY).lineTo(this.width, currentY);
+          if (this._borderCheck(i, j, 'top')) {
+            this.grid.beginPath().moveTo(this.offset.x[j], this.offset.y[i]).lineTo(this.offset.x[j] + this.option.colWidth[j], this.offset.y[i]);
+            var _style = this._getBorderColor(i, j, 'top');
+            if (_style) {
+              this.grid.strokeStyle(_style.color);
+            } else {
+              this.grid.strokeStyle(this.gridColor);
+            }
+            this.grid.stroke();
+          }
+
+          if (j === this.colCount - 1) {
+            if (this._borderCheck(i, j, 'right')) {
+              this.grid.beginPath().moveTo(this.offset.x[j] + this.option.colWidth[j], this.offset.y[i]).lineTo(this.offset.x[j] + this.option.colWidth[j], this.offset.y[i] + h);
+              var _style2 = this._getBorderColor(i, j, 'right');
+              if (_style2) {
+                this.grid.strokeStyle(_style2.color);
+              } else {
+                this.grid.strokeStyle(this.gridColor);
+              }
+              this.grid.stroke();
+            }
+          }
+
+          if (i === this.rowCount - 1) {
+            if (this._borderCheck(i, j, 'bottom')) {
+              this.grid.beginPath().moveTo(this.offset.x[j], this.offset.y[i] + h).lineTo(this.offset.x[j] + this.option.colWidth[j], this.offset.y[i] + h);
+              var _style3 = this._getBorderColor(i, j, 'bottom');
+              if (_style3) {
+                this.grid.strokeStyle(_style3.color);
+              } else {
+                this.grid.strokeStyle(this.gridColor);
+              }
+              this.grid.stroke();
+            }
+          }
+        }
       }
-
-      this.grid.moveTo(0, 0).lineTo(0, this.height);
-      for (var _i2 = 0; _i2 < this.colCount; _i2++) {
-
-        currentX += this.option.colWidth[_i2];
-        this.grid.moveTo(currentX, 0).lineTo(currentX, this.height);
-      }
-
-      this.grid.stroke();
 
       this.add(this.grid);
     }
   }, {
-    key: 'renderText2',
-    value: function renderText2(cell, x, y, data) {
-      var _this3 = this;
+    key: 'getMergeInfo',
+    value: function getMergeInfo(y, x) {
+      var result = {};
 
-      var offsetX = (data.offsetX[x] + config.rowHeaderWidth) * config.scale;
-      var offsetY = (data.offsetY[y] + config.cellHeight) * config.scale;
-      var width = data.colHeader[x] * config.scale;
-
-      //data.rowHeight[y]是被auto撑高了的行高
-      var height = (data.rowHeight[y] || data.rowHeader[y]) * config.scale;
-
-      if (cell.merge === true) {
-        return;
-      } else if (cell.merge) {
-
-        for (var i = 1; i < cell.merge[2]; i++) {
-          width += data.colHeader[x + i];
-        }
-        for (var j = 1; j < cell.merge[3]; j++) {
-          height += data.rowHeight[y + j] || data.rowHeader[y + j];
-        }
-      }
-
-      this.ctx.save();
-
-      this.ctx.font = cell.fontSize * config.scale + "px " + cell.fontFamily;
-      this.ctx.fillStyle = cell.color;
-      this.ctx.textBaseline = cell.verticalAlign;
-
-      if (cell.textList) {
-        var listLen = cell.textList.length;
-        cell.textList.forEach(function (text, index) {
-          var textWidth = _this3.ctx.measureText(text).width;
-          var textX = offsetX + _this3._computeTextX(width, textWidth, cell.textAlign);
-          if (cell.verticalAlign === 'top') {
-            _this3.ctx.fillText(text, textX, offsetY + 5 + index * cell.fontSize * config.scale);
-          } else if (cell.verticalAlign === 'bottom') {
-            _this3.ctx.fillText(text, textX, offsetY + height - 5 + index * cell.fontSize * config.scale - (listLen - 1) * cell.fontSize * config.scale);
-          } else {
-            _this3.ctx.fillText(text, textX, offsetY + height / 2 + index * cell.fontSize * config.scale - listLen * cell.fontSize * config.scale / 2);
+      this.option.merge.every(function (rect) {
+        if (x >= rect[0] && x <= rect[0] + rect[2] - 1 && y >= rect[1] && y <= rect[1] + rect[3] - 1) {
+          result.isMerge = true;
+          if (x === rect[0] && y === rect[1]) {
+            result.isLeftTop = true;
+            result.xEnd = rect[0] + rect[2];
+            result.yEnd = rect[1] + rect[3];
           }
-        });
-      } else if (cell.text) {
-        var textWidth = this.ctx.measureText(cell.text).width;
-        var textX = offsetX + this._computeTextX(width, textWidth, cell.textAlign);
-        if (cell.textBreak === 'hidden') {
-          this.ctx.rect(offsetX, offsetY, width, height);
-          this.ctx.clip();
-        } else if (cell.clip) {
-          this.ctx.rect(offsetX + cell.clip[0] * config.scale, offsetY + cell.clip[1] * config.scale, cell.clip[2] * config.scale, height);
-          this.ctx.clip();
+        }
+      });
+
+      if (result.isLeftTop) {
+        result.width = 0;
+        result.height = 0;
+
+        for (var i = x; i < result.xEnd; i++) {
+          result.width += this.option.colWidth[i];
         }
 
-        if (cell.verticalAlign === 'top') {
-          this.ctx.fillText(cell.text, textX, offsetY + 5);
-        } else if (cell.verticalAlign === 'bottom') {
-          this.ctx.fillText(cell.text, textX, offsetY + height - 5);
-        } else {
-          this.ctx.fillText(cell.text, textX, offsetY + height / 2);
+        for (var _i2 = y; _i2 < result.yEnd; _i2++) {
+          result.height += this.option.rowAutoHeight[_i2] || this.option.rowHeight[_i2];
         }
       }
 
-      this.ctx.restore();
+      return result;
+    }
+  }, {
+    key: '_getBorderColor',
+    value: function _getBorderColor(y, x, dir) {
+      var current = void 0,
+          next = void 0;
+      switch (dir) {
+        case 'top':
+
+          current = this.option.style[y][x];
+          if (this.option.style[y - 1]) {
+            next = this.option.style[y - 1][x];
+          }
+
+          if (next) {
+            if (!current.borderTop && !next.borderBottom) {
+              return null;
+            } else if (current.borderTop && !next.borderBottom) {
+              return current.borderTop;
+            } else if (!current.borderTop && next.borderBottom) {
+              return next.borderBottom;
+            } else if (next.borderBottom.level > current.borderTop.level) {
+              return next.borderBottom;
+            } else {
+              return current.borderTop;
+            }
+          } else {
+            return current.borderTop;
+          }
+
+          break;
+
+        case 'bottom':
+
+          current = this.option.style[y][x];
+          if (this.option.style[y + 1]) {
+            next = this.option.style[y + 1][x];
+          }
+
+          if (next) {
+            if (!current.borderBottom && !next.borderTop) {
+              return null;
+            } else if (current.borderBottom && !next.borderTop) {
+              return current.borderBottom;
+            } else if (!current.borderBottom && next.borderTop) {
+              return next.borderTop;
+            } else if (next.borderTop.level > current.borderBottom.level) {
+              return next.borderTop;
+            } else {
+              return current.borderBottom;
+            }
+          } else {
+            return current.borderBottom;
+          }
+
+          break;
+
+        case 'left':
+
+          current = this.option.style[y][x];
+
+          next = this.option.style[y][x - 1];
+
+          if (next) {
+            if (!current.borderLeft && !next.borderRight) {
+              return null;
+            } else if (current.borderLeft && !next.borderRight) {
+              return current.borderLeft;
+            } else if (!current.borderLeft && next.borderRight) {
+              return next.borderRight;
+            } else if (next.borderRight.level > current.borderLeft.level) {
+              return next.borderRight;
+            } else {
+              return current.borderLeft;
+            }
+          } else {
+            return current.borderLeft;
+          }
+
+          break;
+
+        case 'right':
+          current = this.option.style[y][x];
+
+          next = this.option.style[y][x + 1];
+
+          if (next) {
+            if (!current.borderRight && !next.borderLeft) {
+              return null;
+            } else if (current.borderRight && !next.borderLeft) {
+              return current.borderRight;
+            } else if (!current.borderRight && next.borderLeft) {
+              return next.borderLeft;
+            } else if (next.borderLeft.level > current.borderLeft1.level) {
+              return next.borderLeft;
+            } else {
+              return current.borderRight;
+            }
+          } else {
+            return current.borderRight;
+          }
+
+          break;
+      }
+    }
+  }, {
+    key: '_borderCheck',
+    value: function _borderCheck(y, x, dir) {
+      var result = true;
+      this.option.merge.every(function (rect) {
+        if (x >= rect[0] && x <= rect[0] + rect[2] - 1 && y >= rect[1] && y <= rect[1] + rect[3] - 1) {
+          if (x === rect[0] && dir === 'right') {
+            result = false;
+
+            return false;
+          }
+
+          if (x === rect[0] + rect[2] - 1 && dir === 'left') {
+            result = false;
+            return false;
+          }
+
+          if (x > rect[0] && x < rect[0] + rect[2] - 1 && (dir === 'left' || dir === 'right')) {
+            result = false;
+            return false;
+          }
+
+          if (y === rect[1] && dir === 'bottom') {
+            result = false;
+            return false;
+          }
+
+          if (y === rect[1] + rect[3] - 1 && dir === 'top') {
+            result = false;
+            return false;
+          }
+
+          if (y > rect[1] && y < rect[1] + rect[3] - 1 && (dir === 'top' || dir === 'bottom')) {
+            result = false;
+            return false;
+          }
+        }
+      });
+
+      return result;
     }
   }, {
     key: '_processOption',
     value: function _processOption(option) {
-      var _this4 = this;
+      var _this3 = this;
 
       option.rowAutoHeight = {};
       option.style.forEach(function (row, y) {
         var maxHeight = option.rowHeight[y];
         row.forEach(function (cell, x) {
-          var dataRow = _this4.data[y];
+          var dataRow = _this3.data[y];
           var text = dataRow[x];
-          _this4.mCtx.font = cell.fontSize + "px " + cell.fontFamily;
-          var textWidth = _this4.mCtx.measureText(text).width;
+          _this3.mCtx.font = cell.fontSize + 'px ' + cell.fontFamily;
+          var textWidth = _this3.mCtx.measureText(text).width;
           var cellWidth = option.colWidth[x];
-
-          if (cell.textBreak === 'default') {
-
-            var textX = _this4._computeTextX(cellWidth, textWidth, cell.textAlign);
-            var clip = [0, 0, cellWidth, option.rowAutoHeight[y]];
-            if (textX < 0 && dataRow[x - 1].text === null) {
-              cell.lb = 0;
-              var begin = x - 1;
-              row[begin].rb = 0;
-              clip[0] -= option.colWidth[begin];
-              clip[2] += option.colWidth[begin];
-              while (textX + option.colWidth[begin] > 0 && dataRow[begin].text === null && row[begin - 1]) {
-                row[begin].lb = 0;
-                row[begin - 1].rb = 0;
-                clip[0] -= option.colWidth[begin - 1];
-                clip[2] += option.colWidth[begin - 1];
-                begin--;
-              }
-            }
-
-            if (textX + textWidth > cellWidth && dataRow[x + 1] && dataRow[x + 1].text === null) {
-              cell.rb = 0;
-              var _begin = x + 1;
-              row[_begin].lb = 0;
-              clip[2] += option.colWidth[_begin];
-              while (textX + textWidth - option.colWidth[_begin] < 0 && dataRow[_begin].text === null && row[_begin + 1]) {
-                row[_begin].rb = 0;
-                row[_begin + 1].lb = 0;
-                clip[2] += option.colWidth[_begin + 1];
-                _begin++;
-              }
-            }
-
-            cell.clip = clip;
-          } else if (cell.textBreak === 'auto' && textWidth > cellWidth) {
-
+          if (cell.textBreak === 'auto' && textWidth > cellWidth) {
             var step = Math.round(text.length * (cellWidth - 30) / textWidth / 2);
 
-            cell.textList = _this4.stringSplit(text, step);
+            cell.textList = _this3.stringSplit(text, step);
 
             maxHeight = Math.max(cell.textList.length * cell.lineHeight + 8, maxHeight);
           }
           option.rowAutoHeight[y] = maxHeight;
-
-          _this4.height += maxHeight - option.rowHeight[y];
         });
       });
+    }
+  }, {
+    key: 'getHeight',
+    value: function getHeight() {
+      var _this4 = this;
+
+      var sum = 0;
+      this.option.rowHeight.forEach(function (height, y) {
+        sum += _this4.option.rowAutoHeight[y] ? _this4.option.rowAutoHeight[y] : height;
+      });
+
+      return sum;
     }
   }, {
     key: 'stringSplit',
@@ -6940,17 +7241,6 @@ var Excel = function (_Group) {
         }
       }
       return arr;
-    }
-  }, {
-    key: '_computeTextX',
-    value: function _computeTextX(cellWidth, textWidth, textAlign) {
-      if (textAlign === 'left') {
-        return 4;
-      } else if (textAlign === 'center') {
-        return (cellWidth - textWidth) / 2;
-      } else {
-        return cellWidth - textWidth - 4;
-      }
     }
   }]);
 

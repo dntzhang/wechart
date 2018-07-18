@@ -1,11 +1,6 @@
 var path = require('path');
 var webpack = require('webpack');
-var packageJSON = require('./package.json');
-/**
- * Env
- * Get npm lifecycle event to identify the environment
- */
-var ENV = process.env.npm_lifecycle_event;
+var browserSync = require("browser-sync");
 
 var argv;
 try {
@@ -15,10 +10,10 @@ try {
 }
 
 var config = {
-    entry: path.resolve(__dirname, './packages/' + argv[3] + '/examples/' + argv[4] + '/main.js'),
+    entry: path.resolve(__dirname, './packages/' + argv[2] + '/examples/' + argv[3] + '/main.js'),
     output: {
         // path: __dirname,
-        path: path.resolve(__dirname, './packages/' + argv[3] + '/examples/' + argv[4] + '/'),
+        path: path.resolve(__dirname, './packages/' + argv[2] + '/examples/' + argv[3] + '/'),
         filename: 'bundler.js'
     },
     module: {
@@ -49,8 +44,10 @@ var config = {
 };
 
 
-
-
-//console.log(ENV);
+browserSync({ 
+    server: './packages', 
+    startPath: argv[2] + '/examples/' + argv[3] + '/index.html' ,
+    files: './packages/'+argv[2]  
+});
 
 module.exports = config;

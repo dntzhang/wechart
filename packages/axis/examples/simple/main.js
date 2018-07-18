@@ -2,18 +2,18 @@
 import cax from 'cax'
 
 import Axis from '../../src/index'
+import { scaleLinear } from '../../../common/scale'
+
 
 const stage = new cax.Stage(740, 520, 'body')
 
 const config = {
   bottom: {
+    color: 'black',
     interval: 1,
-    from: 0,
-    mapping: [1, 100],
+    scale:  scaleLinear([0, 7], [0, 700]),
     x: 30,
     y: 450,
-    to: 7,
-    color: 'black',
     text: {
       color: '#444',
       value: (index, data) => {
@@ -34,11 +34,9 @@ const config = {
   left: {
     color: 'black',
     interval: 6,
-    mapping: [30, 200],
-    from: -30,
-    to: 30,
+    scale: scaleLinear([-30, 30], [400, 0]),
     x: 30,
-    y: 450,
+    y: 50,
     text: {
       color: '#444',
       x: -20,
@@ -46,7 +44,6 @@ const config = {
     },
     gird: {
       color: '#ddd',
-
       length: 700
     }
   }

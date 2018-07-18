@@ -73,7 +73,7 @@
 var _typeof2 = typeof Symbol === "function" && typeof Symbol.iterator === "symbol" ? function (obj) { return typeof obj; } : function (obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj; };
 
 /*!
- *  cax v1.1.4
+ *  cax v1.1.7
  *  By https://github.com/dntzhang 
  *  Github: https://github.com/dntzhang/cax
  *  MIT Licensed.
@@ -475,6 +475,9 @@ var _typeof2 = typeof Symbol === "function" && typeof Symbol.iterator === "symbo
           _this.clipGraphics = null;
           _this.clipRuleNonzero = true;
           _this.fixed = false;
+
+          _this.absClipGraphics = null;
+          _this.absClipRuleNonzero = true;
           return _this;
         }
 
@@ -576,6 +579,17 @@ var _typeof2 = typeof Symbol === "function" && typeof Symbol.iterator === "symbo
           key: 'unclip',
           value: function unclip() {
             this.clipGraphics = null;
+          }
+        }, {
+          key: 'absClip',
+          value: function absClip(graphics, notClipRuleNonzero) {
+            this.absClipGraphics = graphics;
+            this.absClipRuleNonzero = !notClipRuleNonzero;
+          }
+        }, {
+          key: 'unAbsClip',
+          value: function unAbsClip() {
+            this.absClipGraphics = null;
           }
         }, {
           key: 'cache',
@@ -1455,7 +1469,7 @@ var _typeof2 = typeof Symbol === "function" && typeof Symbol.iterator === "symbo
 
         exports.getImageInWx = getImageInWx;
         function getImageInWx(img, callback) {
-          if (img.indexOf('https://') === -1 && img.indexOf('http://') === -1) {
+          if (img.indexOf('https://') === -1 && img.indexOf('http://') === -1 || img.indexOf('http://tmp/') === 0) {
             wx.getImageInfo({
               src: img,
               success: function success(info) {
@@ -3837,9 +3851,13 @@ var _typeof2 = typeof Symbol === "function" && typeof Symbol.iterator === "symbo
             });
 
             _this.canvas.addEventListener('dblclick', function (evt) {
-              return _this._handlDblClick(evt);
+              return _this._handleDblClick(evt);
             });
             // this.addEvent(this.canvas, "mousewheel", this._handleMouseWheel.bind(this));
+
+            document.addEventListener('contextmenu', function (evt) {
+              return _this._handleContextmenu(evt);
+            });
           }
 
           _this.borderTopWidth = 0;
@@ -3869,8 +3887,13 @@ var _typeof2 = typeof Symbol === "function" && typeof Symbol.iterator === "symbo
         }
 
         _createClass(Stage, [{
-          key: '_handlDblClick',
-          value: function _handlDblClick(evt) {
+          key: '_handleContextmenu',
+          value: function _handleContextmenu(evt) {
+            this._getObjectUnderPoint(evt);
+          }
+        }, {
+          key: '_handleDblClick',
+          value: function _handleDblClick(evt) {
             this._getObjectUnderPoint(evt);
           }
         }, {
@@ -3883,6 +3906,9 @@ var _typeof2 = typeof Symbol === "function" && typeof Symbol.iterator === "symbo
         }, {
           key: '_handleMouseDown',
           value: function _handleMouseDown(evt) {
+            if (this.isWegame) {
+              evt.type = 'touchstart';
+            }
             this.offset = this._getOffset(this.canvas);
             var obj = this._getObjectUnderPoint(evt);
             this.willDragObject = obj;
@@ -3900,6 +3926,9 @@ var _typeof2 = typeof Symbol === "function" && typeof Symbol.iterator === "symbo
         }, {
           key: '_handleMouseUp',
           value: function _handleMouseUp(evt) {
+            if (this.isWegame) {
+              evt.type = 'touchend';
+            }
             var obj = this._getObjectUnderPoint(evt);
             this._mouseUpX = evt.stageX;
             this._mouseUpY = evt.stageY;
@@ -3932,6 +3961,9 @@ var _typeof2 = typeof Symbol === "function" && typeof Symbol.iterator === "symbo
         }, {
           key: '_handleMouseMove',
           value: function _handleMouseMove(evt) {
+            if (this.isWegame) {
+              evt.type = 'touchmove';
+            }
             if (this.disableMoveDetection) return;
             var obj = this._getObjectUnderPoint(evt);
             var mockEvt = new _event2.default();
@@ -4473,9 +4505,6 @@ var _typeof2 = typeof Symbol === "function" && typeof Symbol.iterator === "symbo
         _createClass(CanvasRender, [{
           key: 'clear',
           value: function clear(ctx, width, height) {
-            //restore cache cavans transform
-            ctx.restore();
-
             ctx.clearRect(0, 0, width, height);
           }
         }, {
@@ -4522,6 +4551,16 @@ var _typeof2 = typeof Symbol === "function" && typeof Symbol.iterator === "symbo
               ctx.clip(o.clipRuleNonzero ? 'nonzero' : 'evenodd');
             }
 
+            var oacg = o.absClipGraphics;
+            if (oacg) {
+              ctx.beginPath();
+              oacg._matrix.initialize(1, 0, 0, 1, 0, 0);
+              oacg._matrix.appendTransform(oacg.x, oacg.y, oacg.scaleX, oacg.scaleY, oacg.rotation, oacg.skewX, oacg.skewY, oacg.originX, oacg.originY);
+              ctx.setTransform(oacg._matrix.a, oacg._matrix.b, oacg._matrix.c, oacg._matrix.d, oacg._matrix.tx, oacg._matrix.ty);
+              oacg.render(ctx);
+              ctx.clip(o.absClipRuleNonzero ? 'nonzero' : 'evenodd');
+            }
+
             o.complexCompositeOperation = ctx.globalCompositeOperation = this.getCompositeOperation(o);
             o.complexAlpha = ctx.globalAlpha = this.getAlpha(o, 1);
             if (!cacheRender) {
@@ -4546,8 +4585,7 @@ var _typeof2 = typeof Symbol === "function" && typeof Symbol.iterator === "symbo
                   l = list.length;
               for (var i = 0; i < l; i++) {
                 ctx.save();
-                var target = this._render(ctx, list[i], mtx);
-                if (target) return target;
+                this._render(ctx, list[i], mtx);
                 ctx.restore();
               }
             } else if (o instanceof _graphics2.default) {
@@ -4969,9 +5007,6 @@ var _typeof2 = typeof Symbol === "function" && typeof Symbol.iterator === "symbo
           key: 'hitPixel',
           value: function hitPixel(o, evt) {
             var ctx = this.ctx;
-            //CanvasRenderingContext2D.restore() 是 Canvas 2D API 通过在绘图状态栈中弹出顶端的状态，将 canvas 恢复到最近的保存状态的方法。 如果没有保存状态，此方法不做任何改变。
-            //避免 save restore嵌套导致的 clip 区域影响 clearRect 擦除的区域
-            ctx.restore();
             ctx.clearRect(0, 0, 2, 2);
             var mtx = o._hitMatrix;
             var list = o.children.slice(0),
@@ -5010,6 +5045,16 @@ var _typeof2 = typeof Symbol === "function" && typeof Symbol.iterator === "symbo
               ctx.clip(o.clipRuleNonzero ? 'nonzero' : 'evenodd');
             }
 
+            var oacg = o.absClipGraphics;
+            if (oacg) {
+              ctx.beginPath();
+              oacg._matrix.initialize(1, 0, 0, 1, 0, 0);
+              oacg._matrix.appendTransform(oacg.x, oacg.y, oacg.scaleX, oacg.scaleY, oacg.rotation, oacg.skewX, oacg.skewY, oacg.originX, oacg.originY);
+              ctx.setTransform(oacg._matrix.a, oacg._matrix.b, oacg._matrix.c, oacg._matrix.d, oacg._matrix.tx, oacg._matrix.ty);
+              oacg.render(ctx);
+              ctx.clip(o.absClipRuleNonzero ? 'nonzero' : 'evenodd');
+            }
+
             if (o.cacheCanvas) {
               ctx.setTransform(mtx.a, mtx.b, mtx.c, mtx.d, mtx.tx, mtx.ty);
               ctx.drawImage(o.cacheCanvas, o._cacheData.x, o._cacheData.y);
@@ -5019,8 +5064,8 @@ var _typeof2 = typeof Symbol === "function" && typeof Symbol.iterator === "symbo
               for (var i = l - 1; i >= 0; i--) {
                 ctx.save();
                 var target = this._hitPixel(list[i], evt, mtx);
-                if (target) return target;
                 ctx.restore();
+                if (target) return target;
               }
             } else {
 
@@ -6543,26 +6588,31 @@ var _index = __webpack_require__(3);
 
 var _index2 = _interopRequireDefault(_index);
 
+var _scale = __webpack_require__(5);
+
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
 var stage = new _cax2.default.Stage(800, 520, 'body');
 
 var data = [// 数据
-{ name: 'dntzhang', age: _cax2.default.util.randomInt(-20, 20), exp: _cax2.default.util.randomInt(500, 100) }, { name: 'Canvas', age: _cax2.default.util.randomInt(-20, 20), exp: _cax2.default.util.randomInt(500, 100) }, { name: 'Wechart', age: _cax2.default.util.randomInt(-20, 20), exp: _cax2.default.util.randomInt(500, 100) }, { name: 'Tencent', age: _cax2.default.util.randomInt(-20, 20), exp: _cax2.default.util.randomInt(500, 100) }, { name: 'Cax', age: _cax2.default.util.randomInt(-20, 20), exp: _cax2.default.util.randomInt(500, 100) }];
+{ name: 'dntzhang', age: _cax2.default.util.randomInt(-20, 20), exp: _cax2.default.util.randomInt(500, 1000) }, { name: 'Canvas', age: _cax2.default.util.randomInt(-20, 20), exp: _cax2.default.util.randomInt(500, 1000) }, { name: 'Wechart', age: _cax2.default.util.randomInt(-20, 20), exp: _cax2.default.util.randomInt(500, 1000) }, { name: 'Tencent', age: _cax2.default.util.randomInt(-20, 20), exp: _cax2.default.util.randomInt(500, 1000) }, { name: 'Cax', age: _cax2.default.util.randomInt(-20, 20), exp: _cax2.default.util.randomInt(500, 1000) }];
+var xScale = (0, _scale.scaleLinear)([0, 7], [0, 700]);
+var yScaleLeft = (0, _scale.scaleLinear)([-30, 30], [200, -200]);
+var yScaleRight = (0, _scale.scaleLinear)([500, 1000], [200, -200]);
 
 var config = [{ // rects代表拆分多个rect，下面是相关的配置
-  // age 30 对应 200像素高
-  mapping: [30, 200],
-  width: 30,
+  scale: yScaleLeft,
+  size: 30,
   interval: 100,
-  x: 40,
+  x: 45,
   y: 250,
   processing: function processing(item) {
     return item.age;
   }, // 数据预处理，提取影响形状的报表
   color: function color(index) {
     // 每个柱子的颜色
-    return ['#4BC0C0', '#FF6485', '#FFCE5C', '#ADACB9', '#A37AC1'][index];
+    return '#4BC0C0';
+    //return ['#4BC0C0', '#FF6485', '#FFCE5C', '#ADACB9', '#A37AC1'][index]
   },
   tooltip: function tooltip(item) {
     return item.name + '-age<br/>' + item.age;
@@ -6589,17 +6639,18 @@ var config = [{ // rects代表拆分多个rect，下面是相关的配置
   }
 }, { // rects代表拆分多个rect，下面是相关的配置
   // age 30 对应 200像素高
-  mapping: [1200, 200],
-  width: 30,
+  scale: yScaleRight,
+  size: 30,
   interval: 100,
-  x: 80,
+  x: 85,
   y: 250,
   processing: function processing(item) {
     return item.exp;
   }, // 数据预处理，提取影响形状的报表
   color: function color(index) {
     // 每个柱子的颜色
-    return ['#4BC0C0', '#FF6485', '#FFCE5C', '#ADACB9', '#A37AC1'][index];
+    return '#FF6485';
+    //return ['#4BC0C0', '#FF6485', '#FFCE5C', '#ADACB9', '#A37AC1'][index]
   },
   tooltip: function tooltip(item) {
     return item.name + '-exp<br/>' + item.exp;
@@ -6626,12 +6677,10 @@ var config = [{ // rects代表拆分多个rect，下面是相关的配置
 
 var axisConfig = {
   bottom: {
+    scale: xScale,
     interval: 1,
-    from: 0,
-    mapping: [1, 100],
     x: 30,
     y: 450,
-    to: 7,
     color: 'black',
     text: {
       color: '#444',
@@ -6651,23 +6700,38 @@ var axisConfig = {
     }
   },
   left: {
+    scale: yScaleLeft,
     color: 'black',
     interval: 6,
-    mapping: [30, 200],
-    from: -30,
-    to: 30,
     x: 30,
-    y: 450,
+    y: 250,
     text: {
       color: '#444',
       x: -20,
-      y: 0
+      y: -8
     },
     gird: {
       color: '#ddd',
 
       length: 700
     }
+  },
+  right: {
+    scale: yScaleRight,
+    color: 'black',
+    interval: 60,
+    x: 730,
+    y: 250,
+    text: {
+      color: '#444',
+      x: 10,
+      y: -8
+    }
+    // gird: {
+    //   color: '#eee',
+
+    //   length: -700
+    // }
   }
 };
 
@@ -6780,7 +6844,6 @@ var Bar = function (_Group) {
         _this.add(new OneBar(value, rect, index, tooltip, data));
       });
     });
-
     return _this;
   }
 
@@ -6796,12 +6859,14 @@ var OneBar = function (_Group2) {
     var _this2 = _possibleConstructorReturn(this, (OneBar.__proto__ || Object.getPrototypeOf(OneBar)).call(this));
 
     option = Object.assign({}, defaultOption, option);
+
     var rect = void 0;
     if (option.vertical) {
-      var height = option.mapping[1] * value / option.mapping[0];
-      var width = option.width;
+      var height = option.scale(value) * -1;
 
-      rect = new Rect(width, height, {
+      var size = option.size;
+
+      rect = new Rect(size, height, {
         fillStyle: option.color(index)
       });
 
@@ -6809,14 +6874,14 @@ var OneBar = function (_Group2) {
       rect.y = option.y;
       rect.originY = height;
     } else {
-      var _height = option.width;
-      var _width = option.mapping[1] * value / option.mapping[0];
+      var _size = option.size;
+      var width = option.scale(value);
 
-      rect = new Rect(_width, _height, { fillStyle: option.color(index) });
+      rect = new Rect(width, _size, { fillStyle: option.color(index) });
 
       rect.x = option.x;
       rect.y = index * option.interval + option.y;
-      rect.originY = _height;
+      rect.originY = _size;
     }
 
     var from = Object.assign({}, option.show.from);
@@ -6960,39 +7025,41 @@ var Axis = function (_Group) {
 
     var _this = _possibleConstructorReturn(this, (Axis.__proto__ || Object.getPrototypeOf(Axis)).call(this));
 
-    var f = axis.from;
-    var t = axis.to;
+    var scale = axis.scale;
+    var f = scale.domain[0];
+    var t = scale.domain[1];
+    var rf = scale.range[0];
+    var rt = scale.range[1];
+
     var x = axis.x;
     var y = axis.y;
     var g = new Graphics();
+    var moveTo = [0, 0];
     var lineTo = [0, 0];
     switch (orient) {
       case 'left':
-        lineTo[0] = x;
-        lineTo[1] = y - (t - f) / axis.mapping[0] * axis.mapping[1];
-        break;
-      case 'bottom':
-        lineTo[0] = x + (t - f) / axis.mapping[0] * axis.mapping[1];
-        lineTo[1] = y;
-        break;
       case 'right':
+        moveTo[0] = x;
+        moveTo[1] = y + rf;
         lineTo[0] = x;
-        lineTo[1] = y - (t - f) / axis.mapping[0] * axis.mapping[1];
+        lineTo[1] = y + rt;
         break;
       case 'top':
-        lineTo[0] = x + (t - f) / axis.mapping[0] * axis.mapping[1];
+      case 'bottom':
+        moveTo[0] = x + rf;
+        moveTo[1] = y;
+        lineTo[0] = x + rt;
         lineTo[1] = y;
         break;
     }
 
-    g.beginPath().strokeStyle(axis.color).moveTo(x, y).lineTo(lineTo[0], lineTo[1]).stroke();
+    g.beginPath().strokeStyle(axis.color).moveTo(moveTo[0], moveTo[1]).lineTo(lineTo[0], lineTo[1]).stroke();
 
     var current = void 0;
     switch (orient) {
       case 'bottom':
         for (var i = f; i <= t; i += axis.interval) {
-          current = x + (i - f) / axis.mapping[0] * axis.mapping[1];
-
+          current = scale(i) + x;
           g.beginPath().strokeStyle(axis.color).moveTo(current, y).lineTo(current, y + 5).stroke();
 
           if (axis.gird && i > f) {
@@ -7011,8 +7078,8 @@ var Axis = function (_Group) {
       case 'left':
 
         for (var _i = f; _i <= t; _i += axis.interval) {
-          current = y - (_i - f) / axis.mapping[0] * axis.mapping[1];
 
+          current = scale(_i) + y;
           g.beginPath().strokeStyle(axis.color).moveTo(x, current).lineTo(x - 5, current).stroke();
 
           if (axis.gird && _i > f) {
@@ -7030,8 +7097,8 @@ var Axis = function (_Group) {
 
       case 'top':
         for (var _i2 = f; _i2 <= t; _i2 += axis.interval) {
-          current = x + (_i2 - f) / axis.mapping[0] * axis.mapping[1];
 
+          current = scale(_i2) + x;
           g.beginPath().strokeStyle(axis.color).moveTo(current, y).lineTo(current, y - 5).stroke();
 
           if (axis.gird && _i2 > f) {
@@ -7051,8 +7118,7 @@ var Axis = function (_Group) {
       case 'right':
 
         for (var _i3 = f; _i3 <= t; _i3 += axis.interval) {
-          current = y - (_i3 - f) / axis.mapping[0] * axis.mapping[1];
-
+          current = scale(_i3) + y;
           g.beginPath().strokeStyle(axis.color).moveTo(x, current).lineTo(x + 5, current).stroke();
 
           if (axis.gird && _i3 > f) {
@@ -7077,6 +7143,85 @@ var Axis = function (_Group) {
 }(Group);
 
 exports.default = Axis;
+
+/***/ }),
+/* 5 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
+Object.defineProperty(exports, "__esModule", {
+    value: true
+});
+exports.scaleLinear = undefined;
+
+var _linear = __webpack_require__(6);
+
+exports.scaleLinear = _linear.scaleLinear;
+exports.default = {
+    scaleLinear: _linear.scaleLinear
+};
+
+/***/ }),
+/* 6 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
+Object.defineProperty(exports, "__esModule", {
+    value: true
+});
+
+var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
+
+exports.scaleLinear = scaleLinear;
+
+function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+
+var ScaleLinear = function () {
+    function ScaleLinear(domain, range) {
+        _classCallCheck(this, ScaleLinear);
+
+        this.domainFrom = domain[0];
+        this.domainTo = domain[1];
+        this.domainInterval = this.domainTo - this.domainFrom;
+
+        this.rangeFrom = range[0];
+        this.rangeTo = range[1];
+        this.rangeInterval = this.rangeTo - this.rangeFrom;
+    }
+
+    _createClass(ScaleLinear, [{
+        key: "calculate",
+        value: function calculate(value) {
+            return this.rangeFrom + (value - this.domainFrom) / this.domainInterval * this.rangeInterval;
+        }
+    }, {
+        key: "invert",
+        value: function invert(value) {
+
+            return this.domainFrom + (value - this.rangeFrom) / this.rangeInterval * this.domainInterval;
+        }
+    }]);
+
+    return ScaleLinear;
+}();
+
+function scaleLinear(domain, range) {
+    var instance = new ScaleLinear(domain, range);
+
+    var calculate = function calculate(v) {
+        return instance.calculate(v);
+    };
+
+    calculate.domain = domain;
+    calculate.range = range;
+    calculate.invert = instance.invert.bind(instance);
+
+    return calculate;
+}
 
 /***/ })
 /******/ ]);

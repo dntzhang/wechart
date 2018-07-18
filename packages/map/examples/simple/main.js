@@ -5,10 +5,9 @@ import Map from '../../src'
 const stage = new cax.Stage(600, 500, 'body')
 
 const map = new Map(china, {
-  fillStyle: '#555',
-  strokeStyle: 'white',
-  overFillStyle: 'red',
-  overStrokeStyle: 'green',
+  fillStyle: '#97D5D8',
+  strokeStyle: '#888',
+  overFillStyle: '#EEF824',
   tooltip: (key) => {
     return china.names[key]
   }
