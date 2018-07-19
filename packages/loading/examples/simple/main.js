@@ -7,7 +7,16 @@ const stage = new cax.Stage(200, 220, 'body')
 
 const img = new Image()
 img.onload = function(){
-  const loading = new Loading(img, '#22F2B0')
+  const loading = new Loading({
+    img:img,
+    waveSpeed: -5,
+    color:'#1568C9',
+    percent : 40.5,
+    font: 'bold 36px Arial',
+    colorA:'red',
+    colorB:'white',
+    step: 0.5
+  })
   stage.add(loading)
   cax.tick(()=>{
   

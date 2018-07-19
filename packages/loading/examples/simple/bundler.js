@@ -73,7 +73,7 @@
 var _typeof2 = typeof Symbol === "function" && typeof Symbol.iterator === "symbol" ? function (obj) { return typeof obj; } : function (obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj; };
 
 /*!
- *  cax v1.1.9
+ *  cax v1.1.10
  *  By https://github.com/dntzhang 
  *  Github: https://github.com/dntzhang/cax
  *  MIT Licensed.
@@ -4529,7 +4529,7 @@ var _typeof2 = typeof Symbol === "function" && typeof Symbol.iterator === "symbo
                 mtx.appendTransform(o.x, o.y, o.scaleX, o.scaleY, o.rotation, o.skewX, o.skewY, o.originX, o.originY);
                 // if (!this.checkBoundEvent(child)) continue
                 ctx.save();
-                this._render(ctx, child, cacheData ? null : mtx, cacheData);
+                this._render(ctx, child, cacheData ? null : mtx, cacheData, true);
                 ctx.restore();
               }
             } else {
@@ -4538,7 +4538,7 @@ var _typeof2 = typeof Symbol === "function" && typeof Symbol.iterator === "symbo
           }
         }, {
           key: '_render',
-          value: function _render(ctx, o, mtx, cacheData) {
+          value: function _render(ctx, o, mtx, cacheData, inGroup) {
             if (!o.isVisible()) return;
             if (mtx && !o.fixed) {
               o._matrix.initialize(mtx.a, mtx.b, mtx.c, mtx.d, mtx.tx, mtx.ty);
@@ -4549,7 +4549,9 @@ var _typeof2 = typeof Symbol === "function" && typeof Symbol.iterator === "symbo
             }
             mtx = o._matrix;
 
-            if (!cacheData) {
+            //group 进行 cache canvas 内部的子元素需要进行appendTransform
+            //cache canvas 渲染不叠加自身的 transform，因为进入主渲染会进行appendTransform
+            if (inGroup || !cacheData) {
               mtx.appendTransform(o.x, o.y, o.scaleX, o.scaleY, o.rotation, o.skewX, o.skewY, o.originX, o.originY);
             }
             var ocg = o.clipGraphics;
@@ -4578,7 +4580,7 @@ var _typeof2 = typeof Symbol === "function" && typeof Symbol.iterator === "symbo
             if (o._readyToCache || o.cacheUpdating) {
               this.setComplexProps(ctx, o);
               o._readyToCache = false;
-              o.cacheCtx.clearRect(0, 0, o.cacheCanvas.width, o.cacheCanvas.width);
+              o.cacheCtx.clearRect(0, 0, o.cacheCanvas.width, o.cacheCanvas.height);
               o.cacheCtx.save();
               this.render(o.cacheCtx, o, o._cacheData);
               o.cacheCtx.restore();
@@ -6701,7 +6703,16 @@ var stage = new _cax2.default.Stage(200, 220, 'body');
 
 var img = new Image();
 img.onload = function () {
-  var loading = new _index2.default(img, '#22F2B0');
+  var loading = new _index2.default({
+    img: img,
+    waveSpeed: -5,
+    color: '#1568C9',
+    percent: 40.5,
+    font: 'bold 36px Arial',
+    colorA: 'red',
+    colorB: 'white',
+    step: 0.5
+  });
   stage.add(loading);
   _cax2.default.tick(function () {
 
@@ -6774,28 +6785,57 @@ var Graphics = _cax2.default.Graphics,
 var Loading = function (_Group) {
     _inherits(Loading, _Group);
 
-    function Loading(img, color) {
+    function Loading(option) {
         _classCallCheck(this, Loading);
 
         var _this = _possibleConstructorReturn(this, (Loading.__proto__ || Object.getPrototypeOf(Loading)).call(this));
 
-        _this.color = color;
+        _this.color = option.color;
 
         _this.g = new Graphics();
+        _this.text = new _cax2.default.Text(option.percent + '%', {
+            color: option.colorB,
+            font: option.font
+        });
+        var width = option.img.width;
+        var height = option.img.height;
+        _this.text.x = width / 2 - _this.text.getWidth() / 2;
+        _this.text.y = height / 2 - 10;
 
-        _this.bmp = new Bitmap(img);
+        _this.group = new Group();
+        _this.bmp = new Bitmap(option.img);
         _this.bmp.compositeOperation = "destination-atop";
-        _this.add(_this.g, _this.bmp);
-        _this.cache(0, 0, img.width, img.height, 1, true);
 
-        _this.waveWidth = 500;
+        _this.text.compositeOperation = "source-in";
+
+        _this.group.add(_this.g, _this.bmp);
+
+        _this.add(_this.group);
+        _this.group.cache(0, 0, width, height, 1, true);
+
+        _this.textB = new _cax2.default.Text(option.percent + '%', {
+            color: option.colorA,
+            font: option.font
+        });
+        _this.textB.x = width / 2 - _this.text.getWidth() / 2;
+        _this.textB.y = height / 2 - 10;
+        _this.add(_this.textB);
+
+        _this.groupB = new Group();
+        _this.groupB.add(_this.g, _this.text);
+        _this.groupB.cache(0, 0, width, height, 1, true);
+        _this.add(_this.groupB);
+
+        _this.waveSpeed = option.waveSpeed;
+        _this.img = option.img;
+        _this.waveWidth = width * 2.5;
         _this.offset = 0;
         _this.waveHeight = 8;
         _this.waveCount = 5;
-        _this.startX = -100;
-        _this.startY = 204;
-        _this.progress = 0;
-        _this.progressStep = 1;
+        _this.startX = -width / 2;
+        _this.startY = height;
+        _this.progress = option.percent / 100 * height;
+        _this.progressStep = option.step || 1;
         _this.d2 = _this.waveWidth / _this.waveCount;
         _this.d = _this.d2 / 2;
         _this.hd = _this.d / 2;
@@ -6804,13 +6844,22 @@ var Loading = function (_Group) {
     }
 
     _createClass(Loading, [{
-        key: "update",
+        key: 'update',
         value: function update() {
 
-            this.offset -= 5;
+            this.offset -= this.waveSpeed;
             this.progress += this.progressStep;
-            if (this.progress > 220 || this.progress < 0) this.progressStep *= -1;
-            if (-1 * this.offset === this.d2) this.offset = 0;
+            if (this.progress > this.img.height) {
+                this.progress = this.img.height;
+                this.progressStep *= -1;
+            } else if (this.progress < 0) {
+                this.progress = 0;
+                this.progressStep *= -1;
+            }
+
+            if (Math.abs(this.offset) >= this.d2) {
+                this.offset = this.d2 - Math.abs(this.offset);
+            }
 
             this.g.clear().beginPath().fillStyle(this.color);
             var offsetY = this.startY - this.progress;
@@ -6822,8 +6871,8 @@ var Loading = function (_Group) {
                 this.g.quadraticCurveTo(offsetX + this.hd + this.d, offsetY - this.waveHeight, offsetX + this.d2, offsetY);
             }
 
-            this.g.lineTo(this.startX + this.waveWidth, 300);
-            this.g.lineTo(this.startX, 300);
+            this.g.lineTo(this.startX + this.waveWidth, this.img.height * 1.5);
+            this.g.lineTo(this.startX, this.img.height * 1.5);
 
             this.g.fill();
         }
