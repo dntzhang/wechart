@@ -17,6 +17,13 @@
 </thead>
 <tbody>
 <tr>
+<td align="center"><a title="Loading" href="https://dntzhang.github.io/wechart/packages/loading/examples/simple/" rel="nofollow"><img alt="Loading" src="./asset/c23.png" style="max-width:100%;"></a></td>
+<td align="center"><a href="https://github.com/dntzhang/wechart/blob/master/packages/loading/examples/simple/main.js">Source</a></td>
+<td align="center"><a href="https://github.com/dntzhang/wechart/blob/master/packages/loading/src/index.js">Loading Source</a></td>
+<td align="center">Tutorial</td>
+</tr>
+
+<tr>
 <td align="center"><a title="Countdown" href="https://dntzhang.github.io/wechart/packages/countdown/examples/simple/" rel="nofollow"><img alt="Countdown" src="./asset/c22.png" style="max-width:100%;"></a></td>
 <td align="center"><a href="https://github.com/dntzhang/wechart/blob/master/packages/countdown/examples/simple/main.js">Source</a></td>
 <td align="center"><a href="https://github.com/dntzhang/wechart/blob/master/packages/countdown/src/index.js">Countdown Source</a></td>
