@@ -168,6 +168,25 @@ http://localhost:3000/chart-name/examples/simple/index.html
 
 修改目录下的文件会自动刷新网页。
 
+## Cax DEMO
+
+* Web DEMO & [→ Source Code](https://github.com/dntzhang/cax/tree/master/packages/cax/examples)
+  * [Simple](https://dntzhang.github.io/cax) 
+  * [Animation](https://dntzhang.github.io/cax/packages/cax/examples/to/) 
+  * [Clip](https://dntzhang.github.io/cax/packages/cax/examples/clip/) 
+  * [Clip Transform](https://dntzhang.github.io/cax/packages/cax/examples/clip-transform/) 
+  * [Clip Transition](https://dntzhang.github.io/cax/packages/cax/examples/clip-transition/) 
+  * [To2To Animate](https://dntzhang.github.io/cax/packages/cax/examples/to-animate/) 
+  * [Swing](https://dntzhang.github.io/cax/packages/to/examples/swing/) 
+  * [Cax + Matter](https://dntzhang.github.io/cax/packages/cax/examples/matter/) 
+  * [To + Shape](https://dntzhang.github.io/cax/packages/cax/examples/to-shape/)
+  * [Vision](https://dntzhang.github.io/cax/packages/cax/examples/vision/)
+  * [Cache](https://dntzhang.github.io/cax/packages/cax/examples/cache/)
+  * [Filter](https://dntzhang.github.io/cax/packages/cax/examples/filter/)
+  * [SVG](https://dntzhang.github.io/wechart/packages/path/examples/man/)
+  * [Graphics](https://dntzhang.github.io/cax/packages/cax/examples/graphics/)
+  * [Composite Operation](http://dntzhang.github.io/cax/packages/cax/examples/composite-operation/)
+
 ## 谁在使用？
 
 ![Tencent Wechat](./asset/wx.png)  ![Tencent QQ](./asset/qq.png)
