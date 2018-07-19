@@ -61,12 +61,7 @@ English | [简体中文](./README.md)
 <td align="center"><a href="https://github.com/dntzhang/wechart/blob/master/packages/pie/src/index.js">Pie Source</a></td>
 <td align="center"><a href="https://github.com/dntzhang/wechart/blob/master/packages/pie/README.md">Tutorial</a></td>
 </tr>
-<tr>
-<td align="center"><a title="Axis" href="https://dntzhang.github.io/wechart/packages/axis/examples/simple/" rel="nofollow"><img alt="Axis" src="./asset/c10.png" style="max-width:100%;"></a></td>
-<td align="center"><a href="https://github.com/dntzhang/wechart/blob/master/packages/axis/examples/simple/main.js">Source</a></td>
-<td align="center"><a href="https://github.com/dntzhang/wechart/blob/master/packages/axis/src/index.js">Axis Source</a></td>
-<td align="center">Tutorial</td>
-</tr>
+
 <tr>
 <td align="center"><a title="Bar" href="https://dntzhang.github.io/wechart/packages/bar/examples/simple/" rel="nofollow"><img alt="Bar" src="./asset/c7.png" style="max-width:100%;"></a></td>
 <td align="center"><a href="https://github.com/dntzhang/wechart/blob/master/packages/bar/examples/simple/main.js">Source</a></td>
@@ -127,12 +122,7 @@ English | [简体中文](./README.md)
 <td align="center">Draw Source</td>
 <td align="center">Tutorial</td>
 </tr>
-<tr>
-<td align="center"><a title="Axis3d" href="https://dntzhang.github.io/wechart/packages/axis3d/examples/simple/" rel="nofollow"><img alt="Axis3d" src="./asset/c15.png" style="max-width:100%;"></a></td>
-<td align="center"><a href="https://github.com/dntzhang/wechart/blob/master/packages/axis3d/examples/simple/main.js">Source</a></td>
-<td align="center"><a href="https://github.com/dntzhang/wechart/blob/master/packages/axis3d/src/index.js">Axis3d Source</a></td>
-<td align="center">Tutorial</td>
-</tr>
+
 <tr>
 <td align="center"><a title="Pyramid3d" href="https://dntzhang.github.io/wechart/packages/pyramid3d/examples/simple/" rel="nofollow"><img alt="Pyramid3d" src="./asset/c6.png" style="max-width:100%;"></a></td>
 <td align="center"><a href="https://github.com/dntzhang/wechart/blob/master/packages/pyramid3d/examples/simple/main.js">Source</a></td>
