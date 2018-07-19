@@ -53,7 +53,7 @@ English | [简体中文](./README.md)
 <tr>
 <td align="center"><a title="Clock" href="https://dntzhang.github.io/wechart/packages/clock/examples/simple/" rel="nofollow"><img alt="Clock" src="./asset/c20.png" style="max-width:100%;"></a></td>
 <td align="center"><a href="https://github.com/dntzhang/wechart/blob/master/packages/clock/examples/simple/main.js">Source</a></td>
-<td align="center"><a href="https://github.com/dntzhang/wechart/blob/master/packages/clock/src/index.js">Excel Source</a></td>
+<td align="center"><a href="https://github.com/dntzhang/wechart/blob/master/packages/clock/src/index.js">Clock Source</a></td>
 <td align="center">Tutorial</td>
 </tr>
 <tr>
