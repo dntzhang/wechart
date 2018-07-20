@@ -2,7 +2,7 @@
 
 # Wechart by [Cax](https://github.com/dntzhang/cax)
 
-> Cax 和 three.js 渲染精巧图表
+> Cax 和 three.js 渲染精巧图[表]
 
 ![](./asset/wechart-idea.png)
 
@@ -157,7 +157,7 @@
 </tr>
 </tbody></table>
 
-## 怎么贡献图表？
+## 怎么贡献图[表]？
 
 * 在 packages 以图表的名字新建一个文件夹，比如 chart-name
 * 组件的例子放在 examples 目录，比如 simple，组件 Group 源码放在 src 目录
