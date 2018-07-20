@@ -4,8 +4,6 @@ English | [简体中文](./README.md)
 
 > Lightweight but powerful charts by cax and three.js. 
 
-![](./asset/wechart-idea.png)
-
 <table>
 <thead>
 <tr>

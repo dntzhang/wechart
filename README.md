@@ -4,8 +4,6 @@
 
 > Cax 和 three.js 渲染精巧图[表]
 
-![](./asset/wechart-idea.png)
-
 <table>
 <thead>
 <tr>
