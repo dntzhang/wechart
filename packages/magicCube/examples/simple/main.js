@@ -1,4 +1,4 @@
-import Pie from '../../src/index'
+import magicCube from '../../src/index'
 import '../../../common/orbit-controls'
 
 const camera = new THREE.PerspectiveCamera(45, window.innerWidth / window.innerHeight, 0.01, 500)
@@ -13,7 +13,7 @@ document.body.appendChild(renderer.domElement)
 const controls = new THREE.OrbitControls(camera, renderer.domElement)
 const group = new THREE.Group()
 
-const pyramid = new Pie({
+const pyramid = new magicCube({
   level:4,
   size:100
 })
