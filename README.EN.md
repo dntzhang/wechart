@@ -17,6 +17,13 @@ English | [简体中文](./README.md)
 </thead>
 <tbody>
 <tr>
+<td align="center"><a title="Avatar" href="https://dntzhang.github.io/wechart/packages/avatar/examples/simple/" rel="nofollow"><img alt="Avatar" src="./asset/c24.png" style="max-width:100%;"></a></td>
+<td align="center"><a href="https://github.com/dntzhang/wechart/blob/master/packages/avatar/examples/simple/main.js">Source</a></td>
+<td align="center">Avatar Source</td>
+<td align="center">Tutorial</td>
+</tr>
+
+<tr>
 <td align="center"><a title="Loading" href="https://dntzhang.github.io/wechart/packages/loading/examples/simple/" rel="nofollow"><img alt="Loading" src="./asset/c23.png" style="max-width:100%;"></a></td>
 <td align="center"><a href="https://github.com/dntzhang/wechart/blob/master/packages/loading/examples/simple/main.js">Source</a></td>
 <td align="center"><a href="https://github.com/dntzhang/wechart/blob/master/packages/loading/src/index.js">Loading Source</a></td>
