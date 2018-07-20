@@ -17,7 +17,7 @@
 </thead>
 <tbody>
 <tr>
-<td align="center"><a title="MagicCube" href="https://dntzhang.github.io/wechart/packages/magicCube/examples/simple/" rel="nofollow"><img alt="MagicCube" src="./asset/c25.png" style="max-width:100%;"></a></td>
+<td align="center"><a title="MagicCube" href="https://dntzhang.github.io/wechart/packages/magicCube/examples/simple/" rel="nofollow"><img alt="MagicCube" src="./asset/c26.png" style="max-width:100%;"></a></td>
 <td align="center"><a href="https://github.com/dntzhang/wechart/blob/master/packages/magicCube/examples/simple/main.js">Source</a></td>
 <td align="center">MagicCube Source</td>
 <td align="center">Tutorial</td>
