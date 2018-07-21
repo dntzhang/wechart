@@ -25,8 +25,8 @@ class WordCloud extends Group {
     this.compositeCanvas.height = 400
     this.compositeCtx = this.compositeCanvas.getContext('2d')
     this.miniCanvas = document.createElement('canvas')
-    this.miniCanvas.width = 140
-    this.miniCanvas.height = 140
+    this.miniCanvas.width = 100
+    this.miniCanvas.height = 100
     this.miniCtx = this.miniCanvas.getContext('2d')
 
     data.forEach(item => {
@@ -50,8 +50,8 @@ class WordCloud extends Group {
       this.compositeCtx.fillText(item.text, 0,0)
       this.compositeCtx.restore()
 
-      this.miniCtx.clearRect(0, 0, 140, 140)
-      this.miniCtx.drawImage(this.compositeCanvas, 0, 0, 140, 140)
+      this.miniCtx.clearRect(0, 0, 100, 100)
+      this.miniCtx.drawImage(this.compositeCanvas, 0, 0, 100, 100)
 
       if (this.havePixel(this.miniCanvas, this.miniCtx)) {
 
@@ -70,6 +70,7 @@ class WordCloud extends Group {
         this.offScreenCtx.translate(x,y)
         this.offScreenCtx.rotate(textRotation*Math.PI/180)
         this.offScreenCtx.font = item.fontSize + 'px ' + this.option.fontFamily
+        this.offScreenCtx.fillStyle = colorLuminance(randomHexColor(),-0.2)
         this.offScreenCtx.fillText(item.text, 0, 0)
         this.offScreenCtx.restore()
       }
@@ -95,5 +96,29 @@ class WordCloud extends Group {
   }
 
 }
+
+
+function colorLuminance(hex, lum) {
+  // validate hex string
+  hex = String(hex).replace(/[^0-9a-f]/gi, '');
+  if (hex.length < 6) {
+    hex = hex[0]+hex[0]+hex[1]+hex[1]+hex[2]+hex[2];
+  }
+  lum = lum || 0;
+
+  // convert to decimal and change luminosity
+  var rgb = "#", c, i;
+  for (i = 0; i < 3; i++) {
+    c = parseInt(hex.substr(i*2,2), 16);
+    c = Math.round(Math.min(Math.max(0, c + (c * lum)), 255)).toString(16);
+    rgb += ("00"+c).substr(c.length);
+  }
+
+  return rgb;
+}
+
+function randomHexColor() { //随机生成十六进制颜色
+  return '#' + ('00000' + (Math.random() * 0x1000000 << 0).toString(16)).substr(-6);
+ }
 
 export default WordCloud

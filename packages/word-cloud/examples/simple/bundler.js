@@ -6530,8 +6530,6 @@ var _scale = __webpack_require__(4);
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
-var stage = new _cax2.default.Stage(800, 800, '#canvasCtn');
-
 var wordCloud = new _src2.default([{ text: 'WECHART', value: '6' }, { text: 'CAX', value: '12' }, { text: '賈雨村', value: '0' }, { text: '賈雨村', value: '0' }, { text: '賈雨村', value: '0' }, { text: '賈雨村', value: '0' }, { text: '賈雨村', value: '0' }, { text: '賈雨村', value: '0' }, { text: '賈雨村', value: '0' }, { text: '賈雨村', value: '0' }, { text: '賈雨村', value: '0' }, { text: '紅樓夢', value: '10' }, { text: '賈寶玉', value: '3' }, { text: '林黛玉', value: '3' }, { text: '薛寶釵', value: '3' }, { text: '王熙鳳', value: '3' }, { text: '李紈', value: '3' }, { text: '賈元春', value: '7' }, { text: '賈迎春', value: '7' }, { text: '賈探春', value: '3' }, { text: '賈惜春', value: '7' }, { text: '秦可卿', value: '3' }, { text: '賈巧姐', value: '3' }, { text: '史湘雲', value: '5' }, { text: '妙玉', value: '3' }, { text: '賈政', value: '2' }, { text: '賈赦', value: '2' }, { text: '賈璉', value: '6' }, { text: '賈珍', value: '2' }, { text: '賈環', value: '6' }, { text: '賈母', value: '2' }, { text: '王夫人', value: '2' }, { text: '薛姨媽', value: '6' }, { text: '尤氏', value: '2' }, { text: '平兒', value: '2' }, { text: '鴛鴦', value: '2' }, { text: '襲人', value: '2' }, { text: '晴雯', value: '2' }, { text: '香菱', value: '2' }, { text: '紫鵑', value: '2' }, { text: '麝月', value: '2' }, { text: '小紅', value: '2' }, { text: '金釧', value: '2' }, { text: '甄士隱', value: '0' }, { text: '賈雨村', value: '0' }, { text: '賈雨村', value: '0' }, { text: '賈雨村', value: '0' }, { text: '賈雨村', value: '0' }], {
   center: { x: 180, y: 200 },
   dd: 10,
@@ -6539,12 +6537,6 @@ var wordCloud = new _src2.default([{ text: 'WECHART', value: '6' }, { text: 'CAX
   tdr: 10,
   fontFamily: 'Arial',
   scale: (0, _scale.scaleLinear)([0, 10], [12, 40])
-});
-
-stage.add(wordCloud);
-
-_cax2.default.tick(function () {
-  stage.update();
 });
 
 /***/ }),
@@ -6631,8 +6623,8 @@ var WordCloud = function (_Group) {
     _this.compositeCanvas.height = 400;
     _this.compositeCtx = _this.compositeCanvas.getContext('2d');
     _this.miniCanvas = document.createElement('canvas');
-    _this.miniCanvas.width = 140;
-    _this.miniCanvas.height = 140;
+    _this.miniCanvas.width = 100;
+    _this.miniCanvas.height = 100;
     _this.miniCtx = _this.miniCanvas.getContext('2d');
 
     data.forEach(function (item) {
@@ -6659,8 +6651,8 @@ var WordCloud = function (_Group) {
         this.compositeCtx.fillText(item.text, 0, 0);
         this.compositeCtx.restore();
 
-        this.miniCtx.clearRect(0, 0, 140, 140);
-        this.miniCtx.drawImage(this.compositeCanvas, 0, 0, 140, 140);
+        this.miniCtx.clearRect(0, 0, 100, 100);
+        this.miniCtx.drawImage(this.compositeCanvas, 0, 0, 100, 100);
 
         if (this.havePixel(this.miniCanvas, this.miniCtx)) {
 
@@ -6678,6 +6670,7 @@ var WordCloud = function (_Group) {
           this.offScreenCtx.translate(x, y);
           this.offScreenCtx.rotate(textRotation * Math.PI / 180);
           this.offScreenCtx.font = item.fontSize + 'px ' + this.option.fontFamily;
+          this.offScreenCtx.fillStyle = colorLuminance(randomHexColor(), -0.2);
           this.offScreenCtx.fillText(item.text, 0, 0);
           this.offScreenCtx.restore();
         }
@@ -6704,6 +6697,32 @@ var WordCloud = function (_Group) {
 
   return WordCloud;
 }(Group);
+
+function colorLuminance(hex, lum) {
+  // validate hex string
+  hex = String(hex).replace(/[^0-9a-f]/gi, '');
+  if (hex.length < 6) {
+    hex = hex[0] + hex[0] + hex[1] + hex[1] + hex[2] + hex[2];
+  }
+  lum = lum || 0;
+
+  // convert to decimal and change luminosity
+  var rgb = "#",
+      c,
+      i;
+  for (i = 0; i < 3; i++) {
+    c = parseInt(hex.substr(i * 2, 2), 16);
+    c = Math.round(Math.min(Math.max(0, c + c * lum), 255)).toString(16);
+    rgb += ("00" + c).substr(c.length);
+  }
+
+  return rgb;
+}
+
+function randomHexColor() {
+  //随机生成十六进制颜色
+  return '#' + ('00000' + (Math.random() * 0x1000000 << 0).toString(16)).substr(-6);
+}
 
 exports.default = WordCloud;
 

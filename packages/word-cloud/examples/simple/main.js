@@ -3,7 +3,7 @@ import WordCloud from '../../src'
 
 import { scaleLinear } from '../../../common/scale'
 
-const stage = new cax.Stage(800, 800, '#canvasCtn')
+
 
 const wordCloud = new WordCloud([
   { text: 'WECHART', value: '6' },
@@ -62,10 +62,4 @@ const wordCloud = new WordCloud([
   tdr:10,
   fontFamily:'Arial',
   scale:scaleLinear([0,10],[12,40])
-})
-
-stage.add(wordCloud)
-
-cax.tick(()=>{
-  stage.update()
 })
