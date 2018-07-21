@@ -49,6 +49,13 @@
 </tr>
 
 <tr>
+<td align="center"><a title="WordCloud" href="https://dntzhang.github.io/wechart/packages/word-cloud/examples/simple/" rel="nofollow"><img alt="WordCloud" src="./asset/c21.png" style="max-width:100%;"></a></td>
+<td align="center"><a href="https://github.com/dntzhang/wechart/blob/master/packages/word-cloud/examples/simple/main.js">Source</a></td>
+<td align="center"><a href="https://github.com/dntzhang/wechart/blob/master/packages/word-cloud/src/index.js">WordCloud Source</a></td>
+<td align="center">Tutorial</td>
+</tr>
+
+<tr>
 <td align="center"><a title="WordSphere" href="https://dntzhang.github.io/wechart/packages/word-sphere/examples/simple/" rel="nofollow"><img alt="WordSphere" src="./asset/c21.png" style="max-width:100%;"></a></td>
 <td align="center"><a href="https://github.com/dntzhang/wechart/blob/master/packages/word-sphere/examples/simple/main.js">Source</a></td>
 <td align="center"><a href="https://github.com/dntzhang/wechart/blob/master/packages/word-sphere/src/index.js">WordSphere Source</a></td>
