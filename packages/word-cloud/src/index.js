@@ -55,16 +55,16 @@ class WordCloud extends Group {
 
       if (this.havePixel(this.miniCanvas, this.miniCtx)) {
 
-        if (textRotation > -100000) {
+       // if (textRotation > -100000) {
           if (rotation === 360) {
             this.drawText(item, r + this.option.dd, 0, 0)
           } else {
             this.drawText(item, r, rotation + this.option.dr, textRotation)
           }
 
-        } else {
-          this.drawText(item, r, rotation, textRotation + 2*this.option.tdr*Math.random()- this.option.tdr)
-        }
+        // } else {
+        //   this.drawText(item, r, rotation, textRotation + 2*this.option.tdr*Math.random()- this.option.tdr)
+        // }
       } else {
         this.offScreenCtx.save()
         this.offScreenCtx.translate(x,y)
