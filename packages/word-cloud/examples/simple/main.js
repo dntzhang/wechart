@@ -8,15 +8,6 @@ import { scaleLinear } from '../../../common/scale'
 const wordCloud = new WordCloud([
   { text: 'WECHART', value: '6' },
   { text: 'CAX', value: '12' },
-  { text: '賈雨村', value: '0' },
-  { text: '賈雨村', value: '0' },
-  { text: '賈雨村', value: '0' },
-  { text: '賈雨村', value: '0' },
-  { text: '賈雨村', value: '0' },
-  { text: '賈雨村', value: '0' },
-  { text: '賈雨村', value: '0' },
-  { text: '賈雨村', value: '0' },
-  { text: '賈雨村', value: '0' },
   { text: '紅樓夢', value: '10' },
   { text: '賈寶玉', value: '3' },
   { text: '林黛玉', value: '3' },
@@ -52,8 +43,6 @@ const wordCloud = new WordCloud([
   { text: '甄士隱', value: '0' },
   { text: '賈雨村', value: '0' },
   { text: '賈雨村', value: '0' },
-  { text: '賈雨村', value: '0' },
-  
   { text: '賈雨村', value: '0' }
 ],{
   center:{x:180,y:200},
