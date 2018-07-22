@@ -16,7 +16,7 @@ English | [简体中文](./README.md)
 <tbody>
 <tr>
 <td align="center"><a title="Texture Mapping" href="https://dntzhang.github.io/wechart/packages/texture-mapping/examples/simple/" rel="nofollow"><img alt="Texture Mapping" src="./asset/c27.png" style="max-width:100%;"></a></td>
-<td align="center"><a href="https://github.com/dntzhang/wechart/blob/master/packages/avatar/examples/simple/main.js">Source</a></td>
+<td align="center"><a href="https://github.com/dntzhang/wechart/blob/master/packages/texture-mapping/examples/simple/main.js">Source</a></td>
 <td align="center">Texture Mapping Source</td>
 <td align="center">Tutorial</td>
 </tr>
