@@ -6,7 +6,7 @@ import { slope, getValue } from '../../../common/bezier'
 
 const stage = new cax.Stage(440, 240, '#canvasCtn')
 
-const points = [60, 100, 160, 200, 260, 200, 360, 100]
+const points = [60, 100, 160, 0, 260, 200, 360, 100]
 
 const loader = new Loader({
   res: [{ id: 'a1', src: '../../asset/bg.png' }],
@@ -64,7 +64,7 @@ function render(){
 
     //skew(half of rotation)导致宽度不一致
     bitmap.skewY = angle
-    bitmap.scaleX = (getValue(points, i + dt).x - p.x) / (dw * Math.cos(angle * Math.PI / 180))
+    bitmap.scaleX = (getValue(points, i + dt).x - p.x) / (dw * Math.cos(angle * Math.PI / 180)) + 0.1
     stage.add(bitmap)
 
    

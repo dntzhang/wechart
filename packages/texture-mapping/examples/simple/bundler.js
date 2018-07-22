@@ -84,7 +84,7 @@ function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { de
 
 var stage = new _cax2.default.Stage(440, 240, '#canvasCtn');
 
-var points = [60, 100, 160, 200, 260, 200, 360, 100];
+var points = [60, 100, 160, 0, 260, 200, 360, 100];
 
 var loader = new _loader2.default({
   res: [{ id: 'a1', src: '../../asset/bg.png' }],
@@ -141,7 +141,7 @@ function render() {
 
     //skew(half of rotation)导致宽度不一致
     bitmap.skewY = angle;
-    bitmap.scaleX = ((0, _bezier.getValue)(points, i + dt).x - p.x) / (dw * Math.cos(angle * Math.PI / 180));
+    bitmap.scaleX = ((0, _bezier.getValue)(points, i + dt).x - p.x) / (dw * Math.cos(angle * Math.PI / 180)) + 0.1;
     stage.add(bitmap);
   }
 
