@@ -233,7 +233,6 @@ class Excel extends Group {
           }
           this.grid.stroke()
         }
-
         if (this._borderCheck(i, j, 'top')) {
           this.grid.beginPath().moveTo(this.offset.x[j], this.offset.y[i]).lineTo(this.offset.x[j] + this.option.colWidth[j], this.offset.y[i])
           let style = this._getBorderColor(i, j, 'top')
@@ -277,10 +276,7 @@ class Excel extends Group {
   }
 
   getMergeInfo (y, x) {
-    const result = {
-
-    }
-
+    const result = { }
     this.option.merge.every(rect => {
       if (x >= rect[0] && x <= rect[0] + rect[2] - 1 && y >= rect[1] && y <= rect[1] + rect[3] - 1) {
         result.isMerge = true
@@ -289,7 +285,10 @@ class Excel extends Group {
           result.xEnd = rect[0] + rect[2]
           result.yEnd = rect[1] + rect[3]
         }
+        return false
       }
+
+      return true
     })
 
     if (result.isLeftTop) {
@@ -414,15 +413,18 @@ class Excel extends Group {
     let result = true
     this.option.merge.every(rect => {
       if (x >= rect[0] && x <= rect[0] + rect[2] - 1 && y >= rect[1] && y <= rect[1] + rect[3] - 1) {
-        if (x === rect[0] && dir === 'right') {
-          result = false
 
-          return false
-        }
+        if (rect[1] > 1) {
+          if (x === rect[0] && dir === 'right') {
+            result = false
 
-        if (x === rect[0] + rect[2] - 1 && dir === 'left') {
-          result = false
-          return false
+            return false
+          }
+
+          if (x === rect[0] + rect[2] - 1 && dir === 'left') {
+            result = false
+            return false
+          }
         }
 
         if (x > rect[0] && x < rect[0] + rect[2] - 1 && (dir === 'left' || dir === 'right')) {
@@ -430,14 +432,16 @@ class Excel extends Group {
           return false
         }
 
-        if (y === rect[1] && dir === 'bottom') {
-          result = false
-          return false
-        }
+        if (rect[3] > 1) {
+          if (y === rect[1] && dir === 'bottom') {
+            result = false
+            return false
+          }
 
-        if (y === rect[1] + rect[3] - 1 && dir === 'top') {
-          result = false
-          return false
+          if (y === rect[1] + rect[3] - 1 && dir === 'top') {
+            result = false
+            return false
+          }
         }
 
         if (y > rect[1] && y < rect[1] + rect[3] - 1 && (dir === 'top' || dir === 'bottom')) {
@@ -445,6 +449,8 @@ class Excel extends Group {
           return false
         }
       }
+
+      return true
     })
 
     return result
@@ -459,7 +465,7 @@ class Excel extends Group {
         const text = dataRow[x]
         this.mCtx.font = cell.fontSize + 'px ' + cell.fontFamily
         const textWidth = this.mCtx.measureText(text).width
-        const cellWidth = option.colWidth[x]
+        const cellWidth = this.getMergeInfo(y,x).width||option.colWidth[x]
         if (cell.textBreak === 'auto' && textWidth > cellWidth) {
           const step = Math.round(text.length * (cellWidth - 30) / textWidth / 2)
 

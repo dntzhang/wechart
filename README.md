@@ -2,9 +2,7 @@
 
 # Wechart by [Cax](https://github.com/dntzhang/cax)
 
-> Cax 和 three.js 渲染精巧图表
-
-![](./asset/wechart-idea.png)
+> Cax 和 three.js 渲染精巧图[表]
 
 <table>
 <thead>
@@ -16,6 +14,20 @@
 </tr>
 </thead>
 <tbody>
+<tr>
+<td align="center"><a title="Avatar" href="https://dntzhang.github.io/wechart/packages/avatar/examples/simple/" rel="nofollow"><img alt="Avatar" src="./asset/c24.png" style="max-width:100%;"></a></td>
+<td align="center"><a href="https://github.com/dntzhang/wechart/blob/master/packages/avatar/examples/simple/main.js">Source</a></td>
+<td align="center">Avatar Source</td>
+<td align="center">Tutorial</td>
+</tr>
+
+<tr>
+<td align="center"><a title="Loading" href="https://dntzhang.github.io/wechart/packages/loading/examples/simple/" rel="nofollow"><img alt="Loading" src="./asset/c23.png" style="max-width:100%;"></a></td>
+<td align="center"><a href="https://github.com/dntzhang/wechart/blob/master/packages/loading/examples/simple/main.js">Source</a></td>
+<td align="center"><a href="https://github.com/dntzhang/wechart/blob/master/packages/loading/src/index.js">Loading Source</a></td>
+<td align="center">Tutorial</td>
+</tr>
+
 <tr>
 <td align="center"><a title="Countdown" href="https://dntzhang.github.io/wechart/packages/countdown/examples/simple/" rel="nofollow"><img alt="Countdown" src="./asset/c22.png" style="max-width:100%;"></a></td>
 <td align="center"><a href="https://github.com/dntzhang/wechart/blob/master/packages/countdown/examples/simple/main.js">Source</a></td>
@@ -37,6 +49,13 @@
 </tr>
 
 <tr>
+<td align="center"><a title="WordCloud" href="https://dntzhang.github.io/wechart/packages/word-cloud/examples/simple/" rel="nofollow"><img alt="WordCloud" src="./asset/c25.png" style="max-width:100%;"></a></td>
+<td align="center"><a href="https://github.com/dntzhang/wechart/blob/master/packages/word-cloud/examples/simple/main.js">Source</a></td>
+<td align="center"><a href="https://github.com/dntzhang/wechart/blob/master/packages/word-cloud/src/index.js">WordCloud Source</a></td>
+<td align="center">Tutorial</td>
+</tr>
+
+<tr>
 <td align="center"><a title="WordSphere" href="https://dntzhang.github.io/wechart/packages/word-sphere/examples/simple/" rel="nofollow"><img alt="WordSphere" src="./asset/c21.png" style="max-width:100%;"></a></td>
 <td align="center"><a href="https://github.com/dntzhang/wechart/blob/master/packages/word-sphere/examples/simple/main.js">Source</a></td>
 <td align="center"><a href="https://github.com/dntzhang/wechart/blob/master/packages/word-sphere/src/index.js">WordSphere Source</a></td>
@@ -46,7 +65,7 @@
 <tr>
 <td align="center"><a title="Clock" href="https://dntzhang.github.io/wechart/packages/clock/examples/simple/" rel="nofollow"><img alt="Clock" src="./asset/c20.png" style="max-width:100%;"></a></td>
 <td align="center"><a href="https://github.com/dntzhang/wechart/blob/master/packages/clock/examples/simple/main.js">Source</a></td>
-<td align="center"><a href="https://github.com/dntzhang/wechart/blob/master/packages/clock/src/index.js">Excel Source</a></td>
+<td align="center"><a href="https://github.com/dntzhang/wechart/blob/master/packages/clock/src/index.js">Clock Source</a></td>
 <td align="center">Tutorial</td>
 </tr>
 <tr>
@@ -61,12 +80,7 @@
 <td align="center"><a href="https://github.com/dntzhang/wechart/blob/master/packages/pie/src/index.js">Pie Source</a></td>
 <td align="center"><a href="https://github.com/dntzhang/wechart/blob/master/packages/pie/README.md">Tutorial</a></td>
 </tr>
-<tr>
-<td align="center"><a title="Axis" href="https://dntzhang.github.io/wechart/packages/axis/examples/simple/" rel="nofollow"><img alt="Axis" src="./asset/c10.png" style="max-width:100%;"></a></td>
-<td align="center"><a href="https://github.com/dntzhang/wechart/blob/master/packages/axis/examples/simple/main.js">Source</a></td>
-<td align="center"><a href="https://github.com/dntzhang/wechart/blob/master/packages/axis/src/index.js">Axis Source</a></td>
-<td align="center">Tutorial</td>
-</tr>
+
 <tr>
 <td align="center"><a title="Bar" href="https://dntzhang.github.io/wechart/packages/bar/examples/simple/" rel="nofollow"><img alt="Bar" src="./asset/c7.png" style="max-width:100%;"></a></td>
 <td align="center"><a href="https://github.com/dntzhang/wechart/blob/master/packages/bar/examples/simple/main.js">Source</a></td>
@@ -127,12 +141,7 @@
 <td align="center">Draw Source</td>
 <td align="center">Tutorial</td>
 </tr>
-<tr>
-<td align="center"><a title="Axis3d" href="https://dntzhang.github.io/wechart/packages/axis3d/examples/simple/" rel="nofollow"><img alt="Axis3d" src="./asset/c15.png" style="max-width:100%;"></a></td>
-<td align="center"><a href="https://github.com/dntzhang/wechart/blob/master/packages/axis3d/examples/simple/main.js">Source</a></td>
-<td align="center"><a href="https://github.com/dntzhang/wechart/blob/master/packages/axis3d/src/index.js">Axis3d Source</a></td>
-<td align="center">Tutorial</td>
-</tr>
+
 <tr>
 <td align="center"><a title="Pyramid3d" href="https://dntzhang.github.io/wechart/packages/pyramid3d/examples/simple/" rel="nofollow"><img alt="Pyramid3d" src="./asset/c6.png" style="max-width:100%;"></a></td>
 <td align="center"><a href="https://github.com/dntzhang/wechart/blob/master/packages/pyramid3d/examples/simple/main.js">Source</a></td>
@@ -153,12 +162,12 @@
 </tr>
 </tbody></table>
 
-## 怎么贡献图表？
+## 怎么贡献图[表]？
 
 * 在 packages 以图表的名字新建一个文件夹，比如 chart-name
 * 组件的例子放在 examples 目录，比如 simple，组件 Group 源码放在 src 目录
 * 执行 `npm install` 安装依赖
-* 执行 `npm run build chart-name simple` 进行构建(
+* 执行 `npm run build chart-name simple` 进行构建
     
 build 命令会自动打开浏览器中对应目录的 html (如果3000端口没占用，占用的话会递增):
 
@@ -167,6 +176,25 @@ http://localhost:3000/chart-name/examples/simple/index.html
 ```
 
 修改目录下的文件会自动刷新网页。
+
+## Cax DEMO
+
+* Web DEMO & [→ Source Code](https://github.com/dntzhang/cax/tree/master/packages/cax/examples)
+  * [Simple](https://dntzhang.github.io/cax) 
+  * [Animation](https://dntzhang.github.io/cax/packages/cax/examples/to/) 
+  * [Clip](https://dntzhang.github.io/cax/packages/cax/examples/clip/) 
+  * [Clip Transform](https://dntzhang.github.io/cax/packages/cax/examples/clip-transform/) 
+  * [Clip Transition](https://dntzhang.github.io/cax/packages/cax/examples/clip-transition/) 
+  * [To2To Animate](https://dntzhang.github.io/cax/packages/cax/examples/to-animate/) 
+  * [Swing](https://dntzhang.github.io/cax/packages/to/examples/swing/) 
+  * [Cax + Matter](https://dntzhang.github.io/cax/packages/cax/examples/matter/) 
+  * [To + Shape](https://dntzhang.github.io/cax/packages/cax/examples/to-shape/)
+  * [Vision](https://dntzhang.github.io/cax/packages/cax/examples/vision/)
+  * [Cache](https://dntzhang.github.io/cax/packages/cax/examples/cache/)
+  * [Filter](https://dntzhang.github.io/cax/packages/cax/examples/filter/)
+  * [SVG](https://dntzhang.github.io/wechart/packages/path/examples/man/)
+  * [Graphics](https://dntzhang.github.io/cax/packages/cax/examples/graphics/)
+  * [Composite Operation](http://dntzhang.github.io/cax/packages/cax/examples/composite-operation/)
 
 ## 谁在使用？
 

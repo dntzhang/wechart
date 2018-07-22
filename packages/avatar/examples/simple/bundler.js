@@ -60,11 +60,137 @@
 /******/ 	__webpack_require__.p = "";
 /******/
 /******/ 	// Load entry module and return exports
-/******/ 	return __webpack_require__(__webpack_require__.s = 1);
+/******/ 	return __webpack_require__(__webpack_require__.s = 0);
 /******/ })
 /************************************************************************/
 /******/ ([
 /* 0 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
+var _cax = __webpack_require__(1);
+
+var _cax2 = _interopRequireDefault(_cax);
+
+var _loader = __webpack_require__(3);
+
+var _loader2 = _interopRequireDefault(_loader);
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+//import Axis from '../../src/index'
+
+
+var stage = new _cax2.default.Stage(240, 280, '#canvasCtn');
+
+var loader = new _loader2.default({
+    res: [{ id: 'a1', src: '../../asset/a1.jpg' }, { id: 'a2', src: '../../asset/a2.jpg' }, { id: 'a3', src: '../../asset/a3.jpg' }],
+    complete: function complete() {
+
+        var groupA = new _cax2.default.Group();
+        var bitmapA = new _cax2.default.Bitmap(loader.get('a1'));
+
+        var clipPathA = new _cax2.default.Graphics();
+        clipPathA.x = 70;
+        clipPathA.y = 70;
+        clipPathA.arc(0, 0, 55, 0, Math.PI * 2);
+        bitmapA.clip(clipPathA);
+        var graphicsA = new _cax2.default.Graphics();
+
+        graphicsA.beginPath().strokeStyle('white').lineWidth(2).arc(0, 0, 55, 0, Math.PI * 2).stroke();
+
+        graphicsA.x = 70;
+        graphicsA.y = 70;
+        groupA.add(bitmapA, graphicsA);
+
+        stage.add(groupA);
+
+        var groupB = new _cax2.default.Group();
+        var bitmapB = new _cax2.default.Bitmap(loader.get('a2'));
+
+        var clipPathB = new _cax2.default.Graphics();
+        clipPathB.x = 70;
+        clipPathB.y = 70;
+        clipPathB.arc(0, 0, 55, 0, Math.PI * 2);
+        bitmapB.clip(clipPathB);
+        var graphicsB = new _cax2.default.Graphics();
+
+        graphicsB.beginPath().strokeStyle('white').lineWidth(2).arc(0, 0, 55, 0, Math.PI * 2).stroke();
+
+        graphicsB.x = 70;
+        graphicsB.y = 70;
+        groupB.add(bitmapB, graphicsB);
+        groupB.x = 100;
+
+        stage.add(groupB);
+
+        var group = new _cax2.default.Group();
+
+        groupB = new _cax2.default.Group();
+        bitmapB = new _cax2.default.Bitmap(loader.get('a3'));
+
+        clipPathB = new _cax2.default.Graphics();
+        clipPathB.x = 70;
+        clipPathB.y = 70;
+        clipPathB.arc(0, 0, 55, 0, Math.PI * 2);
+        bitmapB.clip(clipPathB);
+        graphicsB = new _cax2.default.Graphics();
+
+        graphicsB.beginPath().strokeStyle('white').lineWidth(2).arc(0, 0, 55, 0, Math.PI * 2).stroke();
+
+        graphicsB.x = 70;
+        graphicsB.y = 70;
+        groupB.add(bitmapB, graphicsB);
+        groupB.x = 50;
+        groupB.y = 290;
+
+        group.add(groupB);
+
+        groupA = new _cax2.default.Group();
+        bitmapA = new _cax2.default.Bitmap(loader.get('a1'));
+
+        clipPathA = new _cax2.default.Graphics();
+        clipPathA.x = 70;
+        clipPathA.y = 70;
+        clipPathA.arc(0, 0, 55, 0, Math.PI * 2);
+        bitmapA.clip(clipPathA);
+        graphicsA = new _cax2.default.Graphics();
+
+        graphicsA.beginPath().strokeStyle('white').lineWidth(2).arc(0, 0, 55, 0, Math.PI * 2).stroke();
+
+        graphicsA.x = 70;
+        graphicsA.y = 70;
+        groupA.add(bitmapA, graphicsA);
+        groupA.y = 200;
+
+        groupA.compositeOperation = 'source-atop';
+
+        group.add(groupA);
+
+        group.cache(0, 0, 400, 800);
+        group.y = -200;
+        stage.add(group);
+
+        _cax2.default.tick(function () {
+            stage.update();
+        });
+
+        document.querySelector('#btnA').addEventListener('click', function () {
+            group.y += 3;
+        });
+
+        document.querySelector('#btnB').addEventListener('click', function () {
+            group.y -= 3;
+        });
+    }
+});
+
+loader.start();
+
+/***/ }),
+/* 1 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -73,7 +199,7 @@
 var _typeof2 = typeof Symbol === "function" && typeof Symbol.iterator === "symbol" ? function (obj) { return typeof obj; } : function (obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj; };
 
 /*!
- *  cax v1.1.8
+ *  cax v1.1.10
  *  By https://github.com/dntzhang 
  *  Github: https://github.com/dntzhang/cax
  *  MIT Licensed.
@@ -393,7 +519,8 @@ var _typeof2 = typeof Symbol === "function" && typeof Symbol.iterator === "symbo
           key: 'destroy',
           value: function destroy() {
             this.empty();
-            _get(Group.prototype.__proto__ || Object.getPrototypeOf(Group.prototype), 'destroy', this).call(this);
+            //Stage does not have a parent 
+            this.parent && _get(Group.prototype.__proto__ || Object.getPrototypeOf(Group.prototype), 'destroy', this).call(this);
           }
         }]);
 
@@ -476,9 +603,10 @@ var _typeof2 = typeof Symbol === "function" && typeof Symbol.iterator === "symbo
           _this.clipRuleNonzero = true;
           _this.fixed = false;
           _this.shadow = null;
-
+          _this.compositeOperation = null;
           _this.absClipGraphics = null;
           _this.absClipRuleNonzero = true;
+          _this.cacheUpdating = false;
           return _this;
         }
 
@@ -594,7 +722,7 @@ var _typeof2 = typeof Symbol === "function" && typeof Symbol.iterator === "symbo
           }
         }, {
           key: 'cache',
-          value: function cache(x, y, width, height, scale) {
+          value: function cache(x, y, width, height, scale, cacheUpdating) {
 
             this._cacheData = {
               x: x || 0,
@@ -603,6 +731,7 @@ var _typeof2 = typeof Symbol === "function" && typeof Symbol.iterator === "symbo
               height: height || this.height,
               scale: scale || 1
             };
+            this.cacheUpdating = cacheUpdating;
             if (!this.cacheCanvas) {
               if (typeof wx !== 'undefined' && wx.createCanvas) {
                 this.cacheCanvas = wx.createCanvas();
@@ -613,6 +742,9 @@ var _typeof2 = typeof Symbol === "function" && typeof Symbol.iterator === "symbo
             }
             this.cacheCanvas.width = this._cacheData.width * this._cacheData.scale;
             this.cacheCanvas.height = this._cacheData.height * this._cacheData.scale;
+
+            //debug cache canvas
+            //this.cacheCtx.fillRect(0,0,1000,1000)
             this._readyToCache = true;
           }
         }, {
@@ -4020,6 +4152,8 @@ var _typeof2 = typeof Symbol === "function" && typeof Symbol.iterator === "symbo
               this.canvas.style.cursor = obj.cursor;
             } else if (obj.parent) {
               this._setCursor(obj.parent);
+            } else {
+              this._setCursor({ cursor: 'default' });
             }
           }
         }, {
@@ -4510,7 +4644,7 @@ var _typeof2 = typeof Symbol === "function" && typeof Symbol.iterator === "symbo
           }
         }, {
           key: 'render',
-          value: function render(ctx, o, cacheRender) {
+          value: function render(ctx, o, cacheData) {
             var mtx = o._matrix;
             if (o.children) {
               var list = o.children.slice(0),
@@ -4521,25 +4655,29 @@ var _typeof2 = typeof Symbol === "function" && typeof Symbol.iterator === "symbo
                 mtx.appendTransform(o.x, o.y, o.scaleX, o.scaleY, o.rotation, o.skewX, o.skewY, o.originX, o.originY);
                 // if (!this.checkBoundEvent(child)) continue
                 ctx.save();
-                this._render(ctx, child, cacheRender ? null : mtx, cacheRender);
+                this._render(ctx, child, cacheData ? null : mtx, cacheData, true);
                 ctx.restore();
               }
             } else {
-              this._render(ctx, o, mtx, cacheRender);
+              this._render(ctx, o, cacheData ? null : mtx, cacheData);
             }
           }
         }, {
           key: '_render',
-          value: function _render(ctx, o, mtx, cacheRender) {
+          value: function _render(ctx, o, mtx, cacheData, inGroup) {
             if (!o.isVisible()) return;
             if (mtx && !o.fixed) {
               o._matrix.initialize(mtx.a, mtx.b, mtx.c, mtx.d, mtx.tx, mtx.ty);
+            } else if (cacheData && !o.fixed) {
+              o._matrix.initialize(cacheData.scale, 0, 0, cacheData.scale, cacheData.x * -1, cacheData.y * -1);
             } else {
               o._matrix.initialize(1, 0, 0, 1, 0, 0);
             }
             mtx = o._matrix;
 
-            if (!cacheRender) {
+            //group 进行 cache canvas 内部的子元素需要进行appendTransform
+            //cache canvas 渲染不叠加自身的 transform，因为进入主渲染会进行appendTransform
+            if (inGroup || !cacheData) {
               mtx.appendTransform(o.x, o.y, o.scaleX, o.scaleY, o.rotation, o.skewX, o.skewY, o.originX, o.originY);
             }
             var ocg = o.clipGraphics;
@@ -4562,14 +4700,16 @@ var _typeof2 = typeof Symbol === "function" && typeof Symbol.iterator === "symbo
               ctx.clip(o.absClipRuleNonzero ? 'nonzero' : 'evenodd');
             }
 
-            if (!cacheRender) {
-              ctx.setTransform(mtx.a, mtx.b, mtx.c, mtx.d, mtx.tx, mtx.ty);
-            }
-            if (o._readyToCache) {
+            //if(!cacheData){
+            ctx.setTransform(mtx.a, mtx.b, mtx.c, mtx.d, mtx.tx, mtx.ty);
+            //}
+            if (o._readyToCache || o.cacheUpdating) {
               this.setComplexProps(ctx, o);
               o._readyToCache = false;
-              o.cacheCtx.setTransform(o._cacheData.scale, 0, 0, o._cacheData.scale, o._cacheData.x * -1, o._cacheData.y * -1);
-              this.render(o.cacheCtx, o, true);
+              o.cacheCtx.clearRect(0, 0, o.cacheCanvas.width, o.cacheCanvas.height);
+              o.cacheCtx.save();
+              this.render(o.cacheCtx, o, o._cacheData);
+              o.cacheCtx.restore();
               //debug cacheCanvas
               //document.body.appendChild(o.cacheCanvas)
               if (o._readyToFilter) {
@@ -4578,7 +4718,7 @@ var _typeof2 = typeof Symbol === "function" && typeof Symbol.iterator === "symbo
               }
 
               ctx.drawImage(o.cacheCanvas, o._cacheData.x, o._cacheData.y);
-            } else if (o.cacheCanvas && !cacheRender) {
+            } else if (o.cacheCanvas && !cacheData) {
               this.setComplexProps(ctx, o);
               ctx.drawImage(o.cacheCanvas, o._cacheData.x, o._cacheData.y);
             } else if (o instanceof _group2.default) {
@@ -6145,6 +6285,16 @@ var _typeof2 = typeof Symbol === "function" && typeof Symbol.iterator === "symbo
         value: true
       });
 
+      var _createClass = function () {
+        function defineProperties(target, props) {
+          for (var i = 0; i < props.length; i++) {
+            var descriptor = props[i];descriptor.enumerable = descriptor.enumerable || false;descriptor.configurable = true;if ("value" in descriptor) descriptor.writable = true;Object.defineProperty(target, descriptor.key, descriptor);
+          }
+        }return function (Constructor, protoProps, staticProps) {
+          if (protoProps) defineProperties(Constructor.prototype, protoProps);if (staticProps) defineProperties(Constructor, staticProps);return Constructor;
+        };
+      }();
+
       var _group = __webpack_require__(1);
 
       var _group2 = _interopRequireDefault(_group);
@@ -6188,20 +6338,68 @@ var _typeof2 = typeof Symbol === "function" && typeof Symbol.iterator === "symbo
           var _this = _possibleConstructorReturn(this, (Button.__proto__ || Object.getPrototypeOf(Button)).call(this));
 
           _this.width = option.width;
-          _this.roundedRect = new _roundedRect2.default(option.width, option.height, option.borderRadius, {
-            strokeStyle: option.borderColor || 'black',
-            fillStyle: option.backgroundColor || '#F5F5F5'
-          });
+
+          var textHeight = 0;
           _this.text = new _text2.default(option.text, {
             font: option.font,
             color: option.color
           });
+          var textWidth = _this.text.getWidth();
+          var textGroup = new _group2.default();
 
-          _this.text.x = option.width / 2 - _this.text.getWidth() / 2 * _this.text.scaleX + (option.textX || 0);
-          _this.text.y = option.height / 2 - 10 + 5 * _this.text.scaleY + (option.textY || 0);
-          _this.add(_this.roundedRect, _this.text);
+          if (textWidth > option.width) {
+            var step = Math.round(option.text.length * option.width / textWidth / 2);
+
+            var textList = _this.stringSplit(option.text, step);
+            var lineHeight = option.lineHeight || 12;
+            textHeight = textList.length * lineHeight + 6;
+
+            textList.forEach(function (text, index) {
+              _this.text = new _text2.default(text, {
+                font: option.font,
+                color: option.color
+              });
+
+              _this.text.x = option.width / 2 - _this.text.getWidth() / 2 * _this.text.scaleX + (option.textX || 0);
+              _this.text.y = Math.max(textHeight, option.height) / 2 - 10 + 5 * _this.text.scaleY + (option.textY || 0) + index * 12 - textHeight / 2 + lineHeight / 2;
+              textGroup.add(_this.text);
+            });
+          } else {
+
+            _this.text.x = option.width / 2 - _this.text.getWidth() / 2 * _this.text.scaleX + (option.textX || 0);
+            _this.text.y = option.height / 2 - 10 + 5 * _this.text.scaleY + (option.textY || 0);
+            textGroup.add(_this.text);
+          }
+
+          _this.roundedRect = new _roundedRect2.default(option.width, option.autoHeight ? Math.max(textHeight, option.height) : option.height, option.borderRadius, {
+            strokeStyle: option.borderColor || 'black',
+            fillStyle: option.backgroundColor || '#F5F5F5'
+          });
+
+          _this.add(_this.roundedRect);
+          _this.add(textGroup);
           return _this;
         }
+
+        _createClass(Button, [{
+          key: 'stringSplit',
+          value: function stringSplit(str, len) {
+            var arr = [],
+                offset = 0,
+                char_length = 0;
+            for (var i = 0; i < str.length; i++) {
+              var son_str = str.charAt(i);
+              encodeURI(son_str).length > 2 ? char_length += 1 : char_length += 0.5;
+              if (char_length >= len || char_length < len && i === str.length - 1) {
+                var sub_len = char_length == len ? i + 1 : i;
+                arr.push(str.substr(offset, sub_len - offset + (char_length < len && i === str.length - 1 ? 1 : 0)));
+                offset = i + 1;
+                char_length = 0;
+              }
+            }
+            return arr;
+          }
+        }]);
 
         return Button;
       }(_group2.default);
@@ -6611,59 +6809,6 @@ var _typeof2 = typeof Symbol === "function" && typeof Symbol.iterator === "symbo
 /* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(2)(module)))
 
 /***/ }),
-/* 1 */
-/***/ (function(module, exports, __webpack_require__) {
-
-"use strict";
-
-
-var _cax = __webpack_require__(0);
-
-var _cax2 = _interopRequireDefault(_cax);
-
-var _src = __webpack_require__(3);
-
-var _src2 = _interopRequireDefault(_src);
-
-function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
-
-var stage = new _cax2.default.Stage(1080, 540, 'body');
-
-var bitmap = new _cax2.default.Bitmap('./bg.png', function () {
-  var radar = new _src2.default({
-    output: { value: _cax2.default.util.randomInt(30, 100), describe: '输出' },
-    live: { value: _cax2.default.util.randomInt(30, 100), describe: '生存' },
-    team: { value: _cax2.default.util.randomInt(30, 100), describe: '团战' },
-    growth: { value: _cax2.default.util.randomInt(30, 100), describe: '发育' },
-    kda: { value: _cax2.default.util.randomInt(30, 100), describe: 'KDA' }
-  }, {
-    x: 820,
-    y: 280,
-    r: 60,
-    startR: 20,
-    count: 3,
-    netColor: '#1F3F57',
-    fillColor: '#78D5FD',
-    dotColor: '#78D5FD',
-    dotR: 3,
-    mouseover: function mouseover(evt, item, value, target) {},
-    mouseout: function mouseout() {},
-    show: {
-      duration: 2000, // 动画的时间
-      easing: _cax2.default.easing.elasticOut, // 缓动函数
-      delay: function delay(i) {
-        return i * 100;
-      }
-    }
-  });
-  stage.add(radar);
-});
-
-stage.add(bitmap);
-
-_cax2.default.tick(stage.update.bind(stage));
-
-/***/ }),
 /* 2 */
 /***/ (function(module, exports, __webpack_require__) {
 
@@ -6701,144 +6846,167 @@ module.exports = function (module) {
 
 
 Object.defineProperty(exports, "__esModule", {
-  value: true
+    value: true
 });
 
-var _cax = __webpack_require__(0);
+function Loader(option) {
+    this.res = {};
+    this.loadedCount = 0;
+    this.resCount = -1;
+    this.FILE_PATTERN = /(\w+:\/{2})?((?:\w+\.){2}\w+)?(\/?[\S]+\/|\/)?([\w\-%\.]+)(?:\.)(\w+)?(\?\S+)?/i;
+    this.ns = 6;
+    this.sounds = [];
+    for (var i = 0; i < this.ns; i++) {
+        this.sounds.push([]);
+    }this.playing = [];
 
-var _cax2 = _interopRequireDefault(_cax);
-
-function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
-
-function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
-
-function _possibleConstructorReturn(self, call) { if (!self) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return call && (typeof call === "object" || typeof call === "function") ? call : self; }
-
-function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
-
-var Polygon = _cax2.default.Polygon,
-    EquilateralPolygon = _cax2.default.EquilateralPolygon,
-    To = _cax2.default.To,
-    Graphics = _cax2.default.Graphics,
-    Circle = _cax2.default.Circle,
-    Group = _cax2.default.Group;
-
-var Radar = function (_Group) {
-  _inherits(Radar, _Group);
-
-  function Radar(data, option) {
-    _classCallCheck(this, Radar);
-
-    var _this = _possibleConstructorReturn(this, (Radar.__proto__ || Object.getPrototypeOf(Radar)).call(this));
-
-    var arr = Object.keys(data);
-
-    var interval = (option.r - option.startR) / option.count;
-    for (var i = 0; i < option.count; i++) {
-      var _p = new EquilateralPolygon(arr.length, option.startR + i * interval, { strokeColor: option.netColor });
-      _p.x = option.x;
-      _p.y = option.y;
-
-      _this.add(_p);
+    if (option) {
+        this.progress(option.progress);
+        this.complete(option.complete);
+        this._readyToLoadRes = option.res;
     }
+}
 
-    var p = new EquilateralPolygon(arr.length, option.r, { strokeColor: option.netColor });
-    p.x = option.x;
-    p.y = option.y;
+Loader.prototype = {
 
-    _this.add(p);
+    "start": function start() {
+        if (this._readyToLoadRes) {
+            this.loadRes(this._readyToLoadRes);
+        }
+    },
+    "get": function get(id) {
+        return this.res[id];
+    },
+    "loadRes": function loadRes(arr) {
+        this.resCount = arr.length;
+        for (var i = 0; i < arr.length; i++) {
+            var type = this._getTypeByExtension(arr[i].src.match(this.FILE_PATTERN)[5]);
+            if (type === "audio") {
+                this.loadAudio(arr[i].id, arr[i].src);
+            } else if (type === "js") {
+                this.loadScript(arr[i].src);
+            } else if (type === "img") {
+                this.loadImage(arr[i].id, arr[i].src);
+            }
+        }
+    },
+    "loadImage": function loadImage(id, src) {
+        var img = document.createElement("img");
+        var self = this;
+        img.onload = function () {
+            self._handleLoad(this, id);
+            img.onreadystatechange = null;
+        };
+        img.onreadystatechange = function () {
+            if (img.readyState == "loaded" || img.readyState == "complete") {
+                self._handleLoad(this, id);
+                img.onload = null;
+            }
+        };
+        img.onerror = function () {};
+        img.src = src;
+    },
+    "loadAudio": function loadAudio(id, src) {
+        var tag = document.createElement("audio");
+        tag.autoplay = false;
+        this.res[id] = tag;
+        tag.src = null;
+        tag.preload = "auto";
+        tag.onerror = function () {};
+        tag.onstalled = function () {};
+        var self = this;
+        var _audioCanPlayHandler = function _audioCanPlayHandler() {
+            self.playing[id] = 0;
+            for (var i = 0; i < self.ns; i++) {
+                self.sounds[i][id] = new Audio(src);
+            }
+            self.loadedCount++;
+            self.handleProgress && self.handleProgress(self.loadedCount, self.resCount);
+            self._clean(this);
+            this.removeEventListener && this.removeEventListener("canplaythrough", _audioCanPlayHandler, false);
+            self.checkComplete();
+        };
+        tag.addEventListener("canplaythrough", _audioCanPlayHandler, false);
+        tag.src = src;
+        if (tag.load != null) {
+            tag.load();
+        }
+    },
+    "loadScript": function loadScript(url) {
+        var script = document.createElement("script");
+        script.type = "text/javascript";
+        var self = this;
+        if (script.readyState) {
+            //IE
+            script.onreadystatechange = function () {
+                if (script.readyState == "loaded" || script.readyState == "complete") {
+                    script.onreadystatechange = null;
+                    self._handleLoad();
+                }
+            };
+        } else {
+            //Others
+            script.onload = function () {
+                self._handleLoad();
+            };
+        }
 
-    var g = new Graphics();
-
-    g.beginPath().strokeStyle(option.netColor);
-    p.vertex.forEach(function (v) {
-      g.moveTo(option.x, option.y);
-      g.lineTo(v[0] + p.x, v[1] + p.y);
-    });
-
-    g.stroke();
-    _this.add(g);
-    var points = [];
-
-    if (option.show) {
-      var ratio = 0;
-
-      arr.forEach(function (key, index) {
-        var pos = p.vertex[index];
-        var x = pos[0] / option.r;
-        var y = pos[1] / option.r;
-        var len = ratio * option.r * data[key].value / 100;
-
-        points.push([x * len, y * len]);
-      });
-
-      var vp = new Polygon(points, {
-        fillColor: option.fillColor
-      });
-      vp.alpha = 0.5;
-      vp.x = option.x;
-      vp.y = option.y;
-      _this.add(vp);
-      var circles = [];
-      points.forEach(function (p) {
-        var c = new Circle(option.dotR, {
-          fillStyle: option.dotColor,
-          strokeStyle: option.dotColor
-        });
-        c.x = option.x + p[0];
-        c.y = option.y + p[1];
-        circles.push(c);
-        _this.add(c);
-      });
-
-      circles.forEach(function (circle, index) {
-        To.get({ ratio: ratio }).wait(typeof option.show.delay === 'number' ? option.show.delay : option.show.delay(index)).to({ ratio: 1 }, option.show.duration, option.show.easing).progress(function (object) {
-          var pos = p.vertex[index];
-          var x = pos[0] / option.r;
-          var y = pos[1] / option.r;
-          var len = object.ratio * option.r * data[arr[index]].value / 100;
-
-          points[index][0] = x * len;
-          points[index][1] = y * len;
-          circle.x = points[index][0] + option.x;
-          circle.y = points[index][1] + option.y;
-        }).start();
-      });
-    } else {
-      arr.forEach(function (key, index) {
-        var pos = p.vertex[index];
-        var x = pos[0] / option.r;
-        var y = pos[1] / option.r;
-        var len = option.r * data[key].value / 100;
-
-        points.push([x * len, y * len]);
-      });
-
-      var _vp = new Polygon(points, {
-        fillColor: option.fillColor
-      });
-      _vp.alpha = 0.5;
-      _vp.x = option.x;
-      _vp.y = option.y;
-      _this.add(_vp);
-
-      points.forEach(function (p) {
-        var c = new Circle(option.dotR, {
-          fillStyle: option.dotColor,
-          strokeStyle: option.dotColor
-        });
-        c.x = option.x + p[0];
-        c.y = option.y + p[1];
-        _this.add(c);
-      });
+        script.src = url;
+        document.getElementsByTagName("head")[0].appendChild(script);
+    },
+    "checkComplete": function checkComplete() {
+        if (this.loadedCount === this.resCount) {
+            this.handleComplete();
+        }
+    },
+    "complete": function complete(fn) {
+        this.handleComplete = fn;
+    },
+    "progress": function progress(fn) {
+        this.handleProgress = fn;
+    },
+    "playSound": function playSound(id, volume) {
+        var sound = this.sounds[this.playing[id]][id];
+        sound.volume = volume === undefined ? 1 : volume;
+        sound.play();
+        ++this.playing[id];
+        if (this.playing[id] >= this.ns) this.playing[id] = 0;
+    },
+    "_handleLoad": function _handleLoad(currentImg, id) {
+        if (currentImg) {
+            this._clean(currentImg);
+            this.res[id] = currentImg;
+        }
+        this.loadedCount++;
+        if (this.handleProgress) this.handleProgress(this.loadedCount, this.resCount);
+        this.checkComplete();
+    },
+    "_getTypeByExtension": function _getTypeByExtension(extension) {
+        switch (extension) {
+            case "jpeg":
+            case "jpg":
+            case "gif":
+            case "png":
+            case "webp":
+            case "bmp":
+                return "img";
+            case "ogg":
+            case "mp3":
+            case "wav":
+                return "audio";
+            case "js":
+                return "js";
+        }
+    },
+    "_clean": function _clean(tag) {
+        tag.onload = null;
+        tag.onstalled = null;
+        tag.onprogress = null;
+        tag.onerror = null;
     }
-    return _this;
-  }
+};
 
-  return Radar;
-}(Group);
-
-exports.default = Radar;
+exports.default = Loader;
 
 /***/ })
 /******/ ]);
