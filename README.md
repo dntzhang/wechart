@@ -2,7 +2,7 @@
 
 # Wechart by [Cax](https://github.com/dntzhang/cax)
 
-> Cax 和 three.js 渲染精巧图[表]
+> Cax 和 three.js 渲染一切图[表]
 
 <table>
 <thead>

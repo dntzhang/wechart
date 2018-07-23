@@ -2,7 +2,7 @@ English | [简体中文](./README.md)
 
 # Wechart by [Cax](https://github.com/dntzhang/cax)
 
-> Lightweight but powerful charts by cax and three.js. 
+> All the [ch]arts by cax and three.js.
 
 <table>
 <thead>
