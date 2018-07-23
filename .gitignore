@@ -6,3 +6,4 @@
 /plugins/omi-transform/node_modules
 /packages/node_modules
 .vscode
+.idea

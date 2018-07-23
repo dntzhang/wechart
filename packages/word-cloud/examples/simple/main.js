@@ -1,11 +1,7 @@
-import cax from 'cax'
 import WordCloud from '../../src'
-
 import { scaleLinear } from '../../../common/scale'
 
-
-
-const wordCloud = new WordCloud([
+new WordCloud([
   { text: 'WECHART', value: '6' },
   { text: 'CAX', value: '12' },
   { text: '紅樓夢', value: '10' },
@@ -44,11 +40,14 @@ const wordCloud = new WordCloud([
   { text: '賈雨村', value: '0' },
   { text: '賈雨村', value: '0' },
   { text: '賈雨村', value: '0' }
-],{
-  center:{x:180,y:200},
-  dd:20,
-  dr:20,
-  tdr:10,
-  fontFamily:'Arial',
-  scale:scaleLinear([0,10],[12,40])
-})
+], {
+    center: { x: 180, y: 200 },
+    dd: 20,
+    dr: 20,
+    tdr: 10,
+    fontFamily: 'Arial',
+    scale: scaleLinear([0, 10], [13, 40]),
+    done: ()=>{
+      document.querySelector('#tip').innerHTML = ''
+    }
+  })

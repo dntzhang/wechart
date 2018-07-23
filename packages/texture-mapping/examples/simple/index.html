@@ -4,7 +4,7 @@
 <head lang="en">
     <meta name="viewport" content="width=device-width,initial-scale=1,user-scalable=no">
     <meta charset="UTF-8">
-    <title>Wechart WordCloud Demo</title>
+    <title>Wechart Texture Mapping Demo</title>
     <style>
         canvas {
             border: 1px solid #ccc;
@@ -12,14 +12,14 @@
             margin-left: 0;
             margin-right: 0;
             padding: 0;
-            background-color: white;
+            background-color: #ccc;
         }
 
-        @media screen and (max-width: 500px) {
+        /* @media screen and (max-width: 500px) {
             canvas {
                 width: 320px
             }
-        }
+        } */
 
         html,
         body {
@@ -34,12 +34,9 @@
 <body>
     <div>
         <div id="canvasCtn">
-            <canvas id="myCanvas" width="400" height="400"></canvas>
+
         </div>
-        <div style="color:white;" id="tip"> 
-            Waiting for automatic composition...<br/>
-            正在进行排版计算请稍等一会儿...
-        </div>
+        <div style="color:white;">Click the Canvas to change the texture mapping area!</div>
     </div>
     <a href="https://github.com/dntzhang/wechart" target="_blank" style="position: fixed; right: 0; top: 0; z-index: 3;">
         <img src="//alloyteam.github.io/github.png" alt="">
