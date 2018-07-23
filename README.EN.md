@@ -14,12 +14,6 @@ English | [简体中文](./README.md)
 </tr>
 </thead>
 <tbody>
-<tr>
-<td align="center"><a title="Texture Mapping" href="https://dntzhang.github.io/wechart/packages/texture-mapping/examples/simple/" rel="nofollow"><img alt="Texture Mapping" src="./asset/c27.png" style="max-width:100%;"></a></td>
-<td align="center"><a href="https://github.com/dntzhang/wechart/blob/master/packages/texture-mapping/examples/simple/main.js">Source</a></td>
-<td align="center">Texture Mapping Source</td>
-<td align="center">Tutorial</td>
-</tr>
 
 <tr>
 <td align="center"><a title="Avatar" href="https://dntzhang.github.io/wechart/packages/avatar/examples/simple/" rel="nofollow"><img alt="Avatar" src="./asset/c24.png" style="max-width:100%;"></a></td>
@@ -156,7 +150,7 @@ English | [简体中文](./README.md)
 <td align="center">Tutorial</td>
 </tr>
 <tr>
-<td align="center"><a title="Bar3d" href="https://dntzhang.github.io/wechart/packages/bar3d/examples/simple/" rel="nofollow"><img alt="Bar3d" src="./asset/c2.png" style="max-width:100%;"></a></td>
+<td align="center"><a title="Bar3d" href="https://dntzhang.github.io/wechart/packages/bar3d/examples/simple/" rel="nofollow"><img alt="Bar3d" src="./asset/c28.png" style="max-width:100%;"></a></td>
 <td align="center"><a href="https://github.com/dntzhang/wechart/blob/master/packages/bar3d/examples/simple/main.js">Source</a></td>
 <td align="center"><a href="https://github.com/dntzhang/wechart/blob/master/packages/bar3d/src/index.js">Bar3d Source</a></td>
 <td align="center">Tutorial</td>
@@ -165,6 +159,13 @@ English | [简体中文](./README.md)
 <td align="center"><a title="Pie3d" href="https://dntzhang.github.io/wechart/packages/pie3d/examples/simple/" rel="nofollow"><img alt="Pie3d" src="./asset/c13.png" style="max-width:100%;"></a></td>
 <td align="center"><a href="https://github.com/dntzhang/wechart/blob/master/packages/pie3d/examples/simple/main.js">Source</a></td>
 <td align="center"><a href="https://github.com/dntzhang/wechart/blob/master/packages/pie3d/src/index.js">Pie3d Source</a></td>
+<td align="center">Tutorial</td>
+</tr>
+
+<tr>
+<td align="center"><a title="Texture Mapping" href="https://dntzhang.github.io/wechart/packages/texture-mapping/examples/simple/" rel="nofollow"><img alt="Texture Mapping" src="./asset/c27.png" style="max-width:100%;"></a></td>
+<td align="center"><a href="https://github.com/dntzhang/wechart/blob/master/packages/texture-mapping/examples/simple/main.js">Source</a></td>
+<td align="center">Texture Mapping Source</td>
 <td align="center">Tutorial</td>
 </tr>
 </tbody></table>
