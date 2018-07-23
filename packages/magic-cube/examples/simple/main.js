@@ -1,4 +1,4 @@
-import Pie from '../../src/index'
+import magicCube from '../../src/index'
 import '../../../common/orbit-controls'
 
 const camera = new THREE.PerspectiveCamera(45, window.innerWidth / window.innerHeight, 0.01, 500)
@@ -13,9 +13,13 @@ document.body.appendChild(renderer.domElement)
 const controls = new THREE.OrbitControls(camera, renderer.domElement)
 const group = new THREE.Group()
 
-const pyramid = new Pie({
+const pyramid = new magicCube({
   level:4,
-  size:100
+  size:100,
+  cubeStyle:{
+    // top:[null,null,{url:'../../asset/bbb.bmp'}],
+    // ahead:{11:{url:'../../asset/bbb.bmp'}}
+  }
 })
 
 group.add(pyramid)
@@ -43,7 +47,8 @@ function animate () {
   var intersects = raycaster.intersectObjects( pyramid.meshList );
 
   if(intersects.length){
-    console.log(intersects)
+    let cube = intersects[0]
+    window.a = cube;
   }
 
   requestAnimationFrame(animate)

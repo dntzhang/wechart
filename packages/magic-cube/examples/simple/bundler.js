@@ -92,7 +92,11 @@ var group = new THREE.Group();
 
 var pyramid = new _index2.default({
   level: 4,
-  size: 100
+  size: 100,
+  cubeStyle: {
+    // top:[null,null,{url:'../../asset/bbb.bmp'}],
+    // ahead:{11:{url:'../../asset/bbb.bmp'}}
+  }
 });
 
 group.add(pyramid);
@@ -119,7 +123,8 @@ function animate() {
   var intersects = raycaster.intersectObjects(pyramid.meshList);
 
   if (intersects.length) {
-    console.log(intersects);
+    var cube = intersects[0];
+    window.a = cube;
   }
 
   requestAnimationFrame(animate);
@@ -140,6 +145,8 @@ Object.defineProperty(exports, "__esModule", {
   value: true
 });
 
+var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol" ? function (obj) { return typeof obj; } : function (obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj; };
+
 var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
 
 function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
@@ -154,6 +161,22 @@ var threePow = function threePow(n) {
 };
 var FaceName = ['all', 'top', 'bottom', 'left', 'right', 'ahead', 'back', 'center', 'edge'];
 var renderSort = ['right', 'left', 'top', 'bottom', 'ahead', 'back'];
+
+//圆角矩形
+CanvasRenderingContext2D.prototype.roundRect = function (x, y, w, h, r) {
+  var min_size = Math.min(w, h);
+  if (r > min_size / 2) r = min_size / 2;
+  // 开始绘制
+  this.beginPath();
+  this.moveTo(x + r, y);
+  this.arcTo(x + w, y, x + w, y + h, r);
+  this.arcTo(x + w, y + h, x, y + h, r);
+  this.arcTo(x, y + h, x, y, r);
+  this.arcTo(x, y, x + w, y, r);
+  this.closePath();
+  return this;
+};
+
 var getCubeObj = function getCubeObj(index, level, twoPow, num) {
   var z = remainder(index, twoPow),
       y = remainder(index, level) % level || level,
@@ -226,10 +249,9 @@ var magicCube = function (_THREE$Group) {
     var that = _this;
     _this.option = Object.assign({
       level: 3,
-      interval: 0,
       size: 120,
-      padding: 1,
-      style: { top: 0xffff00, bottom: 0xffffff, left: 0xFF8C00, right: 0xFF0000, ahead: 0x0000FF, back: 0x00FF00 },
+      padding: 0,
+      style: { top: "#ffff00", bottom: "#ffffff", left: "#FF8C00", right: "#FF0000", ahead: "#0000FF", back: "#00FF00" },
       cubeStyle: {
         top: [],
         bottom: [],
@@ -237,7 +259,10 @@ var magicCube = function (_THREE$Group) {
         right: [],
         ahead: [],
         back: []
-      }
+      },
+      radio: 14,
+      innerPadding: 15,
+      backgroundColor: '#333333'
     }, option);
     option = _this.option;
     _this.size = option.size / option.level;
@@ -254,11 +279,22 @@ var magicCube = function (_THREE$Group) {
     });
 
     renderSort.forEach(function (_d, _i) {
-      _this.cubes[_d].forEach(function (d, i) {
-        var color = option.cubeStyle[_d][i] || option.style[_d];
-        d.geometry.faces[_i * 2].color.setHex(color);
-        d.geometry.faces[_i * 2 + 1].color.setHex(color);
-      });
+      var _loop = function _loop() {
+        var d = _this.cubes[_d][i];
+
+        var style = _this.getCubeStyle(_d, i);
+        if (style.isImg) {
+          _this.imgFaces(style.url, function (img) {
+            d.matArray[_i].map = this.createTexture(img);
+          });
+        } else {
+          d.matArray[_i].map = _this.createTexture('', style.color);
+        }
+      };
+
+      for (var i in _this.cubes[_d]) {
+        _loop();
+      }
     });
     return _this;
   }
@@ -270,8 +306,8 @@ var magicCube = function (_THREE$Group) {
           cubeSize = size - this.option.padding;
       var geometry = d.geometry = new THREE.BoxGeometry(cubeSize, cubeSize, cubeSize);
 
-      var material = d.material = new THREE.MeshPhongMaterial({ opacity: 1, transparent: true, vertexColors: THREE.FaceColors });
-      var mesh = d.mesh = new THREE.Mesh(geometry, material);
+      d.matArray = [new THREE.MeshBasicMaterial({ opacity: 1, transparent: true, vertexColors: THREE.FaceColors, map: this.createInitTexture() }), new THREE.MeshBasicMaterial({ opacity: 1, transparent: true, vertexColors: THREE.FaceColors, map: this.createInitTexture() }), new THREE.MeshBasicMaterial({ opacity: 1, transparent: true, vertexColors: THREE.FaceColors, map: this.createInitTexture() }), new THREE.MeshBasicMaterial({ opacity: 1, transparent: true, vertexColors: THREE.FaceColors, map: this.createInitTexture() }), new THREE.MeshBasicMaterial({ opacity: 1, transparent: true, vertexColors: THREE.FaceColors, map: this.createInitTexture() }), new THREE.MeshBasicMaterial({ opacity: 1, transparent: true, vertexColors: THREE.FaceColors, map: this.createInitTexture() })];
+      var mesh = d.mesh = new THREE.Mesh(geometry, d.matArray);
 
       mesh.position.x = (d.x - 1) * size - this.offset;
       mesh.position.z = -(d.y - 1) * size + this.offset;
@@ -279,6 +315,85 @@ var magicCube = function (_THREE$Group) {
 
       mesh.data = d;
       return mesh;
+    }
+  }, {
+    key: 'createTexture',
+    value: function createTexture(img, color) {
+      var texture = new THREE.Texture(this.faces(img, document.createElement('canvas'), color));
+      texture.needsUpdate = true;
+      return texture;
+    }
+  }, {
+    key: 'createInitTexture',
+    value: function createInitTexture() {
+      return new THREE.Texture(document.createElement('canvas'));
+    }
+  }, {
+    key: 'faces',
+    value: function faces(img, canvas, color) {
+      canvas.width = 256;
+      canvas.height = 256;
+      var context = canvas.getContext('2d');
+      var radio = this.option.radio;
+      var innerPadding = this.option.innerPadding;
+
+      if (context) {
+        context.fillStyle = this.option.backgroundColor;
+        context.fillRect(0, 0, 256, 256);
+
+        if (img.toString() === "[object HTMLImageElement]") {
+
+          // 拉伸图片
+          var canvasTemp = document.createElement('canvas');
+          var contextTemp = canvasTemp.getContext('2d');
+          canvasTemp.width = 256 - innerPadding; // 目标宽度
+          canvasTemp.height = 256 - innerPadding; // 目标高度
+          contextTemp.drawImage(img, innerPadding, innerPadding, 256 - innerPadding * 2, 256 - innerPadding * 2);
+
+          // 绘制图片
+          var pattern = context.createPattern(canvasTemp, "no-repeat");
+          context.roundRect(innerPadding, innerPadding, 256 - innerPadding * 2, 256 - innerPadding * 2, radio * 1 || 0);
+          // 填充绘制的圆
+          context.fillStyle = pattern;
+          context.fill();
+        } else {
+          context.rect(innerPadding, innerPadding, 256 - innerPadding * 2, 256 - innerPadding * 2);
+          context.lineJoin = 'round';
+          context.lineWidth = radio;
+          context.fillStyle = color;
+          context.strokeStyle = color;
+          context.stroke();
+          context.fill();
+        }
+      }
+      return canvas;
+    }
+  }, {
+    key: 'imgFaces',
+    value: function imgFaces(url, callback) {
+      var img = new Image(),
+          that = this;
+      img.onload = function () {
+        callback.bind(that)(img);
+      };
+      img.src = url;
+    }
+  }, {
+    key: 'getCubeStyle',
+    value: function getCubeStyle(direction, index) {
+      var option = this.option;
+      var defaultColor = option.style[direction];
+      var setting = option.cubeStyle[direction] && option.cubeStyle[direction][index] || defaultColor;
+      var style = {};
+
+      if ((typeof setting === 'undefined' ? 'undefined' : _typeof(setting)) === 'object') {
+        style.color = setting.color || defaultColor;
+        style.url = setting.url;
+        style.isImg = !!setting.url;
+      } else {
+        style.isImg = false, style.color = setting || defaultColor;
+      }
+      return style;
     }
   }]);
 
