@@ -84,7 +84,7 @@ camera.position.z = 500;
 var scene = new THREE.Scene();
 
 var renderer = new THREE.WebGLRenderer({
-    antialias: true
+  antialias: true
 });
 
 renderer.setSize(window.innerWidth, window.innerHeight);
@@ -94,32 +94,32 @@ var controls = new THREE.OrbitControls(camera, renderer.domElement);
 var group = new THREE.Group();
 
 var earth = new _index2.default({
-    coord: [{
-        text: '中国',
-        color: 0xff3333,
-        lng: 116.20,
-        lat: 39.55
-    }, {
-        text: '比利时',
-        color: 0xffcc33,
-        lng: 4.21,
-        lat: 50.51
-    }, {
-        text: '巴西',
-        color: 0xffcc00,
-        lng: -47.55,
-        lat: -15.47
-    }, {
-        text: '美国',
-        color: 0x33cc33,
-        lng: -77.02,
-        lat: 39.91
-    }, {
-        text: '克罗地亚',
-        color: 0x33ccff,
-        lng: 15.58,
-        lat: 45.50
-    }]
+  coord: [{
+    text: '中国',
+    color: 0xff3333,
+    lng: 116.20,
+    lat: 39.55
+  }, {
+    text: '比利时',
+    color: 0xffcc33,
+    lng: 4.21,
+    lat: 50.51
+  }, {
+    text: '巴西',
+    color: 0xffcc00,
+    lng: -47.55,
+    lat: -15.47
+  }, {
+    text: '美国',
+    color: 0x33cc33,
+    lng: -77.02,
+    lat: 39.91
+  }, {
+    text: '克罗地亚',
+    color: 0x33ccff,
+    lng: 15.58,
+    lat: 45.50
+  }]
 });
 
 group.add(earth);
@@ -130,9 +130,9 @@ light.position.set(0, 10, 100);
 scene.add(light);
 
 function animate() {
-    requestAnimationFrame(animate);
-    renderer.render(scene, camera);
-    controls.update();
+  requestAnimationFrame(animate);
+  renderer.render(scene, camera);
+  controls.update();
 }
 
 animate();
@@ -145,7 +145,7 @@ animate();
 
 
 Object.defineProperty(exports, "__esModule", {
-    value: true
+  value: true
 });
 
 var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
@@ -157,153 +157,162 @@ function _possibleConstructorReturn(self, call) { if (!self) { throw new Referen
 function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
 
 var Earth = function (_THREE$Group) {
-    _inherits(Earth, _THREE$Group);
+  _inherits(Earth, _THREE$Group);
 
-    function Earth(option) {
-        _classCallCheck(this, Earth);
+  function Earth(option) {
+    _classCallCheck(this, Earth);
 
-        var _this = _possibleConstructorReturn(this, (Earth.__proto__ || Object.getPrototypeOf(Earth)).call(this));
+    var _this = _possibleConstructorReturn(this, (Earth.__proto__ || Object.getPrototypeOf(Earth)).call(this));
 
-        _this.option = Object.assign({
-            coord: []
-        }, option);
+    _this.option = Object.assign({
+      coord: []
+    }, option);
 
-        var loader = new THREE.TextureLoader();
-        loader.load('./textures.jpg', function (texture) {
-            var geometry = new THREE.SphereGeometry(200, 40, 40);
-            var material = new THREE.MeshBasicMaterial({
-                map: texture,
-                overdraw: 0.5
-            });
+    var loader = new THREE.TextureLoader();
+    loader.load('./textures.jpg', function (texture) {
+      var geometry = new THREE.SphereGeometry(200, 40, 40);
+      var material = new THREE.MeshBasicMaterial({
+        map: texture,
+        overdraw: 0.5
+      });
 
-            var mesh = new THREE.Mesh(geometry, material);
-            _this.add(mesh);
-        });
+      var mesh = new THREE.Mesh(geometry, material);
+      _this.add(mesh);
+    });
 
-        _this.option.coord.forEach(function (item) {
-            _this.addCoord(item);
-        });
-        return _this;
+    _this.option.coord.forEach(function (item) {
+      _this.addCoord(item);
+    });
+    return _this;
+  }
+
+  _createClass(Earth, [{
+    key: 'generateText',
+    value: function generateText(text, color, isBack) {
+      var canvas = document.createElement('canvas');
+
+      canvas.setAttribute('width', 32);
+      canvas.setAttribute('height', 16);
+
+      canvas.style.backgroundColor = 'rgba(0,0,0,0)';
+
+      var ctx = canvas.getContext('2d');
+      ctx.font = '10px Georgia';
+
+      var height = void 0;
+      var width = ctx.measureText(text).width;
+
+      width = Math.max(32, width);
+      height = width / 2;
+
+      canvas.setAttribute('width', width * window.devicePixelRatio);
+      canvas.setAttribute('height', height * window.devicePixelRatio);
+
+      canvas.width = width * window.devicePixelRatio;
+      canvas.height = height * window.devicePixelRatio;
+
+      ctx.scale(devicePixelRatio, devicePixelRatio);
+      ctx.strokeStyle = ctx.fillStyle = hexToRgba(color);
+      ctx.textBaseline = 'middle';
+
+      ctx.fillText(text, 0, 8);
+
+      return canvas;
     }
+  }, {
+    key: 'addCoord',
+    value: function addCoord(option) {
+      var lng = option.lng,
+          lat = option.lat,
+          color = option.color,
+          text = option.text;
+      // +90是要有个变换
 
-    _createClass(Earth, [{
-        key: 'generateText',
-        value: function generateText(text, color, isBack) {
-            var canvas = document.createElement('canvas');
+      var coord = lglt2xyz(lng + 90, lat, 200);
+      var light = new THREE.PlaneGeometry(8, 64);
+      var texture = new THREE.TextureLoader().load("./light.jpg");
+      texture.wrapT = THREE.ClampToEdgeWrapping;
+      texture.rotation = Math.PI;
+      texture.center = new THREE.Vector2(0.5, 0.5);
+      var lightMaterial = new THREE.MeshBasicMaterial({
+        transparent: true,
+        opacity: .9,
+        blending: THREE.AdditiveBlending,
+        side: THREE.DoubleSide,
+        depthWrite: false,
+        fog: true,
+        map: texture
+      });
+      var lightMesh = new THREE.Mesh(light, lightMaterial);
+      var wrapper = new THREE.Object3D();
 
-            canvas.setAttribute('width', 32);
-            canvas.setAttribute('height', 16);
+      lightMesh.applyMatrix(new THREE.Matrix4().makeTranslation(0, 32, 0));
+      lightMesh.applyMatrix(new THREE.Matrix4().makeRotationX(Math.PI / 2));
 
-            canvas.style.backgroundColor = 'rgba(0,0,0,0)';
+      wrapper.add(lightMesh);
 
-            var ctx = canvas.getContext('2d');
-            ctx.font = '10px Georgia';
+      var ringBody = new THREE.RingGeometry(0, 5, 6, 1);
+      var ringBodyMaterial = new THREE.MeshBasicMaterial({
+        color: 0xffffff,
+        side: THREE.DoubleSide
+      });
 
-            var height = void 0;
-            var width = ctx.measureText(text).width;
+      var ringBodyMesh = new THREE.Mesh(ringBody, ringBodyMaterial);
+      ringBodyMesh.position.set(0, 0, 0);
 
-            width = Math.max(32, width);
-            height = width / 2;
+      wrapper.add(ringBodyMesh);
 
-            canvas.setAttribute('width', width * window.devicePixelRatio);
-            canvas.setAttribute('height', height * window.devicePixelRatio);
+      var ringLine = new THREE.RingGeometry(7.8, 8, 6, 1);
+      var ringLineMaterial = new THREE.MeshBasicMaterial({
+        color: 0xffffff,
+        side: THREE.DoubleSide,
+        wireframe: true
+      });
 
-            canvas.width = width * window.devicePixelRatio;
-            canvas.height = height * window.devicePixelRatio;
+      var ringLineMesh = new THREE.Mesh(ringLine, ringLineMaterial);
+      ringLineMesh.position.set(0, 0, 0);
 
-            ctx.scale(devicePixelRatio, devicePixelRatio);
-            ctx.strokeStyle = ctx.fillStyle = hexToRgba(color);
-            ctx.textBaseline = "middle";
+      wrapper.add(ringLineMesh);
 
-            ctx.fillText(text, 0, 8);
+      wrapper.lookAt(new THREE.Vector3(coord.x, coord.y, coord.z));
+      wrapper.position.set(coord.x, coord.y, coord.z);
 
-            document.body.appendChild(canvas);
+      this.add(wrapper);
 
-            return canvas;
-        }
-    }, {
-        key: 'addCoord',
-        value: function addCoord(option) {
-            var lng = option.lng,
-                lat = option.lat,
-                color = option.color,
-                text = option.text;
-            // +90是要有个变换
+      return coord;
+    }
+  }]);
 
-            var coord = lglt2xyz(lng + 90, lat, 200);
-
-            var geometry = new THREE.Geometry();
-            var p1 = new THREE.Vector3(coord.x, coord.y, coord.z);
-            geometry.vertices.push(p1);
-
-            var material = new THREE.PointsMaterial({
-                color: color,
-                size: 4.0
-            });
-
-            var points = new THREE.Points(geometry, material);
-
-            this.add(points);
-
-            var textCanvas = this.generateText(text, color);
-
-            var rectGeometry = new THREE.PlaneGeometry(textCanvas.width / 2 / devicePixelRatio, textCanvas.height / 2 / devicePixelRatio);
-            var texture = new THREE.CanvasTexture(textCanvas);
-            var rectMaterial = new THREE.MeshBasicMaterial({
-                map: texture,
-                transparent: true,
-                // side: coord.z > 0 ? THREE.FrontSide : THREE.BackSide
-                side: THREE.FrontSide
-            });
-            var rect = new THREE.Mesh(rectGeometry, rectMaterial);
-
-            this.add(rect);
-
-            var offsetY = void 0;
-            offsetY = 3 * (Math.abs(lat) / 90) + 3;
-
-            coord = lglt2xyz(lng + 90, lat - offsetY, 203);
-
-            rect.position.x = coord.x;
-            rect.position.y = coord.y;
-            rect.position.z = coord.z;
-
-            rect.rotation.y = (lng + 90) * Math.PI / 180;
-
-            return coord;
-        }
-    }]);
-
-    return Earth;
+  return Earth;
 }(THREE.Group);
 
 function lglt2xyz(longitude, latitude, radius) {
-    var lg = degToRad(longitude),
-        lt = degToRad(latitude);
-    var y = radius * Math.sin(lt);
-    var temp = radius * Math.cos(lt);
-    var x = temp * Math.sin(lg);
-    var z = temp * Math.cos(lg);
+  var lg = degToRad(longitude),
+      lt = degToRad(latitude);
+  var y = radius * Math.sin(lt);
+  var temp = radius * Math.cos(lt);
+  var x = temp * Math.sin(lg);
+  var z = temp * Math.cos(lg);
 
-    return {
-        x: x,
-        y: y,
-        z: z
-    };
+  return {
+    x: x,
+    y: y,
+    z: z
+  };
 }
 
 function degToRad(value) {
-    return value / 180 * Math.acos(-1);
+  return value / 180 * Math.acos(-1);
 }
 
 function hexToRgba(hex, opacity) {
-    hex = hex.toString(16);
+  hex = hex.toString(16);
 
-    if (opacity === undefined) {
-        opacity = 1;
-    }
+  if (opacity === undefined) {
+    opacity = 1;
+  }
 
-    return "rgba(" + parseInt("0x" + hex.slice(0, 2)) + "," + parseInt("0x" + hex.slice(2, 4)) + "," + parseInt("0x" + hex.slice(4, 6)) + "," + opacity + ")";
+  return 'rgba(' + parseInt('0x' + hex.slice(0, 2)) + ',' + parseInt('0x' + hex.slice(2, 4)) + ',' + parseInt('0x' + hex.slice(4, 6)) + ',' + opacity + ')';
 }
 
 exports.default = Earth;

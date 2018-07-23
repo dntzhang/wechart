@@ -2,7 +2,7 @@ English | [简体中文](./README.md)
 
 # Wechart by [Cax](https://github.com/dntzhang/cax)
 
-> Lightweight but powerful charts by cax and three.js. 
+> All the [ch]arts by cax and three.js.
 
 <table>
 <thead>
@@ -14,6 +14,14 @@ English | [简体中文](./README.md)
 </tr>
 </thead>
 <tbody>
+
+<tr>
+<td align="center"><a title="Mandelbrot Set" href="https://dntzhang.github.io/wechart/packages/mandelbrot-set/examples/simple/" rel="nofollow"><img alt="Mandelbrot Set" src="./asset/c29.png" style="max-width:100%;"></a></td>
+<td align="center"><a href="https://github.com/dntzhang/wechart/blob/master/packages/mandelbrot-set/examples/simple/main.js">Source</a></td>
+<td align="center">Mandelbrot Set Source</td>
+<td align="center"><a href="https://github.com/dntzhang/wechart/blob/master/packages/mandelbrot-set/README.md">Tutorial</a></td>
+</tr>
+
 <tr>
 <td align="center"><a title="Avatar" href="https://dntzhang.github.io/wechart/packages/avatar/examples/simple/" rel="nofollow"><img alt="Avatar" src="./asset/c24.png" style="max-width:100%;"></a></td>
 <td align="center"><a href="https://github.com/dntzhang/wechart/blob/master/packages/avatar/examples/simple/main.js">Source</a></td>
@@ -32,6 +40,13 @@ English | [简体中文](./README.md)
 <td align="center"><a title="Countdown" href="https://dntzhang.github.io/wechart/packages/countdown/examples/simple/" rel="nofollow"><img alt="Countdown" src="./asset/c22.png" style="max-width:100%;"></a></td>
 <td align="center"><a href="https://github.com/dntzhang/wechart/blob/master/packages/countdown/examples/simple/main.js">Source</a></td>
 <td align="center"><a href="https://github.com/dntzhang/wechart/blob/master/packages/countdown/src/index.js">Countdown Source</a></td>
+<td align="center">Tutorial</td>
+</tr>
+
+<tr>
+<td align="center"><a title="Particle Countdown" href="https://dntzhang.github.io/wechart/packages/countdown/examples/particle/" rel="nofollow"><img alt="Countdown" src="./asset/c30.png" style="max-width:100%;"></a></td>
+<td align="center"><a href="https://github.com/dntzhang/wechart/blob/master/packages/countdown/examples/particle/main.js">Source</a></td>
+<td align="center">Particle Countdown Source</td>
 <td align="center">Tutorial</td>
 </tr>
 
@@ -149,7 +164,7 @@ English | [简体中文](./README.md)
 <td align="center">Tutorial</td>
 </tr>
 <tr>
-<td align="center"><a title="Bar3d" href="https://dntzhang.github.io/wechart/packages/bar3d/examples/simple/" rel="nofollow"><img alt="Bar3d" src="./asset/c2.png" style="max-width:100%;"></a></td>
+<td align="center"><a title="Bar3d" href="https://dntzhang.github.io/wechart/packages/bar3d/examples/simple/" rel="nofollow"><img alt="Bar3d" src="./asset/c28.png" style="max-width:100%;"></a></td>
 <td align="center"><a href="https://github.com/dntzhang/wechart/blob/master/packages/bar3d/examples/simple/main.js">Source</a></td>
 <td align="center"><a href="https://github.com/dntzhang/wechart/blob/master/packages/bar3d/src/index.js">Bar3d Source</a></td>
 <td align="center">Tutorial</td>
@@ -158,6 +173,13 @@ English | [简体中文](./README.md)
 <td align="center"><a title="Pie3d" href="https://dntzhang.github.io/wechart/packages/pie3d/examples/simple/" rel="nofollow"><img alt="Pie3d" src="./asset/c13.png" style="max-width:100%;"></a></td>
 <td align="center"><a href="https://github.com/dntzhang/wechart/blob/master/packages/pie3d/examples/simple/main.js">Source</a></td>
 <td align="center"><a href="https://github.com/dntzhang/wechart/blob/master/packages/pie3d/src/index.js">Pie3d Source</a></td>
+<td align="center">Tutorial</td>
+</tr>
+
+<tr>
+<td align="center"><a title="Texture Mapping" href="https://dntzhang.github.io/wechart/packages/texture-mapping/examples/simple/" rel="nofollow"><img alt="Texture Mapping" src="./asset/c27.png" style="max-width:100%;"></a></td>
+<td align="center"><a href="https://github.com/dntzhang/wechart/blob/master/packages/texture-mapping/examples/simple/main.js">Source</a></td>
+<td align="center">Texture Mapping Source</td>
 <td align="center">Tutorial</td>
 </tr>
 </tbody></table>
