@@ -94,7 +94,8 @@ var pyramid = new _index2.default({
   level: 4,
   size: 100,
   cubeStyle: {
-    top: [null, null, { url: '../../asset/bbb.bmp' }]
+    // top:[null,null,{url:'../../asset/bbb.bmp'}],
+    // ahead:{11:{url:'../../asset/bbb.bmp'}}
   }
 });
 
@@ -248,7 +249,6 @@ var magicCube = function (_THREE$Group) {
     var that = _this;
     _this.option = Object.assign({
       level: 3,
-      interval: 0,
       size: 120,
       padding: 0,
       style: { top: "#ffff00", bottom: "#ffffff", left: "#FF8C00", right: "#FF0000", ahead: "#0000FF", back: "#00FF00" },
@@ -279,7 +279,9 @@ var magicCube = function (_THREE$Group) {
     });
 
     renderSort.forEach(function (_d, _i) {
-      _this.cubes[_d].forEach(function (d, i) {
+      var _loop = function _loop() {
+        var d = _this.cubes[_d][i];
+
         var style = _this.getCubeStyle(_d, i);
         if (style.isImg) {
           _this.imgFaces(style.url, function (img) {
@@ -288,7 +290,11 @@ var magicCube = function (_THREE$Group) {
         } else {
           d.matArray[_i].map = _this.createTexture('', style.color);
         }
-      });
+      };
+
+      for (var i in _this.cubes[_d]) {
+        _loop();
+      }
     });
     return _this;
   }

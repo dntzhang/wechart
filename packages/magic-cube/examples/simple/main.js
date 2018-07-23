@@ -17,7 +17,8 @@ const pyramid = new magicCube({
   level:4,
   size:100,
   cubeStyle:{
-    top:[null,null,{url:'../../asset/bbb.bmp'}]
+    // top:[null,null,{url:'../../asset/bbb.bmp'}],
+    // ahead:{11:{url:'../../asset/bbb.bmp'}}
   }
 })
 

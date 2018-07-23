@@ -73,7 +73,6 @@ class magicCube extends THREE.Group {
     let that = this;
     this.option = Object.assign({
       level:3,
-      interval:0,
       size:120,
       padding:0,
       style:{ top:"#ffff00", bottom:"#ffffff", left:"#FF8C00", right:"#FF0000", ahead:"#0000FF", back:"#00FF00", },
@@ -102,9 +101,11 @@ class magicCube extends THREE.Group {
       that.add(mesh)
       that.meshList.push(mesh)
     })
-
+      
     renderSort.forEach((_d, _i)=>{
-      this.cubes[_d].forEach((d, i)=>{
+      for(var i in this.cubes[_d]){
+        let d = this.cubes[_d][i];
+
         let style = this.getCubeStyle(_d, i);
         if(style.isImg){
           this.imgFaces(style.url, function(img){
@@ -113,7 +114,7 @@ class magicCube extends THREE.Group {
         }else{
           d.matArray[_i].map = this.createTexture('', style.color);
         }
-      })
+      }
     })
   }
 
