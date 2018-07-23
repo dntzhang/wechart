@@ -15,6 +15,12 @@
 </thead>
 <tbody>
 
+<tr>
+<td align="center"><a title="Mandelbrot Set" href="https://dntzhang.github.io/wechart/packages/mandelbrot-set/examples/simple/" rel="nofollow"><img alt="Mandelbrot Set" src="./asset/c28.png" style="max-width:100%;"></a></td>
+<td align="center"><a href="https://github.com/dntzhang/wechart/blob/master/packages/mandelbrot-set/examples/simple/main.js">Source</a></td>
+<td align="center">Mandelbrot Set Source</td>
+<td align="center"><a href="https://github.com/dntzhang/wechart/blob/master/packages/mandelbrot-set/README.md">Tutorial</a></td>
+</tr>
 
 <tr>
 <td align="center"><a title="Avatar" href="https://dntzhang.github.io/wechart/packages/avatar/examples/simple/" rel="nofollow"><img alt="Avatar" src="./asset/c24.png" style="max-width:100%;"></a></td>
