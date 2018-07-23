@@ -2,6 +2,22 @@ const PIAngle = Math.PI/180;
 const threePow = n => Math.pow(n, 3);
 const FaceName = ['all', 'top', 'bottom', 'left', 'right', 'ahead', 'back', 'center', 'edge'];
 const renderSort = [ 'right', 'left', 'top', 'bottom', 'ahead', 'back', ]
+
+//圆角矩形
+CanvasRenderingContext2D.prototype.roundRect = function (x, y, w, h, r) {
+  var min_size = Math.min(w, h);
+  if (r > min_size / 2) r = min_size / 2;
+  // 开始绘制
+  this.beginPath();
+  this.moveTo(x + r, y);
+  this.arcTo(x + w, y, x + w, y + h, r);
+  this.arcTo(x + w, y + h, x, y + h, r);
+  this.arcTo(x, y + h, x, y, r);
+  this.arcTo(x, y, x + w, y, r);
+  this.closePath();
+  return this;
+}
+
 const getCubeObj = function(index, level, twoPow, num) {
   let z = remainder(index, twoPow), 
       y = (remainder(index, level) % level) || level,
@@ -59,8 +75,8 @@ class magicCube extends THREE.Group {
       level:3,
       interval:0,
       size:120,
-      padding:1,
-      style:{ top:0xffff00, bottom:0xffffff, left:0xFF8C00, right:0xFF0000, ahead:0x0000FF, back:0x00FF00, },
+      padding:0,
+      style:{ top:"#ffff00", bottom:"#ffffff", left:"#FF8C00", right:"#FF0000", ahead:"#0000FF", back:"#00FF00", },
       cubeStyle:{
         top:[],
         bottom:[],
@@ -69,6 +85,9 @@ class magicCube extends THREE.Group {
         ahead:[],
         back:[],
       },
+      radio:14,
+      innerPadding:15,
+      backgroundColor:'#333333',
     }, option)
     option = this.option;
     this.size = option.size / option.level;
@@ -86,9 +105,14 @@ class magicCube extends THREE.Group {
 
     renderSort.forEach((_d, _i)=>{
       this.cubes[_d].forEach((d, i)=>{
-        let color = option.cubeStyle[_d][i] || option.style[_d];
-        d.geometry.faces[_i*2].color.setHex(color);
-        d.geometry.faces[_i*2+1].color.setHex(color);
+        let style = this.getCubeStyle(_d, i);
+        if(style.isImg){
+          this.imgFaces(style.url, function(img){
+            d.matArray[_i].map = this.createTexture(img);
+          })
+        }else{
+          d.matArray[_i].map = this.createTexture('', style.color);
+        }
       })
     })
   }
@@ -98,9 +122,16 @@ class magicCube extends THREE.Group {
     let size = this.size,
       cubeSize = size - this.option.padding;
     let geometry = d.geometry = new THREE.BoxGeometry( cubeSize, cubeSize, cubeSize );
-    
-    let material = d.material = new THREE.MeshPhongMaterial({ opacity: 1, transparent: true, vertexColors: THREE.FaceColors})
-    let mesh = d.mesh = new THREE.Mesh(geometry, material)
+
+    d.matArray = [
+      new THREE.MeshBasicMaterial({ opacity: 1, transparent: true, vertexColors: THREE.FaceColors, map:this.createInitTexture()}),
+      new THREE.MeshBasicMaterial({ opacity: 1, transparent: true, vertexColors: THREE.FaceColors, map:this.createInitTexture()}),
+      new THREE.MeshBasicMaterial({ opacity: 1, transparent: true, vertexColors: THREE.FaceColors, map:this.createInitTexture()}),
+      new THREE.MeshBasicMaterial({ opacity: 1, transparent: true, vertexColors: THREE.FaceColors, map:this.createInitTexture()}),
+      new THREE.MeshBasicMaterial({ opacity: 1, transparent: true, vertexColors: THREE.FaceColors, map:this.createInitTexture()}),
+      new THREE.MeshBasicMaterial({ opacity: 1, transparent: true, vertexColors: THREE.FaceColors, map:this.createInitTexture()}),
+    ];
+    let mesh = d.mesh = new THREE.Mesh(geometry, d.matArray);
 
     mesh.position.x = (d.x-1) * size - this.offset;
     mesh.position.z = -(d.y-1) * size + this.offset;
@@ -108,6 +139,79 @@ class magicCube extends THREE.Group {
 
     mesh.data = d;
     return mesh
+  }
+
+  createTexture(img, color){
+    var texture = new THREE.Texture(this.faces(img, document.createElement('canvas'), color));
+    texture.needsUpdate = true;
+    return texture;
+  }
+
+  createInitTexture(){
+    return new THREE.Texture(document.createElement('canvas'));
+  }
+
+  faces(img, canvas, color) {
+    canvas.width = 256;
+    canvas.height = 256;
+    var context = canvas.getContext('2d');
+    var radio = this.option.radio;
+    var innerPadding = this.option.innerPadding;
+
+    if(context) {
+      context.fillStyle = this.option.backgroundColor;
+      context.fillRect(0, 0, 256, 256);
+
+      if(img.toString() === "[object HTMLImageElement]"){
+
+        // 拉伸图片
+        var canvasTemp = document.createElement('canvas');
+        var contextTemp = canvasTemp.getContext('2d');
+        canvasTemp.width = 256-innerPadding; // 目标宽度
+        canvasTemp.height = 256-innerPadding; // 目标高度
+        contextTemp.drawImage(img,innerPadding,innerPadding,256-innerPadding*2,256-innerPadding*2)
+
+        // 绘制图片
+        var pattern = context.createPattern(canvasTemp, "no-repeat");
+        context.roundRect(innerPadding, innerPadding, 256-innerPadding*2, 256-innerPadding*2, radio * 1 || 0);
+        // 填充绘制的圆
+        context.fillStyle = pattern;
+        context.fill();
+      }else{
+        context.rect(innerPadding, innerPadding, 256-innerPadding*2, 256-innerPadding*2);
+        context.lineJoin = 'round';
+        context.lineWidth = radio;
+        context.fillStyle = color;
+        context.strokeStyle = color;
+        context.stroke();
+        context.fill();
+      }
+    }
+    return canvas;
+  }
+
+  imgFaces(url, callback){
+    var img = new Image(), that = this;
+    img.onload = function() {
+      callback.bind(that)(img);
+    }
+    img.src=url;
+  }
+
+  getCubeStyle(direction, index){
+    let option = this.option;
+    let defaultColor = option.style[direction];
+    let setting = option.cubeStyle[direction] && option.cubeStyle[direction][index] || defaultColor;
+    let style = { }
+    
+    if(typeof setting === 'object') {
+      style.color = setting.color || defaultColor;
+      style.url = setting.url;
+      style.isImg = !!setting.url;
+    }else{
+      style.isImg = false, style.color = setting || defaultColor;
+    }
+    return style;
   }
 
 }

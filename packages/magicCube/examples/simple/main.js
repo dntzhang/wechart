@@ -15,7 +15,10 @@ const group = new THREE.Group()
 
 const pyramid = new magicCube({
   level:4,
-  size:100
+  size:100,
+  cubeStyle:{
+    top:[null,null,{url:'../../asset/bbb.bmp'}]
+  }
 })
 
 group.add(pyramid)
@@ -43,7 +46,8 @@ function animate () {
   var intersects = raycaster.intersectObjects( pyramid.meshList );
 
   if(intersects.length){
-    console.log(intersects)
+    let cube = intersects[0]
+    window.a = cube;
   }
 
   requestAnimationFrame(animate)
