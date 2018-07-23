@@ -1,3 +1,4 @@
+
 class Earth extends THREE.Group {
   constructor (option) {
     super()
@@ -52,8 +53,6 @@ class Earth extends THREE.Group {
 
     ctx.fillText(text, 0, 8)
 
-    // document.body.appendChild(canvas);
-
     return canvas
   }
 
@@ -66,44 +65,55 @@ class Earth extends THREE.Group {
     } = option
     // +90是要有个变换
     let coord = lglt2xyz(lng + 90, lat, 200)
-
-    let geometry = new THREE.Geometry()
-    let p1 = new THREE.Vector3(coord.x, coord.y, coord.z)
-    geometry.vertices.push(p1)
-
-    let material = new THREE.PointsMaterial({
-      color: color,
-      size: 4.0
-    })
-
-    let points = new THREE.Points(geometry, material)
-
-    this.add(points)
-
-    let textCanvas = this.generateText(text, color)
-
-    let rectGeometry = new THREE.PlaneGeometry(textCanvas.width / 2 / devicePixelRatio, textCanvas.height / 2 / devicePixelRatio)
-    let texture = new THREE.CanvasTexture(textCanvas)
-    let rectMaterial = new THREE.MeshBasicMaterial({
-      map: texture,
+    let light = new THREE.PlaneGeometry(8, 64)
+    let texture = new THREE.TextureLoader().load( "./light.jpg" )
+    texture.wrapT = THREE.ClampToEdgeWrapping
+    texture.rotation = Math.PI
+    texture.center = new THREE.Vector2(0.5, 0.5);
+    let lightMaterial = new THREE.MeshBasicMaterial({
       transparent: true,
-      // side: coord.z > 0 ? THREE.FrontSide : THREE.BackSide
-      side: THREE.FrontSide
+      opacity: .9,
+      blending: THREE.AdditiveBlending,
+      side: THREE.DoubleSide,
+      depthWrite: false,
+      fog: true,
+      map: texture
     })
-    let rect = new THREE.Mesh(rectGeometry, rectMaterial)
+    let lightMesh = new THREE.Mesh(light, lightMaterial)
+    let wrapper = new THREE.Object3D()
 
-    this.add(rect)
+    lightMesh.applyMatrix((new THREE.Matrix4).makeTranslation(0, 32, 0))
+    lightMesh.applyMatrix((new THREE.Matrix4).makeRotationX(Math.PI / 2))
 
-    let offsetY
-    offsetY = 3 * (Math.abs(lat) / 90) + 3
+    wrapper.add(lightMesh)
 
-    coord = lglt2xyz(lng + 90, lat - offsetY, 203)
+    let ringBody = new THREE.RingGeometry(0, 5, 6, 1)
+    let ringBodyMaterial = new THREE.MeshBasicMaterial({
+        color: 0xffffff,
+        side: THREE.DoubleSide
+    })
+    
+    let ringBodyMesh = new THREE.Mesh(ringBody, ringBodyMaterial);
+    ringBodyMesh.position.set(0,0,0)
+    
+    wrapper.add(ringBodyMesh)
 
-    rect.position.x = coord.x
-    rect.position.y = coord.y
-    rect.position.z = coord.z
+    let ringLine = new THREE.RingGeometry(7.8, 8, 6, 1);
+    let ringLineMaterial = new THREE.MeshBasicMaterial({
+        color: 0xffffff,
+        side: THREE.DoubleSide,
+        wireframe: true
+    })
+    
+    let ringLineMesh = new THREE.Mesh(ringLine, ringLineMaterial)
+    ringLineMesh.position.set(0,0,0)
 
-    rect.rotation.y = (lng + 90) * Math.PI / 180
+    wrapper.add(ringLineMesh)
+
+    wrapper.lookAt(new THREE.Vector3(coord.x, coord.y, coord.z))
+    wrapper.position.set(coord.x, coord.y, coord.z)
+
+    this.add(wrapper)
 
     return coord
   }
