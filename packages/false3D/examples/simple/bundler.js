@@ -6701,7 +6701,7 @@ var _scale = __webpack_require__(5);
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
-var stage = new _cax2.default.Stage(800, 520, "body"); /**
+var stage = new _cax2.default.Stage(800, 520, 'body'); /**
                                                         *
                                                         * @Date: 2018/7/22
                                                         * @author: twist
@@ -6709,7 +6709,7 @@ var stage = new _cax2.default.Stage(800, 520, "body"); /**
                                                         */
 
 var data = [// 数据
-{ name: "dntzhang", age: _cax2.default.util.randomInt(22, 20), exp: _cax2.default.util.randomInt(500, 1000) }, { name: "Canvas", age: _cax2.default.util.randomInt(40, 20), exp: _cax2.default.util.randomInt(500, 1000) }, { name: "Wechart", age: _cax2.default.util.randomInt(10, 20), exp: _cax2.default.util.randomInt(500, 1000) }, { name: "Tencent", age: _cax2.default.util.randomInt(30, 20), exp: _cax2.default.util.randomInt(500, 1000) }, { name: "Cax", age: _cax2.default.util.randomInt(20, 20), exp: _cax2.default.util.randomInt(500, 1000) }];
+{ name: 'dntzhang', age: _cax2.default.util.randomInt(22, 20), exp: _cax2.default.util.randomInt(500, 1000) }, { name: 'Canvas', age: _cax2.default.util.randomInt(40, 20), exp: _cax2.default.util.randomInt(500, 1000) }, { name: 'Wechart', age: _cax2.default.util.randomInt(10, 20), exp: _cax2.default.util.randomInt(500, 1000) }, { name: 'Tencent', age: _cax2.default.util.randomInt(30, 20), exp: _cax2.default.util.randomInt(500, 1000) }, { name: 'Cax', age: _cax2.default.util.randomInt(20, 20), exp: _cax2.default.util.randomInt(500, 1000) }];
 var xScale = (0, _scale.scaleLinear)([0, 4], [0, 700]);
 var yScaleLeft = (0, _scale.scaleLinear)([70, 0], [0, 430]);
 
@@ -6724,10 +6724,10 @@ var config = [{ // rects代表拆分多个rect，下面是相关的配置
   }, // 数据预处理，提取影响形状的报表
   color: function color(index) {
     // 每个柱子的颜色
-    return "#4BC0C0";
+    return '#4BC0C0';
   },
   tooltip: function tooltip(item) {
-    return item.name + "-age<br/>" + item.age;
+    return item.name + '-age<br/>' + item.age;
   },
   transition: {
     duration: 1000 // 动画的时间
@@ -6759,36 +6759,36 @@ var axisConfig = {
     interval: 1,
     x: 30,
     y: 450,
-    color: "black",
+    color: 'black',
     text: {
-      color: "#444",
+      color: '#444',
       value: function value(index) {
-        return "index-" + index;
+        return 'index-' + index;
       },
       x: 30,
       y: 10,
-      font: "10px Verdana",
+      font: '10px Verdana',
       range: [0, 4],
       rotation: 0
     },
     gird: {
-      color: "#ddd",
+      color: '#ddd',
       length: 400
     }
   },
   left: {
     scale: yScaleLeft,
-    color: "black",
+    color: 'black',
     interval: 6,
     x: 30,
     y: 20,
     text: {
-      color: "#444",
+      color: '#444',
       x: -20,
       y: -8
     },
     gird: {
-      color: "#ddd",
+      color: '#ddd',
       length: 700
     }
   }
@@ -6843,10 +6843,6 @@ var _cax = __webpack_require__(0);
 
 var _cax2 = _interopRequireDefault(_cax);
 
-var _src = __webpack_require__(4);
-
-var _src2 = _interopRequireDefault(_src);
-
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
 function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
@@ -6863,40 +6859,34 @@ function _inherits(subClass, superClass) { if (typeof superClass !== "function" 
 var Rect = _cax2.default.Rect,
     Group = _cax2.default.Group;
 
-var triangle = function (_Group) {
-  _inherits(triangle, _Group);
+var extrude = function (_Group) {
+  _inherits(extrude, _Group);
 
-  function triangle(data, config, axisConfig, stage) {
-    _classCallCheck(this, triangle);
+  function extrude(data, config, axisConfig, stage) {
+    _classCallCheck(this, extrude);
 
-    var _this = _possibleConstructorReturn(this, (triangle.__proto__ || Object.getPrototypeOf(triangle)).call(this));
+    var _this = _possibleConstructorReturn(this, (extrude.__proto__ || Object.getPrototypeOf(extrude)).call(this));
 
-    Object.keys(axisConfig).forEach(function (key) {
-      if (axisConfig[key]) {
-        var axis = new _src2.default(axisConfig[key], key);
-        _this.add(axis);
-      }
-    });
     config.forEach(function (rect) {
       rect.processedData = processPoint(rect, data);
       rect.processedData.forEach(function (item, index) {
-        _this.add(new oneTriangle(data[index], index, stage));
+        _this.add(new oneColumn(data[index], index, stage));
       });
     });
     return _this;
   }
 
-  return triangle;
+  return extrude;
 }(Group);
 
+var depth = 15;
+var angle = Math.PI / 2.3;
 function processPoint(rect, data) {
   var renderWidth = rect.eleDomain - rect.x;
   var itemWidth = renderWidth / data.length;
-  var depth = 15;
-  var angle = Math.PI / 2.3;
   data.forEach(function (item, index) {
     !index ? item.x = 30 : item.x = data[index - 1].x + itemWidth;
-    item.itemWidth = itemWidth * .7;
+    item.itemWidth = itemWidth * 0.7;
     item.height = rect.scale(item.age);
     item.y = rect.xAxisY;
     item.p1 = {
@@ -6915,194 +6905,44 @@ function processPoint(rect, data) {
   return data;
 }
 
-var oneTriangle = function (_Group2) {
-  _inherits(oneTriangle, _Group2);
+var oneColumn = function (_Group2) {
+  _inherits(oneColumn, _Group2);
 
-  function oneTriangle(data, index, stage) {
-    _classCallCheck(this, oneTriangle);
+  function oneColumn(data, index, stage) {
+    _classCallCheck(this, oneColumn);
 
-    var _this2 = _possibleConstructorReturn(this, (oneTriangle.__proto__ || Object.getPrototypeOf(oneTriangle)).call(this));
+    var _this2 = _possibleConstructorReturn(this, (oneColumn.__proto__ || Object.getPrototypeOf(oneColumn)).call(this));
 
     var graphics = new _cax2.default.Graphics();
-    drawTriangle(graphics, data, index, stage);
+    drawColumn(graphics, data, index, stage);
     return _this2;
   }
 
-  return oneTriangle;
+  return oneColumn;
 }(Group);
 
-function drawTriangle(graphics, data, index, stage) {
+function drawColumn(graphics, data, index, stage) {
   var mainColorList = ['#f6e242', '#ebec5b', '#d2ef5f', '#b1d894', '#97d5ad', '#82d1c0', '#70cfd2', '#63c8ce', '#50bab8', '#38a99d'];
   var topColorList = ['#e9d748', '#d1d252', '#c0d75f', '#a2d37d', '#83d09e', '#68ccb6', '#5bc8cb', '#59c0c6', '#3aadab', '#2da094'];
   var rightColorList = ['#dfce51', '#d9db59', '#b9d54a', '#9ece7c', '#8ac69f', '#70c3b1', '#65c5c8', '#57bac0', '#42aba9', '#2c9b8f'];
+  // 正面
   var rect = new Rect(data.itemWidth, data.height, {
     fillStyle: mainColorList[index]
   });
   rect.x = data.x;
   rect.y = data.y - data.height;
+  // 顶部
   graphics.beginPath().moveTo(data.x, data.y - data.height).lineTo(data.p1.x, data.p1.y).lineTo(data.p2.x, data.p2.y).lineTo(data.p3.x, data.p3.y).moveTo(data.x, data.y).fillStyle(topColorList[index]).fill();
-  graphics.beginPath().moveTo(data.p2.x, data.p2.y).lineTo(data.p2.x, data.y).lineTo(data.x + data.itemWidth, data.y).lineTo(data.x + data.itemWidth, data.y - data.height).moveTo(data.p2.x, data.p2.y).fillStyle(rightColorList[index]).fill();
+  // 右侧
+  graphics.beginPath().moveTo(data.p2.x, data.p2.y).lineTo(data.p2.x, data.y - Math.sin(angle) - depth).lineTo(data.x + data.itemWidth, data.y).lineTo(data.x + data.itemWidth, data.y - data.height).moveTo(data.p2.x, data.p2.y).fillStyle(rightColorList[index]).fill();
   stage.add(rect);
   stage.add(graphics);
 }
 
-exports.default = triangle;
+exports.default = extrude;
 
 /***/ }),
-/* 4 */
-/***/ (function(module, exports, __webpack_require__) {
-
-"use strict";
-
-
-Object.defineProperty(exports, "__esModule", {
-  value: true
-});
-
-var _cax = __webpack_require__(0);
-
-var _cax2 = _interopRequireDefault(_cax);
-
-function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
-
-function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
-
-function _possibleConstructorReturn(self, call) { if (!self) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return call && (typeof call === "object" || typeof call === "function") ? call : self; }
-
-function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
-
-var Graphics = _cax2.default.Graphics,
-    Text = _cax2.default.Text,
-    Group = _cax2.default.Group;
-
-var Axis = function (_Group) {
-  _inherits(Axis, _Group);
-
-  function Axis(axis, orient) {
-    _classCallCheck(this, Axis);
-
-    var _this = _possibleConstructorReturn(this, (Axis.__proto__ || Object.getPrototypeOf(Axis)).call(this));
-
-    var scale = axis.scale;
-    var f = scale.domain[0];
-    var t = scale.domain[1];
-    var rf = scale.range[0];
-    var rt = scale.range[1];
-
-    var x = axis.x;
-    var y = axis.y;
-    var g = new Graphics();
-    var moveTo = [0, 0];
-    var lineTo = [0, 0];
-    switch (orient) {
-      case 'left':
-      case 'right':
-        moveTo[0] = x;
-        moveTo[1] = y + rf;
-        lineTo[0] = x;
-        lineTo[1] = y + rt;
-        break;
-      case 'top':
-      case 'bottom':
-        moveTo[0] = x + rf;
-        moveTo[1] = y;
-        lineTo[0] = x + rt;
-        lineTo[1] = y;
-        break;
-    }
-
-    g.beginPath().strokeStyle(axis.color).moveTo(moveTo[0], moveTo[1]).lineTo(lineTo[0], lineTo[1]).stroke();
-
-    var current = void 0;
-    switch (orient) {
-      case 'bottom':
-        for (var i = f; i <= t; i += axis.interval) {
-          current = scale(i) + x;
-          g.beginPath().strokeStyle(axis.color).moveTo(current, y).lineTo(current, y + 5).stroke();
-
-          if (axis.gird && i > f) {
-            g.beginPath().strokeStyle(axis.gird.color).moveTo(current, y - 1).lineTo(current, y - axis.gird.length).stroke();
-          }
-
-          if (!axis.text.range || i >= axis.text.range[0] && i <= axis.text.range[1]) {
-            var text = new Text(axis.text.value ? axis.text.value(i) : i, axis.text.font, axis.text.color);
-            text.x = current + axis.text.x;
-            text.y = y + 5 + axis.text.y;
-            text.rotation = axis.text.rotation || 0;
-            _this.add(text);
-          }
-        }
-        break;
-      case 'left':
-
-        for (var _i = f; _i <= t; _i += axis.interval) {
-
-          current = scale(_i) + y;
-          g.beginPath().strokeStyle(axis.color).moveTo(x, current).lineTo(x - 5, current).stroke();
-
-          if (axis.gird && _i > f) {
-            g.beginPath().strokeStyle(axis.gird.color).moveTo(x + 1, current).lineTo(x + axis.gird.length, current).stroke();
-          }
-          if (!axis.text.range || _i >= axis.text.range[0] && _i <= axis.text.range[1]) {
-            var _text = new Text(axis.text.value ? axis.text.value(_i) : _i, axis.text.font, axis.text.color);
-            _text.x = x - 5 + axis.text.x;
-            _text.y = current + axis.text.y;
-            _text.rotation = axis.text.rotation || 0;
-            _this.add(_text);
-          }
-        }
-        break;
-
-      case 'top':
-        for (var _i2 = f; _i2 <= t; _i2 += axis.interval) {
-
-          current = scale(_i2) + x;
-          g.beginPath().strokeStyle(axis.color).moveTo(current, y).lineTo(current, y - 5).stroke();
-
-          if (axis.gird && _i2 > f) {
-            g.beginPath().strokeStyle(axis.gird.color).moveTo(current, y - 1).lineTo(current, y - axis.gird.length).stroke();
-          }
-
-          if (!axis.text.range || _i2 >= axis.text.range[0] && _i2 <= axis.text.range[1]) {
-            var _text2 = new Text(axis.text.value ? axis.text.value(_i2) : _i2, axis.text.font, axis.text.color);
-            _text2.x = current + axis.text.x;
-            _text2.y = y - 5 + axis.text.y;
-            _text2.rotation = axis.text.rotation || 0;
-            _this.add(_text2);
-          }
-        }
-        break;
-
-      case 'right':
-
-        for (var _i3 = f; _i3 <= t; _i3 += axis.interval) {
-          current = scale(_i3) + y;
-          g.beginPath().strokeStyle(axis.color).moveTo(x, current).lineTo(x + 5, current).stroke();
-
-          if (axis.gird && _i3 > f) {
-            g.beginPath().strokeStyle(axis.gird.color).moveTo(x + 1, current).lineTo(x + axis.gird.length, current).stroke();
-          }
-          if (!axis.text.range || _i3 >= axis.text.range[0] && _i3 <= axis.text.range[1]) {
-            var _text3 = new Text(axis.text.value ? axis.text.value(_i3) : _i3, axis.text.font, axis.text.color);
-            _text3.x = x + 5 + axis.text.x;
-            _text3.y = current + axis.text.y;
-            _text3.rotation = axis.text.rotation || 0;
-            _this.add(_text3);
-          }
-        }
-        break;
-    }
-
-    _this.add(g);
-    return _this;
-  }
-
-  return Axis;
-}(Group);
-
-exports.default = Axis;
-
-/***/ }),
+/* 4 */,
 /* 5 */
 /***/ (function(module, exports, __webpack_require__) {
 
