@@ -2,11 +2,10 @@ import cax from 'cax'
 
 import Player from './player'
 
-const stage = new cax.Stage(660, 600, 'body')
+const stage = new cax.Stage(520, 377, 'body')
 
 const bg = new cax.Bitmap('./track.jpg')
 stage.add(bg)
-
 
 const shape = [
   [123, 91, 123, 91, 389, 91, 389, 91],
@@ -17,18 +16,13 @@ const shape = [
   [59, 152, 60, 129, 82, 96, 123, 91]
 ]
 
-
 const player = new Player(shape)
-
 
 cax.tick(() => {
   stage.update()
   player.update()
 })
 stage.add(player)
-
-
-
 
 // const g = new cax.Graphics()
 // g.moveTo(123, 91)
@@ -43,4 +37,4 @@ stage.add(player)
 // .bezierCurveTo(60,129,82,96,123, 91)
 
 // .stroke()
-//stage.add(g)
+// stage.add(g)

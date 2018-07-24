@@ -14,11 +14,11 @@ const controls = new THREE.OrbitControls(camera, renderer.domElement)
 const group = new THREE.Group()
 
 const pyramid = new MagicCube({
-  level:4,
-  size:100,
-  cubeStyle:{
-    bottom:[null,null,null,null,null,null,{url:'../../asset/wepay-diy.jpg'}],
-    ahead:{6:{url:'../../asset/qq.png'}}
+  level: 4,
+  size: 100,
+  cubeStyle: {
+    bottom: [null, null, null, null, null, null, {url: '../../asset/wepay-diy.jpg'}],
+    ahead: {6: {url: '../../asset/qq.png'}}
   }
 })
 
@@ -33,22 +33,21 @@ const DricetionalLight = new THREE.DirectionalLight(0xeeeeee, 1)
 DricetionalLight.position.set(-40, -50, -60)
 scene.add(DricetionalLight)
 
+var raycaster = new THREE.Raycaster()
+var mouse = new THREE.Vector2()
 
-var raycaster = new THREE.Raycaster();
-var mouse = new THREE.Vector2();
-
-window.addEventListener( 'mousemove', function(event){
-	mouse.x = ( event.clientX / window.innerWidth ) * 2 - 1;
-	mouse.y = - ( event.clientY / window.innerHeight ) * 2 + 1;		
-}, false );
+window.addEventListener('mousemove', function (event) {
+  mouse.x = (event.clientX / window.innerWidth) * 2 - 1
+  mouse.y = -(event.clientY / window.innerHeight) * 2 + 1
+}, false)
 
 function animate () {
-  raycaster.setFromCamera( mouse, camera );
-  var intersects = raycaster.intersectObjects( pyramid.meshList );
+  raycaster.setFromCamera(mouse, camera)
+  var intersects = raycaster.intersectObjects(pyramid.meshList)
 
-  if(intersects.length){
+  if (intersects.length) {
     let cube = intersects[0]
-    window.a = cube;
+    window.a = cube
   }
 
   requestAnimationFrame(animate)

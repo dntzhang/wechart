@@ -2,7 +2,7 @@ import cax from 'cax'
 import { getPoint, getPosition, getLength, slope } from '../../../common/bezier'
 
 class Player extends cax.Group {
-  constructor(shape) {
+  constructor (shape) {
     super()
     this.g = new cax.Graphics()
     this.g.beginPath()
@@ -27,21 +27,19 @@ class Player extends cax.Group {
     this.add(this.bitmap)
   }
 
-  update() {
-
+  update () {
     this.length += this.speed
     const position = getPosition(this.length, this.shape)
     let rotation = slope(this.shape[position.index], position.t) * 180 / Math.PI
     const point = getPoint(position.t, position.index, this.shape)
-  
+
     if (rotation === Infinity) {
       rotation = 0
     }
 
-    this.bitmap.rotation = rotation+90
+    this.bitmap.rotation = rotation + 90
     this.bitmap.x = point.x
     this.bitmap.y = point.y
-
 
     if (this.length > this.shape.pathLen) {
       this.length -= this.shape.pathLen

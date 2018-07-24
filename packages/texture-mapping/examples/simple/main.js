@@ -13,14 +13,12 @@ const loader = new Loader({
   complete: () => {
     render()
 
-    stage.on('click',(evt)=>{
+    stage.on('click', (evt) => {
       stage.empty()
-      if(evt.stageX>220){
-
+      if (evt.stageX > 220) {
         points[4] = evt.stageX
         points[5] = evt.stageY
-      }else{
-
+      } else {
         points[2] = evt.stageX
         points[3] = evt.stageY
       }
@@ -29,8 +27,7 @@ const loader = new Loader({
   }
 })
 
-function render(){
-
+function render () {
   const dw = 10
   const img = loader.get('a1')
   const dt = 0.03
@@ -39,11 +36,9 @@ function render(){
   g.beginPath()
 
   for (let i = 0; i < 1; i += dt) {
-
     const p = getValue(points, i)
 
     const angle = slope(points, i, 0.01) * 180 / Math.PI
-
 
     g[i === 0 ? 'moveTo' : 'lineTo'](p.x, p.y)
 
@@ -54,7 +49,6 @@ function render(){
       if (img.width - offsetX % img.width < dw) {
         offsetX = 0
       } else {
-
         offsetX = Math.ceil(offsetX % img.width / dw) * dw
       }
     }
@@ -62,15 +56,11 @@ function render(){
     bitmap.x = p.x
     bitmap.y = p.y
 
-    //skew(half of rotation)导致宽度不一致
+    // skew(half of rotation)导致宽度不一致
     bitmap.skewY = angle
     bitmap.scaleX = (getValue(points, i + dt).x - p.x) / (dw * Math.cos(angle * Math.PI / 180)) + 0.1
     stage.add(bitmap)
-
-   
   }
-
-
 
   g.stroke()
 

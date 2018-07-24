@@ -18,8 +18,8 @@ class Axis extends Group {
     switch (orient) {
       case 'left':
       case 'right':
-        moveTo[0] = x 
-        moveTo[1] = y+ rf
+        moveTo[0] = x
+        moveTo[1] = y + rf
         lineTo[0] = x
         lineTo[1] = y + rt
         break
@@ -32,7 +32,7 @@ class Axis extends Group {
         break
     }
 
-    g.beginPath().strokeStyle(axis.color).moveTo( moveTo[0],  moveTo[1]).lineTo(lineTo[0], lineTo[1]).stroke()
+    g.beginPath().strokeStyle(axis.color).moveTo(moveTo[0], moveTo[1]).lineTo(lineTo[0], lineTo[1]).stroke()
 
     let current
     switch (orient) {
@@ -57,8 +57,7 @@ class Axis extends Group {
       case 'left':
 
         for (let i = f; i <= t; i += axis.interval) {
-       
-          current = scale(i)+y
+          current = scale(i) + y
           g.beginPath().strokeStyle(axis.color).moveTo(x, current).lineTo(x - 5, current).stroke()
 
           if (axis.gird && i > f) {
@@ -76,7 +75,6 @@ class Axis extends Group {
 
       case 'top':
         for (let i = f; i <= t; i += axis.interval) {
-          
           current = scale(i) + x
           g.beginPath().strokeStyle(axis.color).moveTo(current, y).lineTo(current, y - 5).stroke()
 

@@ -60,58 +60,11 @@
 /******/ 	__webpack_require__.p = "";
 /******/
 /******/ 	// Load entry module and return exports
-/******/ 	return __webpack_require__(__webpack_require__.s = 0);
+/******/ 	return __webpack_require__(__webpack_require__.s = 1);
 /******/ })
 /************************************************************************/
 /******/ ([
 /* 0 */
-/***/ (function(module, exports, __webpack_require__) {
-
-"use strict";
-
-
-var _cax = __webpack_require__(1);
-
-var _cax2 = _interopRequireDefault(_cax);
-
-var _player = __webpack_require__(3);
-
-var _player2 = _interopRequireDefault(_player);
-
-function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
-
-var stage = new _cax2.default.Stage(660, 600, 'body');
-
-var bg = new _cax2.default.Bitmap('./track.jpg');
-stage.add(bg);
-
-var shape = [[123, 91, 123, 91, 389, 91, 389, 91], [389, 91, 430, 90, 473, 145, 474, 213], [474, 213, 475, 278, 420, 340, 346, 334], [346, 334, 257, 316, 224, 229, 158, 229], [158, 229, 82, 250, 51, 180, 59, 152], [59, 152, 60, 129, 82, 96, 123, 91]];
-
-var player = new _player2.default(shape);
-
-_cax2.default.tick(function () {
-  stage.update();
-  player.update();
-});
-stage.add(player);
-
-// const g = new cax.Graphics()
-// g.moveTo(123, 91)
-// //均匀分布控制点，防止速度前快后慢，因为 getPosition是根据路程求 t
-// .bezierCurveTo(123, 91,389,91,389,91)
-// .bezierCurveTo(430, 90,473,145,474 ,213)
-
-// .bezierCurveTo(475,278,420,340,346,334)
-// .bezierCurveTo(257,316,224,229,158,229)
-// .bezierCurveTo(82,250,51,180,59,152)
-
-// .bezierCurveTo(60,129,82,96,123, 91)
-
-// .stroke()
-//stage.add(g)
-
-/***/ }),
-/* 1 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -6730,6 +6683,53 @@ var _typeof2 = typeof Symbol === "function" && typeof Symbol.iterator === "symbo
 /* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(2)(module)))
 
 /***/ }),
+/* 1 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
+var _cax = __webpack_require__(0);
+
+var _cax2 = _interopRequireDefault(_cax);
+
+var _player = __webpack_require__(3);
+
+var _player2 = _interopRequireDefault(_player);
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+var stage = new _cax2.default.Stage(520, 377, 'body');
+
+var bg = new _cax2.default.Bitmap('./track.jpg');
+stage.add(bg);
+
+var shape = [[123, 91, 123, 91, 389, 91, 389, 91], [389, 91, 430, 90, 473, 145, 474, 213], [474, 213, 475, 278, 420, 340, 346, 334], [346, 334, 257, 316, 224, 229, 158, 229], [158, 229, 82, 250, 51, 180, 59, 152], [59, 152, 60, 129, 82, 96, 123, 91]];
+
+var player = new _player2.default(shape);
+
+_cax2.default.tick(function () {
+  stage.update();
+  player.update();
+});
+stage.add(player);
+
+// const g = new cax.Graphics()
+// g.moveTo(123, 91)
+// //均匀分布控制点，防止速度前快后慢，因为 getPosition是根据路程求 t
+// .bezierCurveTo(123, 91,389,91,389,91)
+// .bezierCurveTo(430, 90,473,145,474 ,213)
+
+// .bezierCurveTo(475,278,420,340,346,334)
+// .bezierCurveTo(257,316,224,229,158,229)
+// .bezierCurveTo(82,250,51,180,59,152)
+
+// .bezierCurveTo(60,129,82,96,123, 91)
+
+// .stroke()
+// stage.add(g)
+
+/***/ }),
 /* 2 */
 /***/ (function(module, exports, __webpack_require__) {
 
@@ -6772,7 +6772,7 @@ Object.defineProperty(exports, "__esModule", {
 
 var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
 
-var _cax = __webpack_require__(1);
+var _cax = __webpack_require__(0);
 
 var _cax2 = _interopRequireDefault(_cax);
 
@@ -6821,7 +6821,6 @@ var Player = function (_cax$Group) {
   _createClass(Player, [{
     key: 'update',
     value: function update() {
-
       this.length += this.speed;
       var position = (0, _bezier.getPosition)(this.length, this.shape);
       var rotation = (0, _bezier.slope)(this.shape[position.index], position.t) * 180 / Math.PI;

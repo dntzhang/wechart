@@ -3,7 +3,7 @@ import font from '../../../common/font'
 import noise from '../../../common/perlin'
 import '../../../common/orbit-controls'
 
-noise.seed(Math.random());
+noise.seed(Math.random())
 const data = []
 for (var x = 0; x < 10; x++) {
   const arr = []
@@ -14,7 +14,6 @@ for (var x = 0; x < 10; x++) {
     // image[x][y].r = Math.abs(value) * 256; // Or whatever. Open demo.html to see it used with canvas.
   }
   data.push(arr)
-
 }
 
 const camera = new THREE.PerspectiveCamera(45, window.innerWidth / window.innerHeight, 0.01, 500)
@@ -77,7 +76,7 @@ text.position.y = 33
 text.position.z = -12
 group.add(text)
 
-function randomHexColor() {
+function randomHexColor () {
   var hex = Math.floor(Math.random() * 16777216).toString(16)
   while (hex.length < 6) {
     hex = '0' + hex
@@ -85,7 +84,7 @@ function randomHexColor() {
   return '#' + hex
 }
 
-function animate() {
+function animate () {
   requestAnimationFrame(animate)
   renderer.render(scene, camera)
   controls.update()
