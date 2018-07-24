@@ -193,7 +193,7 @@
 <td align="center"><a title="Heatmap" href="https://dntzhang.github.io/wechart/packages/heatmap/examples/simple/" rel="nofollow"><img alt="Heatmap" src="./asset/c32.png" style="max-width:100%;"></a></td>
 <td align="center"><a href="https://github.com/dntzhang/wechart/blob/master/packages/heatmap/examples/simple/main.js">Source</a></td>
 <td align="center"><a href="https://github.com/dntzhang/wechart/blob/master/packages/heatmap/src/index.js">Heatmap Source</a></td>
-<td align="center">Tutorial</td>
+<td align="center"><a href="https://github.com/dntzhang/wechart/blob/master/packages/heatmap/README.md">Tutorial</a></td>
 </tr>
 
 </tbody></table>
