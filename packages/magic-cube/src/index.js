@@ -67,7 +67,7 @@ const getCubeList = function(level){
   return cubes;
 }
 
-class magicCube extends THREE.Group {
+class MagicCube extends THREE.Group {
   constructor (option) {
     super()
     let that = this;
@@ -217,4 +217,4 @@ class magicCube extends THREE.Group {
 
 }
 
-export default magicCube
+export default MagicCube

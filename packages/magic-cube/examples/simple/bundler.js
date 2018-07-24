@@ -78,8 +78,8 @@ __webpack_require__(2);
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
-var camera = new THREE.PerspectiveCamera(45, window.innerWidth / window.innerHeight, 0.01, 500);
-camera.position.set(150, 100, 150);
+var camera = new THREE.PerspectiveCamera(45, window.innerWidth / window.innerHeight, 0.01, 1000);
+camera.position.set(150, 200, 450);
 
 var scene = new THREE.Scene();
 
@@ -94,8 +94,8 @@ var pyramid = new _index2.default({
   level: 4,
   size: 100,
   cubeStyle: {
-    // top:[null,null,{url:'../../asset/bbb.bmp'}],
-    // ahead:{11:{url:'../../asset/bbb.bmp'}}
+    bottom: [null, null, null, null, null, null, { url: '../../asset/wepay-diy.jpg' }],
+    ahead: { 6: { url: '../../asset/qq.png' } }
   }
 });
 
@@ -238,13 +238,13 @@ var getCubeList = function getCubeList(level) {
   return cubes;
 };
 
-var magicCube = function (_THREE$Group) {
-  _inherits(magicCube, _THREE$Group);
+var MagicCube = function (_THREE$Group) {
+  _inherits(MagicCube, _THREE$Group);
 
-  function magicCube(option) {
-    _classCallCheck(this, magicCube);
+  function MagicCube(option) {
+    _classCallCheck(this, MagicCube);
 
-    var _this = _possibleConstructorReturn(this, (magicCube.__proto__ || Object.getPrototypeOf(magicCube)).call(this));
+    var _this = _possibleConstructorReturn(this, (MagicCube.__proto__ || Object.getPrototypeOf(MagicCube)).call(this));
 
     var that = _this;
     _this.option = Object.assign({
@@ -299,7 +299,7 @@ var magicCube = function (_THREE$Group) {
     return _this;
   }
 
-  _createClass(magicCube, [{
+  _createClass(MagicCube, [{
     key: 'createCubeMesh',
     value: function createCubeMesh(d) {
       var size = this.size,
@@ -397,10 +397,10 @@ var magicCube = function (_THREE$Group) {
     }
   }]);
 
-  return magicCube;
+  return MagicCube;
 }(THREE.Group);
 
-exports.default = magicCube;
+exports.default = MagicCube;
 
 /***/ }),
 /* 2 */
