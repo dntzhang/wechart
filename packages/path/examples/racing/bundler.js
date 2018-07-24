@@ -81,8 +81,18 @@ var stage = new _cax2.default.Stage(660, 600, 'body');
 var bg = new _cax2.default.Bitmap('./track.jpg');
 stage.add(bg);
 
+var g = new _cax2.default.Graphics();
+g.moveTo(123, 91)
+//均匀分布控制点，防止速度前快后慢，因为 getPosition是根据路程求 t
+.bezierCurveTo(123, 91, 389, 91, 389, 91).bezierCurveTo(430, 90, 473, 145, 474, 213).bezierCurveTo(475, 278, 420, 340, 346, 334).bezierCurveTo(257, 316, 224, 229, 158, 229).bezierCurveTo(82, 250, 51, 180, 59, 152).bezierCurveTo(60, 129, 82, 96, 123, 91).stroke();
+
+stage.add(g);
 _cax2.default.tick(function () {
   stage.update();
+});
+
+stage.on('click', function (evt) {
+  console.log(evt.stageX + ',' + evt.stageY);
 });
 
 /***/ }),
