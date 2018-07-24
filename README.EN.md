@@ -2,7 +2,7 @@ English | [简体中文](./README.md)
 
 # Wechart by [Cax](https://github.com/dntzhang/cax)
 
-> Lightweight but powerful charts by cax and three.js. 
+> All the [ch]arts by cax and three.js.
 
 <table>
 <thead>
@@ -14,6 +14,19 @@ English | [简体中文](./README.md)
 </tr>
 </thead>
 <tbody>
+<tr>
+<td align="center"><a title="Magic Cube" href="https://dntzhang.github.io/wechart/packages/magic-cube/examples/simple/" rel="nofollow"><img alt="Magic Cube" src="./asset/c31.png" style="max-width:100%;"></a></td>
+<td align="center"><a href="https://github.com/dntzhang/wechart/blob/master/packages/magic-cube/examples/simple/main.js">Source</a></td>
+<td align="center"><a href="https://github.com/dntzhang/wechart/blob/master/packages/magic-cube/src/index.js">Magic Cube Source</a></td>
+<td align="center">Tutorial</td>
+</tr>
+
+<tr>
+<td align="center"><a title="Mandelbrot Set" href="https://dntzhang.github.io/wechart/packages/mandelbrot-set/examples/simple/" rel="nofollow"><img alt="Mandelbrot Set" src="./asset/c29.png" style="max-width:100%;"></a></td>
+<td align="center"><a href="https://github.com/dntzhang/wechart/blob/master/packages/mandelbrot-set/examples/simple/main.js">Source</a></td>
+<td align="center">Mandelbrot Set Source</td>
+<td align="center"><a href="https://github.com/dntzhang/wechart/blob/master/packages/mandelbrot-set/README.md">Tutorial</a></td>
+</tr>
 
 <tr>
 <td align="center"><a title="Avatar" href="https://dntzhang.github.io/wechart/packages/avatar/examples/simple/" rel="nofollow"><img alt="Avatar" src="./asset/c24.png" style="max-width:100%;"></a></td>
@@ -33,6 +46,13 @@ English | [简体中文](./README.md)
 <td align="center"><a title="Countdown" href="https://dntzhang.github.io/wechart/packages/countdown/examples/simple/" rel="nofollow"><img alt="Countdown" src="./asset/c22.png" style="max-width:100%;"></a></td>
 <td align="center"><a href="https://github.com/dntzhang/wechart/blob/master/packages/countdown/examples/simple/main.js">Source</a></td>
 <td align="center"><a href="https://github.com/dntzhang/wechart/blob/master/packages/countdown/src/index.js">Countdown Source</a></td>
+<td align="center">Tutorial</td>
+</tr>
+
+<tr>
+<td align="center"><a title="Particle Countdown" href="https://dntzhang.github.io/wechart/packages/countdown/examples/particle/" rel="nofollow"><img alt="Countdown" src="./asset/c30.png" style="max-width:100%;"></a></td>
+<td align="center"><a href="https://github.com/dntzhang/wechart/blob/master/packages/countdown/examples/particle/main.js">Source</a></td>
+<td align="center">Particle Countdown Source</td>
 <td align="center">Tutorial</td>
 </tr>
 
