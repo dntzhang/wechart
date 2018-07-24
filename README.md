@@ -242,4 +242,4 @@ http://localhost:3000/chart-name/examples/simple/index.html
 
 ## License
 
-MIT @腾讯微信支付 @腾讯AlloyTeam
+MIT @腾讯微信支付 @Wechart团队 @腾讯AlloyTeam 

@@ -203,4 +203,4 @@ English | [简体中文](./README.md)
 
 ## License
 
-MIT @Tencent Wepay @Tencent AlloyTeam
+MIT @Tencent Wepay @Wechart Team @Tencent AlloyTeam
