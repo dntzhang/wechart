@@ -20,16 +20,7 @@ var heat = new Heatmap(data,{
 heat.draw()
 ```
 
-## Reference
-
-#### Constructor
-
-```js
-// create a simpleheat object given an id or canvas reference
-var heat = heatmap(canvas);
-```
-
-#### Appearance
+#### Other methods
 
 ```js
 // set point radius and blur radius (25 and 15 by default)
@@ -41,4 +32,3 @@ heat.gradient(grad);
 // call in case Canvas size changed
 heat.resize();
 ```
-
