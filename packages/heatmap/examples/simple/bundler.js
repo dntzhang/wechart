@@ -127,10 +127,10 @@ document.querySelector('#myCanvas').onmousemove = function (e) {
 
 "use strict";
 /*
-A tiny JavaScript library for drawing heatmaps with Canvas 
-demo:   http://mourner.github.io/simpleheat/demo
-github: https://github.com/mourner/simpleheat
+Inspired by: https://github.com/mourner/simpleheat
+Simpleheat demo: http://mourner.github.io/simpleheat/demo
 */
+
 
 
 if (true) module.exports = Heatmap;

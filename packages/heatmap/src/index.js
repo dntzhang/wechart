@@ -1,8 +1,8 @@
 /*
-A tiny JavaScript library for drawing heatmaps with Canvas 
-demo:   http://mourner.github.io/simpleheat/demo
-github: https://github.com/mourner/simpleheat
+Inspired by: https://github.com/mourner/simpleheat
+Simpleheat demo: http://mourner.github.io/simpleheat/demo
 */
+
 'use strict';
 
 if (typeof module !== 'undefined') module.exports = Heatmap;
