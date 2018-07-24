@@ -9,6 +9,8 @@ try {
     argv = process.argv;
 }
 
+argv[3] = argv[3]||'simple'
+
 var config = {
     entry: path.resolve(__dirname, './packages/' + argv[2] + '/examples/' + argv[3] + '/main.js'),
     output: {

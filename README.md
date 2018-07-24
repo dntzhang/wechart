@@ -204,6 +204,8 @@
 * 组件的例子放在 examples 目录，比如 simple，组件 Group 源码放在 src 目录
 * 执行 `npm install` 安装依赖
 * 执行 `npm run build chart-name simple` 进行构建
+
+当然也支持 `npm run build chart-name` 简写默认自动去找 simple 目录。
     
 build 命令会自动打开浏览器中对应目录的 html (如果3000端口没占用，占用的话会递增):
 
