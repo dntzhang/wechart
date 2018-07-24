@@ -74,6 +74,10 @@ var _cax = __webpack_require__(1);
 
 var _cax2 = _interopRequireDefault(_cax);
 
+var _player = __webpack_require__(3);
+
+var _player2 = _interopRequireDefault(_player);
+
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
 var stage = new _cax2.default.Stage(660, 600, 'body');
@@ -81,19 +85,30 @@ var stage = new _cax2.default.Stage(660, 600, 'body');
 var bg = new _cax2.default.Bitmap('./track.jpg');
 stage.add(bg);
 
-var g = new _cax2.default.Graphics();
-g.moveTo(123, 91)
-//均匀分布控制点，防止速度前快后慢，因为 getPosition是根据路程求 t
-.bezierCurveTo(123, 91, 389, 91, 389, 91).bezierCurveTo(430, 90, 473, 145, 474, 213).bezierCurveTo(475, 278, 420, 340, 346, 334).bezierCurveTo(257, 316, 224, 229, 158, 229).bezierCurveTo(82, 250, 51, 180, 59, 152).bezierCurveTo(60, 129, 82, 96, 123, 91).stroke();
+var shape = [[123, 91, 123, 91, 389, 91, 389, 91], [389, 91, 430, 90, 473, 145, 474, 213], [474, 213, 475, 278, 420, 340, 346, 334], [346, 334, 257, 316, 224, 229, 158, 229], [158, 229, 82, 250, 51, 180, 59, 152], [59, 152, 60, 129, 82, 96, 123, 91]];
 
-stage.add(g);
+var player = new _player2.default(shape);
+
 _cax2.default.tick(function () {
   stage.update();
+  player.update();
 });
+stage.add(player);
 
-stage.on('click', function (evt) {
-  console.log(evt.stageX + ',' + evt.stageY);
-});
+// const g = new cax.Graphics()
+// g.moveTo(123, 91)
+// //均匀分布控制点，防止速度前快后慢，因为 getPosition是根据路程求 t
+// .bezierCurveTo(123, 91,389,91,389,91)
+// .bezierCurveTo(430, 90,473,145,474 ,213)
+
+// .bezierCurveTo(475,278,420,340,346,334)
+// .bezierCurveTo(257,316,224,229,158,229)
+// .bezierCurveTo(82,250,51,180,59,152)
+
+// .bezierCurveTo(60,129,82,96,123, 91)
+
+// .stroke()
+//stage.add(g)
 
 /***/ }),
 /* 1 */
@@ -6743,6 +6758,229 @@ module.exports = function (module) {
 	}
 	return module;
 };
+
+/***/ }),
+/* 3 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+
+var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
+
+var _cax = __webpack_require__(1);
+
+var _cax2 = _interopRequireDefault(_cax);
+
+var _bezier = __webpack_require__(4);
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+
+function _possibleConstructorReturn(self, call) { if (!self) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return call && (typeof call === "object" || typeof call === "function") ? call : self; }
+
+function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
+
+var Player = function (_cax$Group) {
+  _inherits(Player, _cax$Group);
+
+  function Player(shape) {
+    _classCallCheck(this, Player);
+
+    var _this = _possibleConstructorReturn(this, (Player.__proto__ || Object.getPrototypeOf(Player)).call(this));
+
+    _this.g = new _cax2.default.Graphics();
+    _this.g.beginPath();
+    _this.g.arc(0, 0, 5, 0, Math.PI * 2);
+    _this.g.fill();
+
+    shape.pathLen = 0;
+    shape.forEach(function (c) {
+      c.bzLen = (0, _bezier.getLength)(c[0], c[1], c[2], c[3], c[4], c[5], c[6], c[7], 50);
+      shape.pathLen += c.bzLen;
+    });
+
+    _this.shape = shape;
+    _this.add(_this.g);
+    _this.speed = 10;
+    _this.length = 0;
+
+    _this.bitmap = new _cax2.default.Bitmap('./car.png');
+    _this.bitmap.scaleX = _this.bitmap.scaleY = 0.2;
+    _this.bitmap.originX = 46;
+    _this.bitmap.originY = 100;
+    _this.add(_this.bitmap);
+    return _this;
+  }
+
+  _createClass(Player, [{
+    key: 'update',
+    value: function update() {
+
+      this.length += this.speed;
+      var position = (0, _bezier.getPosition)(this.length, this.shape);
+      var rotation = (0, _bezier.slope)(this.shape[position.index], position.t) * 180 / Math.PI;
+      var point = (0, _bezier.getPoint)(position.t, position.index, this.shape);
+
+      if (rotation === Infinity) {
+        rotation = 0;
+      }
+
+      this.bitmap.rotation = rotation + 90;
+      this.bitmap.x = point.x;
+      this.bitmap.y = point.y;
+
+      if (this.length > this.shape.pathLen) {
+        this.length -= this.shape.pathLen;
+      }
+    }
+  }]);
+
+  return Player;
+}(_cax2.default.Group);
+
+exports.default = Player;
+
+/***/ }),
+/* 4 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+exports.lerp = lerp;
+exports.dca = dca;
+exports.slopeByPoints = slopeByPoints;
+exports.slope = slope;
+exports.getValueByPoints = getValueByPoints;
+exports.getValue = getValue;
+exports.getLength = getLength;
+exports.getPosition = getPosition;
+exports.getPoint = getPoint;
+function lerp(p1, p2, t) {
+  return { x: p1.x + (p2.x - p1.x) * t, y: p1.y + (p2.y - p1.y) * t };
+}
+
+function dca(points, t) {
+  var len = points.length;
+
+  if (len === 2) {
+    return lerp(points[0], points[1], t);
+  }
+
+  var i = 0,
+      next = [];
+  for (; i < len - 1; i++) {
+    next.push(lerp(points[i], points[i + 1], t));
+  }
+
+  return dca(next, t);
+}
+
+function slopeByPoints(p1x, p1y, c1x, c1y, c2x, c2y, p2x, p2y, t) {
+  var ax = p1x * 3 - c1x * 9 + 9 * c2x - 3 * p2x;
+  var bx = c1x * 6 - 12 * c2x + 6 * p2x;
+  var cx = 3 * c2x - 3 * p2x;
+
+  var ay = p1y * 3 - c1y * 9 + 9 * c2y - 3 * p2y;
+  var by = c1y * 6 - 12 * c2y + 6 * p2y;
+  var cy = 3 * c2y - 3 * p2y;
+
+  var sqt = t * t;
+
+  return Math.atan((ay * sqt + by * t + cy) / (ax * sqt + bx * t + cx));
+}
+
+function slope(points, t, dt) {
+  var p1 = getValue(points, t),
+      p2 = getValue(points, t + (dt || 0.01)),
+      dy = p2.y - p1.y,
+      dx = p2.x - p1.x;
+  return dy == 0 ? Infinity : Math.atan(dy / dx);
+
+  // let p1x =points[0], p1y=points[1], c1x=points[2], c1y=points[3], c2x=points[4], c2y=points[5], p2x=points[6], p2y=points[7]
+  // let ax = p1x * 3 - c1x * 9 + 9 * c2x - 3 * p2x
+  // let bx = c1x * 6 - 12 * c2x + 6 * p2x
+  // let cx = 3 * c2x - 3 * p2x
+
+  // let ay = p1y * 3 - c1y * 9 + 9 * c2y - 3 * p2y
+  // let by = c1y * 6 - 12 * c2y + 6 * p2y
+  // let cy = 3 * c2y - 3 * p2y
+
+  // let sqt = t * t
+
+  // return Math.atan((ay * sqt + by * t + cy) / (ax * sqt + bx * t + cx))
+}
+
+function getValueByPoints(p1x, p1y, c1x, c1y, c2x, c2y, p2x, p2y, t) {
+  return dca([{ x: p1x, y: p1y }, { x: c1x, y: c1y }, { x: c2x, y: c2y }, { x: p2x, y: p2y }], t);
+}
+
+function getValue(points, t) {
+  return dca([{ x: points[0], y: points[1] }, { x: points[2], y: points[3] }, { x: points[4], y: points[5] }, { x: points[6], y: points[7] }], t);
+}
+
+// steps 根据起点和终点自动计算？
+function getLength(p1x, p1y, c1x, c1y, c2x, c2y, p2x, p2y, steps) {
+  var step = 1 / steps;
+  var points = [];
+
+  var len = 0;
+  for (var t = 0; t < 1.0 + step; t += step) {
+    points.push(getValueByPoints(p1x, p1y, c1x, c1y, c2x, c2y, p2x, p2y, Math.min(t, 1)));
+  }
+  var p0 = void 0,
+      p1 = void 0,
+      dx = void 0,
+      dy = void 0;
+  for (var i = 0; i < points.length - 1; i++) {
+    p0 = points[i];
+    p1 = points[i + 1];
+    dx = p1.x - p0.x;
+    dy = p1.y - p0.y;
+    len += Math.sqrt(dx * dx + dy * dy);
+  }
+
+  return len;
+}
+
+function getPosition(length, shape) {
+  var current = 0;
+  var total = shape.pathLen;
+  var index = 0;
+  var t = 0;
+
+  if (length > total) {
+    length = length - total;
+  }
+  for (var i = 0, len = shape.length; i < len; i++) {
+    var c = shape[i];
+    current += c.bzLen;
+    if (current > length) {
+      index = i;
+      t = 1 - (current - length) / c.bzLen;
+      break;
+    }
+  }
+
+  return {
+    t: t,
+    index: index
+  };
+}
+
+function getPoint(t, index, shape) {
+  var ps = shape[index];
+  return getValue(ps, t);
+}
 
 /***/ })
 /******/ ]);
