@@ -15,6 +15,13 @@
 </thead>
 <tbody>
 <tr>
+<td align="center"><a title="Racing" href="https://dntzhang.github.io/wechart/packages/path/examples/racing/" rel="nofollow"><img alt="Racing" src="./asset/c33.png" style="max-width:100%;"></a></td>
+<td align="center"><a href="https://github.com/dntzhang/wechart/blob/master/packages/path/examples/racing/main.js">Source</a></td>
+<td align="center">Racing Source</td>
+<td align="center">Tutorial</td>
+</tr>
+
+<tr>
 <td align="center"><a title="Magic Cube" href="https://dntzhang.github.io/wechart/packages/magic-cube/examples/simple/" rel="nofollow"><img alt="Magic Cube" src="./asset/c31.png" style="max-width:100%;"></a></td>
 <td align="center"><a href="https://github.com/dntzhang/wechart/blob/master/packages/magic-cube/examples/simple/main.js">Source</a></td>
 <td align="center"><a href="https://github.com/dntzhang/wechart/blob/master/packages/magic-cube/src/index.js">Magic Cube Source</a></td>
@@ -150,15 +157,10 @@
 <td align="center">Tiger Source</td>
 <td align="center">Tutorial</td>
 </tr>
+
 <tr>
-<td align="center"><a title="Path" href="https://dntzhang.github.io/wechart/packages/path/examples/map/" rel="nofollow"><img alt="Path" src="./asset/c17.png" style="max-width:100%;"></a></td>
-<td align="center"><a href="https://github.com/dntzhang/wechart/blob/master/packages/path/examples/map/main.js">Source</a></td>
-<td align="center">Path Source</td>
-<td align="center">Tutorial</td>
-</tr>
-<tr>
-<td align="center"><a title="Draw" href="https://dntzhang.github.io/wechart/packages/path/examples/simple/" rel="nofollow"><img alt="Draw" src="./asset/c16.png" style="max-width:100%;"></a></td>
-<td align="center"><a href="https://github.com/dntzhang/wechart/blob/master/packages/path/examples/simple/main.js">Source</a></td>
+<td align="center"><a title="Draw" href="https://dntzhang.github.io/wechart/packages/path/examples/man/" rel="nofollow"><img alt="Draw" src="./asset/c34.png" style="max-width:100%;"></a></td>
+<td align="center"><a href="https://github.com/dntzhang/wechart/blob/master/packages/path/examples/man/main.js">Source</a></td>
 <td align="center">Draw Source</td>
 <td align="center">Tutorial</td>
 </tr>
@@ -230,7 +232,6 @@ http://localhost:3000/chart-name/examples/simple/index.html
   * [Vision](https://dntzhang.github.io/cax/packages/cax/examples/vision/)
   * [Cache](https://dntzhang.github.io/cax/packages/cax/examples/cache/)
   * [Filter](https://dntzhang.github.io/cax/packages/cax/examples/filter/)
-  * [SVG](https://dntzhang.github.io/wechart/packages/path/examples/man/)
   * [Graphics](https://dntzhang.github.io/cax/packages/cax/examples/graphics/)
   * [Composite Operation](http://dntzhang.github.io/cax/packages/cax/examples/composite-operation/)
 
