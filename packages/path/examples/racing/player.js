@@ -17,7 +17,7 @@ class Player extends cax.Group {
 
     this.shape = shape
     this.add(this.g)
-    this.speed = 10
+    this.speed = 5
     this.length = 0
 
     this.bitmap = new cax.Bitmap('./car.png')

@@ -6807,7 +6807,7 @@ var Player = function (_cax$Group) {
 
     _this.shape = shape;
     _this.add(_this.g);
-    _this.speed = 10;
+    _this.speed = 5;
     _this.length = 0;
 
     _this.bitmap = new _cax2.default.Bitmap('./car.png');
