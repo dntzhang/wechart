@@ -1,16 +1,13 @@
 
 import cax from 'cax'
 import Loader from '../../../common/loader'
-//import Axis from '../../src/index'
-
+// import Axis from '../../src/index'
 
 const stage = new cax.Stage(240, 280, '#canvasCtn')
 
 const loader = new Loader({
   res: [{ id: 'a1', src: '../../asset/a1.jpg' }, { id: 'a2', src: '../../asset/a2.jpg' }, { id: 'a3', src: '../../asset/a3.jpg' }],
   complete: () => {
-
-
     let groupA = new cax.Group()
     let bitmapA = new cax.Bitmap(loader.get('a1'))
 
@@ -28,8 +25,6 @@ const loader = new Loader({
     groupA.add(bitmapA, graphicsA)
 
     stage.add(groupA)
-
-
 
     let groupB = new cax.Group()
     let bitmapB = new cax.Bitmap(loader.get('a2'))
@@ -49,11 +44,6 @@ const loader = new Loader({
     groupB.x = 100
 
     stage.add(groupB)
-
-
-
-
-
 
     const group = new cax.Group()
 
@@ -77,7 +67,6 @@ const loader = new Loader({
 
     group.add(groupB)
 
-
     groupA = new cax.Group()
     bitmapA = new cax.Bitmap(loader.get('a1'))
 
@@ -97,26 +86,22 @@ const loader = new Loader({
 
     groupA.compositeOperation = 'source-atop'
 
-
     group.add(groupA)
 
     group.cache(0, 0, 400, 800)
     group.y = -200
     stage.add(group)
 
-
     cax.tick(() => {
       stage.update()
     })
 
-
     document.querySelector('#btnA').addEventListener('click', () => {
-      group.y+=3
-      
+      group.y += 3
     })
-    
+
     document.querySelector('#btnB').addEventListener('click', () => {
-      group.y-=3
+      group.y -= 3
     })
   }
 })

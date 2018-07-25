@@ -11,10 +11,9 @@ const data = [ // 数据
   { name: 'Tencent', age: cax.util.randomInt(-20, 20), exp: cax.util.randomInt(500, 1000) },
   { name: 'Cax', age: cax.util.randomInt(-20, 20), exp: cax.util.randomInt(500, 1000) }
 ]
-const xScale =  scaleLinear([0, 7], [0, 700])
+const xScale = scaleLinear([0, 7], [0, 700])
 const yScaleLeft = scaleLinear([-30, 30], [200, -200])
 const yScaleRight = scaleLinear([500, 1000], [200, -200])
-
 
 const config = [{// rects代表拆分多个rect，下面是相关的配置
   scale: yScaleLeft,
@@ -25,7 +24,7 @@ const config = [{// rects代表拆分多个rect，下面是相关的配置
   processing: (item) => { return item.age }, // 数据预处理，提取影响形状的报表
   color: (index) => { // 每个柱子的颜色
     return '#4BC0C0'
-    //return ['#4BC0C0', '#FF6485', '#FFCE5C', '#ADACB9', '#A37AC1'][index]
+    // return ['#4BC0C0', '#FF6485', '#FFCE5C', '#ADACB9', '#A37AC1'][index]
   },
   tooltip: (item) => {
     return item.name + '-age<br/>' + item.age
@@ -58,7 +57,7 @@ const config = [{// rects代表拆分多个rect，下面是相关的配置
   processing: (item) => { return item.exp }, // 数据预处理，提取影响形状的报表
   color: (index) => { // 每个柱子的颜色
     return '#FF6485'
-    //return ['#4BC0C0', '#FF6485', '#FFCE5C', '#ADACB9', '#A37AC1'][index]
+    // return ['#4BC0C0', '#FF6485', '#FFCE5C', '#ADACB9', '#A37AC1'][index]
   },
   tooltip: (item) => {
     return item.name + '-exp<br/>' + item.exp
@@ -132,7 +131,7 @@ const axisConfig = {
       color: '#444',
       x: 10,
       y: -8
-    },
+    }
     // gird: {
     //   color: '#eee',
 

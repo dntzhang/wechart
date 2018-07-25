@@ -2,7 +2,7 @@
 
 # Wechart by [Cax](https://github.com/dntzhang/cax)
 
-> Cax 和 three.js 渲染一切图[表]
+> Cax 和 three.js 创造一切图[表]
 
 <table>
 <thead>
@@ -14,6 +14,26 @@
 </tr>
 </thead>
 <tbody>
+<tr>
+<td align="center"><a title="Functions" href="https://dntzhang.github.io/wechart/packages/functions/examples/simple/" rel="nofollow"><img alt="Functions" src="./asset/c36.png" style="max-width:100%;"></a></td>
+<td align="center"><a href="https://github.com/dntzhang/wechart/blob/master/packages/functions/examples/simple/main.js">Source</a></td>
+<td align="center"><a href="https://github.com/dntzhang/wechart/blob/master/packages/functions/src/index.js">Functions Source</a></td>
+<td align="center">Tutorial</td>
+</tr>
+
+<tr>
+<td align="center"><a title="Racing" href="https://dntzhang.github.io/wechart/packages/path/examples/racing/" rel="nofollow"><img alt="Racing" src="./asset/c33.png" style="max-width:100%;"></a></td>
+<td align="center"><a href="https://github.com/dntzhang/wechart/blob/master/packages/path/examples/racing/main.js">Source</a></td>
+<td align="center">Racing Source</td>
+<td align="center">Tutorial</td>
+</tr>
+
+<tr>
+<td align="center"><a title="Magic Cube" href="https://dntzhang.github.io/wechart/packages/magic-cube/examples/simple/" rel="nofollow"><img alt="Magic Cube" src="./asset/c31.png" style="max-width:100%;"></a></td>
+<td align="center"><a href="https://github.com/dntzhang/wechart/blob/master/packages/magic-cube/examples/simple/main.js">Source</a></td>
+<td align="center"><a href="https://github.com/dntzhang/wechart/blob/master/packages/magic-cube/src/index.js">Magic Cube Source</a></td>
+<td align="center">Tutorial</td>
+</tr>
 
 <tr>
 <td align="center"><a title="Mandelbrot Set" href="https://dntzhang.github.io/wechart/packages/mandelbrot-set/examples/simple/" rel="nofollow"><img alt="Mandelbrot Set" src="./asset/c29.png" style="max-width:100%;"></a></td>
@@ -103,7 +123,7 @@
 <td align="center">Tutorial</td>
 </tr>
 <tr>
-<td align="center"><a title="Bar" href="https://dntzhang.github.io/wechart/packages/bar/examples/horizontal/" rel="nofollow"><img alt="Bar" src="./asset/c19.png" style="max-width:100%;"></a></td>
+<td align="center"><a title="Bar" href="https://dntzhang.github.io/wechart/packages/bar/examples/horizontal/" rel="nofollow"><img alt="Bar" src="./asset/c35.png" style="max-width:100%;"></a></td>
 <td align="center"><a href="https://github.com/dntzhang/wechart/blob/master/packages/bar/examples/horizontal/main.js">Source</a></td>
 
 <td align="center">Tutorial</td>
@@ -144,15 +164,10 @@
 <td align="center">Tiger Source</td>
 <td align="center">Tutorial</td>
 </tr>
+
 <tr>
-<td align="center"><a title="Path" href="https://dntzhang.github.io/wechart/packages/path/examples/map/" rel="nofollow"><img alt="Path" src="./asset/c17.png" style="max-width:100%;"></a></td>
-<td align="center"><a href="https://github.com/dntzhang/wechart/blob/master/packages/path/examples/map/main.js">Source</a></td>
-<td align="center">Path Source</td>
-<td align="center">Tutorial</td>
-</tr>
-<tr>
-<td align="center"><a title="Draw" href="https://dntzhang.github.io/wechart/packages/path/examples/simple/" rel="nofollow"><img alt="Draw" src="./asset/c16.png" style="max-width:100%;"></a></td>
-<td align="center"><a href="https://github.com/dntzhang/wechart/blob/master/packages/path/examples/simple/main.js">Source</a></td>
+<td align="center"><a title="Draw" href="https://dntzhang.github.io/wechart/packages/path/examples/man/" rel="nofollow"><img alt="Draw" src="./asset/c34.png" style="max-width:100%;"></a></td>
+<td align="center"><a href="https://github.com/dntzhang/wechart/blob/master/packages/path/examples/man/main.js">Source</a></td>
 <td align="center">Draw Source</td>
 <td align="center">Tutorial</td>
 </tr>
@@ -182,6 +197,14 @@
 <td align="center">Texture Mapping Source</td>
 <td align="center">Tutorial</td>
 </tr>
+
+<tr>
+<td align="center"><a title="Heatmap" href="https://dntzhang.github.io/wechart/packages/heatmap/examples/simple/" rel="nofollow"><img alt="Heatmap" src="./asset/c32.png" style="max-width:100%;"></a></td>
+<td align="center"><a href="https://github.com/dntzhang/wechart/blob/master/packages/heatmap/examples/simple/main.js">Source</a></td>
+<td align="center"><a href="https://github.com/dntzhang/wechart/blob/master/packages/heatmap/src/index.js">Heatmap Source</a></td>
+<td align="center"><a href="https://github.com/dntzhang/wechart/blob/master/packages/heatmap/README.md">Tutorial</a></td>
+</tr>
+
 </tbody></table>
 
 ## 怎么贡献图[表]？
@@ -190,6 +213,8 @@
 * 组件的例子放在 examples 目录，比如 simple，组件 Group 源码放在 src 目录
 * 执行 `npm install` 安装依赖
 * 执行 `npm run build chart-name simple` 进行构建
+
+当然也支持 `npm run build chart-name` 简写默认自动去找 simple 目录。
     
 build 命令会自动打开浏览器中对应目录的 html (如果3000端口没占用，占用的话会递增):
 
@@ -214,7 +239,6 @@ http://localhost:3000/chart-name/examples/simple/index.html
   * [Vision](https://dntzhang.github.io/cax/packages/cax/examples/vision/)
   * [Cache](https://dntzhang.github.io/cax/packages/cax/examples/cache/)
   * [Filter](https://dntzhang.github.io/cax/packages/cax/examples/filter/)
-  * [SVG](https://dntzhang.github.io/wechart/packages/path/examples/man/)
   * [Graphics](https://dntzhang.github.io/cax/packages/cax/examples/graphics/)
   * [Composite Operation](http://dntzhang.github.io/cax/packages/cax/examples/composite-operation/)
 
@@ -228,4 +252,4 @@ http://localhost:3000/chart-name/examples/simple/index.html
 
 ## License
 
-MIT @腾讯微信支付 @腾讯AlloyTeam
+MIT @腾讯微信支付 @Wechart团队 @腾讯AlloyTeam 

@@ -66,13 +66,13 @@ class Earth extends THREE.Group {
     // +90是要有个变换
     let coord = lglt2xyz(lng + 90, lat, 200)
     let light = new THREE.PlaneGeometry(8, 64)
-    let texture = new THREE.TextureLoader().load( "./light.jpg" )
+    let texture = new THREE.TextureLoader().load('./light.jpg')
     texture.wrapT = THREE.ClampToEdgeWrapping
     texture.rotation = Math.PI
-    texture.center = new THREE.Vector2(0.5, 0.5);
+    texture.center = new THREE.Vector2(0.5, 0.5)
     let lightMaterial = new THREE.MeshBasicMaterial({
       transparent: true,
-      opacity: .9,
+      opacity: 0.9,
       blending: THREE.AdditiveBlending,
       side: THREE.DoubleSide,
       depthWrite: false,
@@ -82,31 +82,31 @@ class Earth extends THREE.Group {
     let lightMesh = new THREE.Mesh(light, lightMaterial)
     let wrapper = new THREE.Object3D()
 
-    lightMesh.applyMatrix((new THREE.Matrix4).makeTranslation(0, 32, 0))
-    lightMesh.applyMatrix((new THREE.Matrix4).makeRotationX(Math.PI / 2))
+    lightMesh.applyMatrix((new THREE.Matrix4()).makeTranslation(0, 32, 0))
+    lightMesh.applyMatrix((new THREE.Matrix4()).makeRotationX(Math.PI / 2))
 
     wrapper.add(lightMesh)
 
     let ringBody = new THREE.RingGeometry(0, 5, 6, 1)
     let ringBodyMaterial = new THREE.MeshBasicMaterial({
-        color: 0xffffff,
-        side: THREE.DoubleSide
+      color: 0xffffff,
+      side: THREE.DoubleSide
     })
-    
-    let ringBodyMesh = new THREE.Mesh(ringBody, ringBodyMaterial);
-    ringBodyMesh.position.set(0,0,0)
-    
+
+    let ringBodyMesh = new THREE.Mesh(ringBody, ringBodyMaterial)
+    ringBodyMesh.position.set(0, 0, 0)
+
     wrapper.add(ringBodyMesh)
 
-    let ringLine = new THREE.RingGeometry(7.8, 8, 6, 1);
+    let ringLine = new THREE.RingGeometry(7.8, 8, 6, 1)
     let ringLineMaterial = new THREE.MeshBasicMaterial({
-        color: 0xffffff,
-        side: THREE.DoubleSide,
-        wireframe: true
+      color: 0xffffff,
+      side: THREE.DoubleSide,
+      wireframe: true
     })
-    
+
     let ringLineMesh = new THREE.Mesh(ringLine, ringLineMaterial)
-    ringLineMesh.position.set(0,0,0)
+    ringLineMesh.position.set(0, 0, 0)
 
     wrapper.add(ringLineMesh)
 

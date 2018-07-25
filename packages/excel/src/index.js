@@ -413,7 +413,6 @@ class Excel extends Group {
     let result = true
     this.option.merge.every(rect => {
       if (x >= rect[0] && x <= rect[0] + rect[2] - 1 && y >= rect[1] && y <= rect[1] + rect[3] - 1) {
-
         if (rect[1] > 1) {
           if (x === rect[0] && dir === 'right') {
             result = false
@@ -465,7 +464,7 @@ class Excel extends Group {
         const text = dataRow[x]
         this.mCtx.font = cell.fontSize + 'px ' + cell.fontFamily
         const textWidth = this.mCtx.measureText(text).width
-        const cellWidth = this.getMergeInfo(y,x).width||option.colWidth[x]
+        const cellWidth = this.getMergeInfo(y, x).width || option.colWidth[x]
         if (cell.textBreak === 'auto' && textWidth > cellWidth) {
           const step = Math.round(text.length * (cellWidth - 30) / textWidth / 2)
 

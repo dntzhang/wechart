@@ -18,8 +18,8 @@ class Axis extends Group {
     switch (orient) {
       case 'left':
       case 'right':
-        moveTo[0] = x 
-        moveTo[1] = y+ rf
+        moveTo[0] = x
+        moveTo[1] = y + rf
         lineTo[0] = x
         lineTo[1] = y + rt
         break
@@ -32,7 +32,7 @@ class Axis extends Group {
         break
     }
 
-    g.beginPath().strokeStyle(axis.color).moveTo( moveTo[0],  moveTo[1]).lineTo(lineTo[0], lineTo[1]).stroke()
+    g.beginPath().strokeStyle(axis.color).moveTo(moveTo[0], moveTo[1]).lineTo(lineTo[0], lineTo[1]).stroke()
 
     let current
     switch (orient) {
@@ -46,7 +46,7 @@ class Axis extends Group {
           }
 
           if (!axis.text.range || i >= axis.text.range[0] && i <= axis.text.range[1]) {
-            const text = new Text(axis.text.value ? axis.text.value(i) : i, axis.text.font, axis.text.color)
+            const text = new Text(axis.text.value ? axis.text.value(i) : i, {font:axis.text.font, color:axis.text.color})
             text.x = current + axis.text.x
             text.y = y + 5 + axis.text.y
             text.rotation = axis.text.rotation || 0
@@ -57,16 +57,15 @@ class Axis extends Group {
       case 'left':
 
         for (let i = f; i <= t; i += axis.interval) {
-       
-          current = scale(i)+y
+          current = scale(i) + y
           g.beginPath().strokeStyle(axis.color).moveTo(x, current).lineTo(x - 5, current).stroke()
 
           if (axis.gird && i > f) {
             g.beginPath().strokeStyle(axis.gird.color).moveTo(x + 1, current).lineTo(x + axis.gird.length, current).stroke()
           }
           if (!axis.text.range || i >= axis.text.range[0] && i <= axis.text.range[1]) {
-            const text = new Text(axis.text.value ? axis.text.value(i) : i, axis.text.font, axis.text.color)
-            text.x = x - 5 + axis.text.x
+            const text = new Text(axis.text.value ? axis.text.value(i) : i, {font:axis.text.font, color:axis.text.color})
+            text.x = x - 5 + axis.text.x - text.getWidth()
             text.y = current + axis.text.y
             text.rotation = axis.text.rotation || 0
             this.add(text)
@@ -76,7 +75,6 @@ class Axis extends Group {
 
       case 'top':
         for (let i = f; i <= t; i += axis.interval) {
-          
           current = scale(i) + x
           g.beginPath().strokeStyle(axis.color).moveTo(current, y).lineTo(current, y - 5).stroke()
 
@@ -85,7 +83,7 @@ class Axis extends Group {
           }
 
           if (!axis.text.range || i >= axis.text.range[0] && i <= axis.text.range[1]) {
-            const text = new Text(axis.text.value ? axis.text.value(i) : i, axis.text.font, axis.text.color)
+            const text = new Text(axis.text.value ? axis.text.value(i) : i, {font:axis.text.font, color:axis.text.color})
             text.x = current + axis.text.x
             text.y = y - 5 + axis.text.y
             text.rotation = axis.text.rotation || 0
@@ -104,7 +102,7 @@ class Axis extends Group {
             g.beginPath().strokeStyle(axis.gird.color).moveTo(x + 1, current).lineTo(x + axis.gird.length, current).stroke()
           }
           if (!axis.text.range || i >= axis.text.range[0] && i <= axis.text.range[1]) {
-            const text = new Text(axis.text.value ? axis.text.value(i) : i, axis.text.font, axis.text.color)
+            const text = new Text(axis.text.value ? axis.text.value(i) : i, {font:axis.text.font, color:axis.text.color})
             text.x = x + 5 + axis.text.x
             text.y = current + axis.text.y
             text.rotation = axis.text.rotation || 0
