@@ -6699,27 +6699,33 @@ var _index2 = _interopRequireDefault(_index);
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
-function heartTop(x) {
-  return Math.pow(x * x, 1 / 3) + Math.pow(1 - x * x, 1 / 2);
-}
-
-function heartBottom(x) {
-  return Math.pow(x * x, 1 / 3) - Math.pow(1 - x * x, 1 / 2);
-}
-
-var stage = new _cax2.default.Stage(400, 400, 'body');
-var funs = new _index2.default([heartTop, heartBottom], {
-  scale: 60,
+var ips = document.querySelectorAll('input');
+var fA = function fA() {
+  return eval(ips[0].value);
+};
+var fB = function fB() {
+  return eval(ips[1].value);
+};
+var stage = new _cax2.default.Stage(400, 400, '#canvasCtn');
+var funs = new _index2.default([fA, fB], {
+  scale: 50,
   width: stage.width,
   height: stage.height,
   fnColor: function fnColor() {
     return 'red';
   },
-  axisColor: '#888'
+  axisColor: '#999',
+  lineWidth: 3,
+  step: 0.01
 });
 
 stage.add(funs);
 stage.update();
+
+document.querySelector('#drawBtn').addEventListener('click', function () {
+  funs.update();
+  stage.update();
+});
 
 /***/ }),
 /* 2 */
@@ -6789,77 +6795,132 @@ var Functions = function (_Group) {
     var _this = _possibleConstructorReturn(this, (Functions.__proto__ || Object.getPrototypeOf(Functions)).call(this));
 
     _this.scale = 1;
-    _this.g = new Graphics();
-    _this.range = [-5, 5];
+
     _this.list = [];
     _this.option = Object.assign({
       scale: 60,
       width: 400,
       height: 400,
+      step: 0.0001,
       color: function color() {}
     }, option);
-    fns.forEach(function (fn) {
-      var arr = [];
-      for (var i = _this.range[0]; i < _this.range[1]; i += 0.01) {
-        var y = fn(i);
-        if (!isNaN(y)) {
-          arr.push({ x: i, y: y });
-        }
-      }
-      _this.list.push(arr);
-    });
 
+    _this.fns = fns;
+
+    _this.compute();
     _this.render();
-    _this.g.rotation = 180;
-    _this.g.x = _this.option.width / 2;
-    _this.g.y = _this.option.height / 2;
-    _this.ag = new Graphics();
-    _this.add(_this.ag, _this.g);
-
     _this.renderAxis();
     return _this;
   }
 
   _createClass(Functions, [{
-    key: 'render',
-    value: function render() {
+    key: 'compute',
+    value: function compute() {
       var _this2 = this;
 
+      var range = Math.ceil(this.option.width / this.option.scale / 2);
+
+      this.fns.forEach(function (fn) {
+        var arr = [];
+        for (var i = -range; i < range; i += _this2.option.step) {
+          window.x = i;
+          var y = fn(i);
+          if (!isNaN(y)) {
+            arr.push({ x: i, y: y });
+          }
+        }
+        _this2.list.push(arr);
+      });
+      delete window.x;
+    }
+  }, {
+    key: 'render',
+    value: function render() {
+      var _this3 = this;
+
+      this.g = new Graphics();
+
+      this.g.rotation = 180;
+      this.g.x = this.option.width / 2;
+      this.g.y = this.option.height / 2;
       this.g.clear();
       this.list.forEach(function (fnPoints, index) {
-        _this2.g.fillStyle(_this2.option.color(index));
-        fnPoints.forEach(function (point) {
-          _this2.g.beginPath().arc(point.x * _this2.option.scale, point.y * _this2.option.scale, 1, 0, Math.PI * 2).fill();
+        _this3.g.strokeStyle(_this3.option.fnColor(index)).beginPath().lineWidth(_this3.option.lineWidth);
+        fnPoints.forEach(function (point, subIndex) {
+          _this3.g[subIndex === 0 ? 'moveTo' : 'lineTo'](point.x * _this3.option.scale, point.y * _this3.option.scale);
         });
+
+        _this3.g.stroke();
       });
+
+      this.add(this.g);
+    }
+  }, {
+    key: 'update',
+    value: function update() {
+      this.list.length = 0;
+      this.empty();
+      this.compute();
+      this.render();
+      this.renderAxis();
     }
   }, {
     key: 'renderAxis',
     value: function renderAxis() {
+      this.ag = new Graphics();
+
+      this.add(this.ag);
       this.ag.clear().strokeStyle(this.option.axisColor);
       var cols = this.option.width / this.option.scale;
       var rows = this.option.height / this.option.scale;
-      for (var i = 0; i < Math.ceil(cols / 2); i += 1) {
+      for (var i = 1; i < Math.ceil(cols / 2); i += 1) {
 
         this.ag.beginPath().moveTo(this.option.width / 2 + i * this.option.scale, 0).lineTo(this.option.width / 2 + i * this.option.scale, this.option.height);
         this.ag.stroke();
-        if (i > 0) {
 
-          this.ag.beginPath().moveTo(this.option.width / 2 - i * this.option.scale, 0).lineTo(this.option.width / 2 - i * this.option.scale, this.option.height);
-          this.ag.stroke();
-        }
+        this.ag.beginPath().moveTo(this.option.width / 2 - i * this.option.scale, 0).lineTo(this.option.width / 2 - i * this.option.scale, this.option.height);
+        this.ag.stroke();
+
+        var _text = new Text(i);
+        this.add(_text);
+        _text.x = this.option.width / 2 + 3;
+        _text.y = this.option.height / 2 + i * this.option.scale;
+
+        _text = new Text(-i);
+        this.add(_text);
+        _text.x = this.option.width / 2 + 3;
+        _text.y = this.option.height / 2 + -i * this.option.scale;
       }
 
-      for (var _i = 0; _i < Math.ceil(rows / 2); _i += 1) {
+      for (var _i = 1; _i < Math.ceil(rows / 2); _i += 1) {
 
         this.ag.beginPath().moveTo(0, this.option.height / 2 + _i * this.option.scale).lineTo(this.option.width, this.option.height / 2 + _i * this.option.scale);
         this.ag.stroke();
-        if (_i > 0) {
 
-          this.ag.beginPath().moveTo(0, this.option.height / 2 - _i * this.option.scale).lineTo(this.option.width, this.option.height / 2 - _i * this.option.scale);
-          this.ag.stroke();
-        }
+        this.ag.beginPath().moveTo(0, this.option.height / 2 - _i * this.option.scale).lineTo(this.option.width, this.option.height / 2 - _i * this.option.scale);
+        this.ag.stroke();
+
+        var _text2 = new Text(_i);
+        this.add(_text2);
+        _text2.y = this.option.height / 2;
+        _text2.x = this.option.width / 2 + _i * this.option.scale;
+
+        _text2 = new Text(-_i);
+        this.add(_text2);
+        _text2.y = this.option.height / 2;
+        _text2.x = this.option.width / 2 + -_i * this.option.scale;
       }
+
+      var text = new Text(0);
+      this.add(text);
+      text.y = this.option.height / 2;
+      text.x = this.option.width / 2 + 3;
+
+      this.ag.beginPath().strokeStyle('black').moveTo(this.option.width / 2, 0).lineTo(this.option.width / 2, this.option.height);
+      this.ag.stroke();
+
+      this.ag.beginPath().strokeStyle('black').moveTo(0, this.option.height / 2).lineTo(this.option.width, this.option.height / 2);
+      this.ag.stroke();
     }
   }]);
 

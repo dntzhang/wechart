@@ -3,27 +3,34 @@ import cax from 'cax'
 import Functions from '../../src/index'
 
 
-function heartTop(x) {
-  return Math.pow(x * x, 1 / 3) + Math.pow(1 - x * x, 1 / 2)
+const ips = document.querySelectorAll('input')
+const fA = function(){
+  return eval(ips[0].value)
 }
-
-function heartBottom(x) {
-  return Math.pow(x * x, 1 / 3) - Math.pow(1 - x * x, 1 / 2)
+const fB = function(){
+  return eval(ips[1].value)
 }
-
-const stage = new cax.Stage(400, 400, 'body')
+const stage = new cax.Stage(400, 400, '#canvasCtn')
 const funs = new Functions([
-  heartTop,
-  heartBottom
+  fA,
+  fB
 ], {
-    scale: 60,
+    scale: 50,
     width: stage.width,
     height: stage.height,
     fnColor: () => {
       return 'red'
     },
-    axisColor: '#888'
+    axisColor: '#999',
+    lineWidth: 3, 
+    step:0.01
   })
 
 stage.add(funs)
 stage.update()
+
+
+document.querySelector('#drawBtn').addEventListener('click',()=>{
+  funs.update()
+  stage.update()
+})
