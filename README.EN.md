@@ -116,7 +116,7 @@ English | [简体中文](./README.md)
 <td align="center">Tutorial</td>
 </tr>
 <tr>
-<td align="center"><a title="Bar" href="https://dntzhang.github.io/wechart/packages/bar/examples/horizontal/" rel="nofollow"><img alt="Bar" src="./asset/c19.png" style="max-width:100%;"></a></td>
+<td align="center"><a title="Bar" href="https://dntzhang.github.io/wechart/packages/bar/examples/horizontal/" rel="nofollow"><img alt="Bar" src="./asset/c35.png" style="max-width:100%;"></a></td>
 <td align="center"><a href="https://github.com/dntzhang/wechart/blob/master/packages/bar/examples/horizontal/main.js">Source</a></td>
 
 <td align="center">Tutorial</td>
