@@ -16,7 +16,7 @@
 <tbody>
 <tr>
 <td align="center"><a title="Functions" href="https://dntzhang.github.io/wechart/packages/path/examples/functions/" rel="nofollow"><img alt="Functions" src="./asset/c36.png" style="max-width:100%;"></a></td>
-<td align="center"><a href="https://github.com/dntzhang/wechart/blob/master/packages/path/examples/functions/main.js">Source</a></td>
+<td align="center"><a href="https://github.com/dntzhang/wechart/blob/master/packages/functions/examples/simple/main.js">Source</a></td>
 <td align="center"><a href="https://github.com/dntzhang/wechart/blob/master/packages/functions/src/index.js">Functions Source</a></td>
 <td align="center">Tutorial</td>
 </tr>
