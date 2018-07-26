@@ -211,6 +211,14 @@ English | [简体中文](./README.md)
 <td align="center"><a href="https://github.com/dntzhang/wechart/blob/master/packages/heatmap/src/index.js">Heatmap Source</a></td>
 <td align="center"><a href="https://github.com/dntzhang/wechart/blob/master/packages/heatmap/README.md">Tutorial</a></td>
 </tr>
+
+<tr>
+<td align="center"><a title="Astar" href="https://dntzhang.github.io/wechart/packages/astar/" rel="nofollow"><img alt="Astar" src="./asset/c98.png" style="max-width:100%;"></a></td>
+<td align="center"><a href="https://github.com/dntzhang/wechart/blob/master/packages/astar">Source</a></td>
+<td align="center">Astar Source</td>
+<td align="center">Tutorial</td>
+</tr>
+
 </tbody></table>
 
 # Who is using cax?
