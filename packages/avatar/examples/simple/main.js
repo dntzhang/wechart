@@ -96,13 +96,22 @@ const loader = new Loader({
       stage.update()
     })
 
+    let tag = false
+
+    
     document.querySelector('#btnA').addEventListener('click', () => {
-      group.y += 3
+      if(tag){
+        groupA.compositeOperation = 'source-atop'
+        group.uncache()
+        group.cache(0, 0, 400, 800)
+      }else{
+        groupA.compositeOperation = 'source-over'
+        group.uncache()
+        group.cache(0, 0, 400, 800)
+      }
+      tag = !tag
     })
 
-    document.querySelector('#btnB').addEventListener('click', () => {
-      group.y -= 3
-    })
   }
 })
 
