@@ -2,7 +2,7 @@ import cax from 'cax'
 
 import Player from './player'
 
-const stage = new cax.Stage(520, 377, 'body')
+const stage = new cax.Stage(520, 377, '#canvasCtn')
 
 const bg = new cax.Bitmap('./track.jpg')
 stage.add(bg)
@@ -24,6 +24,19 @@ cax.tick(() => {
   player.update()
 })
 stage.add(player)
+
+let tag = true
+
+document.querySelector('#tgBtn').addEventListener('click', () => {
+  if (tag) {
+    player.speed = 0
+  } else {
+    player.speed = 5
+  }
+  tag = !tag
+})
+
+
 
 // const g = new cax.Graphics()
 // g.moveTo(123, 91)
