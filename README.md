@@ -15,6 +15,13 @@
 </thead>
 <tbody>
 <tr>
+<td align="center"><a title="Filter" href="https://dntzhang.github.io/wechart/packages/filter/examples/simple/" rel="nofollow"><img alt="Filter" src="./asset/c99.png" style="max-width:100%;"></a></td>
+<td align="center"><a href="https://github.com/dntzhang/wechart/blob/master/packages/filter/examples/simple/main.js">Source</a></td>
+<td align="center"><a href="https://github.com/dntzhang/cax/tree/master/packages/cax/src/render/filter">Filter Source</a></td>
+<td align="center">Tutorial</td>
+</tr>
+
+<tr>
 <td align="center"><a title="Functions" href="https://dntzhang.github.io/wechart/packages/functions/examples/simple/" rel="nofollow"><img alt="Functions" src="./asset/c36.png" style="max-width:100%;"></a></td>
 <td align="center"><a href="https://github.com/dntzhang/wechart/blob/master/packages/functions/examples/simple/main.js">Source</a></td>
 <td align="center"><a href="https://github.com/dntzhang/wechart/blob/master/packages/functions/src/index.js">Functions Source</a></td>
@@ -238,7 +245,6 @@ http://localhost:3000/chart-name/examples/simple/index.html
   * [To + Shape](https://dntzhang.github.io/cax/packages/cax/examples/to-shape/)
   * [Vision](https://dntzhang.github.io/cax/packages/cax/examples/vision/)
   * [Cache](https://dntzhang.github.io/cax/packages/cax/examples/cache/)
-  * [Filter](https://dntzhang.github.io/cax/packages/cax/examples/filter/)
   * [Graphics](https://dntzhang.github.io/cax/packages/cax/examples/graphics/)
   * [Composite Operation](http://dntzhang.github.io/cax/packages/cax/examples/composite-operation/)
 

@@ -15,6 +15,13 @@ English | [简体中文](./README.md)
 </thead>
 <tbody>
 <tr>
+<td align="center"><a title="Filter" href="https://dntzhang.github.io/wechart/packages/filter/examples/simple/" rel="nofollow"><img alt="Filter" src="./asset/c99.png" style="max-width:100%;"></a></td>
+<td align="center"><a href="https://github.com/dntzhang/wechart/blob/master/packages/filter/examples/simple/main.js">Source</a></td>
+<td align="center"><a href="https://github.com/dntzhang/cax/tree/master/packages/cax/src/render/filter">Filter Source</a></td>
+<td align="center">Tutorial</td>
+</tr>
+
+<tr>
 <td align="center"><a title="Functions" href="https://dntzhang.github.io/wechart/packages/functions/examples/simple/" rel="nofollow"><img alt="Functions" src="./asset/c36.png" style="max-width:100%;"></a></td>
 <td align="center"><a href="https://github.com/dntzhang/wechart/blob/master/packages/functions/examples/simple/main.js">Source</a></td>
 <td align="center"><a href="https://github.com/dntzhang/wechart/blob/master/packages/functions/src/index.js">Functions Source</a></td>
