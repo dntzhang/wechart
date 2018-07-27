@@ -69,8 +69,8 @@ const axisConfig = {
     color: 'black',
     text: {
       color: '#444',
-      value: (index) => {
-        return data[index].name
+      value: (item) => {
+        return item.name
       },
       x: 0,
       y: 7,

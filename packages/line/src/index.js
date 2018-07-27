@@ -12,7 +12,7 @@ export default class Line extends Group {
 
     Object.keys(axisConfig).forEach(key => {
       if (axisConfig[key]) {
-        const axis = new Axis(axisConfig[key], key)
+        const axis = new Axis(axisConfig[key], key, data)
         this.add(axis)
       }
     })

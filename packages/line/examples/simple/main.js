@@ -1,7 +1,12 @@
 import cax from 'cax'
 import Line from '../../src'
+import { scaleLinear } from '../../../common/scale'
 
 const stage = new cax.Stage(800, 500, '#canvasCtn')
+
+const xScale = scaleLinear([0, 7], [0, 700])
+const yScaleLeft = scaleLinear([-30, 30], [200, -200])
+const yScaleRight = scaleLinear([500, 1000], [200, -200])
 
 const lines = [{
   // age 30 对应 200像素高
@@ -73,20 +78,20 @@ const axisConfig = {
   bottom: {
     interval: 1,
     from: 0,
-    mapping: [1, 100],
+    scale:xScale,
     x: 30,
     y: 450,
     to: 7,
     color: 'black',
     text: {
       color: '#444',
-      value: (index, data) => {
-        return 'index-' + index
+      value: (item) => {
+        return item.name
       },
-      x: 30,
+      x: 0,
       y: 10,
       font: '10px Verdana',
-      range: [0, 4],
+      range: [0, 7],
       rotation: 0
     },
     gird: {
@@ -98,20 +103,34 @@ const axisConfig = {
   left: {
     color: 'black',
     interval: 6,
-    mapping: [30, 200],
+    scale:yScaleLeft,
     from: -30,
     to: 30,
     x: 30,
-    y: 450,
+    y: 250,
     text: {
       color: '#444',
-      x: -20,
-      y: 0
+      x: 0,
+      y: -10
     },
     gird: {
       color: '#ddd',
 
       length: 700
+    }
+  },
+  right: {
+    color: 'black',
+    interval: 100,
+    scale:yScaleRight,
+    from: -30,
+    to: 30,
+    x: 730,
+    y: 250,
+    text: {
+      color: '#444',
+      x: 0,
+      y: -10
     }
   }
 }
@@ -119,14 +138,14 @@ const axisConfig = {
 function random () {
   stage.empty()
   const data = [ // 数据
-    { name: 'dntzhang', age: cax.util.randomInt(-20, 20), exp: cax.util.randomInt(500, 100) },
-    { name: 'Canvas', age: cax.util.randomInt(-20, 20), exp: cax.util.randomInt(500, 100) },
-    { name: 'Cax', age: cax.util.randomInt(-20, 20), exp: cax.util.randomInt(500, 100) },
-    { name: 'Tencent', age: cax.util.randomInt(-20, 20), exp: cax.util.randomInt(500, 100) },
-    { name: 'SVG', age: cax.util.randomInt(-20, 20), exp: cax.util.randomInt(500, 100) },
-    { name: 'WebGL', age: cax.util.randomInt(-20, 20), exp: cax.util.randomInt(500, 100) },
-    { name: 'WebGL', age: cax.util.randomInt(-20, 20), exp: cax.util.randomInt(500, 100) },
-    { name: 'WebGL', age: cax.util.randomInt(-20, 20), exp: cax.util.randomInt(500, 100) }
+    { name: 'dntzhang', age: cax.util.randomInt(-20, 20), exp: cax.util.randomInt(500, 1000) },
+    { name: 'Canvas', age: cax.util.randomInt(-20, 20), exp: cax.util.randomInt(500, 1000) },
+    { name: 'Cax', age: cax.util.randomInt(-20, 20), exp: cax.util.randomInt(500, 1000) },
+    { name: 'Tencent', age: cax.util.randomInt(-20, 20), exp: cax.util.randomInt(500, 1000) },
+    { name: 'SVG', age: cax.util.randomInt(-20, 20), exp: cax.util.randomInt(500, 1000) },
+    { name: 'WebGL', age: cax.util.randomInt(-20, 20), exp: cax.util.randomInt(500, 1000) },
+    { name: 'Wechart', age: cax.util.randomInt(-20, 20), exp: cax.util.randomInt(500, 1000) },
+    { name: 'Threejs', age: cax.util.randomInt(-20, 20), exp: cax.util.randomInt(500, 1000) }
   ]
 
   stage.add(new Line(data, lines, axisConfig))
