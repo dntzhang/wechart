@@ -6932,17 +6932,17 @@ function _defineProperty(obj, key, value) { if (key in obj) { Object.definePrope
 var stage = new _cax2.default.Stage(800, 500, '#canvasCtn');
 
 var xScale = (0, _scale.scaleLinear)([0, 7], [0, 700]);
-var yScaleLeft = (0, _scale.scaleLinear)([-30, 30], [200, -200]);
-var yScaleRight = (0, _scale.scaleLinear)([500, 1000], [200, -200]);
+var yScaleLeft = (0, _scale.scaleLinear)([-30, 30], [400, 0]);
+var yScaleRight = (0, _scale.scaleLinear)([500, 1000], [400, 0]);
 
 var lines = [{
   // age 30 对应 200像素高
-  mapping: [30, 200],
+  scale: yScaleLeft,
   width: 30,
   interval: 100,
   x: 0,
-  y: 250,
-  projectionY: 200,
+  y: 50,
+  projectionY: 400,
   color: '#FF6484',
   processing: function processing(item) {
     return item.age;
@@ -6973,11 +6973,11 @@ var lines = [{
   }
 }, (_ref = { // rects代表拆分多个rect，下面是相关的配置
   // age 30 对应 200像素高
-  mapping: [1200, 200],
+  scale: yScaleRight,
   width: 30,
   interval: 100,
   x: 0,
-  y: 250,
+  y: 50,
   smooth: true,
   processing: function processing(item) {
     return item.exp;
@@ -6989,7 +6989,7 @@ var lines = [{
   tooltip: function tooltip(item) {
     return item.name + '<br/>' + item.age;
   },
-  projectionY: 200
+  projectionY: 400
 }, _defineProperty(_ref, 'color', '#4BC0C0'), _defineProperty(_ref, 'show', { // 过渡动画
   from: { scaleY: 0 }, // 起始点
   to: { scaleY: 1 }, // 终点
@@ -7035,10 +7035,9 @@ var axisConfig = {
     color: 'black',
     interval: 6,
     scale: yScaleLeft,
-    from: -30,
-    to: 30,
+
     x: 30,
-    y: 250,
+    y: 50,
     text: {
       color: '#444',
       x: 0,
@@ -7054,10 +7053,9 @@ var axisConfig = {
     color: 'black',
     interval: 100,
     scale: yScaleRight,
-    from: -30,
-    to: 30,
+
     x: 730,
-    y: 250,
+    y: 50,
     text: {
       color: '#444',
       x: 0,
@@ -7070,8 +7068,8 @@ function random() {
   stage.empty();
   var data = [// 数据
   { name: 'dntzhang', age: _cax2.default.util.randomInt(-20, 20), exp: _cax2.default.util.randomInt(500, 1000) }, { name: 'Canvas', age: _cax2.default.util.randomInt(-20, 20), exp: _cax2.default.util.randomInt(500, 1000) }, { name: 'Cax', age: _cax2.default.util.randomInt(-20, 20), exp: _cax2.default.util.randomInt(500, 1000) }, { name: 'Tencent', age: _cax2.default.util.randomInt(-20, 20), exp: _cax2.default.util.randomInt(500, 1000) }, { name: 'SVG', age: _cax2.default.util.randomInt(-20, 20), exp: _cax2.default.util.randomInt(500, 1000) }, { name: 'WebGL', age: _cax2.default.util.randomInt(-20, 20), exp: _cax2.default.util.randomInt(500, 1000) }, { name: 'Wechart', age: _cax2.default.util.randomInt(-20, 20), exp: _cax2.default.util.randomInt(500, 1000) }, { name: 'Threejs', age: _cax2.default.util.randomInt(-20, 20), exp: _cax2.default.util.randomInt(500, 1000) }];
-
-  stage.add(new _src2.default(data, lines, axisConfig));
+  var line = new _src2.default(data, lines, axisConfig);
+  stage.add(line);
 }
 
 random();
@@ -7194,7 +7192,7 @@ var OneLine = function (_Group2) {
     option.processedData.forEach(function (value, index) {
       var x = option.width + index * option.interval;
       var y = 0;
-      option.endPoints.push({ x: x, y: option.mapping[1] * value / option.mapping[0] });
+      option.endPoints.push({ x: x, y: option.scale(value), value: value });
       path.push({ x: x, y: y });
     });
 
@@ -7345,9 +7343,13 @@ function fadeIn(obj) {
 function createCircles(eps, option) {
   var group = new Group();
   eps.forEach(function (ep, index) {
-    var circle = new Circle(4, { fillStyle: option.color });
+    var circle = new Circle(3, { fillStyle: option.color });
     circle.x = ep.x;
     circle.y = ep.y;
+    var text = new _cax2.default.Text(ep.value, { color: option.color, font: '14px Arial' });
+    text.x = ep.x - text.getWidth() / 2;
+    text.y = ep.y + 2;
+    group.add(text);
     group.add(circle);
   });
   group.alpha = 0;

@@ -5,17 +5,17 @@ import { scaleLinear } from '../../../common/scale'
 const stage = new cax.Stage(800, 500, '#canvasCtn')
 
 const xScale = scaleLinear([0, 7], [0, 700])
-const yScaleLeft = scaleLinear([-30, 30], [200, -200])
-const yScaleRight = scaleLinear([500, 1000], [200, -200])
+const yScaleLeft = scaleLinear([-30, 30], [400, 0])
+const yScaleRight = scaleLinear([500, 1000], [400, 0])
 
 const lines = [{
   // age 30 对应 200像素高
-  mapping: [30, 200],
+  scale: yScaleLeft,
   width: 30,
   interval: 100,
   x: 0,
-  y: 250,
-  projectionY: 200,
+  y: 50,
+  projectionY: 400,
   color: '#FF6484',
   processing: (item) => { return item.age }, // 数据预处理，提取影响形状的报表
   // smooth: true,
@@ -43,11 +43,11 @@ const lines = [{
 },
 {// rects代表拆分多个rect，下面是相关的配置
   // age 30 对应 200像素高
-  mapping: [1200, 200],
+  scale: yScaleRight,
   width: 30,
   interval: 100,
   x: 0,
-  y: 250,
+  y: 50,
   smooth: true,
   processing: (item) => { return item.exp }, // 数据预处理，提取影响形状的报表
   color: (index) => { // 每个柱子的颜色
@@ -56,7 +56,7 @@ const lines = [{
   tooltip: (item) => {
     return item.name + '<br/>' + item.age
   },
-  projectionY: 200,
+  projectionY: 400,
   color: '#4BC0C0',
   show: {// 过渡动画
     from: { scaleY: 0 }, // 起始点
@@ -104,10 +104,9 @@ const axisConfig = {
     color: 'black',
     interval: 6,
     scale:yScaleLeft,
-    from: -30,
-    to: 30,
+
     x: 30,
-    y: 250,
+    y: 50,
     text: {
       color: '#444',
       x: 0,
@@ -123,10 +122,9 @@ const axisConfig = {
     color: 'black',
     interval: 100,
     scale:yScaleRight,
-    from: -30,
-    to: 30,
+
     x: 730,
-    y: 250,
+    y: 50,
     text: {
       color: '#444',
       x: 0,
@@ -147,8 +145,8 @@ function random () {
     { name: 'Wechart', age: cax.util.randomInt(-20, 20), exp: cax.util.randomInt(500, 1000) },
     { name: 'Threejs', age: cax.util.randomInt(-20, 20), exp: cax.util.randomInt(500, 1000) }
   ]
-
-  stage.add(new Line(data, lines, axisConfig))
+  const line = new Line(data, lines, axisConfig)
+  stage.add(line)
 }
 
 random()
