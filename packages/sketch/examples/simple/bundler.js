@@ -6939,21 +6939,31 @@ var sg = new _src2.default({
   fillRepeat: 2,
   strokeWidth: 1,
   fillWidth: 1,
-  strokeStyle: 'green',
+  strokeStyle: 'black',
   fillStyle: '#ee5c63'
 });
 
 sg.fillRect(100, 100, 100, 100);
 
-sg.beginPath().moveTo(100, 100).lineTo(100, 200).lineTo(200, 200).lineTo(200, 100).lineTo(100, 100).stroke();
+// sg.beginPath()
+// .moveTo(100, 100)
+// .lineTo(100, 200)
+// .lineTo(200, 200)
+// .lineTo(200, 100)
+// .lineTo(100, 100)
+// .stroke()
+
 
 stage.add(sg);
 
-//strokeEllipse
-//strokeRect
+sg.strokeRect(100, 100, 100, 100);
 
 sg.fillCircle(280, 200, 50);
 sg.strokeCircle(280, 200, 50);
+
+sg.strokeEllipse(100, 40, 160, 50);
+
+sg.fillEllipse(100, 40, 160, 50, { fillStyle: '#459130' });
 //sg.strokePath
 //sg.fillPath()
 
@@ -7008,11 +7018,11 @@ var _cax = __webpack_require__(0);
 
 var _cax2 = _interopRequireDefault(_cax);
 
-var _circle = __webpack_require__(5);
+var _ellipse = __webpack_require__(4);
 
-var _circle2 = _interopRequireDefault(_circle);
+var _ellipse2 = _interopRequireDefault(_ellipse);
 
-var _fillRect2 = __webpack_require__(4);
+var _fillRect2 = __webpack_require__(5);
 
 var _fillRect3 = _interopRequireDefault(_fillRect2);
 
@@ -7079,10 +7089,52 @@ var Sketch = function (_cax$Group) {
       return this;
     }
   }, {
+    key: 'fillEllipse',
+    value: function fillEllipse(x, y, w, h, option) {
+
+      var bmp = new _cax2.default.Bitmap((0, _fillRect3.default)(w, h, Object.assign({}, this.option, option)));
+      bmp.x = x - w / 2;
+      bmp.y = y - h / 2;
+      var graphics = new _cax2.default.Graphics();
+
+      var k = 0.5522848;
+      var ox = w / 2 * k;
+      var oy = h / 2 * k;
+      var xe = w;
+      var ye = h;
+      var xm = w / 2;
+      var ym = h / 2;
+
+      graphics.moveTo(0, ym);
+      graphics.bezierCurveTo(0, ym - oy, xm - ox, 0, xm, 0);
+      graphics.bezierCurveTo(xm + ox, 0, xe, ym - oy, xe, ym);
+      graphics.bezierCurveTo(xe, ym + oy, xm + ox, ye, xm, ye);
+      graphics.bezierCurveTo(xm - ox, ye, 0, ym + oy, 0, ym);
+      bmp.clip(graphics);
+      this.add(bmp);
+      return this;
+    }
+  }, {
+    key: 'strokeEllipse',
+    value: function strokeEllipse(x, y, w, h) {
+      var ellipse = new _ellipse2.default(w, h, {
+        strokeStyle: this.option.strokeStyle,
+        randomRange: this.option.randomRange,
+        strokeRepeat: this.option.strokeRepeat,
+        lineWidth: this.option.strokeWidth });
+      ellipse.x = x;
+      ellipse.y = y;
+      ellipse.originX = w / 2;
+      ellipse.originY = h / 2;
+      //ellipse.rotation = Math.random()*360
+
+      this.add(ellipse);
+    }
+  }, {
     key: 'strokeCircle',
     value: function strokeCircle(x, y, r) {
-      var circle = new _circle2.default(r, { strokeStyle: this.option.strokeStyle,
-
+      var circle = new _ellipse2.default(r * 2, r * 2, {
+        strokeStyle: this.option.strokeStyle,
         randomRange: this.option.randomRange,
         strokeRepeat: this.option.strokeRepeat,
         lineWidth: this.option.strokeWidth });
@@ -7096,9 +7148,12 @@ var Sketch = function (_cax$Group) {
     }
   }, {
     key: 'strokeRect',
-    value: function strokeRect() {
-      this.cmds.push(['strokeRect', arguments]);
-      return this;
+    value: function strokeRect(x, y, w, h) {
+      var rect = new _cax2.default.Graphics();
+      for (var i = 0; i < this.option.strokeRepeat; i++) {
+        rect.beginPath().moveTo.apply(rect, this._shake(x, y)).lineTo.apply(rect, this._shake(x, y + h)).lineTo.apply(rect, this._shake(x + w, y + h)).lineTo.apply(rect, this._shake(x + w, y)).lineTo.apply(rect, this._shake(x, y)).stroke();
+      }
+      this.add(rect);
     }
   }, {
     key: 'fillRect',
@@ -7320,6 +7375,100 @@ exports.default = Sketch;
 
 
 Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+
+var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
+
+var _cax = __webpack_require__(0);
+
+var _cax2 = _interopRequireDefault(_cax);
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+
+function _possibleConstructorReturn(self, call) { if (!self) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return call && (typeof call === "object" || typeof call === "function") ? call : self; }
+
+function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
+
+var Ellipse = function (_cax$Shape) {
+  _inherits(Ellipse, _cax$Shape);
+
+  function Ellipse(w, h, option) {
+    _classCallCheck(this, Ellipse);
+
+    var _this = _possibleConstructorReturn(this, (Ellipse.__proto__ || Object.getPrototypeOf(Ellipse)).call(this));
+
+    _this.option = option || {};
+
+    var k = 0.5522848;
+    var ox = w / 2 * k;
+    var oy = h / 2 * k;
+    var xe = w;
+    var ye = h;
+    var xm = w / 2;
+    var ym = h / 2;
+
+    _this.pointsList = [];
+    for (var i = 0; i < _this.option.strokeRepeat; i++) {
+
+      _this.pointsList.push([_shake(0, ym, _this.option.randomRange), _shake(0, ym - oy, _this.option.randomRange), _shake(xm - ox, 0, _this.option.randomRange), _shake(xm, 0, _this.option.randomRange), _shake(xm + ox, 0, _this.option.randomRange), _shake(xe, ym - oy, _this.option.randomRange), _shake(xe, ym, _this.option.randomRange), _shake(xe, ym + oy, _this.option.randomRange), _shake(xm + ox, ye, _this.option.randomRange), _shake(xm, ye, _this.option.randomRange), _shake(xm - ox, ye, _this.option.randomRange), _shake(0, ym + oy, _this.option.randomRange), _shake(0, ym, _this.option.randomRange)]);
+    }
+
+    return _this;
+  }
+
+  _createClass(Ellipse, [{
+    key: 'draw',
+    value: function draw() {
+      var _this2 = this;
+
+      this.pointsList.forEach(function (points) {
+
+        _this2.beginPath();
+        _this2.moveTo(points[0][0], points[0][1]);
+        _this2.bezierCurveTo(points[1][0], points[1][1], points[2][0], points[2][1], points[3][0], points[3][1]);
+        _this2.bezierCurveTo(points[4][0], points[4][1], points[5][0], points[5][1], points[6][0], points[6][1]);
+        _this2.bezierCurveTo(points[7][0], points[7][1], points[8][0], points[8][1], points[9][0], points[9][1]);
+        _this2.bezierCurveTo(points[10][0], points[10][1], points[11][0], points[11][1], points[12][0], points[12][1]);
+
+        if (_this2.option.strokeStyle) {
+
+          if (_this2.option.lineWidth !== undefined) {
+            _this2.lineWidth(_this2.option.lineWidth);
+          }
+          _this2.strokeStyle(_this2.option.strokeStyle);
+          _this2.stroke();
+        }
+
+        if (_this2.option.fillStyle) {
+          _this2.fillStyle(_this2.option.fillStyle);
+          _this2.fill();
+        }
+      });
+    }
+  }]);
+
+  return Ellipse;
+}(_cax2.default.Shape);
+
+function _shake(x, y, randomRange) {
+  var r = Math.random() * randomRange;
+  var a = Math.random() * 360 * Math.PI / 180;
+  return [x + r * Math.cos(a), y + r * Math.sin(a)];
+}
+
+exports.default = Ellipse;
+
+/***/ }),
+/* 5 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
+Object.defineProperty(exports, "__esModule", {
     value: true
 });
 exports.default = fillRect;
@@ -7376,103 +7525,6 @@ function _shake(x, y, randomRange) {
     var a = Math.random() * 360 * Math.PI / 180;
     return [x + r * Math.cos(a), y + r * Math.sin(a)];
 }
-
-/***/ }),
-/* 5 */
-/***/ (function(module, exports, __webpack_require__) {
-
-"use strict";
-
-
-Object.defineProperty(exports, "__esModule", {
-  value: true
-});
-
-var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
-
-var _cax = __webpack_require__(0);
-
-var _cax2 = _interopRequireDefault(_cax);
-
-function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
-
-function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
-
-function _possibleConstructorReturn(self, call) { if (!self) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return call && (typeof call === "object" || typeof call === "function") ? call : self; }
-
-function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
-
-var Circle = function (_cax$Shape) {
-  _inherits(Circle, _cax$Shape);
-
-  function Circle(r, option) {
-    _classCallCheck(this, Circle);
-
-    var _this = _possibleConstructorReturn(this, (Circle.__proto__ || Object.getPrototypeOf(Circle)).call(this));
-
-    _this.option = option || {};
-    _this.r = r;
-
-    var w = _this.r * 2;
-    var h = _this.r * 2;
-    var k = 0.5522848;
-    var ox = w / 2 * k;
-    var oy = h / 2 * k;
-    var xe = w;
-    var ye = h;
-    var xm = w / 2;
-    var ym = h / 2;
-
-    _this.pointsList = [];
-    for (var i = 0; i < _this.option.strokeRepeat; i++) {
-
-      _this.pointsList.push([_shake(0, ym, _this.option.randomRange), _shake(0, ym - oy, _this.option.randomRange), _shake(xm - ox, 0, _this.option.randomRange), _shake(xm, 0, _this.option.randomRange), _shake(xm + ox, 0, _this.option.randomRange), _shake(xe, ym - oy, _this.option.randomRange), _shake(xe, ym, _this.option.randomRange), _shake(xe, ym + oy, _this.option.randomRange), _shake(xm + ox, ye, _this.option.randomRange), _shake(xm, ye, _this.option.randomRange), _shake(xm - ox, ye, _this.option.randomRange), _shake(0, ym + oy, _this.option.randomRange), _shake(0, ym, _this.option.randomRange)]);
-    }
-
-    return _this;
-  }
-
-  _createClass(Circle, [{
-    key: 'draw',
-    value: function draw() {
-      var _this2 = this;
-
-      this.pointsList.forEach(function (points) {
-
-        _this2.beginPath();
-        _this2.moveTo(points[0][0], points[0][1]);
-        _this2.bezierCurveTo(points[1][0], points[1][1], points[2][0], points[2][1], points[3][0], points[3][1]);
-        _this2.bezierCurveTo(points[4][0], points[4][1], points[5][0], points[5][1], points[6][0], points[6][1]);
-        _this2.bezierCurveTo(points[7][0], points[7][1], points[8][0], points[8][1], points[9][0], points[9][1]);
-        _this2.bezierCurveTo(points[10][0], points[10][1], points[11][0], points[11][1], points[12][0], points[12][1]);
-
-        if (_this2.option.strokeStyle) {
-
-          if (_this2.option.lineWidth !== undefined) {
-            _this2.lineWidth(_this2.option.lineWidth);
-          }
-          _this2.strokeStyle(_this2.option.strokeStyle);
-          _this2.stroke();
-        }
-
-        if (_this2.option.fillStyle) {
-          _this2.fillStyle(_this2.option.fillStyle);
-          _this2.fill();
-        }
-      });
-    }
-  }]);
-
-  return Circle;
-}(_cax2.default.Shape);
-
-function _shake(x, y, randomRange) {
-  var r = Math.random() * randomRange;
-  var a = Math.random() * 360 * Math.PI / 180;
-  return [x + r * Math.cos(a), y + r * Math.sin(a)];
-}
-
-exports.default = Circle;
 
 /***/ })
 /******/ ]);

@@ -12,7 +12,7 @@ const sg = new Sketch({
   fillRepeat: 2,
   strokeWidth: 1,
   fillWidth: 1,
-  strokeStyle: 'green',
+  strokeStyle: 'black',
   fillStyle: '#ee5c63'
 })
 
@@ -20,23 +20,26 @@ const sg = new Sketch({
 
 sg.fillRect(100, 100, 100, 100)
 
-sg.beginPath()
-.moveTo(100, 100)
-.lineTo(100, 200)
-.lineTo(200, 200)
-.lineTo(200, 100)
-.lineTo(100, 100)
-.stroke()
+// sg.beginPath()
+// .moveTo(100, 100)
+// .lineTo(100, 200)
+// .lineTo(200, 200)
+// .lineTo(200, 100)
+// .lineTo(100, 100)
+// .stroke()
 
 
 
 stage.add(sg)
 
-//strokeEllipse
-//strokeRect
+sg.strokeRect(100, 100, 100, 100)
 
 sg.fillCircle(280,200, 50)
 sg.strokeCircle(280,200, 50)
+
+sg.strokeEllipse(100,40,160,50)
+
+sg.fillEllipse(100,40,160,50,{fillStyle: '#459130'})
 //sg.strokePath
 //sg.fillPath()
 

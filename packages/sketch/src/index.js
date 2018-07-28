@@ -1,5 +1,5 @@
 import cax from 'cax'
-import Circle from './shape/circle'
+import Ellipse from './shape/ellipse'
 import fillRect from './fill-rect'
 
 const assMap = {
@@ -49,9 +49,49 @@ class Sketch extends cax.Group {
     return this
   }
 
+  fillEllipse(x, y, w, h, option){
+    
+    const bmp = new cax.Bitmap(fillRect(w,h,Object.assign({},this.option,option) ))
+    bmp.x = x-w/2
+    bmp.y = y-h/2
+    const graphics = new cax.Graphics()
+   
+    const k = 0.5522848
+    const ox = (w / 2) * k
+    const oy = (h / 2) * k
+    const xe = w
+    const ye = h
+    const xm = w / 2
+    const ym = h / 2
+
+    graphics.moveTo(0, ym)
+    graphics.bezierCurveTo(0, ym - oy, xm - ox, 0, xm, 0)
+    graphics.bezierCurveTo(xm + ox, 0, xe, ym - oy, xe, ym)
+    graphics.bezierCurveTo(xe, ym + oy, xm + ox, ye, xm, ye)
+    graphics.bezierCurveTo(xm - ox, ye, 0, ym + oy, 0, ym)
+    bmp.clip(graphics)
+    this.add(bmp)
+    return this
+  }
+
+  strokeEllipse(x, y, w, h){
+    const ellipse = new Ellipse(w, h, {
+      strokeStyle: this.option.strokeStyle,
+      randomRange: this.option.randomRange,
+      strokeRepeat: this.option.strokeRepeat,
+      lineWidth: this.option.strokeWidth})
+    ellipse.x = x
+    ellipse.y = y
+    ellipse.originX = w/2
+    ellipse.originY = h/2
+    //ellipse.rotation = Math.random()*360
+
+    this.add(ellipse)
+  }
+
   strokeCircle(x, y, r){
-    const circle = new Circle(r,{strokeStyle: this.option.strokeStyle,
-  
+    const circle = new Ellipse(r*2, r*2, {
+      strokeStyle: this.option.strokeStyle,
       randomRange: this.option.randomRange,
       strokeRepeat: this.option.strokeRepeat,
       lineWidth: this.option.strokeWidth})
@@ -64,11 +104,19 @@ class Sketch extends cax.Group {
     this.add(circle)
   }
 
-  strokeRect () {
-    this.cmds.push(['strokeRect', arguments])
-    return this
+  strokeRect (x,y,w,h) {
+    const rect = new cax.Graphics()
+    for(let i =0;i< this.option.strokeRepeat;i++){
+      rect.beginPath()
+      .moveTo.apply(rect,this._shake(x,y))
+        .lineTo.apply(rect,this._shake(x, y+h))
+        .lineTo.apply(rect,this._shake(x+w, y+h))
+        .lineTo.apply(rect,this._shake(x+w, y))
+        .lineTo.apply(rect,this._shake(x, y))
+        .stroke()
+    }
+   this.add(rect )
   }
-
   fillRect (x,y,w,h) {
 
     const bmp = new cax.Bitmap(fillRect(w,h,this.option ))
