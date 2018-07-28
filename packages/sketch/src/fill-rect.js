@@ -25,8 +25,6 @@ export default function fillRect(width, height, option) {
     ctx.lineWidth = option.fillWidth
     ctx.strokeStyle = option.fillStyle
     for (let j = 0; j < option.fillRepeat; j++) {
-        console.log(1)
-
         const ba = option.fillAngle * Math.PI / 180
         const ea = (option.fillAngle + 180) * Math.PI / 180
         const ca = (option.fillAngle + 90) * Math.PI / 180

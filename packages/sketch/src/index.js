@@ -1,4 +1,6 @@
 import cax from 'cax'
+import Circle from './shape/circle'
+import fillRect from './fill-rect'
 
 const assMap = {
   fillStyle: true,
@@ -21,7 +23,7 @@ class Sketch extends cax.Group {
       fillRepeat: 2,
       strokeWidth: 1,
       fillWidth: 1,
-      storkeStyle: 'black',
+      strokeStyle: 'black',
       fillStyle: 'black'
     }, option)
     this.cmds = []
@@ -35,14 +37,45 @@ class Sketch extends cax.Group {
     this.add(this.strokeGroup)
   }
 
+  fillCircle(x,y,r){
+    
+    const bmp = new cax.Bitmap(fillRect(r*2,r*2,this.option ))
+    bmp.x = x-r
+    bmp.y = y-r
+    const graphics = new cax.Graphics()
+    graphics.arc(r,r,r,0,Math.PI*2)
+    bmp.clip(graphics)
+    this.add(bmp)
+    return this
+  }
+
+  strokeCircle(x, y, r){
+    const circle = new Circle(r,{strokeStyle: this.option.strokeStyle,
+  
+      randomRange: this.option.randomRange,
+      strokeRepeat: this.option.strokeRepeat,
+      lineWidth: this.option.strokeWidth})
+    circle.x = x
+    circle.y = y
+    circle.originX = r
+    circle.originY = r
+    circle.rotation = Math.random()*360
+
+    this.add(circle)
+  }
 
   strokeRect () {
     this.cmds.push(['strokeRect', arguments])
     return this
   }
 
-  fillRect () {
-    this.cmds.push(['fillRect', arguments])
+  fillRect (x,y,w,h) {
+
+    const bmp = new cax.Bitmap(fillRect(w,h,this.option ))
+    bmp.x = x
+    bmp.y = y
+
+    this.add(bmp)
     return this
   }
 
@@ -53,7 +86,10 @@ class Sketch extends cax.Group {
   }
 
   stroke () {
+    
     this.strokeGroup.children.forEach(g=>{
+      g.strokeStyle(this.option.strokeStyle)
+      g.lineWidth(this.option.strokeWidth)
       g.stroke()
     })
     return this
