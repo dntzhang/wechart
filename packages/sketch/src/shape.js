@@ -142,7 +142,7 @@ class SketchShape extends cax.Group {
   }
 
   strokePath(path){
-    const shapes = pathToShapes(path)
+    const shapes = this._shakeShapes(pathToShapes(path))
     shapes.forEach(shape=>{
       const g = new cax.Graphics()
       g.moveTo(shape[0][0],shape[0][1])
@@ -152,6 +152,36 @@ class SketchShape extends cax.Group {
       g.stroke()
       this.add(g)
     })
+   
+  }
+
+  _shakeShapes(shapes) {
+    const ns = []
+    shapes.forEach(shape => {
+      const s = []
+      const p1 = this._shake(shape[0][0], shape[0][1], this.option.randomRange)
+      shape.forEach((curve, index) => {
+        let c = null
+        if (Math.random() < this.option.filter) {
+          const p2 = this._shake(curve[2], curve[3], this.option.randomRange)
+          const p3 = this._shake(curve[4], curve[5], this.option.randomRange)
+          const p4 = this._shake(curve[6], curve[7], this.option.randomRange)
+          if (index === 0) {
+
+            c = [p1[0], p1[1], p2[0], p2[1], p3[0], p3[1], p4[0], p4[1]]
+          } else {
+
+            c = [null, null, p2[0], p2[1], p3[0], p3[1], p4[0], p4[1]]
+          }
+          s.push(c)
+        }
+
+
+      })
+      ns.push(s)
+    })
+
+    return ns
    
   }
 

@@ -6955,7 +6955,6 @@ ss.ellipse(140, 40, 160, 50, { fillStyle: '#459130' });
 
 
 var sg = new _src2.default.Graphics({
-  gap: 5,
   randomRange: 4,
   strokeRepeat: 1,
   curveRange: 45,
@@ -6978,21 +6977,22 @@ var sg = new _src2.default.Graphics({
 
 var ss2 = new _src2.default.Shape({
   gap: 5,
-  randomRange: 4,
+  randomRange: 10,
   fillAngle: -45,
-  strokeRepeat: 1,
+  strokeRepeat: 12,
   curveRange: 45,
   fillRepeat: 2,
   strokeWidth: 1,
   fillWidth: 1,
   strokeStyle: 'black',
-  fillStyle: '#ee5c63'
+  fillStyle: '#ee5c63',
+  filter: 0.62
 });
 ss2.strokePath('M595,82.1c1,1-1,2-1,2s-6.9,2-8.9,4.9c-2,2-4.9,8.8-4.9,8.8c3.9-1,8.9-2,13.8-4c1,0,2,1,3,2c1,0-11.8,4.9-14.8,6.9c-2,2-11.8,9.9-14.8,9.9c-2.9,0-9.9,1-9.9,1c1,2,2,3.9,3.9,6.9c0,0-6.9,4-6.9,4.9c-1,1-5.9,6.9-5.9,6.9s17.7,1.9,23.6-7.9c-5.9,9.8-19.7,19.7-48.2,19.7c-29.5,0-53.1-11.8-68.9-17.7c-16.7-6.9-38.4-14.8-56.1-14.8c-16.7,0-36.4,4.9-49.2,16.8c-22.6-8.8-54.1-4-68.9,9.8c-13.8,13.8-27.5,30.5-29.5,42.3c-2.9,12.9-9.8,43.3-19.7,57.2c-13.8,22.5-29.5,28.5-34.5,38.3c-4.9,9.9-4.9,30.5-4,30.5c2,1,8.9,0,12.8-2c7.9-2.9,29.5-25.6,37.4-36.4c7.9-10.9,34.5-58.1,38.4-74.8s7.9-33.5,19.7-42.3c12.8-8.8,28.5-4.9,28.5-3.9c0,0-14.7,11.8-15.7,44.3s18.7,28.6,8.8,49.2c-9.9,17.7-39.3,5.9-49.2,16.7c-7.9,8.9,0,40.3,0,46.2c0,6-3,33.5-4.9,40.4c-1,5.9,0,9.8-1,13.8c-1,3,6,3.9,6,3.9s-6,7.8-8.9,5.9c-2.9-1-4.9-1-6.9,0c-2,0-5.9,1.9-9.9,0L232.9,401c2,1,4.9,1.9,7.9,1c4-1,23.6-9.9,25.6-11.9c2.9-1,19.7-10.8,22.6-16.7c2-5.9,5.9-24.6,5.9-30.5c1-6,2-24.6,2-29.5s-1-13.8,0-17.7c2-2.9,4.9-6.9,8.9-8.9c4.9-1,10.8-1,11.8-1c2,0,18.7,2,21.6,2c3.9,0,19.7-2.9,23.6-5c4.9-0.9,7.8,0,8.9,2c2,1.9-2,4.9-2,5.9c-1,1-8.8,10.8-10.8,14.7c-2,4.9-8.8,13.8-6.9,17.7c2,3.9,2,4.9,7.8,7.9c5.9,1.9,28.5,13.8,41.3,25.6c13.8,12.7,26.6,28.4,28.6,36.4c2.9,8.9,7.8,9.8,10.8,9.8c3,1,8.9,2,8.9,5.9s-1,8.8-1,8.8l36.4,13.8c0,0,0-12.8-1-17.7c-1-5.9-6.9-11.8-11.8-17.7c-4.9-6.9-56-57.1-61-61c-4.9-3-8.9-6.9-9.8-14.7c-1-7.9,8.8-13.8,14.8-20.6c3.9-4.9,14.7-27.6,16.7-30.6c2-2.9,8.9-10.8,12.8-10.8c4.9,0,15.8,6.9,29.5,11.8c5.9,2,48.2,12.8,54.1,14.8c5.9,1,18.6,0,22.6,3.9c3.9,2.9,0,10.9-1,15.8c-1,5.9-11.8,27.5-11.8,27.5s2,7.8,2,13.8c0,6.9-2.9,31.5-5.9,39.3c-2,8.9-15.8,31.6-18.7,35.5c-2,2.9-4.9,4.9-4.9,9.9c0,4.9,8.8,6,11.8,9.8c4,3,1,8.8,0,14.8l39.4,16.7c0-2.9,2-7.9,0-9.9c-1-2.9-5.9-8.8-8.8-12.8c-2-2.9-8.9-13.8-10.8-15.8c-2-2.9-2-8.8,0-13.8c1-4.9,13.8-38.3,14.7-42.3c2-4.9,20.7-44.3,22.6-49.2c2-5.9,17.7-34.4,19.7-39.4c2-5.9,14.8-10.8,18.7-10.8c4.9,0,29.5,8.8,33.4,10.8c2.9,1,25.6,10.9,29.5,12.8c4.9,1.9,2,5.9-1,6.9c-2.9,1.9-39.4,26.5-42.3,27.5c-2.9,1-5.9,3.9-7.9,3.9c-2.9,0-6.9,3.1-6.9,4c0,2-1,5.9-5.9,5.9c-3.9,0-11.8-5.9-16.7-11.8c-6.9,3.9-11.8,6.9-14.8,12.8c-4.9,4.9-6.9,8.9-9.8,15.8c2,2,5.9,2.9,8.8,2.9h31.5c3,0,6.9-0.9,9.9-1.9c2.9-2,80.7-53.1,80.7-53.1s12.8-9.9,12.8-18.7c0-6.9-5.9-8.9-7.9-11.8c-3-1.9-20.7-13.8-23.6-15.7c-4-2.9-17.7-10.9-21.6-12.9c-3-1.9-13.8-5.8-13.8-5.8c3-8.9,5-15.8,5.9-17.7c1-2,1-19.7,2-22.7c0-2.9,5-15.7,6.9-17.7c2-2,6.9-17.7,7.9-20.7c1-1.9,8.8-24.6,12.8-24.6c3.9-1,7.9,2.9,11.8,2.9c4,1,18.7-1,26.6,0c6.9,1,15.8,9.9,17.7,10.8c2.9,1,9.8,3.9,11.8,3.9c1,0,10.8-6.9,10.8-8.8c0-2-6.9-5.9-7.9-5.9c-1-1-7.8-4.9-7.8-4.9c0,1,2.9-1.9,7.8-1.9c3.9,0,7.9,3.9,8.8,4.9c2,1,6.9,3.9,7.9,1.9c1-1,4.9-5.9,4.9-8.9c0-4-3.9-8.8-5.9-10.8s-24.6-23.6-26.6-24.6c-2.9-1-14.7-11.8-14.7-14.7c-1-2-6.9-6.9-7.9-7.9s-30.5-21.6-34.5-24.6c-3.9-2.9-7.9-7.8-7.9-12.7s-2-17.7-2-17.7s-6.9-1-9.8,1.9c-2.9,2-9.8,17.8-13.8,17.8c-10.9-2-24.6,1-24.6,2.9c1,2.9,10.8,1,10.8,1c0,1-3.9,5.9-6.9,5.9c-2,0-7.8,2-8.8,2.9c-2,0-5.9,3.1-5.9,3.1c2.9,0,5.9,0,9.8,0.9c0,0-5.9,4-8.9,4c-2.9,0-12.8,2.9-15.7,3.9c-2,1.9-9.9,7.9-9.9,7.9H589l1,2h4.9L595,82.1L595,82.1z');
 
 stage.add(ss2);
 ss2.y = 180;
-ss2.scaleX = ss2.scaleY = 0.45;
+ss2.scaleX = ss2.scaleY = 0.4;
 _cax2.default.tick(function () {
   stage.update();
 });
@@ -7038,11 +7038,11 @@ Object.defineProperty(exports, "__esModule", {
     value: true
 });
 
-var _graphics = __webpack_require__(8);
+var _graphics = __webpack_require__(4);
 
 var _graphics2 = _interopRequireDefault(_graphics);
 
-var _shape = __webpack_require__(9);
+var _shape = __webpack_require__(5);
 
 var _shape2 = _interopRequireDefault(_shape);
 
@@ -7055,167 +7055,6 @@ exports.default = {
 
 /***/ }),
 /* 4 */
-/***/ (function(module, exports, __webpack_require__) {
-
-"use strict";
-
-
-Object.defineProperty(exports, "__esModule", {
-  value: true
-});
-
-var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
-
-var _cax = __webpack_require__(0);
-
-var _cax2 = _interopRequireDefault(_cax);
-
-function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
-
-function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
-
-function _possibleConstructorReturn(self, call) { if (!self) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return call && (typeof call === "object" || typeof call === "function") ? call : self; }
-
-function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
-
-var Ellipse = function (_cax$Shape) {
-  _inherits(Ellipse, _cax$Shape);
-
-  function Ellipse(w, h, option) {
-    _classCallCheck(this, Ellipse);
-
-    var _this = _possibleConstructorReturn(this, (Ellipse.__proto__ || Object.getPrototypeOf(Ellipse)).call(this));
-
-    _this.option = option || {};
-
-    var k = 0.5522848;
-    var ox = w / 2 * k;
-    var oy = h / 2 * k;
-    var xe = w;
-    var ye = h;
-    var xm = w / 2;
-    var ym = h / 2;
-
-    _this.pointsList = [];
-    for (var i = 0; i < _this.option.strokeRepeat; i++) {
-
-      _this.pointsList.push([_shake(0, ym, _this.option.randomRange), _shake(0, ym - oy, _this.option.randomRange), _shake(xm - ox, 0, _this.option.randomRange), _shake(xm, 0, _this.option.randomRange), _shake(xm + ox, 0, _this.option.randomRange), _shake(xe, ym - oy, _this.option.randomRange), _shake(xe, ym, _this.option.randomRange), _shake(xe, ym + oy, _this.option.randomRange), _shake(xm + ox, ye, _this.option.randomRange), _shake(xm, ye, _this.option.randomRange), _shake(xm - ox, ye, _this.option.randomRange), _shake(0, ym + oy, _this.option.randomRange), _shake(0, ym, _this.option.randomRange)]);
-    }
-
-    return _this;
-  }
-
-  _createClass(Ellipse, [{
-    key: 'draw',
-    value: function draw() {
-      var _this2 = this;
-
-      this.pointsList.forEach(function (points) {
-
-        _this2.beginPath();
-        _this2.moveTo(points[0][0], points[0][1]);
-        _this2.bezierCurveTo(points[1][0], points[1][1], points[2][0], points[2][1], points[3][0], points[3][1]);
-        _this2.bezierCurveTo(points[4][0], points[4][1], points[5][0], points[5][1], points[6][0], points[6][1]);
-        _this2.bezierCurveTo(points[7][0], points[7][1], points[8][0], points[8][1], points[9][0], points[9][1]);
-        _this2.bezierCurveTo(points[10][0], points[10][1], points[11][0], points[11][1], points[12][0], points[12][1]);
-
-        if (_this2.option.strokeStyle) {
-
-          if (_this2.option.lineWidth !== undefined) {
-            _this2.lineWidth(_this2.option.lineWidth);
-          }
-          _this2.strokeStyle(_this2.option.strokeStyle);
-          _this2.stroke();
-        }
-
-        if (_this2.option.fillStyle) {
-          _this2.fillStyle(_this2.option.fillStyle);
-          _this2.fill();
-        }
-      });
-    }
-  }]);
-
-  return Ellipse;
-}(_cax2.default.Shape);
-
-function _shake(x, y, randomRange) {
-  var r = Math.random() * randomRange;
-  var a = Math.random() * 360 * Math.PI / 180;
-  return [x + r * Math.cos(a), y + r * Math.sin(a)];
-}
-
-exports.default = Ellipse;
-
-/***/ }),
-/* 5 */
-/***/ (function(module, exports, __webpack_require__) {
-
-"use strict";
-
-
-Object.defineProperty(exports, "__esModule", {
-    value: true
-});
-exports.default = fillRect;
-
-
-var canvas = document.createElement('canvas');
-var ctx = canvas.getContext('2d');
-
-function fillRect(width, height, option) {
-    option = Object.assign({
-        gap: 5,
-        randomRange: 4,
-        curveRange: 35,
-        fillAngle: -45,
-        fillRepeat: 3,
-        fillWidth: 1,
-        fillStyle: 'black'
-    }, option);
-    canvas.width = width;
-    canvas.height = height;
-    ctx.clearRect(0, 0, width, height);
-    var maxLen = Math.sqrt(width * width + height * height);
-    var count = maxLen / option.gap;
-
-    ctx.save();
-    ctx.translate(width / 2, height / 2);
-    ctx.lineWidth = option.fillWidth;
-    ctx.strokeStyle = option.fillStyle;
-    for (var j = 0; j < option.fillRepeat; j++) {
-        var ba = option.fillAngle * Math.PI / 180;
-        var ea = (option.fillAngle + 180) * Math.PI / 180;
-        var ca = (option.fillAngle + 90) * Math.PI / 180;
-        ctx.beginPath();
-        for (var i = -Math.ceil(count / 2); i < Math.ceil(count / 2); i++) {
-            var x1 = i * option.gap * Math.cos(ca) + maxLen / 2 * Math.cos(ba);
-            var y1 = i * option.gap * Math.sin(ca) + maxLen / 2 * Math.sin(ba);
-            var x2 = i * option.gap * Math.cos(ca) + maxLen / 2 * Math.cos(ea);
-            var y2 = i * option.gap * Math.sin(ca) + maxLen / 2 * Math.sin(ea);
-            ctx.moveTo.apply(ctx, _shake(x1, y1, option.randomRange));
-            var qp = _shake(x2, y2, option.randomRange);
-            var cp = _shake((x1 + x2) / 2, (y1 + y2) / 2, option.curveRange);
-            ctx.quadraticCurveTo(cp[0], cp[1], qp[0], qp[1]);
-        }
-
-        ctx.stroke();
-    }
-    ctx.restore();
-
-    return canvas.toDataURL();
-}
-
-function _shake(x, y, randomRange) {
-    var r = Math.random() * randomRange;
-    var a = Math.random() * 360 * Math.PI / 180;
-    return [x + r * Math.cos(a), y + r * Math.sin(a)];
-}
-
-/***/ }),
-/* 6 */,
-/* 7 */,
-/* 8 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -7469,7 +7308,7 @@ var Graphics = function (_cax$Group) {
 exports.default = Graphics;
 
 /***/ }),
-/* 9 */
+/* 5 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -7485,15 +7324,15 @@ var _cax = __webpack_require__(0);
 
 var _cax2 = _interopRequireDefault(_cax);
 
-var _ellipse = __webpack_require__(4);
+var _ellipse = __webpack_require__(6);
 
 var _ellipse2 = _interopRequireDefault(_ellipse);
 
-var _fillRect2 = __webpack_require__(5);
+var _fillRect2 = __webpack_require__(7);
 
 var _fillRect3 = _interopRequireDefault(_fillRect2);
 
-var _pathToShapes = __webpack_require__(12);
+var _pathToShapes = __webpack_require__(8);
 
 var _pathToShapes2 = _interopRequireDefault(_pathToShapes);
 
@@ -7655,7 +7494,7 @@ var SketchShape = function (_cax$Group) {
     value: function strokePath(path) {
       var _this2 = this;
 
-      var shapes = (0, _pathToShapes2.default)(path);
+      var shapes = this._shakeShapes((0, _pathToShapes2.default)(path));
       shapes.forEach(function (shape) {
         var g = new _cax2.default.Graphics();
         g.moveTo(shape[0][0], shape[0][1]);
@@ -7665,6 +7504,36 @@ var SketchShape = function (_cax$Group) {
         g.stroke();
         _this2.add(g);
       });
+    }
+  }, {
+    key: '_shakeShapes',
+    value: function _shakeShapes(shapes) {
+      var _this3 = this;
+
+      var ns = [];
+      shapes.forEach(function (shape) {
+        var s = [];
+        var p1 = _this3._shake(shape[0][0], shape[0][1], _this3.option.randomRange);
+        shape.forEach(function (curve, index) {
+          var c = null;
+          if (Math.random() < _this3.option.filter) {
+            var p2 = _this3._shake(curve[2], curve[3], _this3.option.randomRange);
+            var p3 = _this3._shake(curve[4], curve[5], _this3.option.randomRange);
+            var p4 = _this3._shake(curve[6], curve[7], _this3.option.randomRange);
+            if (index === 0) {
+
+              c = [p1[0], p1[1], p2[0], p2[1], p3[0], p3[1], p4[0], p4[1]];
+            } else {
+
+              c = [null, null, p2[0], p2[1], p3[0], p3[1], p4[0], p4[1]];
+            }
+            s.push(c);
+          }
+        });
+        ns.push(s);
+      });
+
+      return ns;
     }
   }, {
     key: 'clear',
@@ -7710,9 +7579,166 @@ var SketchShape = function (_cax$Group) {
 exports.default = SketchShape;
 
 /***/ }),
-/* 10 */,
-/* 11 */,
-/* 12 */
+/* 6 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+
+var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
+
+var _cax = __webpack_require__(0);
+
+var _cax2 = _interopRequireDefault(_cax);
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+
+function _possibleConstructorReturn(self, call) { if (!self) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return call && (typeof call === "object" || typeof call === "function") ? call : self; }
+
+function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
+
+var Ellipse = function (_cax$Shape) {
+  _inherits(Ellipse, _cax$Shape);
+
+  function Ellipse(w, h, option) {
+    _classCallCheck(this, Ellipse);
+
+    var _this = _possibleConstructorReturn(this, (Ellipse.__proto__ || Object.getPrototypeOf(Ellipse)).call(this));
+
+    _this.option = option || {};
+
+    var k = 0.5522848;
+    var ox = w / 2 * k;
+    var oy = h / 2 * k;
+    var xe = w;
+    var ye = h;
+    var xm = w / 2;
+    var ym = h / 2;
+
+    _this.pointsList = [];
+    for (var i = 0; i < _this.option.strokeRepeat; i++) {
+
+      _this.pointsList.push([_shake(0, ym, _this.option.randomRange), _shake(0, ym - oy, _this.option.randomRange), _shake(xm - ox, 0, _this.option.randomRange), _shake(xm, 0, _this.option.randomRange), _shake(xm + ox, 0, _this.option.randomRange), _shake(xe, ym - oy, _this.option.randomRange), _shake(xe, ym, _this.option.randomRange), _shake(xe, ym + oy, _this.option.randomRange), _shake(xm + ox, ye, _this.option.randomRange), _shake(xm, ye, _this.option.randomRange), _shake(xm - ox, ye, _this.option.randomRange), _shake(0, ym + oy, _this.option.randomRange), _shake(0, ym, _this.option.randomRange)]);
+    }
+
+    return _this;
+  }
+
+  _createClass(Ellipse, [{
+    key: 'draw',
+    value: function draw() {
+      var _this2 = this;
+
+      this.pointsList.forEach(function (points) {
+
+        _this2.beginPath();
+        _this2.moveTo(points[0][0], points[0][1]);
+        _this2.bezierCurveTo(points[1][0], points[1][1], points[2][0], points[2][1], points[3][0], points[3][1]);
+        _this2.bezierCurveTo(points[4][0], points[4][1], points[5][0], points[5][1], points[6][0], points[6][1]);
+        _this2.bezierCurveTo(points[7][0], points[7][1], points[8][0], points[8][1], points[9][0], points[9][1]);
+        _this2.bezierCurveTo(points[10][0], points[10][1], points[11][0], points[11][1], points[12][0], points[12][1]);
+
+        if (_this2.option.strokeStyle) {
+
+          if (_this2.option.lineWidth !== undefined) {
+            _this2.lineWidth(_this2.option.lineWidth);
+          }
+          _this2.strokeStyle(_this2.option.strokeStyle);
+          _this2.stroke();
+        }
+
+        if (_this2.option.fillStyle) {
+          _this2.fillStyle(_this2.option.fillStyle);
+          _this2.fill();
+        }
+      });
+    }
+  }]);
+
+  return Ellipse;
+}(_cax2.default.Shape);
+
+function _shake(x, y, randomRange) {
+  var r = Math.random() * randomRange;
+  var a = Math.random() * 360 * Math.PI / 180;
+  return [x + r * Math.cos(a), y + r * Math.sin(a)];
+}
+
+exports.default = Ellipse;
+
+/***/ }),
+/* 7 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
+Object.defineProperty(exports, "__esModule", {
+    value: true
+});
+exports.default = fillRect;
+
+
+var canvas = document.createElement('canvas');
+var ctx = canvas.getContext('2d');
+
+function fillRect(width, height, option) {
+    option = Object.assign({
+        gap: 5,
+        randomRange: 4,
+        curveRange: 35,
+        fillAngle: -45,
+        fillRepeat: 3,
+        fillWidth: 1,
+        fillStyle: 'black'
+    }, option);
+    canvas.width = width;
+    canvas.height = height;
+    ctx.clearRect(0, 0, width, height);
+    var maxLen = Math.sqrt(width * width + height * height);
+    var count = maxLen / option.gap;
+
+    ctx.save();
+    ctx.translate(width / 2, height / 2);
+    ctx.lineWidth = option.fillWidth;
+    ctx.strokeStyle = option.fillStyle;
+    for (var j = 0; j < option.fillRepeat; j++) {
+        var ba = option.fillAngle * Math.PI / 180;
+        var ea = (option.fillAngle + 180) * Math.PI / 180;
+        var ca = (option.fillAngle + 90) * Math.PI / 180;
+        ctx.beginPath();
+        for (var i = -Math.ceil(count / 2); i < Math.ceil(count / 2); i++) {
+            var x1 = i * option.gap * Math.cos(ca) + maxLen / 2 * Math.cos(ba);
+            var y1 = i * option.gap * Math.sin(ca) + maxLen / 2 * Math.sin(ba);
+            var x2 = i * option.gap * Math.cos(ca) + maxLen / 2 * Math.cos(ea);
+            var y2 = i * option.gap * Math.sin(ca) + maxLen / 2 * Math.sin(ea);
+            ctx.moveTo.apply(ctx, _shake(x1, y1, option.randomRange));
+            var qp = _shake(x2, y2, option.randomRange);
+            var cp = _shake((x1 + x2) / 2, (y1 + y2) / 2, option.curveRange);
+            ctx.quadraticCurveTo(cp[0], cp[1], qp[0], qp[1]);
+        }
+
+        ctx.stroke();
+    }
+    ctx.restore();
+
+    return canvas.toDataURL();
+}
+
+function _shake(x, y, randomRange) {
+    var r = Math.random() * randomRange;
+    var a = Math.random() * 360 * Math.PI / 180;
+    return [x + r * Math.cos(a), y + r * Math.sin(a)];
+}
+
+/***/ }),
+/* 8 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -7723,11 +7749,11 @@ Object.defineProperty(exports, "__esModule", {
 });
 exports.default = pathToShapes;
 
-var _pathParser = __webpack_require__(13);
+var _pathParser = __webpack_require__(9);
 
 var _pathParser2 = _interopRequireDefault(_pathParser);
 
-var _arcToBezier = __webpack_require__(14);
+var _arcToBezier = __webpack_require__(10);
 
 var _arcToBezier2 = _interopRequireDefault(_arcToBezier);
 
@@ -7965,7 +7991,7 @@ function pathToShapes(path) {
 }
 
 /***/ }),
-/* 13 */
+/* 9 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -8033,7 +8059,7 @@ function parseValues(args) {
 exports.default = parse;
 
 /***/ }),
-/* 14 */
+/* 10 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
