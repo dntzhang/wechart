@@ -35,6 +35,17 @@ class Sketch extends cax.Group {
     this.add(this.strokeGroup)
   }
 
+
+  strokeRect () {
+    this.cmds.push(['strokeRect', arguments])
+    return this
+  }
+
+  fillRect () {
+    this.cmds.push(['fillRect', arguments])
+    return this
+  }
+
   _shake(x, y){
     const r = Math.random()*this.option.randomRange
     const a = Math.random()*360*Math.PI/180
@@ -86,16 +97,6 @@ class Sketch extends cax.Group {
 
   setLineDash () {
     this.cmds.push(['setLineDash', arguments])
-    return this
-  }
-
-  strokeRect () {
-    this.cmds.push(['strokeRect', arguments])
-    return this
-  }
-
-  fillRect () {
-    this.cmds.push(['fillRect', arguments])
     return this
   }
 
