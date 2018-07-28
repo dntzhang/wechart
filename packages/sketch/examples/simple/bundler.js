@@ -6930,7 +6930,7 @@ function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { de
 
 var stage = new _cax2.default.Stage(400, 400, 'body');
 
-var sg = new _src2.default({
+var ss = new _src2.default.Shape({
   gap: 5,
   randomRange: 4,
   fillAngle: -45,
@@ -6943,29 +6943,30 @@ var sg = new _src2.default({
   fillStyle: '#ee5c63'
 });
 
-sg.fillRect(100, 100, 100, 100);
+stage.add(ss);
 
-// sg.beginPath()
-// .moveTo(100, 100)
-// .lineTo(100, 200)
-// .lineTo(200, 200)
-// .lineTo(200, 100)
-// .lineTo(100, 100)
-// .stroke()
+ss.rect(100, 100, 100, 100);
 
+ss.circle(280, 200, 50);
 
-stage.add(sg);
-
-sg.strokeRect(100, 100, 100, 100);
-
-sg.fillCircle(280, 200, 50);
-sg.strokeCircle(280, 200, 50);
-
-sg.strokeEllipse(100, 40, 160, 50);
-
-sg.fillEllipse(100, 40, 160, 50, { fillStyle: '#459130' });
+ss.ellipse(100, 40, 160, 50, { fillStyle: '#459130' });
 //sg.strokePath
 //sg.fillPath()
+
+
+var sg = new _src2.default.Graphics({
+  gap: 5,
+  randomRange: 4,
+  strokeRepeat: 1,
+  curveRange: 45,
+  strokeWidth: 1,
+  strokeStyle: 'black'
+});
+
+sg.beginPath().moveTo(100, 100).lineTo(100, 200).lineTo(200, 200).lineTo(200, 100).lineTo(100, 100).stroke();
+
+sg.y = 120;
+stage.add(sg);
 
 _cax2.default.tick(function () {
   stage.update();
@@ -7009,363 +7010,23 @@ module.exports = function (module) {
 
 
 Object.defineProperty(exports, "__esModule", {
-  value: true
+    value: true
 });
 
-var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
+var _graphics = __webpack_require__(8);
 
-var _cax = __webpack_require__(0);
+var _graphics2 = _interopRequireDefault(_graphics);
 
-var _cax2 = _interopRequireDefault(_cax);
+var _shape = __webpack_require__(9);
 
-var _ellipse = __webpack_require__(4);
-
-var _ellipse2 = _interopRequireDefault(_ellipse);
-
-var _fillRect2 = __webpack_require__(5);
-
-var _fillRect3 = _interopRequireDefault(_fillRect2);
+var _shape2 = _interopRequireDefault(_shape);
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
-function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
-
-function _possibleConstructorReturn(self, call) { if (!self) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return call && (typeof call === "object" || typeof call === "function") ? call : self; }
-
-function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
-
-var assMap = {
-  fillStyle: true,
-  strokeStyle: true,
-  lineWidth: true,
-  lineCap: true,
-  lineDashOffset: true,
-  lineJoin: true,
-  miterLimit: true
+exports.default = {
+    Graphics: _graphics2.default,
+    Shape: _shape2.default
 };
-
-var Sketch = function (_cax$Group) {
-  _inherits(Sketch, _cax$Group);
-
-  function Sketch(option) {
-    _classCallCheck(this, Sketch);
-
-    var _this = _possibleConstructorReturn(this, (Sketch.__proto__ || Object.getPrototypeOf(Sketch)).call(this));
-
-    _this.option = Object.assign({
-      gap: 5,
-      randomRange: 4,
-      fillAngle: -45,
-      strokeRepeat: 2,
-      fillRepeat: 2,
-      strokeWidth: 1,
-      fillWidth: 1,
-      strokeStyle: 'black',
-      fillStyle: 'black'
-    }, option);
-    _this.cmds = [];
-    _this.currentGradient = null;
-
-    _this.strokeGroup = new _cax2.default.Group();
-    for (var i = 0; i < _this.option.strokeRepeat; i++) {
-      _this.strokeGroup.add(new _cax2.default.Graphics());
-    }
-
-    _this.add(_this.strokeGroup);
-    return _this;
-  }
-
-  _createClass(Sketch, [{
-    key: 'fillCircle',
-    value: function fillCircle(x, y, r) {
-
-      var bmp = new _cax2.default.Bitmap((0, _fillRect3.default)(r * 2, r * 2, this.option));
-      bmp.x = x - r;
-      bmp.y = y - r;
-      var graphics = new _cax2.default.Graphics();
-      graphics.arc(r, r, r, 0, Math.PI * 2);
-      bmp.clip(graphics);
-      this.add(bmp);
-      return this;
-    }
-  }, {
-    key: 'fillEllipse',
-    value: function fillEllipse(x, y, w, h, option) {
-
-      var bmp = new _cax2.default.Bitmap((0, _fillRect3.default)(w, h, Object.assign({}, this.option, option)));
-      bmp.x = x - w / 2;
-      bmp.y = y - h / 2;
-      var graphics = new _cax2.default.Graphics();
-
-      var k = 0.5522848;
-      var ox = w / 2 * k;
-      var oy = h / 2 * k;
-      var xe = w;
-      var ye = h;
-      var xm = w / 2;
-      var ym = h / 2;
-
-      graphics.moveTo(0, ym);
-      graphics.bezierCurveTo(0, ym - oy, xm - ox, 0, xm, 0);
-      graphics.bezierCurveTo(xm + ox, 0, xe, ym - oy, xe, ym);
-      graphics.bezierCurveTo(xe, ym + oy, xm + ox, ye, xm, ye);
-      graphics.bezierCurveTo(xm - ox, ye, 0, ym + oy, 0, ym);
-      bmp.clip(graphics);
-      this.add(bmp);
-      return this;
-    }
-  }, {
-    key: 'strokeEllipse',
-    value: function strokeEllipse(x, y, w, h) {
-      var ellipse = new _ellipse2.default(w, h, {
-        strokeStyle: this.option.strokeStyle,
-        randomRange: this.option.randomRange,
-        strokeRepeat: this.option.strokeRepeat,
-        lineWidth: this.option.strokeWidth });
-      ellipse.x = x;
-      ellipse.y = y;
-      ellipse.originX = w / 2;
-      ellipse.originY = h / 2;
-      //ellipse.rotation = Math.random()*360
-
-      this.add(ellipse);
-    }
-  }, {
-    key: 'strokeCircle',
-    value: function strokeCircle(x, y, r) {
-      var circle = new _ellipse2.default(r * 2, r * 2, {
-        strokeStyle: this.option.strokeStyle,
-        randomRange: this.option.randomRange,
-        strokeRepeat: this.option.strokeRepeat,
-        lineWidth: this.option.strokeWidth });
-      circle.x = x;
-      circle.y = y;
-      circle.originX = r;
-      circle.originY = r;
-      circle.rotation = Math.random() * 360;
-
-      this.add(circle);
-    }
-  }, {
-    key: 'strokeRect',
-    value: function strokeRect(x, y, w, h) {
-      var rect = new _cax2.default.Graphics();
-      for (var i = 0; i < this.option.strokeRepeat; i++) {
-        rect.beginPath().moveTo.apply(rect, this._shake(x, y)).lineTo.apply(rect, this._shake(x, y + h)).lineTo.apply(rect, this._shake(x + w, y + h)).lineTo.apply(rect, this._shake(x + w, y)).lineTo.apply(rect, this._shake(x, y)).stroke();
-      }
-      this.add(rect);
-    }
-  }, {
-    key: 'fillRect',
-    value: function fillRect(x, y, w, h) {
-
-      var bmp = new _cax2.default.Bitmap((0, _fillRect3.default)(w, h, this.option));
-      bmp.x = x;
-      bmp.y = y;
-
-      this.add(bmp);
-      return this;
-    }
-  }, {
-    key: '_shake',
-    value: function _shake(x, y) {
-      var r = Math.random() * this.option.randomRange;
-      var a = Math.random() * 360 * Math.PI / 180;
-      return [x + r * Math.cos(a), y + r * Math.sin(a)];
-    }
-  }, {
-    key: 'stroke',
-    value: function stroke() {
-      var _this2 = this;
-
-      this.strokeGroup.children.forEach(function (g) {
-        g.strokeStyle(_this2.option.strokeStyle);
-        g.lineWidth(_this2.option.strokeWidth);
-        g.stroke();
-      });
-      return this;
-    }
-  }, {
-    key: 'beginPath',
-    value: function beginPath() {
-      this.strokeGroup.children.forEach(function (g) {
-        g.beginPath();
-      });
-      return this;
-    }
-  }, {
-    key: 'moveTo',
-    value: function moveTo(x, y) {
-      var _this3 = this;
-
-      this.strokeGroup.children.forEach(function (g) {
-        g.moveTo.apply(g, _this3._shake(x, y));
-      });
-      return this;
-    }
-  }, {
-    key: 'lineTo',
-    value: function lineTo(x, y) {
-      var _this4 = this;
-
-      this.strokeGroup.children.forEach(function (g) {
-        g.lineTo.apply(g, _this4._shake(x, y));
-      });
-      return this;
-    }
-  }, {
-    key: 'clearRect',
-    value: function clearRect() {
-      this.cmds.push(['clearRect', arguments]);
-      return this;
-    }
-  }, {
-    key: 'rect',
-    value: function rect() {
-      this.cmds.push(['rect', arguments]);
-      return this;
-    }
-  }, {
-    key: 'clear',
-    value: function clear() {
-      this.cmds.length = 0;
-      return this;
-    }
-  }, {
-    key: 'setLineDash',
-    value: function setLineDash() {
-      this.cmds.push(['setLineDash', arguments]);
-      return this;
-    }
-  }, {
-    key: 'arc',
-    value: function arc() {
-      this.cmds.push(['arc', arguments]);
-      return this;
-    }
-  }, {
-    key: 'closePath',
-    value: function closePath() {
-      this.cmds.push(['closePath', arguments]);
-      return this;
-    }
-  }, {
-    key: 'fillStyle',
-    value: function fillStyle() {
-      this.cmds.push(['fillStyle', arguments]);
-      return this;
-    }
-  }, {
-    key: 'fill',
-    value: function fill() {
-      this.cmds.push(['fill', arguments]);
-      return this;
-    }
-  }, {
-    key: 'strokeStyle',
-    value: function strokeStyle() {
-      this.cmds.push(['strokeStyle', arguments]);
-      return this;
-    }
-  }, {
-    key: 'lineWidth',
-    value: function lineWidth() {
-      this.cmds.push(['lineWidth', arguments]);
-      return this;
-    }
-  }, {
-    key: 'lineCap',
-    value: function lineCap() {
-      this.cmds.push(['lineCap', arguments]);
-      return this;
-    }
-  }, {
-    key: 'lineDashOffset',
-    value: function lineDashOffset() {
-      this.cmds.push(['lineDashOffset', arguments]);
-      return this;
-    }
-  }, {
-    key: 'lineJoin',
-    value: function lineJoin() {
-      this.cmds.push(['lineJoin', arguments]);
-      return this;
-    }
-  }, {
-    key: 'miterLimit',
-    value: function miterLimit() {
-      this.cmds.push(['miterLimit', arguments]);
-      return this;
-    }
-  }, {
-    key: 'bezierCurveTo',
-    value: function bezierCurveTo() {
-      this.cmds.push(['bezierCurveTo', arguments]);
-      return this;
-    }
-  }, {
-    key: 'quadraticCurveTo',
-    value: function quadraticCurveTo() {
-      this.cmds.push(['quadraticCurveTo', arguments]);
-      return this;
-    }
-  }, {
-    key: 'createRadialGradient',
-    value: function createRadialGradient() {
-      this.cmds.push(['createRadialGradient', arguments]);
-      return this;
-    }
-  }, {
-    key: 'createLinearGradient',
-    value: function createLinearGradient() {
-      this.cmds.push(['createLinearGradient', arguments]);
-      return this;
-    }
-  }, {
-    key: 'addColorStop',
-    value: function addColorStop() {
-      this.cmds.push(['addColorStop', arguments]);
-      return this;
-    }
-  }, {
-    key: 'fillGradient',
-    value: function fillGradient() {
-      this.cmds.push(['fillGradient']);
-      return this;
-    }
-  }, {
-    key: 'arcTo',
-    value: function arcTo() {
-      this.cmds.push(['arcTo', arguments]);
-      return this;
-    }
-  }, {
-    key: 'render',
-    value: function render(ctx) {
-      var _this5 = this;
-
-      this.cmds.forEach(function (cmd) {
-        var methodName = cmd[0];
-        if (assMap[methodName]) {
-          ctx[methodName] = cmd[1][0];
-        } else if (methodName === 'addColorStop') {
-          _this5.currentGradient && _this5.currentGradient.addColorStop(cmd[1][0], cmd[1][1]);
-        } else if (methodName === 'fillGradient') {
-          ctx.fillStyle = _this5.currentGradient;
-        } else {
-          var result = ctx[methodName].apply(ctx, Array.prototype.slice.call(cmd[1]));
-          if (methodName === 'createRadialGradient' || methodName === 'createLinearGradient') {
-            _this5.currentGradient = result;
-          }
-        }
-      });
-    }
-  }]);
-
-  return Sketch;
-}(_cax2.default.Group);
-
-exports.default = Sketch;
 
 /***/ }),
 /* 4 */
@@ -7525,6 +7186,483 @@ function _shake(x, y, randomRange) {
     var a = Math.random() * 360 * Math.PI / 180;
     return [x + r * Math.cos(a), y + r * Math.sin(a)];
 }
+
+/***/ }),
+/* 6 */,
+/* 7 */,
+/* 8 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+
+var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
+
+var _cax = __webpack_require__(0);
+
+var _cax2 = _interopRequireDefault(_cax);
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+
+function _possibleConstructorReturn(self, call) { if (!self) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return call && (typeof call === "object" || typeof call === "function") ? call : self; }
+
+function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
+
+var assMap = {
+  fillStyle: true,
+  strokeStyle: true,
+  lineWidth: true,
+  lineCap: true,
+  lineDashOffset: true,
+  lineJoin: true,
+  miterLimit: true
+};
+
+var Graphics = function (_cax$Group) {
+  _inherits(Graphics, _cax$Group);
+
+  function Graphics(option) {
+    _classCallCheck(this, Graphics);
+
+    var _this = _possibleConstructorReturn(this, (Graphics.__proto__ || Object.getPrototypeOf(Graphics)).call(this));
+
+    _this.cmds = [];
+    _this.currentGradient = null;
+
+    _this.option = Object.assign({
+      gap: 5,
+      randomRange: 4,
+      fillAngle: -45,
+      strokeRepeat: 2,
+      fillRepeat: 2,
+      strokeWidth: 1,
+      fillWidth: 1,
+      strokeStyle: 'black',
+      fillStyle: 'black'
+    }, option);
+
+    _this.strokeGroup = new _cax2.default.Group();
+    for (var i = 0; i < _this.option.strokeRepeat; i++) {
+      _this.strokeGroup.add(new _cax2.default.Graphics());
+    }
+
+    _this.add(_this.strokeGroup);
+    return _this;
+  }
+
+  _createClass(Graphics, [{
+    key: 'clearRect',
+    value: function clearRect() {
+      this.cmds.push(['clearRect', arguments]);
+      return this;
+    }
+  }, {
+    key: 'rect',
+    value: function rect() {
+      this.cmds.push(['rect', arguments]);
+      return this;
+    }
+  }, {
+    key: 'clear',
+    value: function clear() {
+      this.cmds.length = 0;
+      return this;
+    }
+  }, {
+    key: 'setLineDash',
+    value: function setLineDash() {
+      this.cmds.push(['setLineDash', arguments]);
+      return this;
+    }
+  }, {
+    key: 'strokeRect',
+    value: function strokeRect() {
+      this.cmds.push(['strokeRect', arguments]);
+      return this;
+    }
+  }, {
+    key: 'arc',
+    value: function arc() {
+      this.cmds.push(['arc', arguments]);
+      return this;
+    }
+  }, {
+    key: 'closePath',
+    value: function closePath() {
+      this.cmds.push(['closePath', arguments]);
+      return this;
+    }
+  }, {
+    key: 'strokeStyle',
+    value: function strokeStyle() {
+      this.cmds.push(['strokeStyle', arguments]);
+      return this;
+    }
+  }, {
+    key: 'lineWidth',
+    value: function lineWidth() {
+      this.cmds.push(['lineWidth', arguments]);
+      return this;
+    }
+  }, {
+    key: 'lineCap',
+    value: function lineCap() {
+      this.cmds.push(['lineCap', arguments]);
+      return this;
+    }
+  }, {
+    key: 'lineDashOffset',
+    value: function lineDashOffset() {
+      this.cmds.push(['lineDashOffset', arguments]);
+      return this;
+    }
+  }, {
+    key: 'lineJoin',
+    value: function lineJoin() {
+      this.cmds.push(['lineJoin', arguments]);
+      return this;
+    }
+  }, {
+    key: 'miterLimit',
+    value: function miterLimit() {
+      this.cmds.push(['miterLimit', arguments]);
+      return this;
+    }
+  }, {
+    key: 'bezierCurveTo',
+    value: function bezierCurveTo() {
+      this.cmds.push(['bezierCurveTo', arguments]);
+      return this;
+    }
+  }, {
+    key: 'quadraticCurveTo',
+    value: function quadraticCurveTo() {
+      this.cmds.push(['quadraticCurveTo', arguments]);
+      return this;
+    }
+  }, {
+    key: 'createRadialGradient',
+    value: function createRadialGradient() {
+      this.cmds.push(['createRadialGradient', arguments]);
+      return this;
+    }
+  }, {
+    key: 'createLinearGradient',
+    value: function createLinearGradient() {
+      this.cmds.push(['createLinearGradient', arguments]);
+      return this;
+    }
+  }, {
+    key: 'addColorStop',
+    value: function addColorStop() {
+      this.cmds.push(['addColorStop', arguments]);
+      return this;
+    }
+  }, {
+    key: 'arcTo',
+    value: function arcTo() {
+      this.cmds.push(['arcTo', arguments]);
+      return this;
+    }
+  }, {
+    key: '_shake',
+    value: function _shake(x, y) {
+      var r = Math.random() * this.option.randomRange;
+      var a = Math.random() * 360 * Math.PI / 180;
+      return [x + r * Math.cos(a), y + r * Math.sin(a)];
+    }
+  }, {
+    key: 'stroke',
+    value: function stroke() {
+      var _this2 = this;
+
+      this.strokeGroup.children.forEach(function (g) {
+        g.strokeStyle(_this2.option.strokeStyle);
+        g.lineWidth(_this2.option.strokeWidth);
+        g.stroke();
+      });
+      return this;
+    }
+  }, {
+    key: 'beginPath',
+    value: function beginPath() {
+      this.strokeGroup.children.forEach(function (g) {
+        g.beginPath();
+      });
+      return this;
+    }
+  }, {
+    key: 'moveTo',
+    value: function moveTo(x, y) {
+      var _this3 = this;
+
+      this.strokeGroup.children.forEach(function (g) {
+        g.moveTo.apply(g, _this3._shake(x, y));
+      });
+      return this;
+    }
+  }, {
+    key: 'lineTo',
+    value: function lineTo(x, y) {
+      var _this4 = this;
+
+      this.strokeGroup.children.forEach(function (g) {
+        g.lineTo.apply(g, _this4._shake(x, y));
+      });
+      return this;
+    }
+  }, {
+    key: 'render',
+    value: function render(ctx) {
+      var _this5 = this;
+
+      this.cmds.forEach(function (cmd) {
+        var methodName = cmd[0];
+        if (assMap[methodName]) {
+          ctx[methodName] = cmd[1][0];
+        } else if (methodName === 'addColorStop') {
+          _this5.currentGradient && _this5.currentGradient.addColorStop(cmd[1][0], cmd[1][1]);
+        } else {
+          var result = ctx[methodName].apply(ctx, Array.prototype.slice.call(cmd[1]));
+          if (methodName === 'createRadialGradient' || methodName === 'createLinearGradient') {
+            _this5.currentGradient = result;
+          }
+        }
+      });
+    }
+  }]);
+
+  return Graphics;
+}(_cax2.default.Group);
+
+exports.default = Graphics;
+
+/***/ }),
+/* 9 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+
+var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
+
+var _cax = __webpack_require__(0);
+
+var _cax2 = _interopRequireDefault(_cax);
+
+var _ellipse = __webpack_require__(4);
+
+var _ellipse2 = _interopRequireDefault(_ellipse);
+
+var _fillRect2 = __webpack_require__(5);
+
+var _fillRect3 = _interopRequireDefault(_fillRect2);
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+
+function _possibleConstructorReturn(self, call) { if (!self) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return call && (typeof call === "object" || typeof call === "function") ? call : self; }
+
+function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
+
+var SketchShape = function (_cax$Group) {
+  _inherits(SketchShape, _cax$Group);
+
+  function SketchShape(option) {
+    _classCallCheck(this, SketchShape);
+
+    var _this = _possibleConstructorReturn(this, (SketchShape.__proto__ || Object.getPrototypeOf(SketchShape)).call(this));
+
+    _this.option = Object.assign({
+      gap: 5,
+      randomRange: 4,
+      fillAngle: -45,
+      strokeRepeat: 2,
+      fillRepeat: 2,
+      strokeWidth: 1,
+      fillWidth: 1,
+      strokeStyle: 'black',
+      fillStyle: 'black'
+    }, option);
+
+    return _this;
+  }
+
+  _createClass(SketchShape, [{
+    key: 'fillCircle',
+    value: function fillCircle(x, y, r) {
+
+      var bmp = new _cax2.default.Bitmap((0, _fillRect3.default)(r * 2, r * 2, this.option));
+      bmp.x = x - r;
+      bmp.y = y - r;
+      var graphics = new _cax2.default.Graphics();
+      graphics.arc(r, r, r, 0, Math.PI * 2);
+      bmp.clip(graphics);
+      this.add(bmp);
+      return this;
+    }
+  }, {
+    key: 'fillEllipse',
+    value: function fillEllipse(x, y, w, h, option) {
+
+      var bmp = new _cax2.default.Bitmap((0, _fillRect3.default)(w, h, Object.assign({}, this.option, option)));
+      bmp.x = x - w / 2;
+      bmp.y = y - h / 2;
+      var graphics = new _cax2.default.Graphics();
+
+      var k = 0.5522848;
+      var ox = w / 2 * k;
+      var oy = h / 2 * k;
+      var xe = w;
+      var ye = h;
+      var xm = w / 2;
+      var ym = h / 2;
+
+      graphics.moveTo(0, ym);
+      graphics.bezierCurveTo(0, ym - oy, xm - ox, 0, xm, 0);
+      graphics.bezierCurveTo(xm + ox, 0, xe, ym - oy, xe, ym);
+      graphics.bezierCurveTo(xe, ym + oy, xm + ox, ye, xm, ye);
+      graphics.bezierCurveTo(xm - ox, ye, 0, ym + oy, 0, ym);
+      bmp.clip(graphics);
+      this.add(bmp);
+      return this;
+    }
+  }, {
+    key: 'strokeEllipse',
+    value: function strokeEllipse(x, y, w, h) {
+      var ellipse = new _ellipse2.default(w, h, {
+        strokeStyle: this.option.strokeStyle,
+        randomRange: this.option.randomRange,
+        strokeRepeat: this.option.strokeRepeat,
+        lineWidth: this.option.strokeWidth });
+      ellipse.x = x;
+      ellipse.y = y;
+      ellipse.originX = w / 2;
+      ellipse.originY = h / 2;
+      //ellipse.rotation = Math.random()*360
+
+      this.add(ellipse);
+    }
+  }, {
+    key: 'strokeCircle',
+    value: function strokeCircle(x, y, r) {
+      var circle = new _ellipse2.default(r * 2, r * 2, {
+        strokeStyle: this.option.strokeStyle,
+        randomRange: this.option.randomRange,
+        strokeRepeat: this.option.strokeRepeat,
+        lineWidth: this.option.strokeWidth });
+      circle.x = x;
+      circle.y = y;
+      circle.originX = r;
+      circle.originY = r;
+      circle.rotation = Math.random() * 360;
+
+      this.add(circle);
+    }
+  }, {
+    key: 'strokeRect',
+    value: function strokeRect(x, y, w, h) {
+      var rect = new _cax2.default.Graphics();
+      for (var i = 0; i < this.option.strokeRepeat; i++) {
+        rect.beginPath().moveTo.apply(rect, this._shake(x, y)).lineTo.apply(rect, this._shake(x, y + h)).lineTo.apply(rect, this._shake(x + w, y + h)).lineTo.apply(rect, this._shake(x + w, y)).lineTo.apply(rect, this._shake(x, y)).stroke();
+      }
+      this.add(rect);
+    }
+  }, {
+    key: 'fillRect',
+    value: function fillRect(x, y, w, h) {
+
+      var bmp = new _cax2.default.Bitmap((0, _fillRect3.default)(w, h, this.option));
+      bmp.x = x;
+      bmp.y = y;
+
+      this.add(bmp);
+      return this;
+    }
+  }, {
+    key: '_shake',
+    value: function _shake(x, y) {
+      var r = Math.random() * this.option.randomRange;
+      var a = Math.random() * 360 * Math.PI / 180;
+      return [x + r * Math.cos(a), y + r * Math.sin(a)];
+    }
+  }, {
+    key: 'ellipse',
+    value: function ellipse(x, y, w, h, option) {
+      var o = Object.assign({}, this.option, option);
+      this.fillEllipse(x, y, w, h, o);
+      this.strokeEllipse(x, y, w, h, o);
+    }
+  }, {
+    key: 'circle',
+    value: function circle(x, y, r, option) {
+      var o = Object.assign({}, this.option, option);
+      this.fillCircle(x, y, r, o);
+      this.strokeCircle(x, y, r, o);
+    }
+  }, {
+    key: 'rect',
+    value: function rect(x, y, w, h, option) {
+
+      var o = Object.assign({}, this.option, option);
+      this.fillRect(x, y, w, h, o);
+      this.strokeRect(x, y, w, h, o);
+
+      return this;
+    }
+  }, {
+    key: 'clear',
+    value: function clear() {
+      this.empty();
+      return this;
+    }
+  }, {
+    key: 'setLineDash',
+    value: function setLineDash() {
+      this.cmds.push(['setLineDash', arguments]);
+      return this;
+    }
+  }, {
+    key: 'lineCap',
+    value: function lineCap() {
+      this.cmds.push(['lineCap', arguments]);
+      return this;
+    }
+  }, {
+    key: 'lineDashOffset',
+    value: function lineDashOffset() {
+      this.cmds.push(['lineDashOffset', arguments]);
+      return this;
+    }
+  }, {
+    key: 'lineJoin',
+    value: function lineJoin() {
+      this.cmds.push(['lineJoin', arguments]);
+      return this;
+    }
+  }, {
+    key: 'miterLimit',
+    value: function miterLimit() {
+      this.cmds.push(['miterLimit', arguments]);
+      return this;
+    }
+  }]);
+
+  return SketchShape;
+}(_cax2.default.Group);
+
+exports.default = SketchShape;
 
 /***/ })
 /******/ ]);
