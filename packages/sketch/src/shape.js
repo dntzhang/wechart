@@ -2,6 +2,7 @@ import cax from 'cax'
 import Ellipse from './shape/ellipse'
 import fillRect from './fill-rect'
 
+import pathToShapes from './path/path-to-shapes'
 
 class SketchShape extends cax.Group {
   constructor (option) {
@@ -138,6 +139,20 @@ class SketchShape extends cax.Group {
     this.strokeRect(x, y, w, h,o)
 
     return this
+  }
+
+  strokePath(path){
+    const shapes = pathToShapes(path)
+    shapes.forEach(shape=>{
+      const g = new cax.Graphics()
+      g.moveTo(shape[0][0],shape[0][1])
+      shape.forEach(curve=>{
+        g.bezierCurveTo(curve[2],curve[3],curve[4],curve[5],curve[6],curve[7])
+      })
+      g.stroke()
+      this.add(g)
+    })
+   
   }
 
   clear () {

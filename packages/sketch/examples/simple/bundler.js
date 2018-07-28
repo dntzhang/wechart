@@ -6947,10 +6947,10 @@ stage.add(ss);
 
 ss.rect(100, 100, 100, 100);
 
-ss.circle(280, 200, 50);
+ss.circle(280, 100, 50);
 
-ss.ellipse(100, 40, 160, 50, { fillStyle: '#459130' });
-//sg.strokePath
+ss.ellipse(140, 40, 160, 50, { fillStyle: '#459130' });
+
 //sg.fillPath()
 
 
@@ -6963,11 +6963,36 @@ var sg = new _src2.default.Graphics({
   strokeStyle: 'black'
 });
 
-sg.beginPath().moveTo(100, 100).lineTo(100, 200).lineTo(200, 200).lineTo(200, 100).lineTo(100, 100).stroke();
+// sg.beginPath()
+// .moveTo(100, 100)
+// .lineTo(100, 200)
+// .lineTo(200, 200)
+// .lineTo(200, 100)
+// .lineTo(100, 100)
+// .stroke()
 
-sg.y = 120;
-stage.add(sg);
 
+// sg.y = 120
+// stage.add(sg)
+
+
+var ss2 = new _src2.default.Shape({
+  gap: 5,
+  randomRange: 4,
+  fillAngle: -45,
+  strokeRepeat: 1,
+  curveRange: 45,
+  fillRepeat: 2,
+  strokeWidth: 1,
+  fillWidth: 1,
+  strokeStyle: 'black',
+  fillStyle: '#ee5c63'
+});
+ss2.strokePath('M595,82.1c1,1-1,2-1,2s-6.9,2-8.9,4.9c-2,2-4.9,8.8-4.9,8.8c3.9-1,8.9-2,13.8-4c1,0,2,1,3,2c1,0-11.8,4.9-14.8,6.9c-2,2-11.8,9.9-14.8,9.9c-2.9,0-9.9,1-9.9,1c1,2,2,3.9,3.9,6.9c0,0-6.9,4-6.9,4.9c-1,1-5.9,6.9-5.9,6.9s17.7,1.9,23.6-7.9c-5.9,9.8-19.7,19.7-48.2,19.7c-29.5,0-53.1-11.8-68.9-17.7c-16.7-6.9-38.4-14.8-56.1-14.8c-16.7,0-36.4,4.9-49.2,16.8c-22.6-8.8-54.1-4-68.9,9.8c-13.8,13.8-27.5,30.5-29.5,42.3c-2.9,12.9-9.8,43.3-19.7,57.2c-13.8,22.5-29.5,28.5-34.5,38.3c-4.9,9.9-4.9,30.5-4,30.5c2,1,8.9,0,12.8-2c7.9-2.9,29.5-25.6,37.4-36.4c7.9-10.9,34.5-58.1,38.4-74.8s7.9-33.5,19.7-42.3c12.8-8.8,28.5-4.9,28.5-3.9c0,0-14.7,11.8-15.7,44.3s18.7,28.6,8.8,49.2c-9.9,17.7-39.3,5.9-49.2,16.7c-7.9,8.9,0,40.3,0,46.2c0,6-3,33.5-4.9,40.4c-1,5.9,0,9.8-1,13.8c-1,3,6,3.9,6,3.9s-6,7.8-8.9,5.9c-2.9-1-4.9-1-6.9,0c-2,0-5.9,1.9-9.9,0L232.9,401c2,1,4.9,1.9,7.9,1c4-1,23.6-9.9,25.6-11.9c2.9-1,19.7-10.8,22.6-16.7c2-5.9,5.9-24.6,5.9-30.5c1-6,2-24.6,2-29.5s-1-13.8,0-17.7c2-2.9,4.9-6.9,8.9-8.9c4.9-1,10.8-1,11.8-1c2,0,18.7,2,21.6,2c3.9,0,19.7-2.9,23.6-5c4.9-0.9,7.8,0,8.9,2c2,1.9-2,4.9-2,5.9c-1,1-8.8,10.8-10.8,14.7c-2,4.9-8.8,13.8-6.9,17.7c2,3.9,2,4.9,7.8,7.9c5.9,1.9,28.5,13.8,41.3,25.6c13.8,12.7,26.6,28.4,28.6,36.4c2.9,8.9,7.8,9.8,10.8,9.8c3,1,8.9,2,8.9,5.9s-1,8.8-1,8.8l36.4,13.8c0,0,0-12.8-1-17.7c-1-5.9-6.9-11.8-11.8-17.7c-4.9-6.9-56-57.1-61-61c-4.9-3-8.9-6.9-9.8-14.7c-1-7.9,8.8-13.8,14.8-20.6c3.9-4.9,14.7-27.6,16.7-30.6c2-2.9,8.9-10.8,12.8-10.8c4.9,0,15.8,6.9,29.5,11.8c5.9,2,48.2,12.8,54.1,14.8c5.9,1,18.6,0,22.6,3.9c3.9,2.9,0,10.9-1,15.8c-1,5.9-11.8,27.5-11.8,27.5s2,7.8,2,13.8c0,6.9-2.9,31.5-5.9,39.3c-2,8.9-15.8,31.6-18.7,35.5c-2,2.9-4.9,4.9-4.9,9.9c0,4.9,8.8,6,11.8,9.8c4,3,1,8.8,0,14.8l39.4,16.7c0-2.9,2-7.9,0-9.9c-1-2.9-5.9-8.8-8.8-12.8c-2-2.9-8.9-13.8-10.8-15.8c-2-2.9-2-8.8,0-13.8c1-4.9,13.8-38.3,14.7-42.3c2-4.9,20.7-44.3,22.6-49.2c2-5.9,17.7-34.4,19.7-39.4c2-5.9,14.8-10.8,18.7-10.8c4.9,0,29.5,8.8,33.4,10.8c2.9,1,25.6,10.9,29.5,12.8c4.9,1.9,2,5.9-1,6.9c-2.9,1.9-39.4,26.5-42.3,27.5c-2.9,1-5.9,3.9-7.9,3.9c-2.9,0-6.9,3.1-6.9,4c0,2-1,5.9-5.9,5.9c-3.9,0-11.8-5.9-16.7-11.8c-6.9,3.9-11.8,6.9-14.8,12.8c-4.9,4.9-6.9,8.9-9.8,15.8c2,2,5.9,2.9,8.8,2.9h31.5c3,0,6.9-0.9,9.9-1.9c2.9-2,80.7-53.1,80.7-53.1s12.8-9.9,12.8-18.7c0-6.9-5.9-8.9-7.9-11.8c-3-1.9-20.7-13.8-23.6-15.7c-4-2.9-17.7-10.9-21.6-12.9c-3-1.9-13.8-5.8-13.8-5.8c3-8.9,5-15.8,5.9-17.7c1-2,1-19.7,2-22.7c0-2.9,5-15.7,6.9-17.7c2-2,6.9-17.7,7.9-20.7c1-1.9,8.8-24.6,12.8-24.6c3.9-1,7.9,2.9,11.8,2.9c4,1,18.7-1,26.6,0c6.9,1,15.8,9.9,17.7,10.8c2.9,1,9.8,3.9,11.8,3.9c1,0,10.8-6.9,10.8-8.8c0-2-6.9-5.9-7.9-5.9c-1-1-7.8-4.9-7.8-4.9c0,1,2.9-1.9,7.8-1.9c3.9,0,7.9,3.9,8.8,4.9c2,1,6.9,3.9,7.9,1.9c1-1,4.9-5.9,4.9-8.9c0-4-3.9-8.8-5.9-10.8s-24.6-23.6-26.6-24.6c-2.9-1-14.7-11.8-14.7-14.7c-1-2-6.9-6.9-7.9-7.9s-30.5-21.6-34.5-24.6c-3.9-2.9-7.9-7.8-7.9-12.7s-2-17.7-2-17.7s-6.9-1-9.8,1.9c-2.9,2-9.8,17.8-13.8,17.8c-10.9-2-24.6,1-24.6,2.9c1,2.9,10.8,1,10.8,1c0,1-3.9,5.9-6.9,5.9c-2,0-7.8,2-8.8,2.9c-2,0-5.9,3.1-5.9,3.1c2.9,0,5.9,0,9.8,0.9c0,0-5.9,4-8.9,4c-2.9,0-12.8,2.9-15.7,3.9c-2,1.9-9.9,7.9-9.9,7.9H589l1,2h4.9L595,82.1L595,82.1z');
+
+stage.add(ss2);
+ss2.y = 180;
+ss2.scaleX = ss2.scaleY = 0.45;
 _cax2.default.tick(function () {
   stage.update();
 });
@@ -7468,6 +7493,10 @@ var _fillRect2 = __webpack_require__(5);
 
 var _fillRect3 = _interopRequireDefault(_fillRect2);
 
+var _pathToShapes = __webpack_require__(12);
+
+var _pathToShapes2 = _interopRequireDefault(_pathToShapes);
+
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
 function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
@@ -7622,6 +7651,22 @@ var SketchShape = function (_cax$Group) {
       return this;
     }
   }, {
+    key: 'strokePath',
+    value: function strokePath(path) {
+      var _this2 = this;
+
+      var shapes = (0, _pathToShapes2.default)(path);
+      shapes.forEach(function (shape) {
+        var g = new _cax2.default.Graphics();
+        g.moveTo(shape[0][0], shape[0][1]);
+        shape.forEach(function (curve) {
+          g.bezierCurveTo(curve[2], curve[3], curve[4], curve[5], curve[6], curve[7]);
+        });
+        g.stroke();
+        _this2.add(g);
+      });
+    }
+  }, {
     key: 'clear',
     value: function clear() {
       this.empty();
@@ -7663,6 +7708,516 @@ var SketchShape = function (_cax$Group) {
 }(_cax2.default.Group);
 
 exports.default = SketchShape;
+
+/***/ }),
+/* 10 */,
+/* 11 */,
+/* 12 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
+Object.defineProperty(exports, "__esModule", {
+    value: true
+});
+exports.default = pathToShapes;
+
+var _pathParser = __webpack_require__(13);
+
+var _pathParser2 = _interopRequireDefault(_pathParser);
+
+var _arcToBezier = __webpack_require__(14);
+
+var _arcToBezier2 = _interopRequireDefault(_arcToBezier);
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+function pathToShapes(path) {
+    //https://developer.mozilla.org/zh-CN/docs/Web/SVG/Tutorial/Paths
+    //M = moveto
+    //L = lineto
+    //H = horizontal lineto
+    //V = vertical lineto
+    //C = curveto
+    //S = smooth curveto
+    //Q = quadratic Belzier curve
+    //T = smooth quadratic Belzier curveto
+    //A = elliptical Arc
+    //Z = closepath
+    //以上所有命令均允许小写字母。大写表示绝对定位，小写表示相对定位(从上一个点开始)。
+    var cmds = (0, _pathParser2.default)(path),
+        preX = 0,
+        preY = 0,
+        j = 0,
+        len = cmds.length,
+        shapes = [],
+        current = null,
+        closeX = void 0,
+        closeY = void 0,
+        preCX = void 0,
+        preCY = void 0,
+        sLen = void 0,
+        curves = void 0,
+        lastCurve = void 0;
+
+    for (; j < len; j++) {
+        var item = cmds[j];
+        var action = item[0];
+        var preItem = cmds[j - 1];
+
+        switch (action) {
+            case 'm':
+                sLen = shapes.length;
+                shapes[sLen] = [];
+                current = shapes[sLen];
+                preX = preX + item[1];
+                preY = preY + item[2];
+                break;
+            case 'M':
+
+                sLen = shapes.length;
+                shapes[sLen] = [];
+                current = shapes[sLen];
+                preX = item[1];
+                preY = item[2];
+                break;
+
+            case 'l':
+                current.push([preX, preY, preX, preY, preX, preY, preX + item[1], preY + item[2]]);
+                preX += item[1];
+                preY += item[2];
+                break;
+
+            case 'L':
+
+                current.push([preX, preY, item[1], item[2], item[1], item[2], item[1], item[2]]);
+                preX = item[1];
+                preY = item[2];
+
+                break;
+
+            case 'h':
+
+                current.push([preX, preY, preX, preY, preX, preY, preX + item[1], preY]);
+                preX += item[1];
+                break;
+
+            case 'H':
+                current.push([preX, preY, item[1], preY, item[1], preY, item[1], preY]);
+                preX = item[1];
+                break;
+
+            case 'v':
+                current.push([preX, preY, preX, preY, preX, preY, preX, preY + item[1]]);
+                preY += item[1];
+                break;
+
+            case 'V':
+                current.push([preX, preY, preX, item[1], preX, item[1], preX, item[1]]);
+                preY = item[1];
+                break;
+
+            case 'C':
+
+                current.push([preX, preY, item[1], item[2], item[3], item[4], item[5], item[6]]);
+                preX = item[5];
+                preY = item[6];
+                break;
+            case 'S':
+                if (preItem[0] === 'C' || preItem[0] === 'c') {
+                    current.push([preX, preY, preX + preItem[5] - preItem[3], preY + preItem[6] - preItem[4], item[1], item[2], item[3], item[4]]);
+                } else if (preItem[0] === 'S' || preItem[0] === 's') {
+                    current.push([preX, preY, preX + preItem[3] - preItem[1], preY + preItem[4] - preItem[2], item[1], item[2], item[3], item[4]]);
+                }
+                preX = item[3];
+                preY = item[4];
+                break;
+
+            case 'c':
+                current.push([preX, preY, preX + item[1], preY + item[2], preX + item[3], preY + item[4], preX + item[5], preY + item[6]]);
+                preX = preX + item[5];
+                preY = preY + item[6];
+                break;
+            case 's':
+                if (preItem[0] === 'C' || preItem[0] === 'c') {
+
+                    current.push([preX, preY, preX + preItem[5] - preItem[3], preY + preItem[6] - preItem[4], preX + item[1], preY + item[2], preX + item[3], preY + item[4]]);
+                } else if (preItem[0] === 'S' || preItem[0] === 's') {
+                    current.push([preX, preY, preX + preItem[3] - preItem[1], preY + preItem[4] - preItem[2], preX + item[1], preY + item[2], preX + item[3], preY + item[4]]);
+                }
+
+                preX = preX + item[3];
+                preY = preY + item[4];
+
+                break;
+            case 'a':
+                curves = (0, _arcToBezier2.default)({
+                    rx: item[1],
+                    ry: item[2],
+                    px: preX,
+                    py: preY,
+                    xAxisRotation: item[3],
+                    largeArcFlag: item[4],
+                    sweepFlag: item[5],
+                    cx: preX + item[6],
+                    cy: preX + item[7]
+                });
+                lastCurve = curves[curves.length - 1];
+
+                curves.forEach(function (curve, index) {
+                    if (index === 0) {
+                        current.push([preX, preY, curve.x1, curve.y1, curve.x2, curve.y2, curve.x, curve.y]);
+                    } else {
+                        current.push([curves[index - 1].x, curves[index - 1].y, curve.x1, curve.y1, curve.x2, curve.y2, curve.x, curve.y]);
+                    }
+                });
+
+                preX = lastCurve.x;
+                preY = lastCurve.y;
+
+                break;
+
+            case 'A':
+
+                curves = (0, _arcToBezier2.default)({
+                    rx: item[1],
+                    ry: item[2],
+                    px: preX,
+                    py: preY,
+                    xAxisRotation: item[3],
+                    largeArcFlag: item[4],
+                    sweepFlag: item[5],
+                    cx: item[6],
+                    cy: item[7]
+                });
+                lastCurve = curves[curves.length - 1];
+
+                curves.forEach(function (curve, index) {
+                    if (index === 0) {
+                        current.push([preX, preY, curve.x1, curve.y1, curve.x2, curve.y2, curve.x, curve.y]);
+                    } else {
+                        current.push([curves[index - 1].x, curves[index - 1].y, curve.x1, curve.y1, curve.x2, curve.y2, curve.x, curve.y]);
+                    }
+                });
+
+                preX = lastCurve.x;
+                preY = lastCurve.y;
+
+                break;
+            case 'Q':
+                current.push(pasition.q2b(preX, preY, item[1], item[2], item[3], item[4]));
+                preX = item[3];
+                preY = item[4];
+
+                break;
+            case 'q':
+                current.push(pasition.q2b(preX, preY, preX + item[1], preY + item[2], item[3] + preX, item[4] + preY));
+                preX += item[3];
+                preY += item[4];
+                break;
+
+            case 'T':
+
+                if (preItem[0] === 'Q' || preItem[0] === 'q') {
+                    preCX = preX + preItem[3] - preItem[1];
+                    preCY = preY + preItem[4] - preItem[2];
+                    current.push(pasition.q2b(preX, preY, preCX, preCY, item[1], item[2]));
+                } else if (preItem[0] === 'T' || preItem[0] === 't') {
+                    current.push(pasition.q2b(preX, preY, preX + preX - preCX, preY + preY - preCY, item[1], item[2]));
+                    preCX = preX + preX - preCX;
+                    preCY = preY + preY - preCY;
+                }
+
+                preX = item[1];
+                preY = item[2];
+                break;
+
+            case 't':
+                if (preItem[0] === 'Q' || preItem[0] === 'q') {
+                    preCX = preX + preItem[3] - preItem[1];
+                    preCY = preY + preItem[4] - preItem[2];
+                    current.push(pasition.q2b(preX, preY, preCX, preCY, preX + item[1], preY + item[2]));
+                } else if (preItem[0] === 'T' || preItem[0] === 't') {
+                    current.push(pasition.q2b(preX, preY, preX + preX - preCX, preY + preY - preCY, preX + item[1], preY + item[2]));
+                    preCX = preX + preX - preCX;
+                    preCY = preY + preY - preCY;
+                }
+
+                preX += item[1];
+                preY += item[2];
+                break;
+
+            case 'Z':
+                closeX = current[0][0];
+                closeY = current[0][1];
+                current.push([preX, preY, closeX, closeY, closeX, closeY, closeX, closeY]);
+                break;
+            case 'z':
+                closeX = current[0][0];
+                closeY = current[0][1];
+                current.push([preX, preY, closeX, closeY, closeX, closeY, closeX, closeY]);
+                break;
+        }
+    }
+
+    return shapes;
+}
+
+/***/ }),
+/* 13 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+// https://github.com/jkroso/parse-svg-path/blob/master/index.js
+/**
+ * expected argument lengths
+ * @type {Object}
+ */
+
+var length = { a: 7, c: 6, h: 1, l: 2, m: 2, q: 4, s: 4, t: 2, v: 1, z: 0
+
+  /**
+   * segment pattern
+   * @type {RegExp}
+   */
+
+};var segment = /([astvzqmhlc])([^astvzqmhlc]*)/ig;
+
+/**
+ * parse an svg path data string. Generates an Array
+ * of commands where each command is an Array of the
+ * form `[command, arg1, arg2, ...]`
+ *
+ * @param {String} path
+ * @return {Array}
+ */
+
+function parse(path) {
+  var data = [];
+  path.replace(segment, function (_, command, args) {
+    var type = command.toLowerCase();
+    args = parseValues(args);
+
+    // overloaded moveTo
+    if (type === 'm' && args.length > 2) {
+      data.push([command].concat(args.splice(0, 2)));
+      type = 'l';
+      command = command === 'm' ? 'l' : 'L';
+    }
+
+    while (true) {
+      if (args.length === length[type]) {
+        args.unshift(command);
+        return data.push(args);
+      }
+      if (args.length < length[type]) throw new Error('malformed path data');
+      data.push([command].concat(args.splice(0, length[type])));
+    }
+  });
+  return data;
+}
+
+var number = /-?[0-9]*\.?[0-9]+(?:e[-+]?\d+)?/ig;
+
+function parseValues(args) {
+  var numbers = args.match(number);
+  return numbers ? numbers.map(Number) : [];
+}
+
+exports.default = parse;
+
+/***/ }),
+/* 14 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+
+var _slicedToArray = function () { function sliceIterator(arr, i) { var _arr = []; var _n = true; var _d = false; var _e = undefined; try { for (var _i = arr[Symbol.iterator](), _s; !(_n = (_s = _i.next()).done); _n = true) { _arr.push(_s.value); if (i && _arr.length === i) break; } } catch (err) { _d = true; _e = err; } finally { try { if (!_n && _i["return"]) _i["return"](); } finally { if (_d) throw _e; } } return _arr; } return function (arr, i) { if (Array.isArray(arr)) { return arr; } else if (Symbol.iterator in Object(arr)) { return sliceIterator(arr, i); } else { throw new TypeError("Invalid attempt to destructure non-iterable instance"); } }; }();
+
+// https://github.com/colinmeinke/svg-arc-to-cubic-bezier
+
+var TAU = Math.PI * 2;
+
+var mapToEllipse = function mapToEllipse(_ref, rx, ry, cosphi, sinphi, centerx, centery) {
+  var x = _ref.x,
+      y = _ref.y;
+
+  x *= rx;
+  y *= ry;
+
+  var xp = cosphi * x - sinphi * y;
+  var yp = sinphi * x + cosphi * y;
+
+  return {
+    x: xp + centerx,
+    y: yp + centery
+  };
+};
+
+var approxUnitArc = function approxUnitArc(ang1, ang2) {
+  var a = 4 / 3 * Math.tan(ang2 / 4);
+
+  var x1 = Math.cos(ang1);
+  var y1 = Math.sin(ang1);
+  var x2 = Math.cos(ang1 + ang2);
+  var y2 = Math.sin(ang1 + ang2);
+
+  return [{
+    x: x1 - y1 * a,
+    y: y1 + x1 * a
+  }, {
+    x: x2 + y2 * a,
+    y: y2 - x2 * a
+  }, {
+    x: x2,
+    y: y2
+  }];
+};
+
+var vectorAngle = function vectorAngle(ux, uy, vx, vy) {
+  var sign = ux * vy - uy * vx < 0 ? -1 : 1;
+  var umag = Math.sqrt(ux * ux + uy * uy);
+  var vmag = Math.sqrt(ux * ux + uy * uy);
+  var dot = ux * vx + uy * vy;
+
+  var div = dot / (umag * vmag);
+
+  if (div > 1) {
+    div = 1;
+  }
+
+  if (div < -1) {
+    div = -1;
+  }
+
+  return sign * Math.acos(div);
+};
+
+var getArcCenter = function getArcCenter(px, py, cx, cy, rx, ry, largeArcFlag, sweepFlag, sinphi, cosphi, pxp, pyp) {
+  var rxsq = Math.pow(rx, 2);
+  var rysq = Math.pow(ry, 2);
+  var pxpsq = Math.pow(pxp, 2);
+  var pypsq = Math.pow(pyp, 2);
+
+  var radicant = rxsq * rysq - rxsq * pypsq - rysq * pxpsq;
+
+  if (radicant < 0) {
+    radicant = 0;
+  }
+
+  radicant /= rxsq * pypsq + rysq * pxpsq;
+  radicant = Math.sqrt(radicant) * (largeArcFlag === sweepFlag ? -1 : 1);
+
+  var centerxp = radicant * rx / ry * pyp;
+  var centeryp = radicant * -ry / rx * pxp;
+
+  var centerx = cosphi * centerxp - sinphi * centeryp + (px + cx) / 2;
+  var centery = sinphi * centerxp + cosphi * centeryp + (py + cy) / 2;
+
+  var vx1 = (pxp - centerxp) / rx;
+  var vy1 = (pyp - centeryp) / ry;
+  var vx2 = (-pxp - centerxp) / rx;
+  var vy2 = (-pyp - centeryp) / ry;
+
+  var ang1 = vectorAngle(1, 0, vx1, vy1);
+  var ang2 = vectorAngle(vx1, vy1, vx2, vy2);
+
+  if (sweepFlag === 0 && ang2 > 0) {
+    ang2 -= TAU;
+  }
+
+  if (sweepFlag === 1 && ang2 < 0) {
+    ang2 += TAU;
+  }
+
+  return [centerx, centery, ang1, ang2];
+};
+
+var arcToBezier = function arcToBezier(_ref2) {
+  var px = _ref2.px,
+      py = _ref2.py,
+      cx = _ref2.cx,
+      cy = _ref2.cy,
+      rx = _ref2.rx,
+      ry = _ref2.ry,
+      _ref2$xAxisRotation = _ref2.xAxisRotation,
+      xAxisRotation = _ref2$xAxisRotation === undefined ? 0 : _ref2$xAxisRotation,
+      _ref2$largeArcFlag = _ref2.largeArcFlag,
+      largeArcFlag = _ref2$largeArcFlag === undefined ? 0 : _ref2$largeArcFlag,
+      _ref2$sweepFlag = _ref2.sweepFlag,
+      sweepFlag = _ref2$sweepFlag === undefined ? 0 : _ref2$sweepFlag;
+
+  var curves = [];
+
+  if (rx === 0 || ry === 0) {
+    return [];
+  }
+
+  var sinphi = Math.sin(xAxisRotation * TAU / 360);
+  var cosphi = Math.cos(xAxisRotation * TAU / 360);
+
+  var pxp = cosphi * (px - cx) / 2 + sinphi * (py - cy) / 2;
+  var pyp = -sinphi * (px - cx) / 2 + cosphi * (py - cy) / 2;
+
+  if (pxp === 0 && pyp === 0) {
+    return [];
+  }
+
+  rx = Math.abs(rx);
+  ry = Math.abs(ry);
+
+  var lambda = Math.pow(pxp, 2) / Math.pow(rx, 2) + Math.pow(pyp, 2) / Math.pow(ry, 2);
+
+  if (lambda > 1) {
+    rx *= Math.sqrt(lambda);
+    ry *= Math.sqrt(lambda);
+  }
+
+  var _getArcCenter = getArcCenter(px, py, cx, cy, rx, ry, largeArcFlag, sweepFlag, sinphi, cosphi, pxp, pyp),
+      _getArcCenter2 = _slicedToArray(_getArcCenter, 4),
+      centerx = _getArcCenter2[0],
+      centery = _getArcCenter2[1],
+      ang1 = _getArcCenter2[2],
+      ang2 = _getArcCenter2[3];
+
+  var segments = Math.max(Math.ceil(Math.abs(ang2) / (TAU / 4)), 1);
+
+  ang2 /= segments;
+
+  for (var i = 0; i < segments; i++) {
+    curves.push(approxUnitArc(ang1, ang2));
+    ang1 += ang2;
+  }
+
+  return curves.map(function (curve) {
+    var _mapToEllipse = mapToEllipse(curve[0], rx, ry, cosphi, sinphi, centerx, centery),
+        x1 = _mapToEllipse.x,
+        y1 = _mapToEllipse.y;
+
+    var _mapToEllipse2 = mapToEllipse(curve[1], rx, ry, cosphi, sinphi, centerx, centery),
+        x2 = _mapToEllipse2.x,
+        y2 = _mapToEllipse2.y;
+
+    var _mapToEllipse3 = mapToEllipse(curve[2], rx, ry, cosphi, sinphi, centerx, centery),
+        x = _mapToEllipse3.x,
+        y = _mapToEllipse3.y;
+
+    return { x1: x1, y1: y1, x2: x2, y2: y2, x: x, y: y };
+  });
+};
+
+exports.default = arcToBezier;
 
 /***/ })
 /******/ ]);
