@@ -14,13 +14,24 @@ const controls = new THREE.OrbitControls(camera, renderer.domElement)
 const group = new THREE.Group()
 
 const pyramid = new MagicCube({
+  size:100,
+  control:{
+    camera,
+    controls
+  },
   level: 4,
-  size: 100,
   cubeStyle: {
     bottom: [null, null, null, null, null, null, {url: '../../asset/wepay-diy.jpg'}],
     ahead: {6: {url: '../../asset/qq.png'}}
   }
 })
+
+let { rotateControl } = pyramid;
+
+rotateControl.add('x', 1)
+rotateControl.add('y', 2)
+rotateControl.add('z', 1)
+rotateControl.start();
 
 group.add(pyramid)
 scene.add(group)
@@ -36,19 +47,7 @@ scene.add(DricetionalLight)
 var raycaster = new THREE.Raycaster()
 var mouse = new THREE.Vector2()
 
-window.addEventListener('mousemove', function (event) {
-  mouse.x = (event.clientX / window.innerWidth) * 2 - 1
-  mouse.y = -(event.clientY / window.innerHeight) * 2 + 1
-}, false)
-
 function animate () {
-  raycaster.setFromCamera(mouse, camera)
-  var intersects = raycaster.intersectObjects(pyramid.meshList)
-
-  if (intersects.length) {
-    let cube = intersects[0]
-    window.a = cube
-  }
 
   requestAnimationFrame(animate)
   renderer.render(scene, camera)

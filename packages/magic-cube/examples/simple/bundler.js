@@ -91,13 +91,25 @@ var controls = new THREE.OrbitControls(camera, renderer.domElement);
 var group = new THREE.Group();
 
 var pyramid = new _index2.default({
-  level: 4,
+  level: 3,
   size: 100,
+  control: {
+    camera: camera,
+    controls: controls
+  },
   cubeStyle: {
     bottom: [null, null, null, null, null, null, { url: '../../asset/wepay-diy.jpg' }],
     ahead: { 6: { url: '../../asset/qq.png' } }
   }
 });
+
+var rotateControl = pyramid.rotateControl;
+
+
+rotateControl.add('x', 1);
+rotateControl.add('y', 2);
+rotateControl.add('z', 1);
+rotateControl.start();
 
 group.add(pyramid);
 scene.add(group);
@@ -110,22 +122,7 @@ var DricetionalLight = new THREE.DirectionalLight(0xeeeeee, 1);
 DricetionalLight.position.set(-40, -50, -60);
 scene.add(DricetionalLight);
 
-var raycaster = new THREE.Raycaster();
-var mouse = new THREE.Vector2();
-
-window.addEventListener('mousemove', function (event) {
-  mouse.x = event.clientX / window.innerWidth * 2 - 1;
-  mouse.y = -(event.clientY / window.innerHeight) * 2 + 1;
-}, false);
-
 function animate() {
-  raycaster.setFromCamera(mouse, camera);
-  var intersects = raycaster.intersectObjects(pyramid.meshList);
-
-  if (intersects.length) {
-    var cube = intersects[0];
-    window.a = cube;
-  }
 
   requestAnimationFrame(animate);
   renderer.render(scene, camera);
@@ -175,6 +172,82 @@ CanvasRenderingContext2D.prototype.roundRect = function (x, y, w, h, r) {
   this.arcTo(x, y, x + w, y, r);
   this.closePath();
   return this;
+};
+var rotateAroundWorldAxis = function rotateAroundWorldAxis(object, axis, radians) {
+  var rotWorldMatrix = new THREE.Matrix4();
+  rotWorldMatrix.makeRotationAxis(axis.normalize(), radians);
+
+  // old code for Three.JS pre r54:
+  //  rotWorldMatrix.multiply(object.matrix);
+  // new code for Three.JS r55+:
+  rotWorldMatrix.multiply(object.matrix); // pre-multiply
+
+  object.matrix = rotWorldMatrix;
+
+  // old code for Three.js pre r49:
+  // object.rotation.getRotationFromMatrix(object.matrix, object.scale);
+  // old code for Three.js pre r59:
+  // object.rotation.setEulerFromRotationMatrix(object.matrix);
+  // code for r59+:
+  object.rotation.setFromRotationMatrix(object.matrix);
+};
+
+var raycaster = new THREE.Raycaster();
+var mouse = new THREE.Vector2();
+mouse.x = mouse.y = -1;
+var clientX = void 0,
+    clientY = void 0;
+var pyramid = undefined;
+var intersects = void 0;
+var selectAxis = void 0,
+    selectCube = void 0,
+    selectAhead = void 0,
+    flag = false;
+
+var getDirection = function getDirection(quadrant, angle, xName, yName) {
+  var direction = void 0;
+
+  if (quadrant === 1 || quadrant === 2) {
+    direction = angle < -45 ? xName : yName;
+  }
+  if (quadrant === 3 || quadrant === 4) {
+    direction = angle > 45 ? xName : yName;
+  }
+
+  return direction;
+};
+
+var xAxis = function xAxis(isF, pyramid, camera) {
+  var rotateControl = pyramid.rotateControl;
+
+  if (selectAxis !== 'y') {
+    rotateControl.trigger('y', selectCube.y);
+  } else {
+    var quadrant = pyramid.getQuadrant(camera.position.x, camera.position.z);
+    var angle = pyramid.getAngle(camera.position.x, camera.position.z);
+    var direction = getDirection(quadrant, angle, 'x', 'z');
+    rotateControl.trigger(direction, selectCube[direction]);
+  }
+  flag = false;
+};
+
+var yAxis = function yAxis(isF, pyramid, camera) {
+  var rotateControl = pyramid.rotateControl;
+
+  if (selectAxis !== 'y') {
+    selectAxis === 'x' ? selectAxis = 'z' : selectAxis = 'x';
+    var angle = selectAxis === 'x' ? 90 : -90;
+    angle = isF ? angle : -angle;
+    angle = selectAhead ? angle : -angle;
+
+    rotateControl.trigger(selectAxis, selectCube[selectAxis]);
+  } else {
+    var quadrant = pyramid.getQuadrant(camera.position.x, camera.position.z);
+    var _angle = pyramid.getAngle(camera.position.x, camera.position.z);
+    var direction = getDirection(quadrant, _angle, 'z', 'x');
+    rotateControl.trigger(direction, selectCube[direction]);
+  }
+  flag = false;
 };
 
 var getCubeObj = function getCubeObj(index, level, twoPow, num) {
@@ -238,6 +311,10 @@ var getCubeList = function getCubeList(level) {
   return cubes;
 };
 
+var isOdd = function isOdd(n) {
+  return !!(n % 2);
+};
+
 var MagicCube = function (_THREE$Group) {
   _inherits(MagicCube, _THREE$Group);
 
@@ -245,6 +322,8 @@ var MagicCube = function (_THREE$Group) {
     _classCallCheck(this, MagicCube);
 
     var _this = _possibleConstructorReturn(this, (MagicCube.__proto__ || Object.getPrototypeOf(MagicCube)).call(this));
+
+    _initialiseProps.call(_this);
 
     var that = _this;
     _this.option = Object.assign({
@@ -262,7 +341,11 @@ var MagicCube = function (_THREE$Group) {
       },
       radio: 14,
       innerPadding: 15,
-      backgroundColor: '#333333'
+      backgroundColor: '#333333',
+      control: {
+        camera: null,
+        controls: null
+      }
     }, option);
     option = _this.option;
     _this.size = option.size / option.level;
@@ -296,6 +379,30 @@ var MagicCube = function (_THREE$Group) {
         _loop();
       }
     });
+
+    var _option$control = option.control,
+        camera = _option$control.camera,
+        controls = _option$control.controls;
+
+    if (camera && controls) {
+      controls.domElement.addEventListener('touchmove', function (event) {
+        if (event.targetTouches.length > 1) return;
+        that.control.move.call(that, event.targetTouches[0]);
+      }, false);
+
+      controls.domElement.addEventListener('touchstart', function (event) {
+        event.preventDefault();
+        that.control.start.call(that, event.targetTouches[0]);
+      }, false);
+
+      controls.domElement.addEventListener('touchend', function (event) {
+        that.control.end.call(that, event.targetTouches[0]);
+      }, false);
+
+      controls.domElement.addEventListener('mousemove', _this.control.move.bind(_this), false);
+      controls.domElement.addEventListener('mousedown', _this.control.start.bind(_this), false);
+      controls.domElement.addEventListener('mouseup', _this.control.end.bind(_this), false);
+    }
     return _this;
   }
 
@@ -395,10 +502,172 @@ var MagicCube = function (_THREE$Group) {
       }
       return style;
     }
+  }, {
+    key: 'getLayer',
+    value: function getLayer(object) {
+      return {
+        x: Math.round((object.position.x + this.offset + this.size) / this.size),
+        y: this.option.level - Math.round((object.position.y + this.offset + this.size) / this.size) + 1,
+        z: this.option.level - Math.round((object.position.z + this.offset + this.size) / this.size) + 1
+      };
+    }
+  }, {
+    key: 'rotate',
+    value: function rotate(angle, list, axis) {
+      var _this2 = this;
+
+      if (!list || !list.length) return;
+      var mapping = this.axisMapping[axis];
+      list.forEach(function (d) {
+        var position = d.mesh.position;
+        rotateAroundWorldAxis(d.mesh, mapping.rotateAxis, angle * PIAngle);
+        var newPosition = _this2.getRotatedPosition(position[mapping.position[0]], position[mapping.position[1]], angle);
+        position[mapping.position[0]] = newPosition[0];
+        position[mapping.position[1]] = newPosition[1];
+      });
+    }
+  }, {
+    key: 'getRotatedPosition',
+    value: function getRotatedPosition(x, y, angle) {
+      var c = Math.sqrt(x * x + y * y),
+          a = 180 * Math.asin(x / c || 0) / Math.PI + angle;
+      if (y < 0) a = 180 - a, a += angle * 2;
+      return [Math.sin(a * PIAngle) * c, Math.cos(a * PIAngle) * c];
+    }
   }]);
 
   return MagicCube;
 }(THREE.Group);
+
+var _initialiseProps = function _initialiseProps() {
+  this.control = {
+    start: function start(event) {
+      var _option$control2 = this.option.control,
+          camera = _option$control2.camera,
+          controls = _option$control2.controls;
+
+      flag = true;
+      mouse.x = event.clientX / window.innerWidth * 2 - 1;
+      clientX = event.clientX;
+      mouse.y = -(event.clientY / window.innerHeight) * 2 + 1;
+      clientY = event.clientY;
+      raycaster.setFromCamera(mouse, camera);
+      intersects = raycaster.intersectObjects(this.meshList);
+      if (intersects && intersects.length) {
+        controls.enableRotate = false;
+        var cube = intersects[0];
+        var point = cube.point;
+        var unAxis = void 0;
+        for (var i in point) {
+          var num = this.option.size / 2 - Math.abs(point[i]);
+          if (num < 0.00001) {
+            selectAxis = i;
+            selectAhead = point[i] > 0;
+            selectCube = this.getLayer(cube.object);
+          }
+        }
+      }
+    },
+    move: function move(event) {
+      var _option$control3 = this.option.control,
+          camera = _option$control3.camera,
+          controls = _option$control3.controls;
+
+      if (!controls.enableRotate && flag) {
+        var x = event.clientX - clientX,
+            y = event.clientY - clientY;
+        if (Math.abs(x) > 20) {
+          return xAxis(!(x < 0), this, camera);
+        }
+        if (Math.abs(y) > 20) {
+          return yAxis(!(y < 0), this, camera);
+        }
+      }
+    },
+    end: function end(event) {
+      var _option$control4 = this.option.control,
+          camera = _option$control4.camera,
+          controls = _option$control4.controls;
+
+      flag = false;
+      controls.enableRotate = true;
+      mouse.x = mouse.y = -1;
+    }
+  };
+  this.rotateControl = {
+    start: function () {
+      var action = this.rotateControl.actionList.shift();
+      if (!action) return;
+      var axis = action.axis,
+          layer = action.layer;
+
+      this.rotateControl.trigger(axis, layer);
+      this.rotateControl.next();
+    }.bind(this),
+
+    trigger: function (axis, layer) {
+      var mb = (layer - 1) * this.size;
+      if (axis === 'x') {
+        mb -= this.offset;
+      } else if (axis === 'y') {
+        mb = this.offset - mb;
+      } else if (axis === 'z') {
+        mb = this.offset - mb;
+      }
+
+      var readyList = this.cubes.all.map(function (d) {
+        var num = Math.abs(mb - d.mesh.position[axis]);
+        return num < 0.00000000001 && d;
+      }).filter(function (d) {
+        return d;
+      });
+
+      this.rotate(90, readyList, axis);
+      return readyList;
+    }.bind(this),
+
+    add: function (axis, layer) {
+      this.rotateControl.actionList.push({
+        axis: axis,
+        layer: layer
+      });
+    }.bind(this),
+
+    next: function () {
+      this.rotateControl.start();
+    }.bind(this),
+
+    actionList: []
+  };
+  this.axisMapping = {
+    x: {
+      rotateAxis: new THREE.Vector3(1, 0, 0),
+      position: ['z', 'y']
+    },
+    y: {
+      rotateAxis: new THREE.Vector3(0, 1, 0),
+      position: ['x', 'z']
+    },
+    z: {
+      rotateAxis: new THREE.Vector3(0, 0, 1),
+      position: ['y', 'x']
+    }
+  };
+
+  this.getQuadrant = function (x, y) {
+    var quadrant = 0;
+    if (x > 0) {
+      quadrant = y > 0 ? 3 : 4;
+    } else {
+      quadrant = y > 0 ? 2 : 1;
+    }
+    return quadrant;
+  };
+
+  this.getAngle = function (x, y) {
+    return 180 * Math.asin(x / Math.sqrt(x * x + y * y) || 0) / Math.PI;
+  };
+};
 
 exports.default = MagicCube;
 
