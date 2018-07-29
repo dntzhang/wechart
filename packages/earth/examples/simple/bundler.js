@@ -84,7 +84,7 @@ camera.position.z = 500;
 var scene = new THREE.Scene();
 
 var renderer = new THREE.WebGLRenderer({
-    antialias: true
+  antialias: true
 });
 
 renderer.setSize(window.innerWidth, window.innerHeight);
@@ -94,45 +94,52 @@ var controls = new THREE.OrbitControls(camera, renderer.domElement);
 var group = new THREE.Group();
 
 var earth = new _index2.default({
-    coord: [{
-        text: '中国',
-        color: 0xff3333,
-        lng: 116.20,
-        lat: 39.55
-    }, {
-        text: '比利时',
-        color: 0xffcc33,
-        lng: 4.21,
-        lat: 50.51
-    }, {
-        text: '巴西',
-        color: 0xffcc00,
-        lng: -47.55,
-        lat: -15.47
-    }, {
-        text: '美国',
-        color: 0x33cc33,
-        lng: -77.02,
-        lat: 39.91
-    }, {
-        text: '克罗地亚',
-        color: 0x33ccff,
-        lng: 15.58,
-        lat: 45.50
-    }]
+  coord: [{
+    text: '中国',
+    color: 0xff3333,
+    nationalFlag: 'https://www.ifreesite.com/world/image/china_flag.png',
+    lng: 116.20,
+    lat: 39.55
+  }, {
+    text: '比利时',
+    color: 0xffcc33,
+    nationalFlag: 'https://www.ifreesite.com/world/image/belgium_flag.png',
+    lng: 4.21,
+    lat: 50.51
+  }, {
+    text: '巴西',
+    color: 0xffcc00,
+    nationalFlag: 'https://www.ifreesite.com/world/image/brazil_flag.png',
+    lng: -47.55,
+    lat: -15.47
+  }, {
+    text: '美国',
+    color: 0x33cc33,
+    nationalFlag: 'https://www.ifreesite.com/world/image/united_states_of_america_flag.png',
+    lng: -77.02,
+    lat: 39.91
+  }, {
+    text: '克罗地亚',
+    color: 0x33ccff,
+    nationalFlag: 'https://www.ifreesite.com/world/image/croatia_flag.png',
+    lng: 15.58,
+    lat: 45.50
+  }]
 });
 
 group.add(earth);
 scene.add(group);
+
+earth.bindEvent(scene, camera);
 
 var light = new THREE.PointLight(0xffffff, 1, 1000);
 light.position.set(0, 10, 100);
 scene.add(light);
 
 function animate() {
-    requestAnimationFrame(animate);
-    renderer.render(scene, camera);
-    controls.update();
+  requestAnimationFrame(animate);
+  renderer.render(scene, camera);
+  controls.update();
 }
 
 animate();
@@ -145,7 +152,7 @@ animate();
 
 
 Object.defineProperty(exports, "__esModule", {
-    value: true
+  value: true
 });
 
 var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
@@ -157,153 +164,263 @@ function _possibleConstructorReturn(self, call) { if (!self) { throw new Referen
 function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
 
 var Earth = function (_THREE$Group) {
-    _inherits(Earth, _THREE$Group);
+  _inherits(Earth, _THREE$Group);
 
-    function Earth(option) {
-        _classCallCheck(this, Earth);
+  function Earth(option) {
+    _classCallCheck(this, Earth);
 
-        var _this = _possibleConstructorReturn(this, (Earth.__proto__ || Object.getPrototypeOf(Earth)).call(this));
+    var _this = _possibleConstructorReturn(this, (Earth.__proto__ || Object.getPrototypeOf(Earth)).call(this));
 
-        _this.option = Object.assign({
-            coord: []
-        }, option);
+    _this.option = Object.assign({
+      coord: []
+    }, option);
 
-        var loader = new THREE.TextureLoader();
-        loader.load('./textures.jpg', function (texture) {
-            var geometry = new THREE.SphereGeometry(200, 40, 40);
-            var material = new THREE.MeshBasicMaterial({
-                map: texture,
-                overdraw: 0.5
-            });
+    _this.coords = [];
 
-            var mesh = new THREE.Mesh(geometry, material);
-            _this.add(mesh);
-        });
+    var loader = new THREE.TextureLoader();
+    loader.load('./textures.jpg', function (texture) {
+      var geometry = new THREE.SphereGeometry(200, 40, 40);
+      var material = new THREE.MeshBasicMaterial({
+        map: texture,
+        overdraw: 0.5
+      });
 
-        _this.option.coord.forEach(function (item) {
-            _this.addCoord(item);
-        });
-        return _this;
+      var mesh = new THREE.Mesh(geometry, material);
+      _this.add(mesh);
+    });
+
+    _this.option.coord.forEach(function (item) {
+      _this.addCoord(item);
+    });
+
+    delete _this.option;
+
+    _this.generateInfoBoard();
+
+    return _this;
+  }
+
+  _createClass(Earth, [{
+    key: 'generateInfoBoard',
+    value: function generateInfoBoard() {
+      this.infoBoard = document.createElement('canvas');
+      var ctx = this.infoBoard.getContext('2d');
+
+      var width = 105;
+      var height = 40;
+
+      this.infoBoard.setAttribute('width', width * window.devicePixelRatio);
+      this.infoBoard.setAttribute('height', height * window.devicePixelRatio);
+
+      this.infoBoard.width = width * window.devicePixelRatio;
+      this.infoBoard.height = height * window.devicePixelRatio;
+
+      ctx.scale(devicePixelRatio, devicePixelRatio);
+
+      this.infoBoard.style.backgroundColor = 'transparent';
+
+      ctx.textBaseline = 'middle';
+
+      document.body.appendChild(this.infoBoard);
     }
+  }, {
+    key: 'addCoord',
+    value: function addCoord(option) {
+      var lng = option.lng,
+          lat = option.lat,
+          color = option.color,
+          text = option.text,
+          nationalFlag = option.nationalFlag;
+      // +90是要有个变换
 
-    _createClass(Earth, [{
-        key: 'generateText',
-        value: function generateText(text, color, isBack) {
-            var canvas = document.createElement('canvas');
+      var coord = lglt2xyz(lng + 90, lat, 200);
+      var light = new THREE.PlaneGeometry(8, 64);
+      var texture = new THREE.TextureLoader().load("./light.jpg");
+      texture.wrapT = THREE.ClampToEdgeWrapping;
+      texture.rotation = Math.PI;
+      texture.center = new THREE.Vector2(0.5, 0.5);
+      var lightMaterial = new THREE.MeshBasicMaterial({
+        transparent: true,
+        opacity: .9,
+        blending: THREE.AdditiveBlending,
+        side: THREE.DoubleSide,
+        depthWrite: false,
+        fog: true,
+        map: texture
+      });
+      var lightMesh = new THREE.Mesh(light, lightMaterial);
+      var wrapper = new THREE.Object3D();
 
-            canvas.setAttribute('width', 32);
-            canvas.setAttribute('height', 16);
+      lightMesh.applyMatrix(new THREE.Matrix4().makeTranslation(0, 32, 0));
+      lightMesh.applyMatrix(new THREE.Matrix4().makeRotationX(Math.PI / 2));
 
-            canvas.style.backgroundColor = 'rgba(0,0,0,0)';
+      wrapper.add(lightMesh);
 
-            var ctx = canvas.getContext('2d');
-            ctx.font = '10px Georgia';
+      var ringBody = new THREE.RingGeometry(0, 5, 6, 1);
+      var ringBodyMaterial = new THREE.MeshBasicMaterial({
+        color: 0xffffff,
+        side: THREE.DoubleSide
+      });
 
-            var height = void 0;
-            var width = ctx.measureText(text).width;
+      var ringBodyMesh = new THREE.Mesh(ringBody, ringBodyMaterial);
+      ringBodyMesh.position.set(0, 0, 0);
 
-            width = Math.max(32, width);
-            height = width / 2;
+      wrapper.add(ringBodyMesh);
 
-            canvas.setAttribute('width', width * window.devicePixelRatio);
-            canvas.setAttribute('height', height * window.devicePixelRatio);
+      var ringLine = new THREE.RingGeometry(7.8, 8, 6, 1);
+      var ringLineMaterial = new THREE.MeshBasicMaterial({
+        color: 0xffffff,
+        side: THREE.DoubleSide,
+        wireframe: true
+      });
 
-            canvas.width = width * window.devicePixelRatio;
-            canvas.height = height * window.devicePixelRatio;
+      var ringLineMesh = new THREE.Mesh(ringLine, ringLineMaterial);
+      ringLineMesh.position.set(0, 0, 0);
 
-            ctx.scale(devicePixelRatio, devicePixelRatio);
-            ctx.strokeStyle = ctx.fillStyle = hexToRgba(color);
-            ctx.textBaseline = "middle";
+      wrapper.add(ringLineMesh);
 
-            ctx.fillText(text, 0, 8);
+      wrapper.lookAt(new THREE.Vector3(coord.x, coord.y, coord.z));
+      wrapper.position.set(coord.x, coord.y, coord.z);
 
-            document.body.appendChild(canvas);
+      this.add(wrapper);
 
-            return canvas;
+      this.coords.push({
+        mesh: [ringBodyMesh, ringLineMesh],
+        text: text,
+        nationalFlag: nationalFlag,
+        light: lightMesh
+      });
+
+      return coord;
+    }
+  }, {
+    key: 'bindEvent',
+    value: function bindEvent(scene, camera) {
+      var raycaster = new THREE.Raycaster();
+      var mouse = new THREE.Vector2();
+
+      function mousemove(event) {
+        mouse.x = event.clientX / window.innerWidth * 2 - 1;
+        mouse.y = -(event.clientY / window.innerHeight) * 2 + 1;
+        // console.log(mouse);
+        // 通过鼠标点的位置和当前相机的矩阵计算出raycaster
+        raycaster.setFromCamera(mouse, camera);
+
+        var intersects = [];
+        var i = 0;
+        var showInfo = false;
+        for (; i < this.coords.length; i++) {
+          intersects = raycaster.intersectObjects(this.coords[i].mesh);
+
+          if (intersects.length > 0) {
+            showInfo = true;
+            this.activeCoord(this.coords[i], event);
+          } else {
+            this.coords[i].light.visible = true;
+          }
         }
-    }, {
-        key: 'addCoord',
-        value: function addCoord(option) {
-            var lng = option.lng,
-                lat = option.lat,
-                color = option.color,
-                text = option.text;
-            // +90是要有个变换
 
-            var coord = lglt2xyz(lng + 90, lat, 200);
-
-            var geometry = new THREE.Geometry();
-            var p1 = new THREE.Vector3(coord.x, coord.y, coord.z);
-            geometry.vertices.push(p1);
-
-            var material = new THREE.PointsMaterial({
-                color: color,
-                size: 4.0
-            });
-
-            var points = new THREE.Points(geometry, material);
-
-            this.add(points);
-
-            var textCanvas = this.generateText(text, color);
-
-            var rectGeometry = new THREE.PlaneGeometry(textCanvas.width / 2 / devicePixelRatio, textCanvas.height / 2 / devicePixelRatio);
-            var texture = new THREE.CanvasTexture(textCanvas);
-            var rectMaterial = new THREE.MeshBasicMaterial({
-                map: texture,
-                transparent: true,
-                // side: coord.z > 0 ? THREE.FrontSide : THREE.BackSide
-                side: THREE.FrontSide
-            });
-            var rect = new THREE.Mesh(rectGeometry, rectMaterial);
-
-            this.add(rect);
-
-            var offsetY = void 0;
-            offsetY = 3 * (Math.abs(lat) / 90) + 3;
-
-            coord = lglt2xyz(lng + 90, lat - offsetY, 203);
-
-            rect.position.x = coord.x;
-            rect.position.y = coord.y;
-            rect.position.z = coord.z;
-
-            rect.rotation.y = (lng + 90) * Math.PI / 180;
-
-            return coord;
+        if (!showInfo) {
+          this.infoBoard.style.display = 'none';
         }
-    }]);
 
-    return Earth;
+        // console.log(intersects);
+      }
+
+      document.addEventListener('mousemove', mousemove.bind(this));
+    }
+  }, {
+    key: 'activeCoord',
+    value: function activeCoord(obj, event) {
+      if (obj.light.visible === false) {
+        return;
+      }
+      obj.light.visible = false;
+
+      Object.assign(this.infoBoard.style, {
+        left: event.clientX + 'px',
+        top: event.clientY + 'px',
+        position: 'absolute'
+      });
+
+      this.infoBoard.style.display = 'block';
+
+      var ctx = this.infoBoard.getContext('2d');
+
+      ctx.clearRect(0, 0, this.infoBoard.width, this.infoBoard.height);
+
+      // 绘制右边标题
+      ctx.beginPath();
+      ctx.fillStyle = '#ffffff';
+      ctx.moveTo(105, 0);
+      ctx.lineTo(105, 20);
+      ctx.lineTo(52.5, 20);
+      ctx.lineTo(40, 0);
+      ctx.closePath();
+      ctx.fill();
+
+      // 绘制标题文字
+      ctx.fillStyle = '#000000';
+      ctx.font = '12px 微软雅黑';
+      var width = ctx.measureText(obj.text).width;
+      ctx.fillText(obj.text, 55 + (50 - width) / 2, 10);
+
+      var img = new Image();
+      img.src = obj.nationalFlag;
+
+      img.onload = function () {
+        // 绘制国旗
+        ctx.save();
+        ctx.beginPath();
+        ctx.moveTo(12.5, 0);
+        ctx.lineTo(37.5, 0);
+        ctx.lineTo(50, 20);
+        ctx.lineTo(37.5, 40);
+        ctx.lineTo(12.5, 40);
+        ctx.lineTo(0, 20);
+        ctx.clip();
+
+        var width = this.width / 100;
+        var height = this.height / (this.width / 100);
+
+        ctx.drawImage(this, -25, (40 - height) / 2, 100, height);
+
+        ctx.closePath();
+        ctx.restore();
+      };
+    }
+  }]);
+
+  return Earth;
 }(THREE.Group);
 
 function lglt2xyz(longitude, latitude, radius) {
-    var lg = degToRad(longitude),
-        lt = degToRad(latitude);
-    var y = radius * Math.sin(lt);
-    var temp = radius * Math.cos(lt);
-    var x = temp * Math.sin(lg);
-    var z = temp * Math.cos(lg);
+  var lg = degToRad(longitude),
+      lt = degToRad(latitude);
+  var y = radius * Math.sin(lt);
+  var temp = radius * Math.cos(lt);
+  var x = temp * Math.sin(lg);
+  var z = temp * Math.cos(lg);
 
-    return {
-        x: x,
-        y: y,
-        z: z
-    };
+  return {
+    x: x,
+    y: y,
+    z: z
+  };
 }
 
 function degToRad(value) {
-    return value / 180 * Math.acos(-1);
+  return value / 180 * Math.acos(-1);
 }
 
 function hexToRgba(hex, opacity) {
-    hex = hex.toString(16);
+  hex = hex.toString(16);
 
-    if (opacity === undefined) {
-        opacity = 1;
-    }
+  if (opacity === undefined) {
+    opacity = 1;
+  }
 
-    return "rgba(" + parseInt("0x" + hex.slice(0, 2)) + "," + parseInt("0x" + hex.slice(2, 4)) + "," + parseInt("0x" + hex.slice(4, 6)) + "," + opacity + ")";
+  return 'rgba(' + parseInt('0x' + hex.slice(0, 2)) + ',' + parseInt('0x' + hex.slice(2, 4)) + ',' + parseInt('0x' + hex.slice(4, 6)) + ',' + opacity + ')';
 }
 
 exports.default = Earth;

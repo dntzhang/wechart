@@ -2,7 +2,7 @@ import cax from 'cax'
 import WordSphere from '../../src'
 import { scaleLinear } from '../../../common/scale'
 
-const fontScale = scaleLinear([0,10],[12,30])
+const fontScale = scaleLinear([0, 10], [12, 30])
 const stage = new cax.Stage(800, 800, '#canvasCtn')
 
 const ws = new WordSphere([
@@ -43,40 +43,40 @@ const ws = new WordSphere([
   { text: '甄士隱', value: '0' },
   { text: '賈雨村', value: '0' }
 ], {
-  color:function(){
-    return colorLuminance(randomHexColor(),-0.2)
+  color: function () {
+    return colorLuminance(randomHexColor(), -0.2)
   },
   fontFamily: 'Microsoft Jhenghei',
   scale: fontScale
 })
 
-function colorLuminance(hex, lum) {
+function colorLuminance (hex, lum) {
   // validate hex string
-  hex = String(hex).replace(/[^0-9a-f]/gi, '');
+  hex = String(hex).replace(/[^0-9a-f]/gi, '')
   if (hex.length < 6) {
-    hex = hex[0]+hex[0]+hex[1]+hex[1]+hex[2]+hex[2];
+    hex = hex[0] + hex[0] + hex[1] + hex[1] + hex[2] + hex[2]
   }
-  lum = lum || 0;
+  lum = lum || 0
 
   // convert to decimal and change luminosity
-  var rgb = "#", c, i;
+  var rgb = '#', c, i
   for (i = 0; i < 3; i++) {
-    c = parseInt(hex.substr(i*2,2), 16);
-    c = Math.round(Math.min(Math.max(0, c + (c * lum)), 255)).toString(16);
-    rgb += ("00"+c).substr(c.length);
+    c = parseInt(hex.substr(i * 2, 2), 16)
+    c = Math.round(Math.min(Math.max(0, c + (c * lum)), 255)).toString(16)
+    rgb += ('00' + c).substr(c.length)
   }
 
-  return rgb;
+  return rgb
 }
 
-function randomHexColor() { //随机生成十六进制颜色
-  return '#' + ('00000' + (Math.random() * 0x1000000 << 0).toString(16)).substr(-6);
- }
+function randomHexColor () { // 随机生成十六进制颜色
+  return '#' + ('00000' + (Math.random() * 0x1000000 << 0).toString(16)).substr(-6)
+}
 
 stage.add(ws)
 ws.x = 100
 ws.y = 100
-cax.tick(()=>{
+cax.tick(() => {
   stage.update()
   ws.update()
 })

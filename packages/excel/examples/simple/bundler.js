@@ -73,7 +73,7 @@
 var _typeof2 = typeof Symbol === "function" && typeof Symbol.iterator === "symbol" ? function (obj) { return typeof obj; } : function (obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj; };
 
 /*!
- *  cax v1.1.8
+ *  cax v1.1.10
  *  By https://github.com/dntzhang 
  *  Github: https://github.com/dntzhang/cax
  *  MIT Licensed.
@@ -393,7 +393,8 @@ var _typeof2 = typeof Symbol === "function" && typeof Symbol.iterator === "symbo
           key: 'destroy',
           value: function destroy() {
             this.empty();
-            _get(Group.prototype.__proto__ || Object.getPrototypeOf(Group.prototype), 'destroy', this).call(this);
+            //Stage does not have a parent 
+            this.parent && _get(Group.prototype.__proto__ || Object.getPrototypeOf(Group.prototype), 'destroy', this).call(this);
           }
         }]);
 
@@ -476,9 +477,10 @@ var _typeof2 = typeof Symbol === "function" && typeof Symbol.iterator === "symbo
           _this.clipRuleNonzero = true;
           _this.fixed = false;
           _this.shadow = null;
-
+          _this.compositeOperation = null;
           _this.absClipGraphics = null;
           _this.absClipRuleNonzero = true;
+          _this.cacheUpdating = false;
           return _this;
         }
 
@@ -594,7 +596,7 @@ var _typeof2 = typeof Symbol === "function" && typeof Symbol.iterator === "symbo
           }
         }, {
           key: 'cache',
-          value: function cache(x, y, width, height, scale) {
+          value: function cache(x, y, width, height, scale, cacheUpdating) {
 
             this._cacheData = {
               x: x || 0,
@@ -603,6 +605,7 @@ var _typeof2 = typeof Symbol === "function" && typeof Symbol.iterator === "symbo
               height: height || this.height,
               scale: scale || 1
             };
+            this.cacheUpdating = cacheUpdating;
             if (!this.cacheCanvas) {
               if (typeof wx !== 'undefined' && wx.createCanvas) {
                 this.cacheCanvas = wx.createCanvas();
@@ -613,6 +616,9 @@ var _typeof2 = typeof Symbol === "function" && typeof Symbol.iterator === "symbo
             }
             this.cacheCanvas.width = this._cacheData.width * this._cacheData.scale;
             this.cacheCanvas.height = this._cacheData.height * this._cacheData.scale;
+
+            //debug cache canvas
+            //this.cacheCtx.fillRect(0,0,1000,1000)
             this._readyToCache = true;
           }
         }, {
@@ -4020,6 +4026,8 @@ var _typeof2 = typeof Symbol === "function" && typeof Symbol.iterator === "symbo
               this.canvas.style.cursor = obj.cursor;
             } else if (obj.parent) {
               this._setCursor(obj.parent);
+            } else {
+              this._setCursor({ cursor: 'default' });
             }
           }
         }, {
@@ -4510,7 +4518,7 @@ var _typeof2 = typeof Symbol === "function" && typeof Symbol.iterator === "symbo
           }
         }, {
           key: 'render',
-          value: function render(ctx, o, cacheRender) {
+          value: function render(ctx, o, cacheData) {
             var mtx = o._matrix;
             if (o.children) {
               var list = o.children.slice(0),
@@ -4521,25 +4529,29 @@ var _typeof2 = typeof Symbol === "function" && typeof Symbol.iterator === "symbo
                 mtx.appendTransform(o.x, o.y, o.scaleX, o.scaleY, o.rotation, o.skewX, o.skewY, o.originX, o.originY);
                 // if (!this.checkBoundEvent(child)) continue
                 ctx.save();
-                this._render(ctx, child, cacheRender ? null : mtx, cacheRender);
+                this._render(ctx, child, cacheData ? null : mtx, cacheData, true);
                 ctx.restore();
               }
             } else {
-              this._render(ctx, o, mtx, cacheRender);
+              this._render(ctx, o, cacheData ? null : mtx, cacheData);
             }
           }
         }, {
           key: '_render',
-          value: function _render(ctx, o, mtx, cacheRender) {
+          value: function _render(ctx, o, mtx, cacheData, inGroup) {
             if (!o.isVisible()) return;
             if (mtx && !o.fixed) {
               o._matrix.initialize(mtx.a, mtx.b, mtx.c, mtx.d, mtx.tx, mtx.ty);
+            } else if (cacheData && !o.fixed) {
+              o._matrix.initialize(cacheData.scale, 0, 0, cacheData.scale, cacheData.x * -1, cacheData.y * -1);
             } else {
               o._matrix.initialize(1, 0, 0, 1, 0, 0);
             }
             mtx = o._matrix;
 
-            if (!cacheRender) {
+            //group 进行 cache canvas 内部的子元素需要进行appendTransform
+            //cache canvas 渲染不叠加自身的 transform，因为进入主渲染会进行appendTransform
+            if (inGroup || !cacheData) {
               mtx.appendTransform(o.x, o.y, o.scaleX, o.scaleY, o.rotation, o.skewX, o.skewY, o.originX, o.originY);
             }
             var ocg = o.clipGraphics;
@@ -4562,14 +4574,16 @@ var _typeof2 = typeof Symbol === "function" && typeof Symbol.iterator === "symbo
               ctx.clip(o.absClipRuleNonzero ? 'nonzero' : 'evenodd');
             }
 
-            if (!cacheRender) {
-              ctx.setTransform(mtx.a, mtx.b, mtx.c, mtx.d, mtx.tx, mtx.ty);
-            }
-            if (o._readyToCache) {
+            //if(!cacheData){
+            ctx.setTransform(mtx.a, mtx.b, mtx.c, mtx.d, mtx.tx, mtx.ty);
+            //}
+            if (o._readyToCache || o.cacheUpdating) {
               this.setComplexProps(ctx, o);
               o._readyToCache = false;
-              o.cacheCtx.setTransform(o._cacheData.scale, 0, 0, o._cacheData.scale, o._cacheData.x * -1, o._cacheData.y * -1);
-              this.render(o.cacheCtx, o, true);
+              o.cacheCtx.clearRect(0, 0, o.cacheCanvas.width, o.cacheCanvas.height);
+              o.cacheCtx.save();
+              this.render(o.cacheCtx, o, o._cacheData);
+              o.cacheCtx.restore();
               //debug cacheCanvas
               //document.body.appendChild(o.cacheCanvas)
               if (o._readyToFilter) {
@@ -4578,7 +4592,7 @@ var _typeof2 = typeof Symbol === "function" && typeof Symbol.iterator === "symbo
               }
 
               ctx.drawImage(o.cacheCanvas, o._cacheData.x, o._cacheData.y);
-            } else if (o.cacheCanvas && !cacheRender) {
+            } else if (o.cacheCanvas && !cacheData) {
               this.setComplexProps(ctx, o);
               ctx.drawImage(o.cacheCanvas, o._cacheData.x, o._cacheData.y);
             } else if (o instanceof _group2.default) {
@@ -6145,6 +6159,16 @@ var _typeof2 = typeof Symbol === "function" && typeof Symbol.iterator === "symbo
         value: true
       });
 
+      var _createClass = function () {
+        function defineProperties(target, props) {
+          for (var i = 0; i < props.length; i++) {
+            var descriptor = props[i];descriptor.enumerable = descriptor.enumerable || false;descriptor.configurable = true;if ("value" in descriptor) descriptor.writable = true;Object.defineProperty(target, descriptor.key, descriptor);
+          }
+        }return function (Constructor, protoProps, staticProps) {
+          if (protoProps) defineProperties(Constructor.prototype, protoProps);if (staticProps) defineProperties(Constructor, staticProps);return Constructor;
+        };
+      }();
+
       var _group = __webpack_require__(1);
 
       var _group2 = _interopRequireDefault(_group);
@@ -6188,20 +6212,68 @@ var _typeof2 = typeof Symbol === "function" && typeof Symbol.iterator === "symbo
           var _this = _possibleConstructorReturn(this, (Button.__proto__ || Object.getPrototypeOf(Button)).call(this));
 
           _this.width = option.width;
-          _this.roundedRect = new _roundedRect2.default(option.width, option.height, option.borderRadius, {
-            strokeStyle: option.borderColor || 'black',
-            fillStyle: option.backgroundColor || '#F5F5F5'
-          });
+
+          var textHeight = 0;
           _this.text = new _text2.default(option.text, {
             font: option.font,
             color: option.color
           });
+          var textWidth = _this.text.getWidth();
+          var textGroup = new _group2.default();
 
-          _this.text.x = option.width / 2 - _this.text.getWidth() / 2 * _this.text.scaleX + (option.textX || 0);
-          _this.text.y = option.height / 2 - 10 + 5 * _this.text.scaleY + (option.textY || 0);
-          _this.add(_this.roundedRect, _this.text);
+          if (textWidth > option.width) {
+            var step = Math.round(option.text.length * option.width / textWidth / 2);
+
+            var textList = _this.stringSplit(option.text, step);
+            var lineHeight = option.lineHeight || 12;
+            textHeight = textList.length * lineHeight + 6;
+
+            textList.forEach(function (text, index) {
+              _this.text = new _text2.default(text, {
+                font: option.font,
+                color: option.color
+              });
+
+              _this.text.x = option.width / 2 - _this.text.getWidth() / 2 * _this.text.scaleX + (option.textX || 0);
+              _this.text.y = Math.max(textHeight, option.height) / 2 - 10 + 5 * _this.text.scaleY + (option.textY || 0) + index * 12 - textHeight / 2 + lineHeight / 2;
+              textGroup.add(_this.text);
+            });
+          } else {
+
+            _this.text.x = option.width / 2 - _this.text.getWidth() / 2 * _this.text.scaleX + (option.textX || 0);
+            _this.text.y = option.height / 2 - 10 + 5 * _this.text.scaleY + (option.textY || 0);
+            textGroup.add(_this.text);
+          }
+
+          _this.roundedRect = new _roundedRect2.default(option.width, option.autoHeight ? Math.max(textHeight, option.height) : option.height, option.borderRadius, {
+            strokeStyle: option.borderColor || 'black',
+            fillStyle: option.backgroundColor || '#F5F5F5'
+          });
+
+          _this.add(_this.roundedRect);
+          _this.add(textGroup);
           return _this;
         }
+
+        _createClass(Button, [{
+          key: 'stringSplit',
+          value: function stringSplit(str, len) {
+            var arr = [],
+                offset = 0,
+                char_length = 0;
+            for (var i = 0; i < str.length; i++) {
+              var son_str = str.charAt(i);
+              encodeURI(son_str).length > 2 ? char_length += 1 : char_length += 0.5;
+              if (char_length >= len || char_length < len && i === str.length - 1) {
+                var sub_len = char_length == len ? i + 1 : i;
+                arr.push(str.substr(offset, sub_len - offset + (char_length < len && i === str.length - 1 ? 1 : 0)));
+                offset = i + 1;
+                char_length = 0;
+              }
+            }
+            return arr;
+          }
+        }]);
 
         return Button;
       }(_group2.default);
@@ -6629,10 +6701,10 @@ function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { de
 
 var stage = new _cax2.default.Stage(740, 520, 'body');
 
-var excel = new _index2.default([[null, 'A', 'B', 'C'], [1, 'red border', 'green border including the left border', null], [2, ' textBreak auto textBreak auto textBreak auto textBreak auto textBreak auto', 'textBreak auto textBreak auto textBreak auto textBreak auto textBreak auto textBreak auto textBreak auto textBreak auto textBreak auto textBreak auto textBreak auto textBreak auto textBreak auto textBreak auto textBreak auto textBreak auto', ''], [3, 'merge main(show me)', 'merge2', null], [4, 'merge3', 'merge4', null], [5, null, null, null], [6, null, null, null], [7, 'center middle', 'top right', null]], {
+var excel = new _index2.default([[null, 'A', 'B', 'C'], [1, 'red border', 'green border including the left border', null], [2, ' textBreak auto textBreak auto textBreak auto textBreak auto textBreak auto', 'textBreak auto textBreak auto textBreak auto textBreak auto textBreak auto textBreak auto textBreak auto textBreak auto textBreak auto textBreak auto textBreak auto textBreak auto textBreak auto textBreak auto textBreak auto textBreak auto', ''], [3, 'merge main(show me)', 'merge2', null], [4, 'merge3', 'merge4', null], [5, null, null, null], [6, 'center middle', 'top right', null], [7, 'Powered By Wechart & Cax & dntzhang & Tencent', null, null]], {
   colWidth: [40, 200, 200, 130],
   rowHeight: [20, 30, 100, 30, 50, 60, 60, 60],
-  merge: [[1, 3, 2, 2]],
+  merge: [[1, 3, 2, 2], [1, 7, 3, 1]],
   style: null
   // todo 自动标注顶部和左边,这里要自动多加一行和一列
   // autoLabelX: false,
@@ -6648,8 +6720,12 @@ excel.setBorder(1, 1, 'red');
 // 后设置覆盖前设置的
 excel.setBorder(1, 2, 'green');
 
-excel.style[7][2].textAlign = 'right';
-excel.style[7][2].verticalAlign = 'top';
+excel.style[6][2].textAlign = 'right';
+excel.style[6][2].verticalAlign = 'top';
+
+excel.style[7][1].color = 'red';
+excel.style[7][1].fontSize = '16';
+
 excel.update();
 
 stage.add(excel);
@@ -6969,7 +7045,6 @@ var Excel = function (_Group) {
             }
             this.grid.stroke();
           }
-
           if (this._borderCheck(i, j, 'top')) {
             this.grid.beginPath().moveTo(this.offset.x[j], this.offset.y[i]).lineTo(this.offset.x[j] + this.option.colWidth[j], this.offset.y[i]);
             var _style = this._getBorderColor(i, j, 'top');
@@ -7015,7 +7090,6 @@ var Excel = function (_Group) {
     key: 'getMergeInfo',
     value: function getMergeInfo(y, x) {
       var result = {};
-
       this.option.merge.every(function (rect) {
         if (x >= rect[0] && x <= rect[0] + rect[2] - 1 && y >= rect[1] && y <= rect[1] + rect[3] - 1) {
           result.isMerge = true;
@@ -7024,7 +7098,10 @@ var Excel = function (_Group) {
             result.xEnd = rect[0] + rect[2];
             result.yEnd = rect[1] + rect[3];
           }
+          return false;
         }
+
+        return true;
       });
 
       if (result.isLeftTop) {
@@ -7152,15 +7229,18 @@ var Excel = function (_Group) {
       var result = true;
       this.option.merge.every(function (rect) {
         if (x >= rect[0] && x <= rect[0] + rect[2] - 1 && y >= rect[1] && y <= rect[1] + rect[3] - 1) {
-          if (x === rect[0] && dir === 'right') {
-            result = false;
 
-            return false;
-          }
+          if (rect[1] > 1) {
+            if (x === rect[0] && dir === 'right') {
+              result = false;
 
-          if (x === rect[0] + rect[2] - 1 && dir === 'left') {
-            result = false;
-            return false;
+              return false;
+            }
+
+            if (x === rect[0] + rect[2] - 1 && dir === 'left') {
+              result = false;
+              return false;
+            }
           }
 
           if (x > rect[0] && x < rect[0] + rect[2] - 1 && (dir === 'left' || dir === 'right')) {
@@ -7168,14 +7248,16 @@ var Excel = function (_Group) {
             return false;
           }
 
-          if (y === rect[1] && dir === 'bottom') {
-            result = false;
-            return false;
-          }
+          if (rect[3] > 1) {
+            if (y === rect[1] && dir === 'bottom') {
+              result = false;
+              return false;
+            }
 
-          if (y === rect[1] + rect[3] - 1 && dir === 'top') {
-            result = false;
-            return false;
+            if (y === rect[1] + rect[3] - 1 && dir === 'top') {
+              result = false;
+              return false;
+            }
           }
 
           if (y > rect[1] && y < rect[1] + rect[3] - 1 && (dir === 'top' || dir === 'bottom')) {
@@ -7183,6 +7265,8 @@ var Excel = function (_Group) {
             return false;
           }
         }
+
+        return true;
       });
 
       return result;
@@ -7200,7 +7284,7 @@ var Excel = function (_Group) {
           var text = dataRow[x];
           _this3.mCtx.font = cell.fontSize + 'px ' + cell.fontFamily;
           var textWidth = _this3.mCtx.measureText(text).width;
-          var cellWidth = option.colWidth[x];
+          var cellWidth = _this3.getMergeInfo(y, x).width || option.colWidth[x];
           if (cell.textBreak === 'auto' && textWidth > cellWidth) {
             var step = Math.round(text.length * (cellWidth - 30) / textWidth / 2);
 

@@ -1,8 +1,8 @@
 import MagicCube from '../../src/index'
 import '../../../common/orbit-controls'
 
-const camera = new THREE.PerspectiveCamera(45, window.innerWidth / window.innerHeight, 0.01, 500)
-camera.position.set(150, 100, 150)
+const camera = new THREE.PerspectiveCamera(45, window.innerWidth / window.innerHeight, 0.01, 1000)
+camera.position.set(150, 200, 450)
 
 const scene = new THREE.Scene()
 
@@ -14,15 +14,15 @@ const controls = new THREE.OrbitControls(camera, renderer.domElement)
 const group = new THREE.Group()
 
 const pyramid = new MagicCube({
-  level:3,
   size:100,
   control:{
     camera,
     controls
   },
-  cubeStyle:{
-    // top:[null,null,{url:'../../asset/bbb.bmp'}],
-    // ahead:{11:{url:'../../asset/bbb.bmp'}}
+  level: 4,
+  cubeStyle: {
+    bottom: [null, null, null, null, null, null, {url: '../../asset/wepay-diy.jpg'}],
+    ahead: {6: {url: '../../asset/qq.png'}}
   }
 })
 
@@ -44,7 +44,8 @@ const DricetionalLight = new THREE.DirectionalLight(0xeeeeee, 1)
 DricetionalLight.position.set(-40, -50, -60)
 scene.add(DricetionalLight)
 
-
+var raycaster = new THREE.Raycaster()
+var mouse = new THREE.Vector2()
 
 function animate () {
 

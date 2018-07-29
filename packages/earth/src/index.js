@@ -1,3 +1,4 @@
+
 class Earth extends THREE.Group {
   constructor (option) {
     super()
@@ -5,6 +6,8 @@ class Earth extends THREE.Group {
     this.option = Object.assign({
       coord: []
     }, option)
+
+    this.coords = [];
 
     let loader = new THREE.TextureLoader()
     loader.load('./textures.jpg', (texture) => {
@@ -21,40 +24,33 @@ class Earth extends THREE.Group {
     this.option.coord.forEach((item) => {
       this.addCoord(item)
     })
+
+    delete this.option;
+
+    this.generateInfoBoard();
+    
   }
 
-  generateText (text, color, isBack) {
-    let canvas = document.createElement('canvas')
+  generateInfoBoard() {
+    this.infoBoard = document.createElement('canvas');
+    let ctx = this.infoBoard.getContext('2d');
 
-    canvas.setAttribute('width', 32)
-    canvas.setAttribute('height', 16)
+    let width = 105;
+    let height = 40;
 
-    canvas.style.backgroundColor = 'rgba(0,0,0,0)'
+    this.infoBoard.setAttribute('width', width * window.devicePixelRatio)
+    this.infoBoard.setAttribute('height', height * window.devicePixelRatio)
 
-    let ctx = canvas.getContext('2d')
-    ctx.font = '10px Georgia'
-
-    let height
-    let width = ctx.measureText(text).width
-
-    width = Math.max(32, width)
-    height = width / 2
-
-    canvas.setAttribute('width', width * window.devicePixelRatio)
-    canvas.setAttribute('height', height * window.devicePixelRatio)
-
-    canvas.width = width * window.devicePixelRatio
-    canvas.height = height * window.devicePixelRatio
+    this.infoBoard.width = width * window.devicePixelRatio
+    this.infoBoard.height = height * window.devicePixelRatio
 
     ctx.scale(devicePixelRatio, devicePixelRatio)
-    ctx.strokeStyle = ctx.fillStyle = hexToRgba(color)
+
+    this.infoBoard.style.backgroundColor = 'transparent';
+
     ctx.textBaseline = 'middle'
 
-    ctx.fillText(text, 0, 8)
-
-    // document.body.appendChild(canvas);
-
-    return canvas
+    document.body.appendChild(this.infoBoard);
   }
 
   addCoord (option) {
@@ -62,50 +58,164 @@ class Earth extends THREE.Group {
       lng,
       lat,
       color,
-      text
+      text,
+      nationalFlag
     } = option
     // +90是要有个变换
     let coord = lglt2xyz(lng + 90, lat, 200)
-
-    let geometry = new THREE.Geometry()
-    let p1 = new THREE.Vector3(coord.x, coord.y, coord.z)
-    geometry.vertices.push(p1)
-
-    let material = new THREE.PointsMaterial({
-      color: color,
-      size: 4.0
-    })
-
-    let points = new THREE.Points(geometry, material)
-
-    this.add(points)
-
-    let textCanvas = this.generateText(text, color)
-
-    let rectGeometry = new THREE.PlaneGeometry(textCanvas.width / 2 / devicePixelRatio, textCanvas.height / 2 / devicePixelRatio)
-    let texture = new THREE.CanvasTexture(textCanvas)
-    let rectMaterial = new THREE.MeshBasicMaterial({
-      map: texture,
+    let light = new THREE.PlaneGeometry(8, 64)
+    let texture = new THREE.TextureLoader().load('./light.jpg')
+    texture.wrapT = THREE.ClampToEdgeWrapping
+    texture.rotation = Math.PI
+    texture.center = new THREE.Vector2(0.5, 0.5)
+    let lightMaterial = new THREE.MeshBasicMaterial({
       transparent: true,
-      // side: coord.z > 0 ? THREE.FrontSide : THREE.BackSide
-      side: THREE.FrontSide
+      opacity: 0.9,
+      blending: THREE.AdditiveBlending,
+      side: THREE.DoubleSide,
+      depthWrite: false,
+      fog: true,
+      map: texture
     })
-    let rect = new THREE.Mesh(rectGeometry, rectMaterial)
+    let lightMesh = new THREE.Mesh(light, lightMaterial)
+    let wrapper = new THREE.Object3D()
 
-    this.add(rect)
+    lightMesh.applyMatrix((new THREE.Matrix4()).makeTranslation(0, 32, 0))
+    lightMesh.applyMatrix((new THREE.Matrix4()).makeRotationX(Math.PI / 2))
 
-    let offsetY
-    offsetY = 3 * (Math.abs(lat) / 90) + 3
+    wrapper.add(lightMesh)
 
-    coord = lglt2xyz(lng + 90, lat - offsetY, 203)
+    let ringBody = new THREE.RingGeometry(0, 5, 6, 1)
+    let ringBodyMaterial = new THREE.MeshBasicMaterial({
+      color: 0xffffff,
+      side: THREE.DoubleSide
+    })
 
-    rect.position.x = coord.x
-    rect.position.y = coord.y
-    rect.position.z = coord.z
+    let ringBodyMesh = new THREE.Mesh(ringBody, ringBodyMaterial)
+    ringBodyMesh.position.set(0, 0, 0)
 
-    rect.rotation.y = (lng + 90) * Math.PI / 180
+    wrapper.add(ringBodyMesh)
+
+    let ringLine = new THREE.RingGeometry(7.8, 8, 6, 1)
+    let ringLineMaterial = new THREE.MeshBasicMaterial({
+      color: 0xffffff,
+      side: THREE.DoubleSide,
+      wireframe: true
+    })
+
+    let ringLineMesh = new THREE.Mesh(ringLine, ringLineMaterial)
+    ringLineMesh.position.set(0, 0, 0)
+
+    wrapper.add(ringLineMesh)
+
+    wrapper.lookAt(new THREE.Vector3(coord.x, coord.y, coord.z))
+    wrapper.position.set(coord.x, coord.y, coord.z)
+
+    this.add(wrapper)
+
+    this.coords.push({
+        mesh: [ringBodyMesh, ringLineMesh],
+        text: text,
+        nationalFlag: nationalFlag,
+        light: lightMesh
+    });
 
     return coord
+  }
+
+  bindEvent(scene, camera) {
+    let raycaster = new THREE.Raycaster();
+    let mouse = new THREE.Vector2();
+
+    function mousemove(event) {
+        mouse.x = (event.clientX / window.innerWidth) * 2 - 1;
+        mouse.y = -(event.clientY / window.innerHeight) * 2 + 1;
+        // console.log(mouse);
+        // 通过鼠标点的位置和当前相机的矩阵计算出raycaster
+        raycaster.setFromCamera(mouse, camera);
+
+        let intersects = [];
+        let i = 0;
+        let showInfo = false;
+        for(; i < this.coords.length; i++) {
+            intersects = raycaster.intersectObjects(this.coords[i].mesh);
+            
+            if(intersects.length > 0) {
+                showInfo = true;
+                this.activeCoord(this.coords[i], event);
+            } else {
+                this.coords[i].light.visible = true;
+            } 
+        }
+
+        if(!showInfo) {
+            this.infoBoard.style.display = 'none';
+        }
+
+        // console.log(intersects);
+    }
+
+    document.addEventListener('mousemove', mousemove.bind(this))
+  }
+
+  activeCoord(obj, event) {
+      if(obj.light.visible === false) {
+        return ;
+      }
+    obj.light.visible = false;
+
+    Object.assign(this.infoBoard.style, {
+        left: event.clientX + 'px',
+        top: event.clientY + 'px',
+        position: 'absolute'
+    });
+
+    this.infoBoard.style.display = 'block';
+
+    let ctx = this.infoBoard.getContext('2d');
+
+    ctx.clearRect(0, 0, this.infoBoard.width, this.infoBoard.height);
+
+    // 绘制右边标题
+    ctx.beginPath();
+    ctx.fillStyle = '#ffffff';
+    ctx.moveTo(105, 0);
+    ctx.lineTo(105, 20);
+    ctx.lineTo(52.5, 20);
+    ctx.lineTo(40, 0);
+    ctx.closePath();
+    ctx.fill();
+
+    // 绘制标题文字
+    ctx.fillStyle = '#000000';
+    ctx.font = '12px 微软雅黑'
+    let width = ctx.measureText(obj.text).width;
+    ctx.fillText(obj.text, 55 + (50 - width) / 2, 10)
+
+    let img = new Image();
+    img.src = obj.nationalFlag;
+
+    img.onload = function() {
+        // 绘制国旗
+        ctx.save();
+        ctx.beginPath();
+        ctx.moveTo(12.5, 0);
+        ctx.lineTo(37.5, 0);
+        ctx.lineTo(50, 20);
+        ctx.lineTo(37.5, 40);
+        ctx.lineTo(12.5, 40);
+        ctx.lineTo(0, 20);
+        ctx.clip();
+
+        let width = this.width / 100;
+        let height = this.height / (this.width / 100);
+
+        ctx.drawImage(this, -25, (40 - height) / 2, 100, height);
+
+        ctx.closePath();
+        ctx.restore();
+    };
+    
   }
 }
 

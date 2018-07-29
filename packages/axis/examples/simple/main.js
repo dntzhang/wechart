@@ -4,14 +4,13 @@ import cax from 'cax'
 import Axis from '../../src/index'
 import { scaleLinear } from '../../../common/scale'
 
-
 const stage = new cax.Stage(740, 520, 'body')
 
 const config = {
   bottom: {
     color: 'black',
     interval: 1,
-    scale:  scaleLinear([0, 7], [0, 700]),
+    scale: scaleLinear([0, 7], [0, 700]),
     x: 30,
     y: 450,
     text: {
