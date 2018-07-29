@@ -18,11 +18,12 @@ class Bar extends THREE.Group {
       for (var j = 0; j < xLen; j++) {
         let height = option.gridSize * option.yGrid * (data[i][j] - option.axis.y.from) / (this.topValue - option.axis.y.from)
         if (height > 0) {
-          var material = new THREE.MeshLambertMaterial({
-            color: randomHexColor()
+          var material = new THREE.MeshPhongMaterial({
+            // color: randomHexColor()
+            color: option.colors[j % option.colors.length]
           })
 
-          let geometry = new THREE.BoxGeometry(option.gridSize, height, option.gridSize)
+          let geometry = new THREE.BoxGeometry(option.gridSize / 4, height, option.gridSize / 4)
           var cube = new THREE.Mesh(geometry, material)
 
           cube.position.y = height / 2
