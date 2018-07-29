@@ -4,7 +4,7 @@ English | [简体中文](./README.md)
 
 > All the [ch]arts by cax and three.js.
 
-<a title="Filter" href="https://dntzhang.github.io/wechart/packages/transformers/examples/simple/" rel="nofollow"><img alt="Filter" src="./asset/transformers.jpg" style="max-width:100%;"></a>
+<a title="Transformers" href="https://dntzhang.github.io/wechart/packages/word-penetrating/examples/simple/" rel="nofollow"><img alt="Transformers" src="./asset/transformers.jpg" style="max-width:100%;"></a>
 
 <table>
 <thead>

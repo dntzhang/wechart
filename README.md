@@ -4,7 +4,7 @@
 
 > Cax 和 three.js 创造一切图[表]
 
-<a title="Filter" href="https://dntzhang.github.io/wechart/packages/transformers/examples/simple/" rel="nofollow"><img alt="Filter" src="./asset/transformers.jpg" style="max-width:100%;"></a>
+<a title="Transformers" href="https://dntzhang.github.io/wechart/packages/word-penetrating/examples/simple/" rel="nofollow"><img alt="Transformers" src="./asset/transformers.jpg" style="max-width:100%;"></a>
 
 <table>
 <thead>
