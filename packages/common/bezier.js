@@ -70,7 +70,7 @@ export function getLength(p1x, p1y, c1x, c1y, c2x, c2y, p2x, p2y, steps) {
 
   let len = 0
   for (let t = 0; t < 1.0 + step; t += step) {
-    points.push(getValue(p1x, p1y, c1x, c1y, c2x, c2y, p2x, p2y, Math.min(t, 1)))
+    points.push(getValueByPoints(p1x, p1y, c1x, c1y, c2x, c2y, p2x, p2y, Math.min(t, 1)))
   }
   let p0, p1, dx, dy
   for (let i = 0; i < points.length - 1; i++) {
@@ -111,5 +111,5 @@ export function getPosition(length, shape) {
 
 export function getPoint(t, index, shape) {
   const ps = shape[index]
-  return getValue(ps[0], ps[1], ps[2], ps[3], ps[4], ps[5], ps[6], ps[7], t)
+  return getValue(ps, t)
 }

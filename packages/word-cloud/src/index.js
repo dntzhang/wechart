@@ -1,6 +1,6 @@
 
 class WordCloud {
-  constructor(data, option) {
+  constructor (data, option) {
     this.option = option
     data.forEach(item => {
       item.fontSize = option.scale(item.value)
@@ -8,7 +8,6 @@ class WordCloud {
 
     this.offScreenCanvas = document.getElementById('myCanvas')
     this.offScreenCtx = this.offScreenCanvas.getContext('2d')
-
 
     this.compositeCanvas = document.createElement('canvas')
     this.compositeCanvas.width = 400
@@ -26,9 +25,8 @@ class WordCloud {
     this.option.done && this.option.done()
   }
 
-  drawText(item, r, rotation, textRotation) {
+  drawText (item, r, rotation, textRotation) {
     if (r < 500) {
-
       const x = this.option.center.x + r * Math.cos(rotation * Math.PI / 180)
       const y = this.option.center.y - r * Math.sin(rotation * Math.PI / 180)
 
@@ -46,7 +44,6 @@ class WordCloud {
       this.miniCtx.drawImage(this.compositeCanvas, 0, 0, 100, 100)
 
       if (this.havePixel(this.miniCanvas, this.miniCtx)) {
-
         // if (textRotation > -100000) {
         if (rotation === 360) {
           this.drawText(item, r + this.option.dd, 0, 0)
@@ -66,17 +63,14 @@ class WordCloud {
         this.offScreenCtx.fillText(item.text, 0, 0)
         this.offScreenCtx.restore()
       }
-
-
     }
   }
 
-  randomTextRotation() {
-
+  randomTextRotation () {
     return -70 + Math.floor(Math.random() * 15) * 10
   }
 
-  havePixel(canvas, ctx) {
+  havePixel (canvas, ctx) {
     const data = ctx.getImageData(0, 0, canvas.width, canvas.height).data
 
     for (let i = 3; i < data.length; i += 4) {
@@ -84,33 +78,30 @@ class WordCloud {
         return true
       }
     }
-
   }
-
 }
 
-
-function colorLuminance(hex, lum) {
+function colorLuminance (hex, lum) {
   // validate hex string
-  hex = String(hex).replace(/[^0-9a-f]/gi, '');
+  hex = String(hex).replace(/[^0-9a-f]/gi, '')
   if (hex.length < 6) {
-    hex = hex[0] + hex[0] + hex[1] + hex[1] + hex[2] + hex[2];
+    hex = hex[0] + hex[0] + hex[1] + hex[1] + hex[2] + hex[2]
   }
-  lum = lum || 0;
+  lum = lum || 0
 
   // convert to decimal and change luminosity
-  var rgb = "#", c, i;
+  var rgb = '#', c, i
   for (i = 0; i < 3; i++) {
-    c = parseInt(hex.substr(i * 2, 2), 16);
-    c = Math.round(Math.min(Math.max(0, c + (c * lum)), 255)).toString(16);
-    rgb += ("00" + c).substr(c.length);
+    c = parseInt(hex.substr(i * 2, 2), 16)
+    c = Math.round(Math.min(Math.max(0, c + (c * lum)), 255)).toString(16)
+    rgb += ('00' + c).substr(c.length)
   }
 
-  return rgb;
+  return rgb
 }
 
-function randomHexColor() { //随机生成十六进制颜色
-  return '#' + ('00000' + (Math.random() * 0x1000000 << 0).toString(16)).substr(-6);
+function randomHexColor () { // 随机生成十六进制颜色
+  return '#' + ('00000' + (Math.random() * 0x1000000 << 0).toString(16)).substr(-6)
 }
 
 export default WordCloud

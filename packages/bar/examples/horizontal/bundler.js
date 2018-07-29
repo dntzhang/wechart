@@ -73,7 +73,7 @@
 var _typeof2 = typeof Symbol === "function" && typeof Symbol.iterator === "symbol" ? function (obj) { return typeof obj; } : function (obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj; };
 
 /*!
- *  cax v1.1.7
+ *  cax v1.1.10
  *  By https://github.com/dntzhang 
  *  Github: https://github.com/dntzhang/cax
  *  MIT Licensed.
@@ -393,7 +393,8 @@ var _typeof2 = typeof Symbol === "function" && typeof Symbol.iterator === "symbo
           key: 'destroy',
           value: function destroy() {
             this.empty();
-            _get(Group.prototype.__proto__ || Object.getPrototypeOf(Group.prototype), 'destroy', this).call(this);
+            //Stage does not have a parent 
+            this.parent && _get(Group.prototype.__proto__ || Object.getPrototypeOf(Group.prototype), 'destroy', this).call(this);
           }
         }]);
 
@@ -475,9 +476,11 @@ var _typeof2 = typeof Symbol === "function" && typeof Symbol.iterator === "symbo
           _this.clipGraphics = null;
           _this.clipRuleNonzero = true;
           _this.fixed = false;
-
+          _this.shadow = null;
+          _this.compositeOperation = null;
           _this.absClipGraphics = null;
           _this.absClipRuleNonzero = true;
+          _this.cacheUpdating = false;
           return _this;
         }
 
@@ -593,7 +596,7 @@ var _typeof2 = typeof Symbol === "function" && typeof Symbol.iterator === "symbo
           }
         }, {
           key: 'cache',
-          value: function cache(x, y, width, height, scale) {
+          value: function cache(x, y, width, height, scale, cacheUpdating) {
 
             this._cacheData = {
               x: x || 0,
@@ -602,6 +605,7 @@ var _typeof2 = typeof Symbol === "function" && typeof Symbol.iterator === "symbo
               height: height || this.height,
               scale: scale || 1
             };
+            this.cacheUpdating = cacheUpdating;
             if (!this.cacheCanvas) {
               if (typeof wx !== 'undefined' && wx.createCanvas) {
                 this.cacheCanvas = wx.createCanvas();
@@ -612,6 +616,9 @@ var _typeof2 = typeof Symbol === "function" && typeof Symbol.iterator === "symbo
             }
             this.cacheCanvas.width = this._cacheData.width * this._cacheData.scale;
             this.cacheCanvas.height = this._cacheData.height * this._cacheData.scale;
+
+            //debug cache canvas
+            //this.cacheCtx.fillRect(0,0,1000,1000)
             this._readyToCache = true;
           }
         }, {
@@ -4019,6 +4026,8 @@ var _typeof2 = typeof Symbol === "function" && typeof Symbol.iterator === "symbo
               this.canvas.style.cursor = obj.cursor;
             } else if (obj.parent) {
               this._setCursor(obj.parent);
+            } else {
+              this._setCursor({ cursor: 'default' });
             }
           }
         }, {
@@ -4509,7 +4518,7 @@ var _typeof2 = typeof Symbol === "function" && typeof Symbol.iterator === "symbo
           }
         }, {
           key: 'render',
-          value: function render(ctx, o, cacheRender) {
+          value: function render(ctx, o, cacheData) {
             var mtx = o._matrix;
             if (o.children) {
               var list = o.children.slice(0),
@@ -4520,25 +4529,29 @@ var _typeof2 = typeof Symbol === "function" && typeof Symbol.iterator === "symbo
                 mtx.appendTransform(o.x, o.y, o.scaleX, o.scaleY, o.rotation, o.skewX, o.skewY, o.originX, o.originY);
                 // if (!this.checkBoundEvent(child)) continue
                 ctx.save();
-                this._render(ctx, child, cacheRender ? null : mtx, cacheRender);
+                this._render(ctx, child, cacheData ? null : mtx, cacheData, true);
                 ctx.restore();
               }
             } else {
-              this._render(ctx, o, mtx, cacheRender);
+              this._render(ctx, o, cacheData ? null : mtx, cacheData);
             }
           }
         }, {
           key: '_render',
-          value: function _render(ctx, o, mtx, cacheRender) {
+          value: function _render(ctx, o, mtx, cacheData, inGroup) {
             if (!o.isVisible()) return;
             if (mtx && !o.fixed) {
               o._matrix.initialize(mtx.a, mtx.b, mtx.c, mtx.d, mtx.tx, mtx.ty);
+            } else if (cacheData && !o.fixed) {
+              o._matrix.initialize(cacheData.scale, 0, 0, cacheData.scale, cacheData.x * -1, cacheData.y * -1);
             } else {
               o._matrix.initialize(1, 0, 0, 1, 0, 0);
             }
             mtx = o._matrix;
 
-            if (!cacheRender) {
+            //group 进行 cache canvas 内部的子元素需要进行appendTransform
+            //cache canvas 渲染不叠加自身的 transform，因为进入主渲染会进行appendTransform
+            if (inGroup || !cacheData) {
               mtx.appendTransform(o.x, o.y, o.scaleX, o.scaleY, o.rotation, o.skewX, o.skewY, o.originX, o.originY);
             }
             var ocg = o.clipGraphics;
@@ -4561,15 +4574,16 @@ var _typeof2 = typeof Symbol === "function" && typeof Symbol.iterator === "symbo
               ctx.clip(o.absClipRuleNonzero ? 'nonzero' : 'evenodd');
             }
 
-            o.complexCompositeOperation = ctx.globalCompositeOperation = this.getCompositeOperation(o);
-            o.complexAlpha = ctx.globalAlpha = this.getAlpha(o, 1);
-            if (!cacheRender) {
-              ctx.setTransform(mtx.a, mtx.b, mtx.c, mtx.d, mtx.tx, mtx.ty);
-            }
-            if (o._readyToCache) {
+            //if(!cacheData){
+            ctx.setTransform(mtx.a, mtx.b, mtx.c, mtx.d, mtx.tx, mtx.ty);
+            //}
+            if (o._readyToCache || o.cacheUpdating) {
+              this.setComplexProps(ctx, o);
               o._readyToCache = false;
-              o.cacheCtx.setTransform(o._cacheData.scale, 0, 0, o._cacheData.scale, o._cacheData.x * -1, o._cacheData.y * -1);
-              this.render(o.cacheCtx, o, true);
+              o.cacheCtx.clearRect(0, 0, o.cacheCanvas.width, o.cacheCanvas.height);
+              o.cacheCtx.save();
+              this.render(o.cacheCtx, o, o._cacheData);
+              o.cacheCtx.restore();
               //debug cacheCanvas
               //document.body.appendChild(o.cacheCanvas)
               if (o._readyToFilter) {
@@ -4578,7 +4592,8 @@ var _typeof2 = typeof Symbol === "function" && typeof Symbol.iterator === "symbo
               }
 
               ctx.drawImage(o.cacheCanvas, o._cacheData.x, o._cacheData.y);
-            } else if (o.cacheCanvas && !cacheRender) {
+            } else if (o.cacheCanvas && !cacheData) {
+              this.setComplexProps(ctx, o);
               ctx.drawImage(o.cacheCanvas, o._cacheData.x, o._cacheData.y);
             } else if (o instanceof _group2.default) {
               var list = o.children.slice(0),
@@ -4589,19 +4604,37 @@ var _typeof2 = typeof Symbol === "function" && typeof Symbol.iterator === "symbo
                 ctx.restore();
               }
             } else if (o instanceof _graphics2.default) {
+              this.setComplexProps(ctx, o);
               o.render(ctx);
             } else if (o instanceof _sprite2.default && o.rect) {
+              this.setComplexProps(ctx, o);
               o.updateFrame();
               var rect = o.rect;
               ctx.drawImage(o.img, rect[0], rect[1], rect[2], rect[3], 0, 0, rect[2], rect[3]);
             } else if (o instanceof _bitmap2.default && o.rect) {
+              this.setComplexProps(ctx, o);
               var bRect = o.rect;
               ctx.drawImage(o.img, bRect[0], bRect[1], bRect[2], bRect[3], 0, 0, bRect[2], bRect[3]);
             } else if (o instanceof _text2.default) {
+              this.setComplexProps(ctx, o);
               ctx.font = o.font;
               ctx.fillStyle = o.color;
               ctx.textBaseline = o.baseline;
               ctx.fillText(o.text, 0, 0);
+            }
+          }
+        }, {
+          key: 'setComplexProps',
+          value: function setComplexProps(ctx, o) {
+            o.complexCompositeOperation = ctx.globalCompositeOperation = this.getCompositeOperation(o);
+            o.complexAlpha = ctx.globalAlpha = this.getAlpha(o, 1);
+
+            o.complexShadow = this.getShadow(o);
+            if (o.complexShadow) {
+              ctx.shadowColor = o.complexShadow.color;
+              ctx.shadowOffsetX = o.complexShadow.offsetX;
+              ctx.shadowOffsetY = o.complexShadow.offsetY;
+              ctx.shadowBlur = o.complexShadow.blur;
             }
           }
         }, {
@@ -4618,6 +4651,12 @@ var _typeof2 = typeof Symbol === "function" && typeof Symbol.iterator === "symbo
               return this.getAlpha(o.parent, result);
             }
             return result;
+          }
+        }, {
+          key: 'getShadow',
+          value: function getShadow(o) {
+            if (o.shadow) return o.shadow;
+            if (o.parent) return this.getShadow(o.parent);
           }
         }]);
 
@@ -5071,23 +5110,22 @@ var _typeof2 = typeof Symbol === "function" && typeof Symbol.iterator === "symbo
 
               ctx.setTransform(mtx.a, mtx.b, mtx.c, mtx.d, mtx.tx, mtx.ty);
               if (o instanceof _graphics2.default) {
-                ctx.globalCompositeOperation = o.complexCompositeOperation;
-                ctx.globalAlpha = o.complexAlpha;
+                this.setComplexProps(ctx, o);
+
                 o.render(ctx);
               } else if (o instanceof _sprite2.default && o.rect) {
-                ctx.globalCompositeOperation = o.complexCompositeOperation;
-                ctx.globalAlpha = o.complexAlpha;
+                this.setComplexProps(ctx, o);
+
                 o.updateFrame();
                 var rect = o.rect;
                 ctx.drawImage(o.img, rect[0], rect[1], rect[2], rect[3], 0, 0, rect[2], rect[3]);
               } else if (o instanceof _bitmap2.default && o.rect) {
-                ctx.globalCompositeOperation = o.complexCompositeOperation;
-                ctx.globalAlpha = o.complexAlpha;
+                this.setComplexProps(ctx, o);
+
                 var bRect = o.rect;
                 ctx.drawImage(o.img, bRect[0], bRect[1], bRect[2], bRect[3], 0, 0, bRect[2], bRect[3]);
               } else if (o instanceof _text2.default) {
-                ctx.globalCompositeOperation = o.complexCompositeOperation;
-                ctx.globalAlpha = o.complexAlpha;
+                this.setComplexProps(ctx, o);
 
                 ctx.font = o.font;
                 ctx.fillStyle = o.color;
@@ -5100,6 +5138,19 @@ var _typeof2 = typeof Symbol === "function" && typeof Symbol.iterator === "symbo
               this._dispatchEvent(o, evt);
               return o;
             }
+          }
+        }, {
+          key: 'setComplexProps',
+          value: function setComplexProps(ctx, o) {
+            ctx.globalCompositeOperation = o.complexCompositeOperation;
+            ctx.globalAlpha = o.complexAlpha;
+            //The shadow does not trigger the event, so remove it
+            // if(o.complexShadow){
+            //   ctx.shadowColor = o.complexShadow.color
+            //   ctx.shadowOffsetX = o.complexShadow.offsetX
+            //   ctx.shadowOffsetY = o.complexShadow.offsetY
+            //   ctx.shadowBlur = o.complexShadow.blur
+            // }
           }
         }, {
           key: '_dispatchEvent',
@@ -6108,6 +6159,16 @@ var _typeof2 = typeof Symbol === "function" && typeof Symbol.iterator === "symbo
         value: true
       });
 
+      var _createClass = function () {
+        function defineProperties(target, props) {
+          for (var i = 0; i < props.length; i++) {
+            var descriptor = props[i];descriptor.enumerable = descriptor.enumerable || false;descriptor.configurable = true;if ("value" in descriptor) descriptor.writable = true;Object.defineProperty(target, descriptor.key, descriptor);
+          }
+        }return function (Constructor, protoProps, staticProps) {
+          if (protoProps) defineProperties(Constructor.prototype, protoProps);if (staticProps) defineProperties(Constructor, staticProps);return Constructor;
+        };
+      }();
+
       var _group = __webpack_require__(1);
 
       var _group2 = _interopRequireDefault(_group);
@@ -6151,20 +6212,68 @@ var _typeof2 = typeof Symbol === "function" && typeof Symbol.iterator === "symbo
           var _this = _possibleConstructorReturn(this, (Button.__proto__ || Object.getPrototypeOf(Button)).call(this));
 
           _this.width = option.width;
-          _this.roundedRect = new _roundedRect2.default(option.width, option.height, option.borderRadius, {
-            strokeStyle: option.borderColor || 'black',
-            fillStyle: option.backgroundColor || '#F5F5F5'
-          });
+
+          var textHeight = 0;
           _this.text = new _text2.default(option.text, {
             font: option.font,
             color: option.color
           });
+          var textWidth = _this.text.getWidth();
+          var textGroup = new _group2.default();
 
-          _this.text.x = option.width / 2 - _this.text.getWidth() / 2 * _this.text.scaleX + (option.textX || 0);
-          _this.text.y = option.height / 2 - 10 + 5 * _this.text.scaleY + (option.textY || 0);
-          _this.add(_this.roundedRect, _this.text);
+          if (textWidth > option.width) {
+            var step = Math.round(option.text.length * option.width / textWidth / 2);
+
+            var textList = _this.stringSplit(option.text, step);
+            var lineHeight = option.lineHeight || 12;
+            textHeight = textList.length * lineHeight + 6;
+
+            textList.forEach(function (text, index) {
+              _this.text = new _text2.default(text, {
+                font: option.font,
+                color: option.color
+              });
+
+              _this.text.x = option.width / 2 - _this.text.getWidth() / 2 * _this.text.scaleX + (option.textX || 0);
+              _this.text.y = Math.max(textHeight, option.height) / 2 - 10 + 5 * _this.text.scaleY + (option.textY || 0) + index * 12 - textHeight / 2 + lineHeight / 2;
+              textGroup.add(_this.text);
+            });
+          } else {
+
+            _this.text.x = option.width / 2 - _this.text.getWidth() / 2 * _this.text.scaleX + (option.textX || 0);
+            _this.text.y = option.height / 2 - 10 + 5 * _this.text.scaleY + (option.textY || 0);
+            textGroup.add(_this.text);
+          }
+
+          _this.roundedRect = new _roundedRect2.default(option.width, option.autoHeight ? Math.max(textHeight, option.height) : option.height, option.borderRadius, {
+            strokeStyle: option.borderColor || 'black',
+            fillStyle: option.backgroundColor || '#F5F5F5'
+          });
+
+          _this.add(_this.roundedRect);
+          _this.add(textGroup);
           return _this;
         }
+
+        _createClass(Button, [{
+          key: 'stringSplit',
+          value: function stringSplit(str, len) {
+            var arr = [],
+                offset = 0,
+                char_length = 0;
+            for (var i = 0; i < str.length; i++) {
+              var son_str = str.charAt(i);
+              encodeURI(son_str).length > 2 ? char_length += 1 : char_length += 0.5;
+              if (char_length >= len || char_length < len && i === str.length - 1) {
+                var sub_len = char_length == len ? i + 1 : i;
+                arr.push(str.substr(offset, sub_len - offset + (char_length < len && i === str.length - 1 ? 1 : 0)));
+                offset = i + 1;
+                char_length = 0;
+              }
+            }
+            return arr;
+          }
+        }]);
 
         return Button;
       }(_group2.default);
@@ -6595,42 +6704,41 @@ function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { de
 var stage = new _cax2.default.Stage(800, 520, 'body');
 
 var data = [// 数据
-{ name: 'dntzhang', age: _cax2.default.util.randomInt(10, 20), exp: _cax2.default.util.randomInt(500, 1000) }, { name: 'Canvas', age: _cax2.default.util.randomInt(10, 20), exp: _cax2.default.util.randomInt(500, 1000) }, { name: 'Wechart', age: _cax2.default.util.randomInt(10, 20), exp: _cax2.default.util.randomInt(500, 1000) }, { name: 'Tencent', age: _cax2.default.util.randomInt(10, 20), exp: _cax2.default.util.randomInt(500, 1000) }, { name: 'Cax', age: _cax2.default.util.randomInt(10, 20), exp: _cax2.default.util.randomInt(500, 1000) }];
+{ name: 'JS', count: 211 }, { name: 'C#', count: 183 }, { name: 'C++', count: 157 }, { name: 'CSS', count: 133 }, { name: 'HTML', count: 111 }, { name: 'Java', count: 91 }, { name: 'F#', count: 73 }, { name: 'Go', count: 57 }, { name: 'PHP', count: 43 }, { name: 'Ruby', count: 31 }, { name: 'Python', count: 21 }, { name: 'Swift', count: 13 }, { name: 'R', count: 7 }, { name: 'C', count: 3 }, { name: 'Perl', count: 1 }];
 var xScale = (0, _scale.scaleLinear)([0, 7], [0, 700]);
 var yScaleLeft = (0, _scale.scaleLinear)([0, 30], [0, 700]);
 
-var scale = (0, _scale.scaleLinear)([0, 30], [0, 700]);
+var scale = (0, _scale.scaleLinear)([0, 230], [0, 700]);
 
 var config = [{ // rects代表拆分多个rect，下面是相关的配置
   vertical: false,
   scale: scale,
   size: 10,
-  interval: 80,
-  x: 30,
-  y: 100,
+  interval: 26.5,
+  x: 31,
+  y: 70,
   processing: function processing(item) {
-    return item.age;
+    return item.count;
   }, // 数据预处理，提取影响形状的报表
   color: function color(index) {
     // 每个柱子的颜色
-
-    return ['#4BC0C0', '#FF6485', '#FFCE5C', '#ADACB9', '#A37AC1'][index];
+    return '#FF6485';
   },
   tooltip: function tooltip(item) {
-    return item.name + '-age<br/>' + item.age;
+    return item.name + '<br/>' + item.count;
   },
   transition: {
-    duration: 1000 // 动画的时间
+    duration: 500 // 动画的时间
   },
   show: { // 过渡动画
     // from: { y: -510 },//起始点
     // to: { y: 0 },//终点
     from: { scaleX: 0 }, // 起始点
     to: { scaleX: 1 }, // 终点
-    duration: 2000, // 动画的时间
+    duration: 1000, // 动画的时间
     easing: _cax2.default.easing.elasticOut, // 缓动函数
     delay: function delay(i) {
-      return i * 300;
+      return i * 100;
     } // 每个柱子的动画依次开始
   },
   hide: {
@@ -6643,21 +6751,21 @@ var config = [{ // rects代表拆分多个rect，下面是相关的配置
 
 var axisConfig = {
   left: {
-    scale: (0, _scale.scaleLinear)([0, 5], [0, 400]),
+    scale: (0, _scale.scaleLinear)([0, 15], [0, 400]),
     interval: 1,
     x: 30,
     y: 50,
     color: 'black',
     text: {
       color: '#444',
-      value: function value(index, data) {
-        return 'index-' + index;
+      value: function value(index) {
+        return data[index].name;
       },
-      x: -40,
-      y: 50,
-      font: '10px Verdana',
-      range: [0, 4],
-      rotation: -30
+      x: 0,
+      y: 7,
+      font: '12px Verdana',
+      range: [0, 14]
+      // rotation: -30
     },
     gird: {
       color: '#ddd',
@@ -6668,7 +6776,7 @@ var axisConfig = {
   top: {
     scale: scale,
     color: 'black',
-    interval: 2,
+    interval: 8,
     x: 30,
     y: 50,
     text: {
@@ -7018,7 +7126,7 @@ var Axis = function (_Group) {
           }
 
           if (!axis.text.range || i >= axis.text.range[0] && i <= axis.text.range[1]) {
-            var text = new Text(axis.text.value ? axis.text.value(i) : i, axis.text.font, axis.text.color);
+            var text = new Text(axis.text.value ? axis.text.value(i) : i, { font: axis.text.font, color: axis.text.color });
             text.x = current + axis.text.x;
             text.y = y + 5 + axis.text.y;
             text.rotation = axis.text.rotation || 0;
@@ -7029,7 +7137,6 @@ var Axis = function (_Group) {
       case 'left':
 
         for (var _i = f; _i <= t; _i += axis.interval) {
-
           current = scale(_i) + y;
           g.beginPath().strokeStyle(axis.color).moveTo(x, current).lineTo(x - 5, current).stroke();
 
@@ -7037,8 +7144,8 @@ var Axis = function (_Group) {
             g.beginPath().strokeStyle(axis.gird.color).moveTo(x + 1, current).lineTo(x + axis.gird.length, current).stroke();
           }
           if (!axis.text.range || _i >= axis.text.range[0] && _i <= axis.text.range[1]) {
-            var _text = new Text(axis.text.value ? axis.text.value(_i) : _i, axis.text.font, axis.text.color);
-            _text.x = x - 5 + axis.text.x;
+            var _text = new Text(axis.text.value ? axis.text.value(_i) : _i, { font: axis.text.font, color: axis.text.color });
+            _text.x = x - 5 + axis.text.x - _text.getWidth();
             _text.y = current + axis.text.y;
             _text.rotation = axis.text.rotation || 0;
             _this.add(_text);
@@ -7048,7 +7155,6 @@ var Axis = function (_Group) {
 
       case 'top':
         for (var _i2 = f; _i2 <= t; _i2 += axis.interval) {
-
           current = scale(_i2) + x;
           g.beginPath().strokeStyle(axis.color).moveTo(current, y).lineTo(current, y - 5).stroke();
 
@@ -7057,7 +7163,7 @@ var Axis = function (_Group) {
           }
 
           if (!axis.text.range || _i2 >= axis.text.range[0] && _i2 <= axis.text.range[1]) {
-            var _text2 = new Text(axis.text.value ? axis.text.value(_i2) : _i2, axis.text.font, axis.text.color);
+            var _text2 = new Text(axis.text.value ? axis.text.value(_i2) : _i2, { font: axis.text.font, color: axis.text.color });
             _text2.x = current + axis.text.x;
             _text2.y = y - 5 + axis.text.y;
             _text2.rotation = axis.text.rotation || 0;
@@ -7076,7 +7182,7 @@ var Axis = function (_Group) {
             g.beginPath().strokeStyle(axis.gird.color).moveTo(x + 1, current).lineTo(x + axis.gird.length, current).stroke();
           }
           if (!axis.text.range || _i3 >= axis.text.range[0] && _i3 <= axis.text.range[1]) {
-            var _text3 = new Text(axis.text.value ? axis.text.value(_i3) : _i3, axis.text.font, axis.text.color);
+            var _text3 = new Text(axis.text.value ? axis.text.value(_i3) : _i3, { font: axis.text.font, color: axis.text.color });
             _text3.x = x + 5 + axis.text.x;
             _text3.y = current + axis.text.y;
             _text3.rotation = axis.text.rotation || 0;

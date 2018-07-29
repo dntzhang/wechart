@@ -50,7 +50,6 @@ class OneBar extends Group {
     super()
     option = Object.assign({}, defaultOption, option)
 
- 
     let rect
     if (option.vertical) {
       const height = option.scale(value) * -1
@@ -66,7 +65,7 @@ class OneBar extends Group {
       rect.originY = height
     } else {
       const size = option.size
-      const width = option.scale(value) 
+      const width = option.scale(value)
 
       rect = new Rect(
         width,
