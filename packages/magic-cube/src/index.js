@@ -17,6 +17,83 @@ CanvasRenderingContext2D.prototype.roundRect = function (x, y, w, h, r) {
   this.closePath();
   return this;
 }
+const rotateAroundWorldAxis = function(object, axis, radians) {
+  let rotWorldMatrix = new THREE.Matrix4();
+  rotWorldMatrix.makeRotationAxis(axis.normalize(), radians);
+
+  // old code for Three.JS pre r54:
+  //  rotWorldMatrix.multiply(object.matrix);
+  // new code for Three.JS r55+:
+  rotWorldMatrix.multiply(object.matrix);                // pre-multiply
+
+  object.matrix = rotWorldMatrix;
+
+  // old code for Three.js pre r49:
+  // object.rotation.getRotationFromMatrix(object.matrix, object.scale);
+  // old code for Three.js pre r59:
+  // object.rotation.setEulerFromRotationMatrix(object.matrix);
+  // code for r59+:
+  object.rotation.setFromRotationMatrix(object.matrix);
+}
+
+
+let selectAxis, selectCube, selectAhead, flag = false;
+
+const getDirection = function(quadrant, angle, xName, yName){
+  let direction;
+
+  if(quadrant === 1 || quadrant === 2){
+    direction = angle < -45 ? xName : yName;
+  }
+  if(quadrant === 3 || quadrant === 4){
+    direction = angle > 45 ? xName : yName;
+  }
+
+  return direction;
+}
+
+const xAxis = function(isF, pyramid, camera){
+  let {rotateControl} = pyramid;
+  if(selectAxis !== 'y'){
+    rotateControl.trigger({
+      axis:'y',
+      layer:selectCube.y,
+    });
+  }else{
+    let quadrant = pyramid.getQuadrant(camera.position.x, camera.position.z);
+    let angle = pyramid.getAngle(camera.position.x, camera.position.z);
+    let direction = getDirection(quadrant, angle, 'x', 'z');
+    rotateControl.trigger({
+      axis:direction,
+      layer:selectCube[direction],
+    });
+  }
+  flag = false;
+}
+
+const yAxis = function(isF, pyramid, camera){
+  let {rotateControl} = pyramid;
+  if(selectAxis !== 'y'){
+    selectAxis === 'x' ? selectAxis = 'z' : selectAxis = 'x';
+    let angle = selectAxis === 'x' ? 90 : -90;
+    angle = isF ? angle : -angle;
+    angle = selectAhead ? angle : - angle;
+
+    rotateControl.trigger({
+      axis:selectAxis,
+      layer:selectCube[selectAxis],
+    })
+  }else{
+    let quadrant = pyramid.getQuadrant(camera.position.x, camera.position.z);
+    let angle = pyramid.getAngle(camera.position.x, camera.position.z);
+    let direction = getDirection(quadrant, angle, 'z', 'x');
+    rotateControl.trigger({
+      axis:direction,
+      layer:selectCube[direction],
+    })
+  }
+  flag = false;
+}
 
 const getCubeObj = function(index, level, twoPow, num) {
   let z = remainder(index, twoPow), 
@@ -67,6 +144,8 @@ const getCubeList = function(level){
   return cubes;
 }
 
+const isOdd = (n) => !!(n % 2);
+
 class magicCube extends THREE.Group {
   constructor (option) {
     super()
@@ -87,6 +166,10 @@ class magicCube extends THREE.Group {
       radio:14,
       innerPadding:15,
       backgroundColor:'#333333',
+      control:{
+        camera:null,
+        controls:null,
+      },
     }, option)
     option = this.option;
     this.size = option.size / option.level;
@@ -116,6 +199,62 @@ class magicCube extends THREE.Group {
         }
       }
     })
+
+    let {camera, controls} = option.control;
+    if(camera && controls){
+
+      var raycaster = new THREE.Raycaster();
+      var mouse = new THREE.Vector2();
+      mouse.x = mouse.y = -1;
+      let clientX, clientY;
+      let pyramid = this;
+      
+      let intersects;
+      
+      
+      window.addEventListener( 'mousemove', function(event){
+        if(!controls.enableRotate && flag) {
+          let x = event.clientX - clientX, y = event.clientY - clientY;
+          if(Math.abs(x)>20){
+            return xAxis(!(x<0), pyramid, camera);
+          }
+          if(Math.abs(y)>20){
+            return yAxis(!(y<0), pyramid, camera);
+          }
+        }
+      
+      }, false );
+      
+      window.addEventListener( 'mousedown', function(event){
+        flag = true;
+        mouse.x = ( event.clientX / window.innerWidth ) * 2 - 1;
+        clientX = event.clientX;
+        mouse.y = - ( event.clientY / window.innerHeight ) * 2 + 1;		
+        clientY = event.clientY;
+        raycaster.setFromCamera( mouse, camera );
+        intersects = raycaster.intersectObjects( pyramid.meshList );
+        if(intersects && intersects.length) {
+          controls.enableRotate = false;
+          let cube = intersects[0];
+          let point = cube.point;
+          let unAxis;
+          for(var i in point){
+            let num = pyramid.option.size/2 - Math.abs(point[i]);
+            if(num< 0.00001){
+              selectAxis = i;
+              selectAhead = point[i] > 0;
+              selectCube = pyramid.getLayer(cube.object);
+            }
+          }
+        }
+      }, false );
+      
+      window.addEventListener( 'mouseup', function(event){
+        flag = false;
+        controls.enableRotate = true;
+        mouse.x = mouse.y = -1;
+      }, false );
+    }
   }
 
 
@@ -215,6 +354,102 @@ class magicCube extends THREE.Group {
     return style;
   }
 
+  
+
+  rotateControl = {
+    start:function(){
+      let action = this.rotateControl.actionList.shift();
+      if(!action) return;
+      this.rotateControl.trigger(action);
+      this.rotateControl.next();
+    }.bind(this),
+
+    trigger:function(option){
+      let mb = (option.layer -1) * this.size;
+      if(option.axis === 'x'){
+        mb -= this.offset;
+      }else if(option.axis === 'y'){
+        mb = this.offset - mb;
+      }else if(option.axis === 'z'){
+        mb = this.offset - mb
+      }
+
+      let readyList = this.cubes.all.map(d=>{
+        let num = Math.abs(mb - d.mesh.position[option.axis])
+        return num < 0.00000000001 && d;
+      }).filter(d=>d);
+
+      this.rotate(90, readyList, option.axis)
+      return readyList;
+    }.bind(this),
+
+    add:function(axis, layer){
+      this.rotateControl.actionList.push({
+        axis,
+        layer,
+      })
+    }.bind(this),
+
+    next:function(){
+      this.rotateControl.start();
+    }.bind(this),
+
+    actionList :[],
+  }
+
+  getLayer(object){
+    return {
+      x:Math.round((object.position.x + this.offset + this.size) / this.size),
+      y:this.option.level - Math.round((object.position.y + this.offset + this.size) / this.size) + 1,
+      z:this.option.level - Math.round((object.position.z + this.offset + this.size) / this.size) + 1,
+    };
+  }
+
+  axisMapping = {
+    x:{
+      rotateAxis:new THREE.Vector3(1,0,0),
+      position:['z', 'y']
+    },
+    y:{
+      rotateAxis:new THREE.Vector3(0,1,0),
+      position:['x', 'z']
+    },
+    z:{
+      rotateAxis:new THREE.Vector3(0,0,1),
+      position:['y', 'x']
+    },
+  }
+
+  rotate(angle, list, axis){
+    if(!list || !list.length) return;
+    let mapping = this.axisMapping[axis];
+    list.forEach(d=>{
+      let position = d.mesh.position;
+      rotateAroundWorldAxis(d.mesh, mapping.rotateAxis, angle*PIAngle)
+      let newPosition = this.getRotatedPosition(position[mapping.position[0]], position[mapping.position[1]], angle);
+      position[mapping.position[0]] = newPosition[0]
+      position[mapping.position[1]] = newPosition[1]
+    })
+  }
+
+  getRotatedPosition(x,y,angle){
+    let c = Math.sqrt(x*x+y*y), a = 180*Math.asin(x/c||0)/Math.PI + angle;
+    if(y<0) a=180-a, a+=angle*2;
+    return [Math.sin(a*PIAngle)*c, Math.cos(a*PIAngle)*c];
+  }
+
+  getQuadrant = (x, y) => {
+    let quadrant = 0;
+    if(x>0){
+      quadrant = y>0?3:4
+    }else{
+      quadrant = y>0?2:1
+    }
+    return quadrant;
+    
+  };
+
+  getAngle = (x, y) => 180*Math.asin(x/Math.sqrt(x*x+y*y)||0)/Math.PI;
 }
 
 export default magicCube

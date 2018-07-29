@@ -1,7 +1,7 @@
 import magicCube from '../../src/index'
 import '../../../common/orbit-controls'
 
-const camera = new THREE.PerspectiveCamera(45, window.innerWidth / window.innerHeight, 0.01, 500)
+const camera = window.c = new THREE.PerspectiveCamera(45, window.innerWidth / window.innerHeight, 0.01, 500)
 camera.position.set(150, 100, 150)
 
 const scene = new THREE.Scene()
@@ -14,13 +14,24 @@ const controls = new THREE.OrbitControls(camera, renderer.domElement)
 const group = new THREE.Group()
 
 const pyramid = new magicCube({
-  level:4,
+  level:3,
   size:100,
+  control:{
+    camera,
+    controls
+  },
   cubeStyle:{
     // top:[null,null,{url:'../../asset/bbb.bmp'}],
     // ahead:{11:{url:'../../asset/bbb.bmp'}}
   }
 })
+
+let rotateControl = pyramid.rotateControl;
+
+rotateControl.add('x', 1)
+rotateControl.add('y', 2)
+rotateControl.add('z', 1)
+rotateControl.start();
 
 group.add(pyramid)
 scene.add(group)
@@ -34,22 +45,8 @@ DricetionalLight.position.set(-40, -50, -60)
 scene.add(DricetionalLight)
 
 
-var raycaster = new THREE.Raycaster();
-var mouse = new THREE.Vector2();
-
-window.addEventListener( 'mousemove', function(event){
-	mouse.x = ( event.clientX / window.innerWidth ) * 2 - 1;
-	mouse.y = - ( event.clientY / window.innerHeight ) * 2 + 1;		
-}, false );
 
 function animate () {
-  raycaster.setFromCamera( mouse, camera );
-  var intersects = raycaster.intersectObjects( pyramid.meshList );
-
-  if(intersects.length){
-    let cube = intersects[0]
-    window.a = cube;
-  }
 
   requestAnimationFrame(animate)
   renderer.render(scene, camera)
