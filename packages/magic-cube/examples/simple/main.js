@@ -26,7 +26,7 @@ const pyramid = new magicCube({
   }
 })
 
-let rotateControl = pyramid.rotateControl;
+let { rotateControl } = pyramid;
 
 rotateControl.add('x', 1)
 rotateControl.add('y', 2)

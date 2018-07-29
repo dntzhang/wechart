@@ -150,9 +150,13 @@ const pyramid = new magicCube({
 
 let rotateControl = pyramid.rotateControl;
 
+// 队列
 rotateControl.add('x', 1)
 rotateControl.add('y', 2)
 rotateControl.add('z', 1)
 rotateControl.start();
+
+// 单次旋转
+rotateControl.trigger('x', 1)
 
 ```
