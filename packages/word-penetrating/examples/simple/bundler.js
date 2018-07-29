@@ -83,59 +83,75 @@ var stage = new _cax2.default.Stage(width, height, '#canvasCtn');
 _cax2.default.loadImg({
   img: './transformers.jpg',
   complete: function complete(img) {
+    document.querySelector('#loading').style.opacity = 0;
 
-    var bitmapA = new _cax2.default.Bitmap(img);
-    bitmapA.alpha = 0;
-    stage.add(bitmapA);
-
-    var group = new _cax2.default.Group();
-
-    var bitmapB = bitmapA.clone();
-    group.add(bitmapB);
-    bitmapB.originX = bitmapA.originX = width / 2;
-    bitmapB.originY = bitmapA.originY = height / 2;
-    bitmapA.scaleX = bitmapA.scaleY = bitmapB.scaleX = bitmapB.scaleY = 5;
-    bitmapB.x = bitmapA.x = width / 2;
-    bitmapB.y = bitmapA.y = height / 2;
-    var text = new _cax2.default.Text('TRANSFORMERS', {
-      color: 'white',
-      font: '100px Segoe UI'
-    });
-    text.x = width / 2 - text.getWidth() / 2;
-    text.y = height / 2 - 50;
-    text.compositeOperation = 'destination-atop';
-    group.add(text);
-
-    group.cache(0, 0, width, height, 1, true);
-
-    stage.add(group);
-
-    // group.alpha = 0.1
-    // cax.To.get(group).wait(600).to({alpha:1},600).start()
-
-    _cax2.default.To.get(bitmapA).wait(1000).to({ alpha: 1 }, 6000).start();
-
-    var textB = new _cax2.default.Text('TRANSFORMERS', {
-      color: 'white',
-      font: '100px Segoe UI'
-    });
-    textB.x = width / 2 - text.getWidth() / 2;
-    textB.y = height / 2 - 50;
-    textB.alpha = 0.1;
-    stage.add(textB);
-    _cax2.default.To.get(textB).wait(4000).to({ alpha: 1 }, 3600).start();
-
-    _cax2.default.tick(function () {
-      stage.update();
-      if (bitmapB.scaleX > 1.01) {
-        bitmapB.scaleX -= 0.02;
-        bitmapB.scaleY -= 0.02;
-        bitmapA.scaleX -= 0.02;
-        bitmapA.scaleY -= 0.02;
-      }
-    });
+    setTimeout(function () {
+      play(img);
+    }, 1500);
   }
 });
+
+function play(img) {
+
+  var bitmapA = new _cax2.default.Bitmap(img);
+  bitmapA.alpha = 0;
+  stage.add(bitmapA);
+
+  var group = new _cax2.default.Group();
+
+  var bitmapB = bitmapA.clone();
+  group.add(bitmapB);
+  bitmapB.originX = bitmapA.originX = width / 2;
+  bitmapB.originY = bitmapA.originY = height / 2;
+  bitmapA.scaleX = bitmapA.scaleY = bitmapB.scaleX = bitmapB.scaleY = 5;
+  bitmapB.x = bitmapA.x = width / 2;
+  bitmapB.y = bitmapA.y = height / 2;
+  var text = new _cax2.default.Text('TRANSFORMERS', {
+    color: 'white',
+    font: '100px Segoe UI'
+  });
+  text.x = width / 2 - text.getWidth() / 2;
+  text.y = height / 2 - 50;
+  text.compositeOperation = 'destination-atop';
+  group.add(text);
+
+  group.cache(0, 0, width, height, 1, true);
+
+  stage.add(group);
+
+  // group.alpha = 0.1
+  // cax.To.get(group).wait(600).to({alpha:1},600).start()
+
+  var textB = new _cax2.default.Text('TRANSFORMERS', {
+    color: 'white',
+    font: '100px Segoe UI'
+  });
+  textB.x = width / 2 - text.getWidth() / 2;
+  textB.y = height / 2 - 50;
+  textB.alpha = 0.1;
+  stage.add(textB);
+
+  _cax2.default.To.get(bitmapA).wait(4000).to({ alpha: 1 }, 6000).start();
+
+  _cax2.default.To.get(textB).wait(7000).to({ alpha: 1 }, 2600).start();
+
+  var step = -0.02;
+
+  _cax2.default.tick(function () {
+    stage.update();
+
+    bitmapB.scaleX += step;
+    bitmapB.scaleY += step;
+    bitmapA.scaleX += step;
+    bitmapA.scaleY += step;
+    if (bitmapB.scaleX < 1.01) {
+      step = 0.001;
+    }
+    if (step > 0 && bitmapB.scaleX > 1.3) {
+      step = 0;
+    }
+  });
+}
 
 //document.querySelector('#randomBtn').addEventListener('click', random)
 
