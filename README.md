@@ -15,9 +15,9 @@
 </thead>
 <tbody>
 <tr>
-<td align="center"><a title="Sketch" href="https://dntzhang.github.io/wechart/packages/sketch/examples/simple/" rel="nofollow"><img alt="Sketch" src="./asset/c96.jpg" style="max-width:100%;"></a></td>
-<td align="center"><a href="https://github.com/dntzhang/wechart/blob/master/packages/sketch/examples/simple/main.js">Source</a></td>
-<td align="center"><a href="https://github.com/dntzhang/wechart/blob/master/packages/sketch/src/">Sketch Source</a></td>
+<td align="center"><a title="Skatch" href="https://dntzhang.github.io/wechart/packages/skatch/examples/simple/" rel="nofollow"><img alt="Skatch" src="./asset/c96.jpg" style="max-width:100%;"></a></td>
+<td align="center"><a href="https://github.com/dntzhang/wechart/blob/master/packages/skatch/examples/simple/main.js">Source</a></td>
+<td align="center"><a href="https://github.com/dntzhang/wechart/blob/master/packages/skatch/src/">Skatch Source</a></td>
 <td align="center">Tutorial</td>
 </tr>
 
