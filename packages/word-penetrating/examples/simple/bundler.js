@@ -119,8 +119,8 @@ function play(img) {
 
   stage.add(group);
 
-  // group.alpha = 0.1
-  // cax.To.get(group).wait(600).to({alpha:1},600).start()
+  text.alpha = 0.1;
+  _cax2.default.To.get(text).wait(600).to({ alpha: 1 }, 600).start();
 
   var textB = new _cax2.default.Text('TRANSFORMERS', {
     color: 'white',
