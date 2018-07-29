@@ -4,6 +4,8 @@
 
 > Cax 和 three.js 创造一切图[表]
 
+![](./asset/transformers.jpg)
+
 <table>
 <thead>
 <tr>

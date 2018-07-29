@@ -4,6 +4,8 @@ English | [简体中文](./README.md)
 
 > All the [ch]arts by cax and three.js.
 
+![](./asset/transformers.jpg)
+
 <table>
 <thead>
 <tr>
