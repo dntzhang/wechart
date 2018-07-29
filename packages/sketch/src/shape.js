@@ -21,9 +21,9 @@ class SketchShape extends cax.Group {
     
   }
 
-  fillCircle(x,y,r){
+  fillCircle(x,y,r,option){
     
-    const bmp = new cax.Bitmap(fillRect(r*2,r*2,this.option ))
+    const bmp = new cax.Bitmap(fillRect(r*2,r*2,Object.assign({},this.option,option)  ))
     bmp.x = x-r
     bmp.y = y-r
     const graphics = new cax.Graphics()
@@ -145,7 +145,7 @@ class SketchShape extends cax.Group {
     const shapes = this._shakeShapes(pathToShapes(path))
     shapes.forEach(shape=>{
       const g = new cax.Graphics()
-      g.moveTo(shape[0][0],shape[0][1])
+      g.beginPath().moveTo(shape[0][0],shape[0][1])
       shape.forEach(curve=>{
         g.bezierCurveTo(curve[2],curve[3],curve[4],curve[5],curve[6],curve[7])
       })
@@ -166,17 +166,10 @@ class SketchShape extends cax.Group {
           const p2 = this._shake(curve[2], curve[3], this.option.randomRange)
           const p3 = this._shake(curve[4], curve[5], this.option.randomRange)
           const p4 = this._shake(curve[6], curve[7], this.option.randomRange)
-          if (index === 0) {
-
-            c = [p1[0], p1[1], p2[0], p2[1], p3[0], p3[1], p4[0], p4[1]]
-          } else {
-
-            c = [null, null, p2[0], p2[1], p3[0], p3[1], p4[0], p4[1]]
-          }
+         
+          c = [p1[0], p1[1], p2[0], p2[1], p3[0], p3[1], p4[0], p4[1]]  
           s.push(c)
         }
-
-
       })
       ns.push(s)
     })
@@ -184,6 +177,60 @@ class SketchShape extends cax.Group {
     return ns
    
   }
+
+  path(path,option){
+
+    const o = Object.assign({},this.option,option)
+    this.fillPath(path,o)
+    this.strokePath(path,o)
+
+    return this
+  }
+
+  fillPath(path, option){
+
+    const shapes = pathToShapes(path)
+    const box = this._getShapesBox(shapes) 
+    const bmp = new cax.Bitmap(fillRect(box[2],box[3],Object.assign({},this.option,option) ))
+    bmp.x = box[0]
+    bmp.y = box[1]
+    const g = new cax.Graphics()
+   
+    shapes.forEach(shape=>{
+      g.moveTo(shape[0][0],shape[0][1])
+      shape.forEach(curve=>{
+        g.bezierCurveTo(curve[2],curve[3],curve[4],curve[5],curve[6],curve[7])
+      })
+    })
+    g.x = box[0]*-1
+    g.y = box[1]*-1
+    bmp.clip(g)
+    this.add(bmp)
+    return this
+  }
+
+  _getShapesBox(shapes){
+    
+const curve = shapes[0][0]
+    let minX = curve[0],
+    minY =  curve[1],
+    maxX =  curve[0],
+    maxY =   curve[1]
+
+    shapes.forEach(shape => {
+     
+      shape.forEach((curve, index) => {
+        minX = Math.min(minX,curve[2],curve[4],curve[6])
+        maxX = Math.max(maxX,curve[2],curve[4],curve[6])
+        minY = Math.min(minY,curve[3],curve[5],curve[7])
+        maxY = Math.max(maxY,curve[3],curve[5],curve[7])
+      })
+    })
+
+
+  return [minX,minY,maxX-minX,maxY-minY]
+  }
+
 
   clear () {
     this.empty()

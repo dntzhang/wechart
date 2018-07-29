@@ -15,7 +15,7 @@
 </thead>
 <tbody>
 <tr>
-<td align="center"><a title="Sketch" href="https://dntzhang.github.io/wechart/packages/sketch/examples/simple/" rel="nofollow"><img alt="Sketch" src="./asset/c97.png" style="max-width:100%;"></a></td>
+<td align="center"><a title="Sketch" href="https://dntzhang.github.io/wechart/packages/sketch/examples/simple/" rel="nofollow"><img alt="Sketch" src="./asset/c96.jpg" style="max-width:100%;"></a></td>
 <td align="center"><a href="https://github.com/dntzhang/wechart/blob/master/packages/sketch/examples/simple/main.js">Source</a></td>
 <td align="center"><a href="https://github.com/dntzhang/wechart/blob/master/packages/sketch/src/">Sketch Source</a></td>
 <td align="center">Tutorial</td>
