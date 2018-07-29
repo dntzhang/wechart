@@ -221,12 +221,12 @@ var xAxis = function xAxis(isF, pyramid, camera) {
   var rotateControl = pyramid.rotateControl;
 
   if (selectAxis !== 'y') {
-    rotateControl.trigger('y', selectCube.y);
+    rotateControl.trigger('y', selectCube.y, isF);
   } else {
     var quadrant = pyramid.getQuadrant(camera.position.x, camera.position.z);
     var angle = pyramid.getAngle(camera.position.x, camera.position.z);
     var direction = getDirection(quadrant, angle, 'x', 'z');
-    rotateControl.trigger(direction, selectCube[direction]);
+    rotateControl.trigger(direction, selectCube[direction], isF);
   }
   flag = false;
 };
@@ -240,12 +240,12 @@ var yAxis = function yAxis(isF, pyramid, camera) {
     angle = isF ? angle : -angle;
     angle = selectAhead ? angle : -angle;
 
-    rotateControl.trigger(selectAxis, selectCube[selectAxis]);
+    rotateControl.trigger(selectAxis, selectCube[selectAxis], angle > 0);
   } else {
     var quadrant = pyramid.getQuadrant(camera.position.x, camera.position.z);
     var _angle = pyramid.getAngle(camera.position.x, camera.position.z);
     var direction = getDirection(quadrant, _angle, 'z', 'x');
-    rotateControl.trigger(direction, selectCube[direction]);
+    rotateControl.trigger(direction, selectCube[direction], isF);
   }
   flag = false;
 };
@@ -599,13 +599,14 @@ var _initialiseProps = function _initialiseProps() {
       var action = this.rotateControl.actionList.shift();
       if (!action) return;
       var axis = action.axis,
-          layer = action.layer;
+          layer = action.layer,
+          isF = action.isF;
 
-      this.rotateControl.trigger(axis, layer);
+      this.rotateControl.trigger(axis, layer, isF);
       this.rotateControl.next();
     }.bind(this),
 
-    trigger: function (axis, layer) {
+    trigger: function (axis, layer, isF) {
       var mb = (layer - 1) * this.size;
       if (axis === 'x') {
         mb -= this.offset;
@@ -622,14 +623,15 @@ var _initialiseProps = function _initialiseProps() {
         return d;
       });
 
-      this.rotate(90, readyList, axis);
+      this.rotate(isF ? 90 : -90, readyList, axis);
       return readyList;
     }.bind(this),
 
-    add: function (axis, layer) {
+    add: function (axis, layer, isF) {
       this.rotateControl.actionList.push({
         axis: axis,
-        layer: layer
+        layer: layer,
+        isF: isF
       });
     }.bind(this),
 

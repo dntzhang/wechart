@@ -62,12 +62,12 @@ const getDirection = function(quadrant, angle, xName, yName){
 const xAxis = function(isF, pyramid, camera){
   let {rotateControl} = pyramid;
   if(selectAxis !== 'y'){
-    rotateControl.trigger('y', selectCube.y);
+    rotateControl.trigger('y', selectCube.y, isF);
   }else{
     let quadrant = pyramid.getQuadrant(camera.position.x, camera.position.z);
     let angle = pyramid.getAngle(camera.position.x, camera.position.z);
     let direction = getDirection(quadrant, angle, 'x', 'z');
-    rotateControl.trigger(direction, selectCube[direction]);
+    rotateControl.trigger(direction, selectCube[direction], isF);
   }
   flag = false;
 }
@@ -80,12 +80,12 @@ const yAxis = function(isF, pyramid, camera){
     angle = isF ? angle : -angle;
     angle = selectAhead ? angle : - angle;
 
-    rotateControl.trigger(selectAxis,selectCube[selectAxis])
+    rotateControl.trigger(selectAxis,selectCube[selectAxis], angle>0)
   }else{
     let quadrant = pyramid.getQuadrant(camera.position.x, camera.position.z);
     let angle = pyramid.getAngle(camera.position.x, camera.position.z);
     let direction = getDirection(quadrant, angle, 'z', 'x');
-    rotateControl.trigger(direction, selectCube[direction])
+    rotateControl.trigger(direction, selectCube[direction], isF)
   }
   flag = false;
 }
@@ -361,12 +361,12 @@ class MagicCube extends THREE.Group {
     start:function(){
       let action = this.rotateControl.actionList.shift();
       if(!action) return;
-      let {axis, layer}  = action;
-      this.rotateControl.trigger(axis, layer);
+      let {axis, layer, isF}  = action;
+      this.rotateControl.trigger(axis, layer, isF);
       this.rotateControl.next();
     }.bind(this),
 
-    trigger:function(axis, layer){
+    trigger:function(axis, layer, isF){
       let mb = (layer -1) * this.size;
       if(axis === 'x'){
         mb -= this.offset;
@@ -381,14 +381,15 @@ class MagicCube extends THREE.Group {
         return num < 0.00000000001 && d;
       }).filter(d=>d);
 
-      this.rotate(90, readyList, axis)
+      this.rotate(isF ? 90 : -90, readyList, axis)
       return readyList;
     }.bind(this),
 
-    add:function(axis, layer){
+    add:function(axis, layer, isF){
       this.rotateControl.actionList.push({
         axis,
         layer,
+        isF,
       })
     }.bind(this),
 
