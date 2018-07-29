@@ -97,26 +97,31 @@ var earth = new _index2.default({
   coord: [{
     text: '中国',
     color: 0xff3333,
+    nationalFlag: 'https://www.ifreesite.com/world/image/china_flag.png',
     lng: 116.20,
     lat: 39.55
   }, {
     text: '比利时',
     color: 0xffcc33,
+    nationalFlag: 'https://www.ifreesite.com/world/image/belgium_flag.png',
     lng: 4.21,
     lat: 50.51
   }, {
     text: '巴西',
     color: 0xffcc00,
+    nationalFlag: 'https://www.ifreesite.com/world/image/brazil_flag.png',
     lng: -47.55,
     lat: -15.47
   }, {
     text: '美国',
     color: 0x33cc33,
+    nationalFlag: 'https://www.ifreesite.com/world/image/united_states_of_america_flag.png',
     lng: -77.02,
     lat: 39.91
   }, {
     text: '克罗地亚',
     color: 0x33ccff,
+    nationalFlag: 'https://www.ifreesite.com/world/image/croatia_flag.png',
     lng: 15.58,
     lat: 45.50
   }]
@@ -124,6 +129,8 @@ var earth = new _index2.default({
 
 group.add(earth);
 scene.add(group);
+
+earth.bindEvent(scene, camera);
 
 var light = new THREE.PointLight(0xffffff, 1, 1000);
 light.position.set(0, 10, 100);
@@ -168,6 +175,8 @@ var Earth = function (_THREE$Group) {
       coord: []
     }, option);
 
+    _this.coords = [];
+
     var loader = new THREE.TextureLoader();
     loader.load('./textures.jpg', function (texture) {
       var geometry = new THREE.SphereGeometry(200, 40, 40);
@@ -183,41 +192,36 @@ var Earth = function (_THREE$Group) {
     _this.option.coord.forEach(function (item) {
       _this.addCoord(item);
     });
+
+    delete _this.option;
+
+    _this.generateInfoBoard();
+
     return _this;
   }
 
   _createClass(Earth, [{
-    key: 'generateText',
-    value: function generateText(text, color, isBack) {
-      var canvas = document.createElement('canvas');
+    key: 'generateInfoBoard',
+    value: function generateInfoBoard() {
+      this.infoBoard = document.createElement('canvas');
+      var ctx = this.infoBoard.getContext('2d');
 
-      canvas.setAttribute('width', 32);
-      canvas.setAttribute('height', 16);
+      var width = 105;
+      var height = 40;
 
-      canvas.style.backgroundColor = 'rgba(0,0,0,0)';
+      this.infoBoard.setAttribute('width', width * window.devicePixelRatio);
+      this.infoBoard.setAttribute('height', height * window.devicePixelRatio);
 
-      var ctx = canvas.getContext('2d');
-      ctx.font = '10px Georgia';
-
-      var height = void 0;
-      var width = ctx.measureText(text).width;
-
-      width = Math.max(32, width);
-      height = width / 2;
-
-      canvas.setAttribute('width', width * window.devicePixelRatio);
-      canvas.setAttribute('height', height * window.devicePixelRatio);
-
-      canvas.width = width * window.devicePixelRatio;
-      canvas.height = height * window.devicePixelRatio;
+      this.infoBoard.width = width * window.devicePixelRatio;
+      this.infoBoard.height = height * window.devicePixelRatio;
 
       ctx.scale(devicePixelRatio, devicePixelRatio);
-      ctx.strokeStyle = ctx.fillStyle = hexToRgba(color);
+
+      this.infoBoard.style.backgroundColor = 'transparent';
+
       ctx.textBaseline = 'middle';
 
-      ctx.fillText(text, 0, 8);
-
-      return canvas;
+      document.body.appendChild(this.infoBoard);
     }
   }, {
     key: 'addCoord',
@@ -225,7 +229,8 @@ var Earth = function (_THREE$Group) {
       var lng = option.lng,
           lat = option.lat,
           color = option.color,
-          text = option.text;
+          text = option.text,
+          nationalFlag = option.nationalFlag;
       // +90是要有个变换
 
       var coord = lglt2xyz(lng + 90, lat, 200);
@@ -279,7 +284,110 @@ var Earth = function (_THREE$Group) {
 
       this.add(wrapper);
 
+      this.coords.push({
+        mesh: [ringBodyMesh, ringLineMesh],
+        text: text,
+        nationalFlag: nationalFlag,
+        light: lightMesh
+      });
+
       return coord;
+    }
+  }, {
+    key: 'bindEvent',
+    value: function bindEvent(scene, camera) {
+      var raycaster = new THREE.Raycaster();
+      var mouse = new THREE.Vector2();
+
+      function mousemove(event) {
+        mouse.x = event.clientX / window.innerWidth * 2 - 1;
+        mouse.y = -(event.clientY / window.innerHeight) * 2 + 1;
+        // console.log(mouse);
+        // 通过鼠标点的位置和当前相机的矩阵计算出raycaster
+        raycaster.setFromCamera(mouse, camera);
+
+        var intersects = [];
+        var i = 0;
+        var showInfo = false;
+        for (; i < this.coords.length; i++) {
+          intersects = raycaster.intersectObjects(this.coords[i].mesh);
+
+          if (intersects.length > 0) {
+            showInfo = true;
+            this.activeCoord(this.coords[i], event);
+          } else {
+            this.coords[i].light.visible = true;
+          }
+        }
+
+        if (!showInfo) {
+          this.infoBoard.style.display = 'none';
+        }
+
+        // console.log(intersects);
+      }
+
+      document.addEventListener('mousemove', mousemove.bind(this));
+    }
+  }, {
+    key: 'activeCoord',
+    value: function activeCoord(obj, event) {
+      if (obj.light.visible === false) {
+        return;
+      }
+      obj.light.visible = false;
+
+      Object.assign(this.infoBoard.style, {
+        left: event.clientX + 'px',
+        top: event.clientY + 'px',
+        position: 'absolute'
+      });
+
+      this.infoBoard.style.display = 'block';
+
+      var ctx = this.infoBoard.getContext('2d');
+
+      ctx.clearRect(0, 0, this.infoBoard.width, this.infoBoard.height);
+
+      // 绘制右边标题
+      ctx.beginPath();
+      ctx.fillStyle = '#ffffff';
+      ctx.moveTo(105, 0);
+      ctx.lineTo(105, 20);
+      ctx.lineTo(52.5, 20);
+      ctx.lineTo(40, 0);
+      ctx.closePath();
+      ctx.fill();
+
+      // 绘制标题文字
+      ctx.fillStyle = '#000000';
+      ctx.font = '12px 微软雅黑';
+      var width = ctx.measureText(obj.text).width;
+      ctx.fillText(obj.text, 55 + (50 - width) / 2, 10);
+
+      var img = new Image();
+      img.src = obj.nationalFlag;
+
+      img.onload = function () {
+        // 绘制国旗
+        ctx.save();
+        ctx.beginPath();
+        ctx.moveTo(12.5, 0);
+        ctx.lineTo(37.5, 0);
+        ctx.lineTo(50, 20);
+        ctx.lineTo(37.5, 40);
+        ctx.lineTo(12.5, 40);
+        ctx.lineTo(0, 20);
+        ctx.clip();
+
+        var width = this.width / 100;
+        var height = this.height / (this.width / 100);
+
+        ctx.drawImage(this, -25, (40 - height) / 2, 100, height);
+
+        ctx.closePath();
+        ctx.restore();
+      };
     }
   }]);
 
