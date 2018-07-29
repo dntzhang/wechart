@@ -78,7 +78,7 @@ __webpack_require__(2);
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
-var camera = window.c = new THREE.PerspectiveCamera(45, window.innerWidth / window.innerHeight, 0.01, 500);
+var camera = new THREE.PerspectiveCamera(45, window.innerWidth / window.innerHeight, 0.01, 500);
 camera.position.set(150, 100, 150);
 
 var scene = new THREE.Scene();
@@ -315,13 +315,13 @@ var isOdd = function isOdd(n) {
   return !!(n % 2);
 };
 
-var magicCube = function (_THREE$Group) {
-  _inherits(magicCube, _THREE$Group);
+var MagicCube = function (_THREE$Group) {
+  _inherits(MagicCube, _THREE$Group);
 
-  function magicCube(option) {
-    _classCallCheck(this, magicCube);
+  function MagicCube(option) {
+    _classCallCheck(this, MagicCube);
 
-    var _this = _possibleConstructorReturn(this, (magicCube.__proto__ || Object.getPrototypeOf(magicCube)).call(this));
+    var _this = _possibleConstructorReturn(this, (MagicCube.__proto__ || Object.getPrototypeOf(MagicCube)).call(this));
 
     _initialiseProps.call(_this);
 
@@ -406,7 +406,7 @@ var magicCube = function (_THREE$Group) {
     return _this;
   }
 
-  _createClass(magicCube, [{
+  _createClass(MagicCube, [{
     key: 'createCubeMesh',
     value: function createCubeMesh(d) {
       var size = this.size,
@@ -536,7 +536,7 @@ var magicCube = function (_THREE$Group) {
     }
   }]);
 
-  return magicCube;
+  return MagicCube;
 }(THREE.Group);
 
 var _initialiseProps = function _initialiseProps() {
@@ -669,7 +669,7 @@ var _initialiseProps = function _initialiseProps() {
   };
 };
 
-exports.default = magicCube;
+exports.default = MagicCube;
 
 /***/ }),
 /* 2 */

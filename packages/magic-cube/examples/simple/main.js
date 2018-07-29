@@ -1,7 +1,7 @@
-import magicCube from '../../src/index'
+import MagicCube from '../../src/index'
 import '../../../common/orbit-controls'
 
-const camera = window.c = new THREE.PerspectiveCamera(45, window.innerWidth / window.innerHeight, 0.01, 500)
+const camera = new THREE.PerspectiveCamera(45, window.innerWidth / window.innerHeight, 0.01, 500)
 camera.position.set(150, 100, 150)
 
 const scene = new THREE.Scene()
@@ -13,7 +13,7 @@ document.body.appendChild(renderer.domElement)
 const controls = new THREE.OrbitControls(camera, renderer.domElement)
 const group = new THREE.Group()
 
-const pyramid = new magicCube({
+const pyramid = new MagicCube({
   level:3,
   size:100,
   control:{

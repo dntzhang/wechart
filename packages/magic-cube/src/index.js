@@ -141,7 +141,7 @@ const getCubeList = function(level){
 
 const isOdd = (n) => !!(n % 2);
 
-class magicCube extends THREE.Group {
+class MagicCube extends THREE.Group {
   constructor (option) {
     super()
     let that = this;
@@ -458,4 +458,4 @@ class magicCube extends THREE.Group {
   getAngle = (x, y) => 180*Math.asin(x/Math.sqrt(x*x+y*y)||0)/Math.PI;
 }
 
-export default magicCube
+export default MagicCube
