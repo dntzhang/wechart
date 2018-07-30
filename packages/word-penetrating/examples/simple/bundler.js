@@ -149,6 +149,7 @@ function play(img) {
     }
     if (step > 0 && bitmapB.scaleX > 1.3) {
       step = 0;
+      document.querySelector('#github').style.opacity = 1;
     }
   });
 }
