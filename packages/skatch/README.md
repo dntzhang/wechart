@@ -107,16 +107,29 @@ skatch 共拥有如下方法进行草图绘制:
 * circle
 * ellipse
 * path
+* sector
+* polygon
 * strokeRect
 * strokeCircle
 * strokeEllipse
 * strokePath
+* strokeSector
+* strokePolygon
 * fillRect
 * fillCircle
 * fillEllipse
 * fillPath
+* fillSector
+* fillPolygon
 
 可以这么理解: rect === strokeRect + fillRect 。其他的形状以此类推。
+
+不能填充的一些方法有:
+
+* line
+* curve
+* arc
+* linearPath
 
 ## 与 rough 的异同
 
