@@ -17,6 +17,13 @@
 </thead>
 <tbody>
 <tr>
+<td align="center"><a title="Word Penetrating" href="https://dntzhang.github.io/wechart/packages/word-penetrating/examples/simple/" rel="nofollow"><img alt="Word Penetrating" src="./asset/c97.png" style="max-width:100%;"></a></td>
+<td align="center"><a href="https://github.com/dntzhang/wechart/blob/master/packages/word-penetrating/examples/simple/">Source</a></td>
+<td align="center">Word Penetrating</td>
+<td align="center">Tutorial</td>
+</tr>
+
+<tr>
 <td align="center"><a title="Skatch" href="https://dntzhang.github.io/wechart/packages/skatch/examples/simple/" rel="nofollow"><img alt="Skatch" src="./asset/c96.jpg" style="max-width:100%;"></a></td>
 <td align="center"><a href="https://github.com/dntzhang/wechart/blob/master/packages/skatch/examples/simple/main.js">Source</a></td>
 <td align="center"><a href="https://github.com/dntzhang/wechart/blob/master/packages/skatch/src/">Skatch Source</a></td>
