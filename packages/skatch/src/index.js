@@ -3,6 +3,7 @@ import Ellipse from './shape/ellipse'
 import fillRect from './fill-rect'
 
 import pathToShapes from './path/path-to-shapes'
+import arc2bezier from './path/arc2bezier'
 
 class Skatch extends cax.Group {
   constructor (option) {
@@ -18,6 +19,45 @@ class Skatch extends cax.Group {
       strokeStyle: 'black',
       fillStyle: 'black'
     }, option)
+  }
+
+  line (x1, y1, x2, y2, option) {
+    const o = Object.assign({}, this.option, option)
+    const g = new cax.Graphics()
+    g.beginPath().strokeStyle(o.strokeStyle).lineWidth(o.strokeWidth)
+    for (let i = 0; i < o.strokeRepeat; i++) {
+      g.moveTo.apply(g, this._shake(x1, y1))
+      g.lineTo.apply(g, this._shake(x2, y2))
+    }
+    g.stroke()
+    this.add(g)
+  }
+
+  arc (x, y, width, height, start, stop, option) {
+    var aa = arc2bezier(x, y, width, height, start, stop)
+
+    const o = Object.assign({}, this.option, option)
+    const g = new cax.Graphics()
+    g.strokeStyle(o.strokeStyle).lineWidth(o.strokeWidth)
+    aa.forEach(c => {
+      c.push(o)
+      this.curve.apply(this, c)
+    })
+  }
+
+  curve (x1, y1, cx1, cy1, cx2, cy2, x2, y2, option) {
+    const o = Object.assign({}, this.option, option)
+    const g = new cax.Graphics()
+    g.beginPath().strokeStyle(o.strokeStyle).lineWidth(o.strokeWidth)
+    for (let i = 0; i < o.strokeRepeat; i++) {
+      g.moveTo.apply(g, this._shake(x1, y1))
+      const c1 = this._shake(cx1, cy1)
+      const c2 = this._shake(cx2, cy2)
+      const p2 = this._shake(x2, y2)
+      g.bezierCurveTo(c1[0], c1[1], c2[0], c2[1], p2[0], p2[1])
+    }
+    g.stroke()
+    this.add(g)
   }
 
   fillCircle (x, y, r, option) {
@@ -68,6 +108,58 @@ class Skatch extends cax.Group {
     // ellipse.rotation = Math.random()*360
 
     this.add(ellipse)
+  }
+
+  polygon (vertices, option) {
+    const o = Object.assign({}, this.option, option)
+    this.fillPolygon(vertices, o)
+    this.strokePolygon(vertices, o)
+  }
+
+  strokePolygon (vertices, option) {
+    const polygon = new cax.Graphics()
+    for (let i = 0; i < option.strokeRepeat; i++) {
+      polygon.beginPath()
+      vertices.forEach((v, i) => {
+        polygon[i === 0 ? 'moveTo' : 'lineTo'].apply(polygon, this._shake(v[0], v[1]))
+      })
+      polygon.lineTo.apply(polygon, this._shake(vertices[0][0], vertices[0][1]))
+      polygon.stroke()
+    }
+    this.add(polygon)
+  }
+
+  fillPolygon (vertices, option) {
+    const box = this._getPolygonBox(vertices)
+    const bmp = new cax.Bitmap(fillRect(box[2], box[3], Object.assign({}, this.option, option)))
+    bmp.x = box[0]
+    bmp.y = box[1]
+    const g = new cax.Graphics()
+    vertices.forEach((v, i) => {
+      g[i === 0 ? 'moveTo' : 'lineTo'](v[0], v[1])
+    })
+    g.lineTo(vertices[0][0], vertices[0][1])
+    g.x = box[0] * -1
+    g.y = box[1] * -1
+    bmp.clip(g)
+    this.add(bmp)
+    return this
+  }
+
+  _getPolygonBox (vertices) {
+    let minX = vertices[0][0],
+      minY = vertices[0][1],
+      maxX = minX,
+      maxY = minY
+
+    vertices.forEach(v => {
+      minX = Math.min(minX, v[0])
+      maxX = Math.max(maxX, v[0])
+      minY = Math.min(minY, v[1])
+      maxY = Math.max(maxY, v[1])
+    })
+
+    return [minX, minY, maxX - minX, maxY - minY]
   }
 
   strokeCircle (x, y, r) {
