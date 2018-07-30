@@ -2,7 +2,7 @@
 import cax from 'cax'
 
 class Ellipse extends cax.Shape {
-  constructor(w, h, option) {
+  constructor (w, h, option) {
     super()
     this.option = option || {}
 
@@ -16,8 +16,6 @@ class Ellipse extends cax.Shape {
 
     this.pointsList = []
     for (let i = 0; i < this.option.strokeRepeat; i++) {
-
-
       this.pointsList.push([
         _shake(0, ym, this.option.randomRange),
         _shake(0, ym - oy, this.option.randomRange),
@@ -35,15 +33,10 @@ class Ellipse extends cax.Shape {
 
       ])
     }
-
-
   }
 
-  draw() {
+  draw () {
     this.pointsList.forEach((points) => {
-
-
-
       this.beginPath()
       this.moveTo(points[0][0], points[0][1])
       this.bezierCurveTo(points[1][0], points[1][1], points[2][0], points[2][1], points[3][0], points[3][1])
@@ -52,7 +45,6 @@ class Ellipse extends cax.Shape {
       this.bezierCurveTo(points[10][0], points[10][1], points[11][0], points[11][1], points[12][0], points[12][1])
 
       if (this.option.strokeStyle) {
-
         if (this.option.lineWidth !== undefined) {
           this.lineWidth(this.option.lineWidth)
         }
@@ -64,19 +56,14 @@ class Ellipse extends cax.Shape {
         this.fillStyle(this.option.fillStyle)
         this.fill()
       }
-
-
     })
-
   }
 }
 
-
-function _shake(x, y, randomRange) {
+function _shake (x, y, randomRange) {
   const r = Math.random() * randomRange
   const a = Math.random() * 360 * Math.PI / 180
   return [x + r * Math.cos(a), y + r * Math.sin(a)]
 }
-
 
 export default Ellipse

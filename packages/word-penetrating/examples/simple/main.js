@@ -7,19 +7,15 @@ const stage = new cax.Stage(width, height, '#canvasCtn')
 cax.loadImg({
   img: './transformers.jpg',
   complete: function (img) {
-    document.querySelector('#loading').style.opacity= 0
+    document.querySelector('#loading').style.opacity = 0
 
-    setTimeout(function(){
+    setTimeout(function () {
       play(img)
-    },1500)
-
+    }, 1500)
   }
 })
 
-
-
-function play(img){
-
+function play (img) {
   const bitmapA = new cax.Bitmap(img)
   bitmapA.alpha = 0
   stage.add(bitmapA)
@@ -47,7 +43,7 @@ function play(img){
   stage.add(group)
 
   text.alpha = 0.1
-   cax.To.get(text).wait(600).to({alpha:1},600).start()
+  cax.To.get(text).wait(600).to({alpha: 1}, 600).start()
 
   const textB = new cax.Text('TRANSFORMERS', {
     color: 'white',
@@ -58,30 +54,27 @@ function play(img){
   textB.alpha = 0.1
   stage.add(textB)
 
-
   cax.To.get(bitmapA).wait(4000).to({ alpha: 1 }, 6000).start()
 
   cax.To.get(textB).wait(7000).to({ alpha: 1 }, 2600).start()
 
-  let step = - 0.02
+  let step = -0.02
 
   cax.tick(function () {
     stage.update()
-    
-      bitmapB.scaleX += step
-      bitmapB.scaleY += step
-      bitmapA.scaleX += step
-      bitmapA.scaleY += step
+
+    bitmapB.scaleX += step
+    bitmapB.scaleY += step
+    bitmapA.scaleX += step
+    bitmapA.scaleY += step
     if (bitmapB.scaleX < 1.01) {
       step = 0.001
     }
-    if(step>0&&bitmapB.scaleX >1.3){
+    if (step > 0 && bitmapB.scaleX > 1.3) {
       step = 0
-      document.querySelector('#github').style.opacity= 1
+      document.querySelector('#github').style.opacity = 1
     }
   })
-
 }
 
-
-//document.querySelector('#randomBtn').addEventListener('click', random)
+// document.querySelector('#randomBtn').addEventListener('click', random)
