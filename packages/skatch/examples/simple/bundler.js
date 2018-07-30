@@ -73,7 +73,7 @@
 var _typeof2 = typeof Symbol === "function" && typeof Symbol.iterator === "symbol" ? function (obj) { return typeof obj; } : function (obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj; };
 
 /*!
- *  cax v1.2.1
+ *  cax v1.2.3
  *  By https://github.com/dntzhang 
  *  Github: https://github.com/dntzhang/cax
  *  MIT Licensed.
@@ -3404,6 +3404,34 @@ var _typeof2 = typeof Symbol === "function" && typeof Symbol.iterator === "symbo
         _to2.default.easing[itemLower + 'InOut'] = _tween2.default.Easing[item].InOut;
       });
 
+      cax.loadImg = function (option) {
+        var img = new Image();
+        img.onload = function () {
+          option.complete(this);
+        };
+        img.src = option.img;
+      };
+
+      cax.loadImgs = function (option) {
+        var result = [];
+        var loaded = 0;
+        var len = option.imgs.length;
+        option.imgs.forEach(function (src, index) {
+          var img = new Image();
+          img.onload = function (i, img) {
+            return function () {
+              result[i] = img;
+              loaded++;
+              option.progress && option.progress(loaded / len, loaded, i, img, result);
+              if (loaded === len) {
+                option.complete && option.complete(result);
+              }
+            };
+          }(index, img);
+          img.src = src;
+        });
+      };
+
       module.exports = cax;
 
       /***/
@@ -4027,6 +4055,9 @@ var _typeof2 = typeof Symbol === "function" && typeof Symbol.iterator === "symbo
         }, {
           key: '_setCursor',
           value: function _setCursor(obj) {
+            if (!this.canvas.style) {
+              return;
+            }
             if (obj.cursor) {
               this.canvas.style.cursor = obj.cursor;
             } else if (obj.parent) {
@@ -6943,7 +6974,7 @@ document.querySelector('#refreshBtn').addEventListener('click', function () {
 
 function render() {
 
-  var ss = new _src2.default.Shape({
+  var ss = new _src2.default({
     gap: 5,
     randomRange: 4,
     fillAngle: -45,
@@ -6964,7 +6995,7 @@ function render() {
 
   ss.ellipse(290, 120, 160, 80, { fillStyle: '#459130' });
 
-  var ss2 = new _src2.default.Shape({
+  var ss2 = new _src2.default({
     gap: 5,
     randomRange: 10,
     fillAngle: -45,
@@ -6984,26 +7015,6 @@ function render() {
   ss2.x = -50;
   ss2.scaleX = ss2.scaleY = 0.4;
 }
-// const sg = new sketch.Graphics({
-//   randomRange: 4,
-//   strokeRepeat: 1,
-//   curveRange: 45,
-//   strokeWidth: 1,
-//   strokeStyle: 'black'
-// })
-
-
-// sg.beginPath()
-// .moveTo(100, 100)
-// .lineTo(100, 200)
-// .lineTo(200, 200)
-// .lineTo(200, 100)
-// .lineTo(100, 100)
-// .stroke()
-
-
-// sg.y = 120
-// stage.add(sg)
 
 /***/ }),
 /* 2 */
@@ -7043,32 +7054,6 @@ module.exports = function (module) {
 
 
 Object.defineProperty(exports, "__esModule", {
-    value: true
-});
-
-var _graphics = __webpack_require__(4);
-
-var _graphics2 = _interopRequireDefault(_graphics);
-
-var _shape = __webpack_require__(5);
-
-var _shape2 = _interopRequireDefault(_shape);
-
-function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
-
-exports.default = {
-    Graphics: _graphics2.default,
-    Shape: _shape2.default
-};
-
-/***/ }),
-/* 4 */
-/***/ (function(module, exports, __webpack_require__) {
-
-"use strict";
-
-
-Object.defineProperty(exports, "__esModule", {
   value: true
 });
 
@@ -7078,269 +7063,15 @@ var _cax = __webpack_require__(0);
 
 var _cax2 = _interopRequireDefault(_cax);
 
-function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
-
-function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
-
-function _possibleConstructorReturn(self, call) { if (!self) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return call && (typeof call === "object" || typeof call === "function") ? call : self; }
-
-function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
-
-var assMap = {
-  fillStyle: true,
-  strokeStyle: true,
-  lineWidth: true,
-  lineCap: true,
-  lineDashOffset: true,
-  lineJoin: true,
-  miterLimit: true
-};
-
-var Graphics = function (_cax$Group) {
-  _inherits(Graphics, _cax$Group);
-
-  function Graphics(option) {
-    _classCallCheck(this, Graphics);
-
-    var _this = _possibleConstructorReturn(this, (Graphics.__proto__ || Object.getPrototypeOf(Graphics)).call(this));
-
-    _this.cmds = [];
-    _this.currentGradient = null;
-
-    _this.option = Object.assign({
-      gap: 5,
-      randomRange: 4,
-      fillAngle: -45,
-      strokeRepeat: 2,
-      fillRepeat: 2,
-      strokeWidth: 1,
-      fillWidth: 1,
-      strokeStyle: 'black',
-      fillStyle: 'black'
-    }, option);
-
-    _this.strokeGroup = new _cax2.default.Group();
-    for (var i = 0; i < _this.option.strokeRepeat; i++) {
-      _this.strokeGroup.add(new _cax2.default.Graphics());
-    }
-
-    _this.add(_this.strokeGroup);
-    return _this;
-  }
-
-  _createClass(Graphics, [{
-    key: 'clearRect',
-    value: function clearRect() {
-      this.cmds.push(['clearRect', arguments]);
-      return this;
-    }
-  }, {
-    key: 'rect',
-    value: function rect() {
-      this.cmds.push(['rect', arguments]);
-      return this;
-    }
-  }, {
-    key: 'clear',
-    value: function clear() {
-      this.cmds.length = 0;
-      return this;
-    }
-  }, {
-    key: 'setLineDash',
-    value: function setLineDash() {
-      this.cmds.push(['setLineDash', arguments]);
-      return this;
-    }
-  }, {
-    key: 'strokeRect',
-    value: function strokeRect() {
-      this.cmds.push(['strokeRect', arguments]);
-      return this;
-    }
-  }, {
-    key: 'arc',
-    value: function arc() {
-      this.cmds.push(['arc', arguments]);
-      return this;
-    }
-  }, {
-    key: 'closePath',
-    value: function closePath() {
-      this.cmds.push(['closePath', arguments]);
-      return this;
-    }
-  }, {
-    key: 'strokeStyle',
-    value: function strokeStyle() {
-      this.cmds.push(['strokeStyle', arguments]);
-      return this;
-    }
-  }, {
-    key: 'lineWidth',
-    value: function lineWidth() {
-      this.cmds.push(['lineWidth', arguments]);
-      return this;
-    }
-  }, {
-    key: 'lineCap',
-    value: function lineCap() {
-      this.cmds.push(['lineCap', arguments]);
-      return this;
-    }
-  }, {
-    key: 'lineDashOffset',
-    value: function lineDashOffset() {
-      this.cmds.push(['lineDashOffset', arguments]);
-      return this;
-    }
-  }, {
-    key: 'lineJoin',
-    value: function lineJoin() {
-      this.cmds.push(['lineJoin', arguments]);
-      return this;
-    }
-  }, {
-    key: 'miterLimit',
-    value: function miterLimit() {
-      this.cmds.push(['miterLimit', arguments]);
-      return this;
-    }
-  }, {
-    key: 'bezierCurveTo',
-    value: function bezierCurveTo() {
-      this.cmds.push(['bezierCurveTo', arguments]);
-      return this;
-    }
-  }, {
-    key: 'quadraticCurveTo',
-    value: function quadraticCurveTo() {
-      this.cmds.push(['quadraticCurveTo', arguments]);
-      return this;
-    }
-  }, {
-    key: 'createRadialGradient',
-    value: function createRadialGradient() {
-      this.cmds.push(['createRadialGradient', arguments]);
-      return this;
-    }
-  }, {
-    key: 'createLinearGradient',
-    value: function createLinearGradient() {
-      this.cmds.push(['createLinearGradient', arguments]);
-      return this;
-    }
-  }, {
-    key: 'addColorStop',
-    value: function addColorStop() {
-      this.cmds.push(['addColorStop', arguments]);
-      return this;
-    }
-  }, {
-    key: 'arcTo',
-    value: function arcTo() {
-      this.cmds.push(['arcTo', arguments]);
-      return this;
-    }
-  }, {
-    key: '_shake',
-    value: function _shake(x, y) {
-      var r = Math.random() * this.option.randomRange;
-      var a = Math.random() * 360 * Math.PI / 180;
-      return [x + r * Math.cos(a), y + r * Math.sin(a)];
-    }
-  }, {
-    key: 'stroke',
-    value: function stroke() {
-      var _this2 = this;
-
-      this.strokeGroup.children.forEach(function (g) {
-        g.strokeStyle(_this2.option.strokeStyle);
-        g.lineWidth(_this2.option.strokeWidth);
-        g.stroke();
-      });
-      return this;
-    }
-  }, {
-    key: 'beginPath',
-    value: function beginPath() {
-      this.strokeGroup.children.forEach(function (g) {
-        g.beginPath();
-      });
-      return this;
-    }
-  }, {
-    key: 'moveTo',
-    value: function moveTo(x, y) {
-      var _this3 = this;
-
-      this.strokeGroup.children.forEach(function (g) {
-        g.moveTo.apply(g, _this3._shake(x, y));
-      });
-      return this;
-    }
-  }, {
-    key: 'lineTo',
-    value: function lineTo(x, y) {
-      var _this4 = this;
-
-      this.strokeGroup.children.forEach(function (g) {
-        g.lineTo.apply(g, _this4._shake(x, y));
-      });
-      return this;
-    }
-  }, {
-    key: 'render',
-    value: function render(ctx) {
-      var _this5 = this;
-
-      this.cmds.forEach(function (cmd) {
-        var methodName = cmd[0];
-        if (assMap[methodName]) {
-          ctx[methodName] = cmd[1][0];
-        } else if (methodName === 'addColorStop') {
-          _this5.currentGradient && _this5.currentGradient.addColorStop(cmd[1][0], cmd[1][1]);
-        } else {
-          var result = ctx[methodName].apply(ctx, Array.prototype.slice.call(cmd[1]));
-          if (methodName === 'createRadialGradient' || methodName === 'createLinearGradient') {
-            _this5.currentGradient = result;
-          }
-        }
-      });
-    }
-  }]);
-
-  return Graphics;
-}(_cax2.default.Group);
-
-exports.default = Graphics;
-
-/***/ }),
-/* 5 */
-/***/ (function(module, exports, __webpack_require__) {
-
-"use strict";
-
-
-Object.defineProperty(exports, "__esModule", {
-  value: true
-});
-
-var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
-
-var _cax = __webpack_require__(0);
-
-var _cax2 = _interopRequireDefault(_cax);
-
-var _ellipse = __webpack_require__(6);
+var _ellipse = __webpack_require__(4);
 
 var _ellipse2 = _interopRequireDefault(_ellipse);
 
-var _fillRect2 = __webpack_require__(7);
+var _fillRect2 = __webpack_require__(5);
 
 var _fillRect3 = _interopRequireDefault(_fillRect2);
 
-var _pathToShapes = __webpack_require__(8);
+var _pathToShapes = __webpack_require__(6);
 
 var _pathToShapes2 = _interopRequireDefault(_pathToShapes);
 
@@ -7352,13 +7083,13 @@ function _possibleConstructorReturn(self, call) { if (!self) { throw new Referen
 
 function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
 
-var SketchShape = function (_cax$Group) {
-  _inherits(SketchShape, _cax$Group);
+var Skatch = function (_cax$Group) {
+  _inherits(Skatch, _cax$Group);
 
-  function SketchShape(option) {
-    _classCallCheck(this, SketchShape);
+  function Skatch(option) {
+    _classCallCheck(this, Skatch);
 
-    var _this = _possibleConstructorReturn(this, (SketchShape.__proto__ || Object.getPrototypeOf(SketchShape)).call(this));
+    var _this = _possibleConstructorReturn(this, (Skatch.__proto__ || Object.getPrototypeOf(Skatch)).call(this));
 
     _this.option = Object.assign({
       gap: 5,
@@ -7375,7 +7106,7 @@ var SketchShape = function (_cax$Group) {
     return _this;
   }
 
-  _createClass(SketchShape, [{
+  _createClass(Skatch, [{
     key: 'fillCircle',
     value: function fillCircle(x, y, r, option) {
 
@@ -7599,45 +7330,42 @@ var SketchShape = function (_cax$Group) {
       this.empty();
       return this;
     }
-  }, {
-    key: 'setLineDash',
-    value: function setLineDash() {
-      this.cmds.push(['setLineDash', arguments]);
-      return this;
-    }
-  }, {
-    key: 'lineCap',
-    value: function lineCap() {
-      this.cmds.push(['lineCap', arguments]);
-      return this;
-    }
-  }, {
-    key: 'lineDashOffset',
-    value: function lineDashOffset() {
-      this.cmds.push(['lineDashOffset', arguments]);
-      return this;
-    }
-  }, {
-    key: 'lineJoin',
-    value: function lineJoin() {
-      this.cmds.push(['lineJoin', arguments]);
-      return this;
-    }
-  }, {
-    key: 'miterLimit',
-    value: function miterLimit() {
-      this.cmds.push(['miterLimit', arguments]);
-      return this;
-    }
+
+    //   setLineDash () {
+    //     this.cmds.push(['setLineDash', arguments])
+    //     return this
+    //   }
+
+
+    //   lineCap () {
+    //     this.cmds.push(['lineCap', arguments])
+    //     return this
+    //   }
+
+    //   lineDashOffset () {
+    //     this.cmds.push(['lineDashOffset', arguments])
+    //     return this
+    //   }
+
+    //   lineJoin () {
+    //     this.cmds.push(['lineJoin', arguments])
+    //     return this
+    //   }
+
+    //   miterLimit () {
+    //     this.cmds.push(['miterLimit', arguments])
+    //     return this
+    //   }
+
   }]);
 
-  return SketchShape;
+  return Skatch;
 }(_cax2.default.Group);
 
-exports.default = SketchShape;
+exports.default = Skatch;
 
 /***/ }),
-/* 6 */
+/* 4 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -7731,7 +7459,7 @@ function _shake(x, y, randomRange) {
 exports.default = Ellipse;
 
 /***/ }),
-/* 7 */
+/* 5 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -7796,7 +7524,7 @@ function _shake(x, y, randomRange) {
 }
 
 /***/ }),
-/* 8 */
+/* 6 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -7807,11 +7535,11 @@ Object.defineProperty(exports, "__esModule", {
 });
 exports.default = pathToShapes;
 
-var _pathParser = __webpack_require__(9);
+var _pathParser = __webpack_require__(7);
 
 var _pathParser2 = _interopRequireDefault(_pathParser);
 
-var _arcToBezier = __webpack_require__(10);
+var _arcToBezier = __webpack_require__(8);
 
 var _arcToBezier2 = _interopRequireDefault(_arcToBezier);
 
@@ -8049,7 +7777,7 @@ function pathToShapes(path) {
 }
 
 /***/ }),
-/* 9 */
+/* 7 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -8117,7 +7845,7 @@ function parseValues(args) {
 exports.default = parse;
 
 /***/ }),
-/* 10 */
+/* 8 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";

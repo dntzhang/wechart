@@ -1,5 +1,5 @@
 import cax from 'cax'
-import skatch from '../../src'
+import Skatch from '../../src'
 
 const stage = new cax.Stage(400, 400, '#canvasCtn')
 
@@ -18,7 +18,7 @@ document.querySelector('#refreshBtn').addEventListener('click',()=>{
 
 function render(){
 
-const ss = new skatch.Shape({
+const ss = new Skatch({
   gap: 5,
   randomRange: 4,
   fillAngle: -45,
@@ -39,7 +39,7 @@ ss.circle(310,280, 50,{fillStyle:'#f5a431'})
 
 ss.ellipse(290,120,160,80,{fillStyle: '#459130'})
 
-const ss2 = new skatch.Shape({
+const ss2 = new Skatch({
   gap: 5,
   randomRange: 10,
   fillAngle: -45,
@@ -59,24 +59,4 @@ ss2.y = 160
 ss2.x = -50
 ss2.scaleX = ss2.scaleY = 0.4
 }
-// const sg = new skatch.Graphics({
-//   randomRange: 4,
-//   strokeRepeat: 1,
-//   curveRange: 45,
-//   strokeWidth: 1,
-//   strokeStyle: 'black'
-// })
-
-
-// sg.beginPath()
-// .moveTo(100, 100)
-// .lineTo(100, 200)
-// .lineTo(200, 200)
-// .lineTo(200, 100)
-// .lineTo(100, 100)
-// .stroke()
-
-
-// sg.y = 120
-// stage.add(sg)
 
