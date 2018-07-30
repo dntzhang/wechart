@@ -21,6 +21,15 @@ class Skatch extends cax.Group {
     }, option)
   }
 
+  linearPath (points, option) {
+    const len = points.length
+    points.forEach((p, index) => {
+      if (index < len - 1) {
+        this.line(p[0], p[1], points[index + 1][0], points[index + 1][1], option)
+      }
+    })
+  }
+
   line (x1, y1, x2, y2, option) {
     const o = Object.assign({}, this.option, option)
     const g = new cax.Graphics()
@@ -31,6 +40,33 @@ class Skatch extends cax.Group {
     }
     g.stroke()
     this.add(g)
+  }
+
+  sector (x, y, r, start, stop, option) {
+    const o = Object.assign({}, this.option, option)
+    this.strokeSector(x, y, r, start, stop, o)
+
+    this.fillSector(x, y, r, start, stop, option)
+  }
+
+  strokeSector (x, y, r, start, stop, o) {
+    this.arc(x, y, r * 2, r * 2, start, stop, o)
+    this.line(x, y, x + r * Math.cos(start), y + r * Math.sin(start), o)
+    this.line(x, y, x + r * Math.cos(stop), y + r * Math.sin(stop), o)
+  }
+
+  fillSector (x, y, r, start, stop, option) {
+    const bmp = new cax.Bitmap(fillRect(r * 2, r * 2, Object.assign({}, this.option, option)))
+    bmp.x = x - r
+    bmp.y = y - r
+    const graphics = new cax.Graphics()
+    graphics.moveTo(r, r)
+      .arc(r, r, r, start, stop)
+      .closePath()
+    //  graphics.arc(r, r, r, 0, Math.PI * 2)
+    bmp.clip(graphics)
+    this.add(bmp)
+    return this
   }
 
   arc (x, y, width, height, start, stop, option) {

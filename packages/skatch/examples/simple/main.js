@@ -30,23 +30,15 @@ function render () {
 
   stage.add(skatch)
 
-  skatch.rect(50, 80, 100, 100)
+  skatch.rect(50, 70, 80, 100)
 
-  skatch.circle(310, 280, 50, {fillStyle: '#f5a431'})
+  skatch.circle(310, 220, 30, {fillStyle: '#f5a431'})
 
   skatch.ellipse(290, 120, 160, 80, {fillStyle: '#459130'})
 
   skatch.polygon([[200, 10], [150, 70], [250, 70]], {fillStyle: 'blue', fillAngle: 45, fillRepeat: 4, fillWidth: 4})
 
-  // skatch.line(300,100,200,200,{ strokeRepeat: 3})
-
-  // skatch.curve(100,100,150,0,200,200,250,100,{ strokeRepeat: 5})
-
-  // skatch.arc (100, 100, 100,100,Math.PI/3, Math.PI*2 ,{ strokeRepeat:3} )
-
-  // skatch.linearPath (points [, options])
-
-  // skatch.sector()
+  skatch.sector(300, 300, 40, Math.PI / 3, Math.PI * 2, { strokeRepeat: 3})
 
   const skatch2 = new Skatch({
     gap: 5,
@@ -67,4 +59,12 @@ function render () {
   skatch2.y = 160
   skatch2.x = -50
   skatch2.scaleX = skatch2.scaleY = 0.4
+
+  // skatch.line(300,100,200,200,{ strokeRepeat: 3})
+
+  // skatch.curve(100,100,150,0,200,200,250,100,{ strokeRepeat: 5})
+
+  // skatch.arc (100, 100, 100,100,Math.PI/3, Math.PI*2 ,{ strokeRepeat:3} )
+
+  //  skatch.linearPath ([[100,100],[200,200],[300,100]],{ strokeRepeat: 3})
 }

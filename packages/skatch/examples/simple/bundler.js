@@ -6988,26 +6988,15 @@ function render() {
 
   stage.add(skatch);
 
-  skatch.rect(50, 80, 100, 100);
+  skatch.rect(50, 70, 80, 100);
 
-  skatch.circle(310, 280, 50, { fillStyle: '#f5a431' });
+  skatch.circle(310, 220, 30, { fillStyle: '#f5a431' });
 
   skatch.ellipse(290, 120, 160, 80, { fillStyle: '#459130' });
 
   skatch.polygon([[200, 10], [150, 70], [250, 70]], { fillStyle: 'blue', fillAngle: 45, fillRepeat: 4, fillWidth: 4 });
 
-  // skatch.line(300,100,200,200,{ strokeRepeat: 3})
-
-  // skatch.curve(100,100,150,0,200,200,250,100,{ strokeRepeat: 5})
-
-  // skatch.arc (100, 100, 100,100,Math.PI/3, Math.PI*2 ,{ strokeRepeat:3} ) 
-
-
-  //skatch.linearPath (points [, options]) 
-
-
-  //skatch.sector()
-
+  skatch.sector(300, 300, 40, Math.PI / 3, Math.PI * 2, { strokeRepeat: 3 });
 
   var skatch2 = new _src2.default({
     gap: 5,
@@ -7028,6 +7017,14 @@ function render() {
   skatch2.y = 160;
   skatch2.x = -50;
   skatch2.scaleX = skatch2.scaleY = 0.4;
+
+  // skatch.line(300,100,200,200,{ strokeRepeat: 3})
+
+  // skatch.curve(100,100,150,0,200,200,250,100,{ strokeRepeat: 5})
+
+  // skatch.arc (100, 100, 100,100,Math.PI/3, Math.PI*2 ,{ strokeRepeat:3} )
+
+  //  skatch.linearPath ([[100,100],[200,200],[300,100]],{ strokeRepeat: 3})
 }
 
 /***/ }),
@@ -7124,6 +7121,18 @@ var Skatch = function (_cax$Group) {
   }
 
   _createClass(Skatch, [{
+    key: 'linearPath',
+    value: function linearPath(points, option) {
+      var _this2 = this;
+
+      var len = points.length;
+      points.forEach(function (p, index) {
+        if (index < len - 1) {
+          _this2.line(p[0], p[1], points[index + 1][0], points[index + 1][1], option);
+        }
+      });
+    }
+  }, {
     key: 'line',
     value: function line(x1, y1, x2, y2, option) {
       var o = Object.assign({}, this.option, option);
@@ -7137,9 +7146,37 @@ var Skatch = function (_cax$Group) {
       this.add(g);
     }
   }, {
+    key: 'sector',
+    value: function sector(x, y, r, start, stop, option) {
+      var o = Object.assign({}, this.option, option);
+      this.strokeSector(x, y, r, start, stop, o);
+
+      this.fillSector(x, y, r, start, stop, option);
+    }
+  }, {
+    key: 'strokeSector',
+    value: function strokeSector(x, y, r, start, stop, o) {
+      this.arc(x, y, r * 2, r * 2, start, stop, o);
+      this.line(x, y, x + r * Math.cos(start), y + r * Math.sin(start), o);
+      this.line(x, y, x + r * Math.cos(stop), y + r * Math.sin(stop), o);
+    }
+  }, {
+    key: 'fillSector',
+    value: function fillSector(x, y, r, start, stop, option) {
+      var bmp = new _cax2.default.Bitmap((0, _fillRect3.default)(r * 2, r * 2, Object.assign({}, this.option, option)));
+      bmp.x = x - r;
+      bmp.y = y - r;
+      var graphics = new _cax2.default.Graphics();
+      graphics.moveTo(r, r).arc(r, r, r, start, stop).closePath();
+      //  graphics.arc(r, r, r, 0, Math.PI * 2)
+      bmp.clip(graphics);
+      this.add(bmp);
+      return this;
+    }
+  }, {
     key: 'arc',
     value: function arc(x, y, width, height, start, stop, option) {
-      var _this2 = this;
+      var _this3 = this;
 
       var aa = (0, _arc2bezier2.default)(x, y, width, height, start, stop);
 
@@ -7148,7 +7185,7 @@ var Skatch = function (_cax$Group) {
       g.strokeStyle(o.strokeStyle).lineWidth(o.strokeWidth);
       aa.forEach(function (c) {
         c.push(o);
-        _this2.curve.apply(_this2, c);
+        _this3.curve.apply(_this3, c);
       });
     }
   }, {
@@ -7230,13 +7267,13 @@ var Skatch = function (_cax$Group) {
   }, {
     key: 'strokePolygon',
     value: function strokePolygon(vertices, option) {
-      var _this3 = this;
+      var _this4 = this;
 
       var polygon = new _cax2.default.Graphics();
       for (var i = 0; i < option.strokeRepeat; i++) {
         polygon.beginPath();
         vertices.forEach(function (v, i) {
-          polygon[i === 0 ? 'moveTo' : 'lineTo'].apply(polygon, _this3._shake(v[0], v[1]));
+          polygon[i === 0 ? 'moveTo' : 'lineTo'].apply(polygon, _this4._shake(v[0], v[1]));
         });
         polygon.lineTo.apply(polygon, this._shake(vertices[0][0], vertices[0][1]));
         polygon.stroke();
@@ -7264,14 +7301,12 @@ var Skatch = function (_cax$Group) {
   }, {
     key: '_getPolygonBox',
     value: function _getPolygonBox(vertices) {
-
       var minX = vertices[0][0],
           minY = vertices[0][1],
           maxX = minX,
           maxY = minY;
 
       vertices.forEach(function (v) {
-
         minX = Math.min(minX, v[0]);
         maxX = Math.max(maxX, v[0]);
         minY = Math.min(minY, v[1]);
@@ -7348,7 +7383,7 @@ var Skatch = function (_cax$Group) {
   }, {
     key: 'strokePath',
     value: function strokePath(path, option) {
-      var _this4 = this;
+      var _this5 = this;
 
       var o = Object.assign({}, this.option, option);
       for (var i = 0; i < o.strokeRepeat; i++) {
@@ -7360,25 +7395,25 @@ var Skatch = function (_cax$Group) {
             g.bezierCurveTo(curve[2], curve[3], curve[4], curve[5], curve[6], curve[7]);
           });
           g.stroke();
-          _this4.add(g);
+          _this5.add(g);
         });
       }
     }
   }, {
     key: '_shakeShapes',
     value: function _shakeShapes(shapes) {
-      var _this5 = this;
+      var _this6 = this;
 
       var ns = [];
       shapes.forEach(function (shape) {
         var s = [];
-        var p1 = _this5._shake(shape[0][0], shape[0][1], _this5.option.randomRange);
+        var p1 = _this6._shake(shape[0][0], shape[0][1], _this6.option.randomRange);
         shape.forEach(function (curve, index) {
           var c = null;
-          if (Math.random() < _this5.option.filter) {
-            var p2 = _this5._shake(curve[2], curve[3], _this5.option.randomRange);
-            var p3 = _this5._shake(curve[4], curve[5], _this5.option.randomRange);
-            var p4 = _this5._shake(curve[6], curve[7], _this5.option.randomRange);
+          if (Math.random() < _this6.option.filter) {
+            var p2 = _this6._shake(curve[2], curve[3], _this6.option.randomRange);
+            var p3 = _this6._shake(curve[4], curve[5], _this6.option.randomRange);
+            var p4 = _this6._shake(curve[6], curve[7], _this6.option.randomRange);
 
             c = [p1[0], p1[1], p2[0], p2[1], p3[0], p3[1], p4[0], p4[1]];
             s.push(c);
@@ -8148,7 +8183,7 @@ exports.default = arcToBezier;
 
 
 Object.defineProperty(exports, "__esModule", {
-    value: true
+  value: true
 });
 exports.default = arc2bezier;
 /*
@@ -8165,60 +8200,59 @@ var HALF_PI = PI / 2;
 var min = Math.min;
 
 function arc2bezier(x, y, w, h, start, stop) {
+  // Make all angles positive...
+  while (start < 0) {
+    start += TWO_PI;
+  }
+  while (stop < 0) {
+    stop += TWO_PI;
+  }
 
-    // Make all angles positive...
-    while (start < 0) {
-        start += TWO_PI;
-    }
-    while (stop < 0) {
-        stop += TWO_PI;
-    }
+  // ...and confine them to the interval [0,TWO_PI).
+  // start %= TWO_PI;
+  // stop %= TWO_PI;
 
-    // ...and confine them to the interval [0,TWO_PI).
-    // start %= TWO_PI;
-    // stop %= TWO_PI;
+  // Adjust angles to counter linear scaling.
+  if (start <= HALF_PI) {
+    start = atan(w / h * tan(start));
+  } else if (start > HALF_PI && start <= 3 * HALF_PI) {
+    start = atan(w / h * tan(start)) + PI;
+  } else {
+    start = atan(w / h * tan(start)) + TWO_PI;
+  }
+  if (stop <= HALF_PI) {
+    stop = atan(w / h * tan(stop));
+  } else if (stop > HALF_PI && stop <= 3 * HALF_PI) {
+    stop = atan(w / h * tan(stop)) + PI;
+  } else {
+    stop = atan(w / h * tan(stop)) + TWO_PI;
+  }
 
-    // Adjust angles to counter linear scaling.
-    if (start <= HALF_PI) {
-        start = atan(w / h * tan(start));
-    } else if (start > HALF_PI && start <= 3 * HALF_PI) {
-        start = atan(w / h * tan(start)) + PI;
-    } else {
-        start = atan(w / h * tan(start)) + TWO_PI;
-    }
-    if (stop <= HALF_PI) {
-        stop = atan(w / h * tan(stop));
-    } else if (stop > HALF_PI && stop <= 3 * HALF_PI) {
-        stop = atan(w / h * tan(stop)) + PI;
-    } else {
-        stop = atan(w / h * tan(stop)) + TWO_PI;
-    }
+  // Exceed the interval if necessary in order to preserve the size and
+  // orientation of the arc.
+  if (start > stop) {
+    stop += TWO_PI;
+  }
 
-    // Exceed the interval if necessary in order to preserve the size and
-    // orientation of the arc.
-    if (start > stop) {
-        stop += TWO_PI;
-    }
+  // Create curves
+  var epsilon = 0.00001; // Smallest visible angle on displays up to 4K.
+  var arcToDraw = 0;
+  var curves = [];
+  while (stop - start > epsilon) {
+    arcToDraw = min(stop - start, HALF_PI);
+    curves.push(acuteArcToBezier(start, arcToDraw));
+    start += arcToDraw;
+  }
 
-    // Create curves
-    var epsilon = 0.00001; // Smallest visible angle on displays up to 4K.
-    var arcToDraw = 0;
-    var curves = [];
-    while (stop - start > epsilon) {
-        arcToDraw = min(stop - start, HALF_PI);
-        curves.push(acuteArcToBezier(start, arcToDraw));
-        start += arcToDraw;
-    }
+  // Draw curves
+  var rx = w / 2.0;
+  var ry = h / 2.0;
+  var result = [];
+  curves.forEach(function (curve, index) {
+    result.push([x + rx * curve.ax, y + ry * curve.ay, x + rx * curve.bx, y + ry * curve.by, x + rx * curve.cx, y + ry * curve.cy, x + rx * curve.dx, y + ry * curve.dy]);
+  });
 
-    //Draw curves
-    var rx = w / 2.0;
-    var ry = h / 2.0;
-    var result = [];
-    curves.forEach(function (curve, index) {
-        result.push([x + rx * curve.ax, y + ry * curve.ay, x + rx * curve.bx, y + ry * curve.by, x + rx * curve.cx, y + ry * curve.cy, x + rx * curve.dx, y + ry * curve.dy]);
-    });
-
-    return result;
+  return result;
 }
 
 /**
@@ -8226,30 +8260,29 @@ function arc2bezier(x, y, w, h, start, stop) {
 * angle ‘size‘ radians, beginning ‘start‘ radians above the x-axis.
 */
 function acuteArcToBezier(start, size) {
+  // Evaluate constants.
+  var alpha = size / 2.0,
+      cos_alpha = cos(alpha),
+      sin_alpha = sin(alpha),
+      cot_alpha = 1.0 / tan(alpha),
+      phi = start + alpha,
+      // This is how far the arc needs to be rotated.
+  cos_phi = cos(phi),
+      sin_phi = sin(phi),
+      lambda = (4.0 - cos_alpha) / 3.0,
+      mu = sin_alpha + (cos_alpha - lambda) * cot_alpha;
 
-    // Evaluate constants.
-    var alpha = size / 2.0,
-        cos_alpha = cos(alpha),
-        sin_alpha = sin(alpha),
-        cot_alpha = 1.0 / tan(alpha),
-        phi = start + alpha,
-        // This is how far the arc needs to be rotated.
-    cos_phi = cos(phi),
-        sin_phi = sin(phi),
-        lambda = (4.0 - cos_alpha) / 3.0,
-        mu = sin_alpha + (cos_alpha - lambda) * cot_alpha;
-
-    // Return rotated waypoints.
-    return {
-        ax: cos(start),
-        ay: sin(start),
-        bx: lambda * cos_phi + mu * sin_phi,
-        by: lambda * sin_phi - mu * cos_phi,
-        cx: lambda * cos_phi - mu * sin_phi,
-        cy: lambda * sin_phi + mu * cos_phi,
-        dx: cos(start + size),
-        dy: sin(start + size)
-    };
+  // Return rotated waypoints.
+  return {
+    ax: cos(start),
+    ay: sin(start),
+    bx: lambda * cos_phi + mu * sin_phi,
+    by: lambda * sin_phi - mu * cos_phi,
+    cx: lambda * cos_phi - mu * sin_phi,
+    cy: lambda * sin_phi + mu * cos_phi,
+    dx: cos(start + size),
+    dy: sin(start + size)
+  };
 }
 
 /***/ })
