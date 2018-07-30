@@ -122,7 +122,7 @@ skatch 共拥有如下方法进行草图绘制:
 
 [Rough](https://github.com/pshihn/rough) 是非常著名的草图渲染库，看上去 skatch 和 rough 非常类似，但是有着本质的不同。
 
-* Rough 使用纯数据进行绘制前的计算（比如线段与线段、线段与圆、线段与椭圆等）
+* Rough 使用纯数学进行绘制前的计算（比如线段与线段、线段与圆、线段与椭圆等）
 * Skatch 使用 简单计算 + clip + 图层合成 + 坐标 shake
 
 看上去 skatch 过程复杂？所以速度更慢？大错特错！Skatch clip 和 图层的行为都是纯图像处理，在 GPU 中完成，有硬件加速，小部分任务在 CPU 中完成。
