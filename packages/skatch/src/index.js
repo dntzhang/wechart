@@ -1,9 +1,9 @@
 import cax from 'cax'
-import Ellipse from './shape/ellipse'
+import Ellipse from './ellipse'
 import fillRect from './fill-rect'
 
 import pathToShapes from './path/path-to-shapes'
-import arc2bezier from './path/arc2bezier'
+import arc2bezier from './arc2bezier'
 
 class Skatch extends cax.Group {
   constructor (option) {
