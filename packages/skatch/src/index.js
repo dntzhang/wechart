@@ -134,17 +134,20 @@ class Skatch extends cax.Group {
     return this
   }
 
-  strokePath (path) {
-    const shapes = this._shakeShapes(pathToShapes(path))
-    shapes.forEach(shape => {
-      const g = new cax.Graphics()
-      g.beginPath().moveTo(shape[0][0], shape[0][1])
-      shape.forEach(curve => {
-        g.bezierCurveTo(curve[2], curve[3], curve[4], curve[5], curve[6], curve[7])
+  strokePath (path, option) {
+    const o = Object.assign({}, this.option, option)
+    for (let i = 0; i < o.strokeRepeat; i++) {
+      const shapes = this._shakeShapes(pathToShapes(path))
+      shapes.forEach(shape => {
+        const g = new cax.Graphics()
+        g.beginPath().moveTo(shape[0][0], shape[0][1])
+        shape.forEach(curve => {
+          g.bezierCurveTo(curve[2], curve[3], curve[4], curve[5], curve[6], curve[7])
+        })
+        g.stroke()
+        this.add(g)
       })
-      g.stroke()
-      this.add(g)
-    })
+    }
   }
 
   _shakeShapes (shapes) {
