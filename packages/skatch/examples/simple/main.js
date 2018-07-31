@@ -38,7 +38,7 @@ function render () {
 
   skatch.polygon([[200, 10], [150, 70], [250, 70]], {fillStyle: 'blue', fillAngle: 45, fillRepeat: 4, fillWidth: 4})
 
-  skatch.sector(300, 300, 40, Math.PI / 3, Math.PI * 2, { strokeRepeat: 3})
+  skatch.sector(300, 300, 40, Math.PI / 3, Math.PI * 2, { strokeRepeat: 3, fillStyle:'#A37AC1'})
 
   const skatch2 = new Skatch({
     gap: 5,
