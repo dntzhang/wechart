@@ -3,24 +3,26 @@ var AudioContext = window.AudioContext || window.webkitAudioContext
 var analyser, timeDomainData
 var actx = new AudioContext()
 var media = './asset/miku.mp3'
-var imgSrc = './asset/logox2.png'
+// var imgSrc = './asset/logox2.png'
+var imgSrc = './asset/logox3.png'
 
 var loadAudio = (url) => {
-
   var xhr = new window.XMLHttpRequest()
-  xhr.open('GET', media, true)
+  xhr.open('GET', url, true)
   xhr.responseType = 'arraybuffer'
   return new Promise(resolve => {
+    var $precent = document.querySelector('#precent')
+    $precent.style.display = 'block'
     xhr.onload = () => {
+      $precent.style.display = 'none'
       // resolve(xhr.response)
       analyser = actx.createAnalyser()
-      analyser.fftSize = 1024
+      analyser.fftSize = 2048
       analyser.smoothingTimeConstant = 0.8
       actx.decodeAudioData(xhr.response, buffer => {
         var asource = actx.createBufferSource()
         asource.buffer = buffer
         asource.loop = true
-
         var splitter = actx.createChannelSplitter()
         asource.connect(splitter)
         splitter.connect(analyser, 0, 0)
@@ -28,6 +30,13 @@ var loadAudio = (url) => {
         asource.start()
         resolve()
       })
+    }
+    xhr.onprogress = (o) => {
+      // console.log(o);
+      // loaded: 2574559, total: 2679663
+      var {loaded, total} = o
+
+      $precent.textContent = Math.round(loaded / total * 100) + '%'
     }
     xhr.send()
   })
@@ -39,8 +48,13 @@ loadAudio(media).then(data => {
   var bg = new cax.Rect(stage.width, stage.height, {fillStyle: 'black'})
   stage.add(bg)
 
+
+  //new TimeDomainPic('./asset/logox3.png',256,256)
+  
+  //console.log(new cax.Bitmap('./asset/logox3.png'))
+
   var [imgW, imgH] = [256, 256]
-  var slice = Math.min(250, imgW)
+  var slice = Math.min(256, imgW)
   var perW = imgW / slice
   var bitmaps = Array.from({length: slice}, (v, i) => {
     // const bitmap = new cax.Bitmap('./enemy.png')
@@ -76,7 +90,7 @@ loadAudio(media).then(data => {
   // var bitmaps = Array.from({length: slice}, (v, i) => {
   //   // const bitmap = new cax.Bitmap('./enemy.png')
   //   // const bitmap = new cax.Bitmap('./logox.png')
-  //   const bitmap = new cax.Bitmap('./logox2.png')
+  //   const bitmap = new cax.Bitmap('./asset/logox3.png')
   //   bitmap.originX = imgW * 0.5
   //   bitmap.originY = imgH * 0.5
   //   const clipPath = new cax.Graphics()
@@ -100,7 +114,7 @@ loadAudio(media).then(data => {
     // Array.from(timeDomainData, (v, i) => {
     //   // console.log(v)
     //   var bitmap = bitmaps[i / timeDomainData.length * slice | 0]
-    //   bitmap.scaleY = v / 128
+    //   bitmap.scaleX = v / 128
     // })
 
     stage.update()

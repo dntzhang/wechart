@@ -14,7 +14,10 @@ var loadAudio = (url) => {
   xhr.open('GET', url, true)
   xhr.responseType = 'arraybuffer'
   return new Promise(resolve => {
+    var $precent = document.querySelector('#precent');
+    $precent.style.display = 'block'
     xhr.onload = () => {
+      $precent.style.display = 'none'
       // resolve(xhr.response)
       analyser = actx.createAnalyser()
       analyser.fftSize = 2048
@@ -29,7 +32,16 @@ var loadAudio = (url) => {
         analyser.connect(actx.destination)
         asource.start()
         resolve()
+
       })
+    }
+    xhr.onprogress = (o) => {
+      // console.log(o);
+      // loaded: 2574559, total: 2679663
+      var {loaded, total} = o
+
+      $precent.textContent = Math.round(loaded / total * 100) + '%'
+
     }
     xhr.send()
   })
@@ -93,7 +105,7 @@ loadAudio(media).then(buffer => {
   // ///////////////////////////////////////////////
 
 
-  // LIGHTS
+  //
   var hemiLight = new THREE.HemisphereLight( 0xffffff, 0xffffff, 0.6 );
   hemiLight.color.setHSL( 0.6, 1, 0.6 );
   hemiLight.groundColor.setHSL( 0.095, 1, 0.75 );

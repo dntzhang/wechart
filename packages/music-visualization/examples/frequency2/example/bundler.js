@@ -94,7 +94,10 @@ var loadAudio = function loadAudio(url) {
   xhr.open('GET', url, true);
   xhr.responseType = 'arraybuffer';
   return new Promise(function (resolve) {
+    var $precent = document.querySelector('#precent');
+    $precent.style.display = 'block';
     xhr.onload = function () {
+      $precent.style.display = 'none';
       // resolve(xhr.response)
       analyser = actx.createAnalyser();
       analyser.fftSize = 2048;
@@ -110,6 +113,15 @@ var loadAudio = function loadAudio(url) {
         asource.start();
         resolve();
       });
+    };
+    xhr.onprogress = function (o) {
+      // console.log(o);
+      // loaded: 2574559, total: 2679663
+      var loaded = o.loaded,
+          total = o.total;
+
+
+      $precent.textContent = Math.round(loaded / total * 100) + '%';
     };
     xhr.send();
   });
@@ -169,7 +181,7 @@ loadAudio(media).then(function (buffer) {
   // ///////////////////////////////////////////////
 
 
-  // LIGHTS
+  //
   var hemiLight = new THREE.HemisphereLight(0xffffff, 0xffffff, 0.6);
   hemiLight.color.setHSL(0.6, 1, 0.6);
   hemiLight.groundColor.setHSL(0.095, 1, 0.75);
