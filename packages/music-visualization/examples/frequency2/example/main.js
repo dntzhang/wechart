@@ -34,64 +34,93 @@ var loadAudio = (url) => {
     xhr.send()
   })
 }
-var genVxNormal = (geo) => {
-  var vxNormals = [],
-    mp = {a: 0, b: 1, c: 2}
-  geo.faces.forEach(face => {
-    Object.keys(mp).forEach(k => {
-      vxNormals[face[k]] = face.vertexNormals[mp[k]]
-    })
-  })
-  return vxNormals
-}
 
 loadAudio(media).then(buffer => {
   var scene = new THREE.Scene()
-  var renderer = new THREE.WebGLRenderer()
+  var renderer = new THREE.WebGLRenderer({antialias: true})
   var camera = new THREE.PerspectiveCamera(45, window.innerWidth / window.innerHeight, 1, 10000)
+  renderer.setClearColor(new THREE.Color().setRGB(1,1,1));
   renderer.setSize(window.innerWidth, window.innerHeight)
   document.body.appendChild(renderer.domElement)
-  camera.position.copy(new THREE.Vector3(0, 1, 50))
+  camera.position.copy(new THREE.Vector3(0, 1, 60))
 
   controls = new THREE.OrbitControls(camera, renderer.domElement)
-
-  var ambientLight = new THREE.AmbientLight(0x523318)
-  scene.add(ambientLight)
-  var directionalLight = new THREE.DirectionalLight(new THREE.Color(0.9, 0.9, 0.9))
-  directionalLight.position.set(0, 0, 1)
-  scene.add(directionalLight)
 
   frequencyData = new Uint8Array(analyser.frequencyBinCount)
 
   // /////////////////////////////////////////////////
-  var geo = new THREE.TorusGeometry(5, 1.5, 26, 26)
-  var mesh1 = new FrequencyMesh(
-    geo,
-    new THREE.MeshPhongMaterial({
-      wireframe: false,
-      vertexColors: THREE.FaceColors
-    })
-  )
+  var [h,s,l] = [Math.random()*.7, 0.75, .75];
+  var geo = new THREE.TorusGeometry(5, 1.8, 10, 15)
+  var mat =  new THREE.MeshPhongMaterial({specular: 0xffffff, shininess: 20,  vertexColors: THREE.FaceColors, flatShading: true})
+  
+  var mesh1 = new FrequencyMesh(geo, mat.clone())
   geo.faces.forEach(f => {
-    f.color = new THREE.Color().setRGB(1, 0, Math.random())
+    f.color = new THREE.Color().setHSL(
+      h + Math.random() * 0.3 
+      , s
+      , l  + Math.random() * 0.25
+    )
   })
   scene.add(mesh1)
-  mesh1.position.set(0, -9, -4)
+  mesh1.position.set(0, -18, -7)
 
+  var [h,s,l] = [Math.random()*.7, 0.75, .75];
   var geo2 = geo.clone()
-  var mesh2 = new FrequencyMesh(
-    geo2,
-    new THREE.MeshPhongMaterial({
-      wireframe: false,
-      vertexColors: THREE.FaceColors
-    })
-  )
+  var mesh2 = new FrequencyMesh(geo2, mat.clone() )
   geo2.faces.forEach(f => {
-    f.color = new THREE.Color().setRGB(0, Math.random(), 1)
+    f.color = new THREE.Color().setHSL(
+      h + Math.random() * 0.3 
+      , s
+      , l  + Math.random() * 0.25
+    )
   })
   scene.add(mesh2)
-  mesh2.position.set(0, 9, -4)
+  mesh2.position.set(0, 18, -7)
+
+
+  var [h,s,l] = [Math.random()*.7, 0.75, .75]
+  var geo3 = new THREE.IcosahedronGeometry(6, 1)
+  var mesh3 = new FrequencyMesh(geo3, mat.clone() )
+  geo3.faces.forEach(f => {
+    f.color = new THREE.Color().setHSL(
+      h + Math.random() * 0.3 
+      , s
+      , l  + Math.random() * 0.25
+    )
+  })
+  scene.add(mesh3)
+  mesh3.position.set(0, 0, -7)
   // ///////////////////////////////////////////////
+
+
+  // LIGHTS
+  var hemiLight = new THREE.HemisphereLight( 0xffffff, 0xffffff, 0.6 );
+  hemiLight.color.setHSL( 0.6, 1, 0.6 );
+  hemiLight.groundColor.setHSL( 0.095, 1, 0.75 );
+  hemiLight.position.set( 0, 50, 0 );
+  scene.add( hemiLight );
+  var hemiLightHelper = new THREE.HemisphereLightHelper( hemiLight, 10 );
+  scene.add( hemiLightHelper );
+  //
+  var dirLight = new THREE.DirectionalLight( 0xffffff, 1 );
+  dirLight.color.setHSL( 0.1, 1, 0.95 );
+  dirLight.position.set( -1, 1.75, 1 );
+  dirLight.position.multiplyScalar( 30 );
+  scene.add( dirLight );
+  dirLight.castShadow = true;
+  dirLight.shadow.mapSize.width = 2048;
+  dirLight.shadow.mapSize.height = 2048;
+  var d = 50;
+  dirLight.shadow.camera.left = -d;
+  dirLight.shadow.camera.right = d;
+  dirLight.shadow.camera.top = d;
+  dirLight.shadow.camera.bottom = -d;
+  dirLight.shadow.camera.far = 3500;
+  dirLight.shadow.bias = -0.0001;
+  var dirLightHeper = new THREE.DirectionalLightHelper( dirLight, 10 );
+  scene.add( dirLightHeper );
+
+  ////////////////////
 
   ;(function animate () {
     window.requestAnimationFrame(animate)
@@ -101,5 +130,6 @@ loadAudio(media).then(buffer => {
 
     mesh1.update(frequencyData, analyser.frequencyBinCount, 1)
     mesh2.update(frequencyData, analyser.frequencyBinCount, 0.34)
+    mesh3.update(frequencyData, analyser.frequencyBinCount, 0.7)
   })()
 })
