@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html>
+<head lang="en">
+    <meta name="viewport" content="width=device-width,initial-scale=1,user-scalable=no">
+    <meta charset="UTF-8">
+    <title>Wechart Music Visualization Demo</title>
+    <style>
+    canvas{
+        margin-left: 0;
+        margin-right: 0;
+        padding: 0;
+        background-color: white;
+    }
+
+    @media screen and (max-width: 500px) {  
+        canvas {
+            width : 320px
+        }
+    }
+
+    html,body{
+      margin: 0;
+      padding: 0;
+      background:#444444;
+      text-align: center;
+      overflow: hidden;
+    }
+    #precent{
+        text-align: center;
+        position: absolute;
+        top:50%;
+        margin-top: -5%;
+        color:aqua;
+        width:100%;
+        font-size:33px;
+        display: none;
+
+    }
+    
+    </style>
+</head>
+<body>
+    <div id="precent">0%</div>
+    <a href="https://github.com/dntzhang/wechart" target="_blank" style="position: fixed; right: 0; top: 0; z-index: 3;">
+        <img src="//alloyteam.github.io/github.png" alt="">
+    </a>
+    <script src="bundler.js"></script>
+</body>
+</html>

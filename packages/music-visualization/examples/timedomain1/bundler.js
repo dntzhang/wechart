@@ -60,97 +60,11 @@
 /******/ 	__webpack_require__.p = "";
 /******/
 /******/ 	// Load entry module and return exports
-/******/ 	return __webpack_require__(__webpack_require__.s = 0);
+/******/ 	return __webpack_require__(__webpack_require__.s = 1);
 /******/ })
 /************************************************************************/
 /******/ ([
 /* 0 */
-/***/ (function(module, exports, __webpack_require__) {
-
-"use strict";
-
-
-var _cax = __webpack_require__(1);
-
-var _cax2 = _interopRequireDefault(_cax);
-
-var _loader = __webpack_require__(3);
-
-var _loader2 = _interopRequireDefault(_loader);
-
-var _bezier = __webpack_require__(4);
-
-function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
-
-var stage = new _cax2.default.Stage(440, 240, '#canvasCtn');
-
-var points = [60, 100, 160, 0, 260, 200, 360, 100];
-
-var loader = new _loader2.default({
-  res: [{ id: 'a1', src: '../../asset/bg.png' }],
-  complete: function complete() {
-    render();
-
-    stage.on('click', function (evt) {
-      stage.empty();
-      if (evt.stageX > 220) {
-        points[4] = evt.stageX;
-        points[5] = evt.stageY;
-      } else {
-        points[2] = evt.stageX;
-        points[3] = evt.stageY;
-      }
-      render();
-    });
-  }
-});
-
-function render() {
-  var dw = 10;
-  var img = loader.get('a1');
-  var dt = 0.03;
-
-  var g = new _cax2.default.Graphics();
-  g.beginPath();
-
-  for (var i = 0; i < 1; i += dt) {
-    var p = (0, _bezier.getValue)(points, i);
-
-    var angle = (0, _bezier.slope)(points, i, 0.01) * 180 / Math.PI;
-
-    g[i === 0 ? 'moveTo' : 'lineTo'](p.x, p.y);
-
-    var bitmap = new _cax2.default.Bitmap(img);
-
-    var offsetX = dw * (i / dt);
-    if (offsetX + dw > img.width) {
-      if (img.width - offsetX % img.width < dw) {
-        offsetX = 0;
-      } else {
-        offsetX = Math.ceil(offsetX % img.width / dw) * dw;
-      }
-    }
-    bitmap.rect = [offsetX, 0, dw, img.height];
-    bitmap.x = p.x;
-    bitmap.y = p.y;
-
-    // skew(half of rotation)导致宽度不一致
-    bitmap.skewY = angle;
-    bitmap.scaleX = ((0, _bezier.getValue)(points, i + dt).x - p.x) / (dw * Math.cos(angle * Math.PI / 180)) + 0.1;
-    stage.add(bitmap);
-  }
-
-  g.stroke();
-
-  stage.add(g);
-
-  stage.update();
-}
-
-loader.start();
-
-/***/ }),
-/* 1 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -7035,6 +6949,102 @@ var _typeof2 = typeof Symbol === "function" && typeof Symbol.iterator === "symbo
 /* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(2)(module)))
 
 /***/ }),
+/* 1 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
+var _cax = __webpack_require__(0);
+
+var _cax2 = _interopRequireDefault(_cax);
+
+var _loader = __webpack_require__(3);
+
+var _loader2 = _interopRequireDefault(_loader);
+
+var _scale_timedomain = __webpack_require__(4);
+
+var _scale_timedomain2 = _interopRequireDefault(_scale_timedomain);
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+var AudioContext = window.AudioContext || window.webkitAudioContext;
+var analyser, timeDomainData;
+var actx = new AudioContext();
+var media = './asset/miku.mp3';
+var loadAudio = function loadAudio(url) {
+  var xhr = new window.XMLHttpRequest();
+  xhr.open('GET', url, true);
+  xhr.responseType = 'arraybuffer';
+  return new Promise(function (resolve) {
+    var $precent = document.querySelector('#precent');
+    $precent.style.display = 'block';
+    xhr.onload = function () {
+      $precent.style.display = 'none';
+      // resolve(xhr.response)
+      analyser = actx.createAnalyser();
+      analyser.fftSize = 2048;
+      analyser.smoothingTimeConstant = 0.8;
+      actx.decodeAudioData(xhr.response, function (buffer) {
+        var asource = actx.createBufferSource();
+        asource.buffer = buffer;
+        asource.loop = true;
+        var splitter = actx.createChannelSplitter();
+        asource.connect(splitter);
+        splitter.connect(analyser, 0, 0);
+        analyser.connect(actx.destination);
+        asource.start();
+        resolve();
+      });
+    };
+    xhr.onprogress = function (o) {
+      // console.log(o);
+      // loaded: 2574559, total: 2679663
+      var loaded = o.loaded,
+          total = o.total;
+
+
+      $precent.textContent = Math.round(loaded / total * 100) + '%';
+    };
+    xhr.send();
+  });
+};
+
+loadAudio(media).then(function (data) {
+  timeDomainData = new Uint8Array(analyser.frequencyBinCount);
+
+  var stage = new _cax2.default.Stage(window.innerWidth, window.innerHeight, 'body');
+  var bg = new _cax2.default.Rect(stage.width, stage.height, { fillStyle: 'black' });
+  stage.add(bg);
+
+  var loader = new _loader2.default({
+    res: [{ id: 'logo', src: './asset/logox3.png' }],
+    complete: function complete() {
+      var tex = loader.get('logo');
+      var tdpic1 = new _scale_timedomain2.default(tex, 'horizontal');
+      var tdpic2 = new _scale_timedomain2.default(tex, 'vertical');
+      stage.add(tdpic1, tdpic2);
+      tdpic1.y = stage.height * 0.5 - 150;
+      tdpic1.x = stage.width * 0.5;
+
+      tdpic2.y = stage.height * 0.5 + 150;
+      tdpic2.x = stage.width * 0.5;
+
+      tdpic1.scaleX = tdpic1.scaleY = 0.8;
+      tdpic2.scaleX = tdpic2.scaleY = 0.8;(function animate() {
+        window.requestAnimationFrame(animate);
+        analyser.getByteTimeDomainData(timeDomainData);
+        stage.update();
+        tdpic1.update(timeDomainData);
+        tdpic2.update(timeDomainData);
+      })();
+    }
+  });
+  loader.start();
+});
+
+/***/ }),
 /* 2 */
 /***/ (function(module, exports, __webpack_require__) {
 
@@ -7244,136 +7254,80 @@ exports.default = Loader;
 Object.defineProperty(exports, "__esModule", {
   value: true
 });
-exports.lerp = lerp;
-exports.dca = dca;
-exports.slopeByPoints = slopeByPoints;
-exports.slope = slope;
-exports.getValueByPoints = getValueByPoints;
-exports.getValue = getValue;
-exports.getLength = getLength;
-exports.getPosition = getPosition;
-exports.getPoint = getPoint;
-function lerp(p1, p2, t) {
-  return { x: p1.x + (p2.x - p1.x) * t, y: p1.y + (p2.y - p1.y) * t };
-}
 
-function dca(points, t) {
-  var len = points.length;
+var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
 
-  if (len === 2) {
-    return lerp(points[0], points[1], t);
+var _cax = __webpack_require__(0);
+
+var _cax2 = _interopRequireDefault(_cax);
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+
+function _possibleConstructorReturn(self, call) { if (!self) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return call && (typeof call === "object" || typeof call === "function") ? call : self; }
+
+function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
+
+var ScaleTimeDoamin = function (_cax$Group) {
+  _inherits(ScaleTimeDoamin, _cax$Group);
+
+  function ScaleTimeDoamin(tex) {
+    var dir = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : 'horizontal';
+    var slice = arguments.length > 2 && arguments[2] !== undefined ? arguments[2] : 123;
+
+    _classCallCheck(this, ScaleTimeDoamin);
+
+    var _this = _possibleConstructorReturn(this, (ScaleTimeDoamin.__proto__ || Object.getPrototypeOf(ScaleTimeDoamin)).call(this));
+
+    var _ref = [tex.width, tex.height],
+        imgW = _ref[0],
+        imgH = _ref[1];
+
+
+    _this.dir = dir;
+    _this.slice = _this.dir !== 'horizontal' ? Math.max(imgW, slice) : Math.max(imgH, slice);
+
+    var val = _this.dir !== 'horizontal' ? imgW : imgH;
+
+    var w = _this.dir !== 'horizontal' ? imgW / slice : imgW;
+
+    var h = _this.dir !== 'horizontal' ? imgH : imgH / slice;
+
+    _this.bitmaps = Array.from({ length: _this.slice }, function (v, i) {
+      var bitmap = new _cax2.default.Bitmap(tex);
+      bitmap.originX = imgW * 0.5;
+      bitmap.originY = imgH * 0.5;
+      var clipPath = new _cax2.default.Graphics();
+
+      _this.dir !== 'horizontal' ? clipPath.rect(val * i / _this.slice, 0, w, h) : clipPath.rect(0, val * i / slice, w, h);
+
+      bitmap.clip(clipPath);
+      _this.add(bitmap);
+      return bitmap;
+    });
+    return _this;
   }
 
-  var i = 0,
-      next = [];
-  for (; i < len - 1; i++) {
-    next.push(lerp(points[i], points[i + 1], t));
-  }
+  _createClass(ScaleTimeDoamin, [{
+    key: 'update',
+    value: function update(timeDomainData) {
+      var _this2 = this;
 
-  return dca(next, t);
-}
-
-function slopeByPoints(p1x, p1y, c1x, c1y, c2x, c2y, p2x, p2y, t) {
-  var ax = p1x * 3 - c1x * 9 + 9 * c2x - 3 * p2x;
-  var bx = c1x * 6 - 12 * c2x + 6 * p2x;
-  var cx = 3 * c2x - 3 * p2x;
-
-  var ay = p1y * 3 - c1y * 9 + 9 * c2y - 3 * p2y;
-  var by = c1y * 6 - 12 * c2y + 6 * p2y;
-  var cy = 3 * c2y - 3 * p2y;
-
-  var sqt = t * t;
-
-  return Math.atan((ay * sqt + by * t + cy) / (ax * sqt + bx * t + cx));
-}
-
-function slope(points, t, dt) {
-
-  //P(t) = (1 - t)^3 * P0 + 3t(1-t)^2 * P1 + 3t^2 (1-t) * P2 + t^3 * P3
-  //dP(t) / dt = -3(1-t)^2 * P0 + 3(1-t)^2 * P1 - 6t(1-t) * P1 - 3t^2 * P2 + 6t(1-t) * P2 + 3t^2 * P3 
-  var p1x = points[0],
-      p1y = points[1],
-      c1x = points[2],
-      c1y = points[3],
-      c2x = points[4],
-      c2y = points[5],
-      p2x = points[6],
-      p2y = points[7];
-  var t1 = 1 - t;
-  var t1Sqr = t1 * t1;
-  var tSqr = t * t;
-
-  var dx = -3 * t1Sqr * p1x + 3 * t1Sqr * c1x - 6 * t * t1 * c1x - 3 * tSqr * c2x + 6 * t * t1 * c2x + 3 * tSqr * p2x;
-  var dy = -3 * t1Sqr * p1y + 3 * t1Sqr * c1y - 6 * t * t1 * c1y - 3 * tSqr * c2y + 6 * t * t1 * c2y + 3 * tSqr * p2y;
-  return dy == 0 ? Infinity : Math.atan(dy / dx);
-
-  // let p1 = getValue(points, t),
-  // p2 = getValue(points, t + (dt || 0.01)),
-  // dy = p2.y - p1.y, dx = p2.x - p1.x;
-  // return dy == 0 ? Infinity : Math.atan(dy / dx);
-}
-
-function getValueByPoints(p1x, p1y, c1x, c1y, c2x, c2y, p2x, p2y, t) {
-  return dca([{ x: p1x, y: p1y }, { x: c1x, y: c1y }, { x: c2x, y: c2y }, { x: p2x, y: p2y }], t);
-}
-
-function getValue(points, t) {
-  return dca([{ x: points[0], y: points[1] }, { x: points[2], y: points[3] }, { x: points[4], y: points[5] }, { x: points[6], y: points[7] }], t);
-}
-
-// steps 根据起点和终点自动计算？
-function getLength(p1x, p1y, c1x, c1y, c2x, c2y, p2x, p2y, steps) {
-  var step = 1 / steps;
-  var points = [];
-
-  var len = 0;
-  for (var t = 0; t < 1.0 + step; t += step) {
-    points.push(getValueByPoints(p1x, p1y, c1x, c1y, c2x, c2y, p2x, p2y, Math.min(t, 1)));
-  }
-  var p0 = void 0,
-      p1 = void 0,
-      dx = void 0,
-      dy = void 0;
-  for (var i = 0; i < points.length - 1; i++) {
-    p0 = points[i];
-    p1 = points[i + 1];
-    dx = p1.x - p0.x;
-    dy = p1.y - p0.y;
-    len += Math.sqrt(dx * dx + dy * dy);
-  }
-
-  return len;
-}
-
-function getPosition(length, shape) {
-  var current = 0;
-  var total = shape.pathLen;
-  var index = 0;
-  var t = 0;
-
-  if (length > total) {
-    length = length - total;
-  }
-  for (var i = 0, len = shape.length; i < len; i++) {
-    var c = shape[i];
-    current += c.bzLen;
-    if (current > length) {
-      index = i;
-      t = 1 - (current - length) / c.bzLen;
-      break;
+      Array.from(timeDomainData, function (v, i) {
+        // console.log(v)
+        var bitmap = _this2.bitmaps[i / timeDomainData.length * _this2.slice | 0];
+        // console.log(bitmap);
+        // return
+        _this2.dir !== 'horizontal' ? bitmap.scaleY = v / 128 : bitmap.scaleX = v / 128;
+      });
     }
-  }
+  }]);
 
-  return {
-    t: t,
-    index: index
-  };
-}
+  return ScaleTimeDoamin;
+}(_cax2.default.Group);
 
-function getPoint(t, index, shape) {
-  var ps = shape[index];
-  return getValue(ps, t);
-}
+exports.default = ScaleTimeDoamin;
 
 /***/ })
 /******/ ]);

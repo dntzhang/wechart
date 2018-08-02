@@ -74,80 +74,139 @@ var _cax = __webpack_require__(1);
 
 var _cax2 = _interopRequireDefault(_cax);
 
-var _loader = __webpack_require__(3);
+var _frequency_mesh = __webpack_require__(3);
 
-var _loader2 = _interopRequireDefault(_loader);
-
-var _bezier = __webpack_require__(4);
+var _frequency_mesh2 = _interopRequireDefault(_frequency_mesh);
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
-var stage = new _cax2.default.Stage(440, 240, '#canvasCtn');
+var AudioContext = window.AudioContext || window.webkitAudioContext;
+var analyser, frequencyData;
+var actx = new AudioContext();
 
-var points = [60, 100, 160, 0, 260, 200, 360, 100];
+var media = './asset/miku.mp3';
 
-var loader = new _loader2.default({
-  res: [{ id: 'a1', src: '../../asset/bg.png' }],
-  complete: function complete() {
-    render();
+var loadAudio = function loadAudio(url) {
+  var xhr = new window.XMLHttpRequest();
+  xhr.open('GET', url, true);
+  xhr.responseType = 'arraybuffer';
+  return new Promise(function (resolve) {
+    var $precent = document.querySelector('#precent');
+    $precent.style.display = 'block';
+    xhr.onload = function () {
+      $precent.style.display = 'none';
+      // resolve(xhr.response)
+      analyser = actx.createAnalyser();
+      analyser.fftSize = 2048;
+      analyser.smoothingTimeConstant = 0.8;
+      actx.decodeAudioData(xhr.response, function (buffer) {
+        var asource = actx.createBufferSource();
+        asource.buffer = buffer;
+        asource.loop = true;
+        var splitter = actx.createChannelSplitter();
+        asource.connect(splitter);
+        splitter.connect(analyser, 0, 0);
+        analyser.connect(actx.destination);
+        asource.start();
+        resolve();
+      });
+    };
+    xhr.onprogress = function (o) {
+      var loaded = o.loaded,
+          total = o.total;
 
-    stage.on('click', function (evt) {
-      stage.empty();
-      if (evt.stageX > 220) {
-        points[4] = evt.stageX;
-        points[5] = evt.stageY;
-      } else {
-        points[2] = evt.stageX;
-        points[3] = evt.stageY;
-      }
-      render();
-    });
-  }
+
+      $precent.textContent = Math.round(loaded / total * 100) + '%';
+    };
+    xhr.send();
+  });
+};
+
+loadAudio(media).then(function (buffer) {
+  var scene = new THREE.Scene();
+  var renderer = new THREE.WebGLRenderer({ antialias: true });
+  var $b = document.body;
+  var camera = new THREE.PerspectiveCamera(45, $b.offsetWidth / $b.offsetHeight, 1, 10000);
+  renderer.setClearColor(new THREE.Color().setRGB(1, 1, 1));
+  renderer.setSize($b.offsetWidth, $b.offsetHeight);
+  document.body.appendChild(renderer.domElement);
+  camera.position.copy(new THREE.Vector3(0, 1, 60));
+
+  frequencyData = new Uint8Array(analyser.frequencyBinCount);
+
+  var hemiLight = new THREE.HemisphereLight(0xffffff, 0xffffff, 0.6);
+  hemiLight.color.setHSL(0.6, 1, 0.6);
+  hemiLight.groundColor.setHSL(0.095, 1, 0.75);
+  hemiLight.position.set(0, 50, 0);
+  scene.add(hemiLight);
+  var hemiLightHelper = new THREE.HemisphereLightHelper(hemiLight, 10);
+  scene.add(hemiLightHelper);
+  var dirLight = new THREE.DirectionalLight(0xffffff, 1);
+  dirLight.color.setHSL(0.1, 1, 0.95);
+  dirLight.position.set(-1, 1.75, 1);
+  dirLight.position.multiplyScalar(30);
+  scene.add(dirLight);
+  dirLight.castShadow = true;
+  dirLight.shadow.mapSize.width = 2048;
+  dirLight.shadow.mapSize.height = 2048;
+  var d = 50;
+  dirLight.shadow.camera.left = -d;
+  dirLight.shadow.camera.right = d;
+  dirLight.shadow.camera.top = d;
+  dirLight.shadow.camera.bottom = -d;
+  dirLight.shadow.camera.far = 3500;
+  dirLight.shadow.bias = -0.0001;
+
+  // /////////////////////////////////////////////////
+  var h = Math.random() * 0.7,
+      s = 0.75,
+      l = 0.75;
+
+  var geo = new THREE.TorusGeometry(5, 1.8, 10, 15);
+  var mat = new THREE.MeshPhongMaterial({ specular: 0xffffff, shininess: 20, vertexColors: THREE.FaceColors, flatShading: true });
+
+  var mesh1 = new _frequency_mesh2.default(geo, mat.clone());
+  geo.faces.forEach(function (f) {
+    f.color = new THREE.Color().setHSL(h + Math.random() * 0.3, s, l + Math.random() * 0.25);
+  });
+  scene.add(mesh1);
+  mesh1.position.set(0, -18, -7);
+
+  var h = Math.random() * 0.7,
+      s = 0.75,
+      l = 0.75;
+
+  var geo2 = geo.clone();
+  var mesh2 = new _frequency_mesh2.default(geo2, mat.clone());
+  geo2.faces.forEach(function (f) {
+    f.color = new THREE.Color().setHSL(h + Math.random() * 0.3, s, l + Math.random() * 0.25);
+  });
+  scene.add(mesh2);
+  mesh2.position.set(0, 18, -7);
+
+  var h = Math.random() * 0.7,
+      s = 0.75,
+      l = 0.75;
+
+  var geo3 = new THREE.IcosahedronGeometry(6, 1);
+  var mesh3 = new _frequency_mesh2.default(geo3, mat.clone());
+  geo3.faces.forEach(function (f) {
+    f.color = new THREE.Color().setHSL(h + Math.random() * 0.3, s, l + Math.random() * 0.25);
+  });
+  scene.add(mesh3);
+  mesh3.position.set(0, 0, -7)
+  /////////////////////////////////////////////////////////////
+
+  ;(function animate() {
+    window.requestAnimationFrame(animate);
+    renderer.render(scene, camera);
+    analyser.getByteFrequencyData(frequencyData);
+
+    mesh1.update(frequencyData, analyser.frequencyBinCount, 1);
+    mesh2.update(frequencyData, analyser.frequencyBinCount, 0.34);
+    mesh3.update(frequencyData, analyser.frequencyBinCount, 0.7);
+  })();
 });
-
-function render() {
-  var dw = 10;
-  var img = loader.get('a1');
-  var dt = 0.03;
-
-  var g = new _cax2.default.Graphics();
-  g.beginPath();
-
-  for (var i = 0; i < 1; i += dt) {
-    var p = (0, _bezier.getValue)(points, i);
-
-    var angle = (0, _bezier.slope)(points, i, 0.01) * 180 / Math.PI;
-
-    g[i === 0 ? 'moveTo' : 'lineTo'](p.x, p.y);
-
-    var bitmap = new _cax2.default.Bitmap(img);
-
-    var offsetX = dw * (i / dt);
-    if (offsetX + dw > img.width) {
-      if (img.width - offsetX % img.width < dw) {
-        offsetX = 0;
-      } else {
-        offsetX = Math.ceil(offsetX % img.width / dw) * dw;
-      }
-    }
-    bitmap.rect = [offsetX, 0, dw, img.height];
-    bitmap.x = p.x;
-    bitmap.y = p.y;
-
-    // skew(half of rotation)导致宽度不一致
-    bitmap.skewY = angle;
-    bitmap.scaleX = ((0, _bezier.getValue)(points, i + dt).x - p.x) / (dw * Math.cos(angle * Math.PI / 180)) + 0.1;
-    stage.add(bitmap);
-  }
-
-  g.stroke();
-
-  stage.add(g);
-
-  stage.update();
-}
-
-loader.start();
 
 /***/ }),
 /* 1 */
@@ -7072,308 +7131,67 @@ module.exports = function (module) {
 
 
 Object.defineProperty(exports, "__esModule", {
-    value: true
-});
-
-function Loader(option) {
-    this.res = {};
-    this.loadedCount = 0;
-    this.resCount = -1;
-    this.FILE_PATTERN = /(\w+:\/{2})?((?:\w+\.){2}\w+)?(\/?[\S]+\/|\/)?([\w\-%\.]+)(?:\.)(\w+)?(\?\S+)?/i;
-    this.ns = 6;
-    this.sounds = [];
-    for (var i = 0; i < this.ns; i++) {
-        this.sounds.push([]);
-    }this.playing = [];
-
-    if (option) {
-        this.progress(option.progress);
-        this.complete(option.complete);
-        this._readyToLoadRes = option.res;
-    }
-}
-
-Loader.prototype = {
-
-    "start": function start() {
-        if (this._readyToLoadRes) {
-            this.loadRes(this._readyToLoadRes);
-        }
-    },
-    "get": function get(id) {
-        return this.res[id];
-    },
-    "loadRes": function loadRes(arr) {
-        this.resCount = arr.length;
-        for (var i = 0; i < arr.length; i++) {
-            var type = this._getTypeByExtension(arr[i].src.match(this.FILE_PATTERN)[5]);
-            if (type === "audio") {
-                this.loadAudio(arr[i].id, arr[i].src);
-            } else if (type === "js") {
-                this.loadScript(arr[i].src);
-            } else if (type === "img") {
-                this.loadImage(arr[i].id, arr[i].src);
-            }
-        }
-    },
-    "loadImage": function loadImage(id, src) {
-        var img = document.createElement("img");
-        var self = this;
-        img.onload = function () {
-            self._handleLoad(this, id);
-            img.onreadystatechange = null;
-        };
-        img.onreadystatechange = function () {
-            if (img.readyState == "loaded" || img.readyState == "complete") {
-                self._handleLoad(this, id);
-                img.onload = null;
-            }
-        };
-        img.onerror = function () {};
-        img.src = src;
-    },
-    "loadAudio": function loadAudio(id, src) {
-        var tag = document.createElement("audio");
-        tag.autoplay = false;
-        this.res[id] = tag;
-        tag.src = null;
-        tag.preload = "auto";
-        tag.onerror = function () {};
-        tag.onstalled = function () {};
-        var self = this;
-        var _audioCanPlayHandler = function _audioCanPlayHandler() {
-            self.playing[id] = 0;
-            for (var i = 0; i < self.ns; i++) {
-                self.sounds[i][id] = new Audio(src);
-            }
-            self.loadedCount++;
-            self.handleProgress && self.handleProgress(self.loadedCount, self.resCount);
-            self._clean(this);
-            this.removeEventListener && this.removeEventListener("canplaythrough", _audioCanPlayHandler, false);
-            self.checkComplete();
-        };
-        tag.addEventListener("canplaythrough", _audioCanPlayHandler, false);
-        tag.src = src;
-        if (tag.load != null) {
-            tag.load();
-        }
-    },
-    "loadScript": function loadScript(url) {
-        var script = document.createElement("script");
-        script.type = "text/javascript";
-        var self = this;
-        if (script.readyState) {
-            //IE
-            script.onreadystatechange = function () {
-                if (script.readyState == "loaded" || script.readyState == "complete") {
-                    script.onreadystatechange = null;
-                    self._handleLoad();
-                }
-            };
-        } else {
-            //Others
-            script.onload = function () {
-                self._handleLoad();
-            };
-        }
-
-        script.src = url;
-        document.getElementsByTagName("head")[0].appendChild(script);
-    },
-    "checkComplete": function checkComplete() {
-        if (this.loadedCount === this.resCount) {
-            this.handleComplete();
-        }
-    },
-    "complete": function complete(fn) {
-        this.handleComplete = fn;
-    },
-    "progress": function progress(fn) {
-        this.handleProgress = fn;
-    },
-    "playSound": function playSound(id, volume) {
-        var sound = this.sounds[this.playing[id]][id];
-        sound.volume = volume === undefined ? 1 : volume;
-        sound.play();
-        ++this.playing[id];
-        if (this.playing[id] >= this.ns) this.playing[id] = 0;
-    },
-    "_handleLoad": function _handleLoad(currentImg, id) {
-        if (currentImg) {
-            this._clean(currentImg);
-            this.res[id] = currentImg;
-        }
-        this.loadedCount++;
-        if (this.handleProgress) this.handleProgress(this.loadedCount, this.resCount);
-        this.checkComplete();
-    },
-    "_getTypeByExtension": function _getTypeByExtension(extension) {
-        switch (extension) {
-            case "jpeg":
-            case "jpg":
-            case "gif":
-            case "png":
-            case "webp":
-            case "bmp":
-                return "img";
-            case "ogg":
-            case "mp3":
-            case "wav":
-                return "audio";
-            case "js":
-                return "js";
-        }
-    },
-    "_clean": function _clean(tag) {
-        tag.onload = null;
-        tag.onstalled = null;
-        tag.onprogress = null;
-        tag.onerror = null;
-    }
-};
-
-exports.default = Loader;
-
-/***/ }),
-/* 4 */
-/***/ (function(module, exports, __webpack_require__) {
-
-"use strict";
-
-
-Object.defineProperty(exports, "__esModule", {
   value: true
 });
-exports.lerp = lerp;
-exports.dca = dca;
-exports.slopeByPoints = slopeByPoints;
-exports.slope = slope;
-exports.getValueByPoints = getValueByPoints;
-exports.getValue = getValue;
-exports.getLength = getLength;
-exports.getPosition = getPosition;
-exports.getPoint = getPoint;
-function lerp(p1, p2, t) {
-  return { x: p1.x + (p2.x - p1.x) * t, y: p1.y + (p2.y - p1.y) * t };
-}
 
-function dca(points, t) {
-  var len = points.length;
+var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
 
-  if (len === 2) {
-    return lerp(points[0], points[1], t);
+function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+
+function _possibleConstructorReturn(self, call) { if (!self) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return call && (typeof call === "object" || typeof call === "function") ? call : self; }
+
+function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
+
+var genVxNormal = function genVxNormal(geo) {
+  var vxNormals = [],
+      mp = { a: 0, b: 1, c: 2 };
+  geo.faces.forEach(function (face) {
+    Object.keys(mp).forEach(function (k) {
+      vxNormals[face[k]] = face.vertexNormals[mp[k]];
+    });
+  });
+  return vxNormals;
+};
+
+var FrequencyMesh = function (_THREE$Group) {
+  _inherits(FrequencyMesh, _THREE$Group);
+
+  function FrequencyMesh(geo, mat) {
+    _classCallCheck(this, FrequencyMesh);
+
+    var _this = _possibleConstructorReturn(this, (FrequencyMesh.__proto__ || Object.getPrototypeOf(FrequencyMesh)).call(this));
+
+    _this.mesh = new THREE.Mesh(geo, mat);
+    _this.positions = geo.vertices.map(function (p) {
+      return p.clone();
+    });
+    _this.offsets = geo.vertices.map(function () {
+      return Math.random() * 8;
+    });
+    _this.vxNormals = genVxNormal(geo);
+    _this.add(_this.mesh);
+    return _this;
   }
 
-  var i = 0,
-      next = [];
-  for (; i < len - 1; i++) {
-    next.push(lerp(points[i], points[i + 1], t));
-  }
+  _createClass(FrequencyMesh, [{
+    key: "update",
+    value: function update(frequencyData, frequencyBinCount) {
+      var _this2 = this;
 
-  return dca(next, t);
-}
+      var n = arguments.length > 2 && arguments[2] !== undefined ? arguments[2] : 1;
 
-function slopeByPoints(p1x, p1y, c1x, c1y, c2x, c2y, p2x, p2y, t) {
-  var ax = p1x * 3 - c1x * 9 + 9 * c2x - 3 * p2x;
-  var bx = c1x * 6 - 12 * c2x + 6 * p2x;
-  var cx = 3 * c2x - 3 * p2x;
-
-  var ay = p1y * 3 - c1y * 9 + 9 * c2y - 3 * p2y;
-  var by = c1y * 6 - 12 * c2y + 6 * p2y;
-  var cy = 3 * c2y - 3 * p2y;
-
-  var sqt = t * t;
-
-  return Math.atan((ay * sqt + by * t + cy) / (ax * sqt + bx * t + cx));
-}
-
-function slope(points, t, dt) {
-
-  //P(t) = (1 - t)^3 * P0 + 3t(1-t)^2 * P1 + 3t^2 (1-t) * P2 + t^3 * P3
-  //dP(t) / dt = -3(1-t)^2 * P0 + 3(1-t)^2 * P1 - 6t(1-t) * P1 - 3t^2 * P2 + 6t(1-t) * P2 + 3t^2 * P3 
-  var p1x = points[0],
-      p1y = points[1],
-      c1x = points[2],
-      c1y = points[3],
-      c2x = points[4],
-      c2y = points[5],
-      p2x = points[6],
-      p2y = points[7];
-  var t1 = 1 - t;
-  var t1Sqr = t1 * t1;
-  var tSqr = t * t;
-
-  var dx = -3 * t1Sqr * p1x + 3 * t1Sqr * c1x - 6 * t * t1 * c1x - 3 * tSqr * c2x + 6 * t * t1 * c2x + 3 * tSqr * p2x;
-  var dy = -3 * t1Sqr * p1y + 3 * t1Sqr * c1y - 6 * t * t1 * c1y - 3 * tSqr * c2y + 6 * t * t1 * c2y + 3 * tSqr * p2y;
-  return dy == 0 ? Infinity : Math.atan(dy / dx);
-
-  // let p1 = getValue(points, t),
-  // p2 = getValue(points, t + (dt || 0.01)),
-  // dy = p2.y - p1.y, dx = p2.x - p1.x;
-  // return dy == 0 ? Infinity : Math.atan(dy / dx);
-}
-
-function getValueByPoints(p1x, p1y, c1x, c1y, c2x, c2y, p2x, p2y, t) {
-  return dca([{ x: p1x, y: p1y }, { x: c1x, y: c1y }, { x: c2x, y: c2y }, { x: p2x, y: p2y }], t);
-}
-
-function getValue(points, t) {
-  return dca([{ x: points[0], y: points[1] }, { x: points[2], y: points[3] }, { x: points[4], y: points[5] }, { x: points[6], y: points[7] }], t);
-}
-
-// steps 根据起点和终点自动计算？
-function getLength(p1x, p1y, c1x, c1y, c2x, c2y, p2x, p2y, steps) {
-  var step = 1 / steps;
-  var points = [];
-
-  var len = 0;
-  for (var t = 0; t < 1.0 + step; t += step) {
-    points.push(getValueByPoints(p1x, p1y, c1x, c1y, c2x, c2y, p2x, p2y, Math.min(t, 1)));
-  }
-  var p0 = void 0,
-      p1 = void 0,
-      dx = void 0,
-      dy = void 0;
-  for (var i = 0; i < points.length - 1; i++) {
-    p0 = points[i];
-    p1 = points[i + 1];
-    dx = p1.x - p0.x;
-    dy = p1.y - p0.y;
-    len += Math.sqrt(dx * dx + dy * dy);
-  }
-
-  return len;
-}
-
-function getPosition(length, shape) {
-  var current = 0;
-  var total = shape.pathLen;
-  var index = 0;
-  var t = 0;
-
-  if (length > total) {
-    length = length - total;
-  }
-  for (var i = 0, len = shape.length; i < len; i++) {
-    var c = shape[i];
-    current += c.bzLen;
-    if (current > length) {
-      index = i;
-      t = 1 - (current - length) / c.bzLen;
-      break;
+      this.positions.forEach(function (v, i) {
+        var val = frequencyData[i / _this2.positions.length * frequencyBinCount | 0] / 128;
+        _this2.mesh.geometry.vertices[i].copy(v.clone().add(_this2.vxNormals[i].clone().multiplyScalar(val * n)));
+      });
+      this.mesh.geometry.verticesNeedUpdate = true;
     }
-  }
+  }]);
 
-  return {
-    t: t,
-    index: index
-  };
-}
+  return FrequencyMesh;
+}(THREE.Group);
 
-function getPoint(t, index, shape) {
-  var ps = shape[index];
-  return getValue(ps, t);
-}
+exports.default = FrequencyMesh;
 
 /***/ })
 /******/ ]);
