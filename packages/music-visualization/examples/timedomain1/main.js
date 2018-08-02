@@ -31,8 +31,6 @@ var loadAudio = (url) => {
       })
     }
     xhr.onprogress = (o) => {
-      // console.log(o);
-      // loaded: 2574559, total: 2679663
       var {loaded, total} = o
 
       $precent.textContent = Math.round(loaded / total * 100) + '%'

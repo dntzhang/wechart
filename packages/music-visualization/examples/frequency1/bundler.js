@@ -7024,8 +7024,6 @@ var loadAudio = function loadAudio(url) {
       });
     };
     xhr.onprogress = function (o) {
-      // console.log(o);
-      // loaded: 2574559, total: 2679663
       var loaded = o.loaded,
           total = o.total;
 
