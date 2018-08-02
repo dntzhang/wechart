@@ -22,6 +22,18 @@ English | [简体中文](./README.md)
 </tr>
 
 <tr>
+<td align="center"><a title="Earth" href="https://dntzhang.github.io/wechart/packages/earth/examples/simple/" rel="nofollow"><img alt="Earth" src="./asset/c9.png" style="max-width:100%;"></a></td>
+<td align="center"><a href="https://github.com/dntzhang/wechart/blob/master/packages/earth/">Source</a></td>
+<td align="center"><a href="https://github.com/vorshen">vorshen</a></td>
+</tr>
+
+<tr>
+<td align="center"><a title="Magic Cube" href="https://dntzhang.github.io/wechart/packages/magic-cube/examples/simple/" rel="nofollow"><img alt="Magic Cube" src="./asset/c31.png" style="max-width:100%;"></a></td>
+<td align="center"><a href="https://github.com/dntzhang/wechart/blob/master/packages/magic-cube/">Source</a></td>
+<td align="center"><a href="https://github.com/a876691666">a876691666</a></td>
+</tr>
+
+<tr>
 <td align="center"><a title="Word Penetrating" href="https://dntzhang.github.io/wechart/packages/word-penetrating/examples/simple/" rel="nofollow"><img alt="Word Penetrating" src="./asset/c97.png" style="max-width:100%;"></a></td>
 <td align="center"><a href="https://github.com/dntzhang/wechart/blob/master/packages/word-penetrating/examples/simple/">Source</a></td>
 <td align="center">dntzhang</td>
@@ -49,12 +61,6 @@ English | [简体中文](./README.md)
 <td align="center"><a title="Racing" href="https://dntzhang.github.io/wechart/packages/path/examples/racing/" rel="nofollow"><img alt="Racing" src="./asset/c33.png" style="max-width:100%;"></a></td>
 <td align="center"><a href="https://github.com/dntzhang/wechart/blob/master/packages/path/examples/racing/">Source</a></td>
 <td align="center">dntzhang</td>
-</tr>
-
-<tr>
-<td align="center"><a title="Magic Cube" href="https://dntzhang.github.io/wechart/packages/magic-cube/examples/simple/" rel="nofollow"><img alt="Magic Cube" src="./asset/c31.png" style="max-width:100%;"></a></td>
-<td align="center"><a href="https://github.com/dntzhang/wechart/blob/master/packages/magic-cube/">Source</a></td>
-<td align="center"></td>
 </tr>
 
 <tr>
@@ -91,11 +97,6 @@ English | [简体中文](./README.md)
 <td align="center"><a title="Map3d" href="https://dntzhang.github.io/wechart/packages/map3d/examples/simple/" rel="nofollow"><img alt="Map3d" src="./asset/c14.png" style="max-width:100%;"></a></td>
 <td align="center"><a href="https://github.com/dntzhang/wechart/blob/master/packages/map3d/">Source</a></td>
 <td align="center">dntzhang</td>
-</tr>
-<tr>
-<td align="center"><a title="Earth" href="https://dntzhang.github.io/wechart/packages/earth/examples/simple/" rel="nofollow"><img alt="Earth" src="./asset/c9.png" style="max-width:100%;"></a></td>
-<td align="center"><a href="https://github.com/dntzhang/wechart/blob/master/packages/earth/">Source</a></td>
-<td align="center">vorshen</td>
 </tr>
 
 <tr>
