@@ -112,8 +112,6 @@ var loadAudio = function loadAudio(url) {
       });
     };
     xhr.onprogress = function (o) {
-      // console.log(o);
-      // loaded: 2574559, total: 2679663
       var loaded = o.loaded,
           total = o.total;
 
@@ -135,6 +133,29 @@ loadAudio(media).then(function (buffer) {
   camera.position.copy(new THREE.Vector3(0, 1, 60));
 
   frequencyData = new Uint8Array(analyser.frequencyBinCount);
+
+  var hemiLight = new THREE.HemisphereLight(0xffffff, 0xffffff, 0.6);
+  hemiLight.color.setHSL(0.6, 1, 0.6);
+  hemiLight.groundColor.setHSL(0.095, 1, 0.75);
+  hemiLight.position.set(0, 50, 0);
+  scene.add(hemiLight);
+  var hemiLightHelper = new THREE.HemisphereLightHelper(hemiLight, 10);
+  scene.add(hemiLightHelper);
+  var dirLight = new THREE.DirectionalLight(0xffffff, 1);
+  dirLight.color.setHSL(0.1, 1, 0.95);
+  dirLight.position.set(-1, 1.75, 1);
+  dirLight.position.multiplyScalar(30);
+  scene.add(dirLight);
+  dirLight.castShadow = true;
+  dirLight.shadow.mapSize.width = 2048;
+  dirLight.shadow.mapSize.height = 2048;
+  var d = 50;
+  dirLight.shadow.camera.left = -d;
+  dirLight.shadow.camera.right = d;
+  dirLight.shadow.camera.top = d;
+  dirLight.shadow.camera.bottom = -d;
+  dirLight.shadow.camera.far = 3500;
+  dirLight.shadow.bias = -0.0001;
 
   // /////////////////////////////////////////////////
   var h = Math.random() * 0.7,
@@ -173,35 +194,8 @@ loadAudio(media).then(function (buffer) {
     f.color = new THREE.Color().setHSL(h + Math.random() * 0.3, s, l + Math.random() * 0.25);
   });
   scene.add(mesh3);
-  mesh3.position.set(0, 0, -7);
-  // ///////////////////////////////////////////////
-
-  //
-  var hemiLight = new THREE.HemisphereLight(0xffffff, 0xffffff, 0.6);
-  hemiLight.color.setHSL(0.6, 1, 0.6);
-  hemiLight.groundColor.setHSL(0.095, 1, 0.75);
-  hemiLight.position.set(0, 50, 0);
-  scene.add(hemiLight);
-  var hemiLightHelper = new THREE.HemisphereLightHelper(hemiLight, 10);
-  scene.add(hemiLightHelper);
-  //
-  var dirLight = new THREE.DirectionalLight(0xffffff, 1);
-  dirLight.color.setHSL(0.1, 1, 0.95);
-  dirLight.position.set(-1, 1.75, 1);
-  dirLight.position.multiplyScalar(30);
-  scene.add(dirLight);
-  dirLight.castShadow = true;
-  dirLight.shadow.mapSize.width = 2048;
-  dirLight.shadow.mapSize.height = 2048;
-  var d = 50;
-  dirLight.shadow.camera.left = -d;
-  dirLight.shadow.camera.right = d;
-  dirLight.shadow.camera.top = d;
-  dirLight.shadow.camera.bottom = -d;
-  dirLight.shadow.camera.far = 3500;
-  dirLight.shadow.bias = -0.0001
-
-  ////////////////////
+  mesh3.position.set(0, 0, -7)
+  /////////////////////////////////////////////////////////////
 
   ;(function animate() {
     window.requestAnimationFrame(animate);
