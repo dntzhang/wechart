@@ -12,10 +12,17 @@ English | [简体中文](./README.md)
 <th align="center">Demo</th>
 <th align="center">Usage Source</th>
 <th align="center">Group Source</th>
-<th align="center">Tutorial</th>
+<th align="center"></th>
 </tr>
 </thead>
 <tbody>
+<tr>
+<td align="center"><a title="Music" href="https://dntzhang.github.io/wechart/packages/music-visualization/examples/timedomain1/index.html" rel="nofollow"><img alt="Music" src="./asset/c95.png" style="max-width:100%;"></a></td>
+<td align="center"><a href="https://github.com/dntzhang/wechart/tree/master/packages/music-visualization/examples/timedomain1">Source</a></td>
+<td align="center">Word Penetrating</td>
+<td align="center">by <a href="https://github.com/dwqdaiwenqi">dwqdaiwenqi</a></td>
+</tr>
+
 <tr>
 <td align="center"><a title="Word Penetrating" href="https://dntzhang.github.io/wechart/packages/word-penetrating/examples/simple/" rel="nofollow"><img alt="Word Penetrating" src="./asset/c97.png" style="max-width:100%;"></a></td>
 <td align="center"><a href="https://github.com/dntzhang/wechart/blob/master/packages/word-penetrating/examples/simple/">Source</a></td>
