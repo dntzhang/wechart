@@ -40,7 +40,7 @@ export default class Variants extends cax.Group {
     }
   }
 
-  render (frequencyData, avg) {
+  update (frequencyData, avg) {
     this.h += 0.1
     this.variants.forEach((o, i) => {
       o.scaleY = o.scaleX = 1 + avg * 0.008

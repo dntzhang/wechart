@@ -8,21 +8,22 @@ var actx = new AudioContext()
 var media = './asset/miku.mp3'
 
 var loadAudio = (url) => {
-
   var xhr = new window.XMLHttpRequest()
-  xhr.open('GET', media, true)
+  xhr.open('GET', url, true)
   xhr.responseType = 'arraybuffer'
   return new Promise(resolve => {
+    var $precent = document.querySelector('#precent')
+    $precent.style.display = 'block'
     xhr.onload = () => {
+      $precent.style.display = 'none'
       // resolve(xhr.response)
       analyser = actx.createAnalyser()
-      analyser.fftSize = 1024
+      analyser.fftSize = 2048
       analyser.smoothingTimeConstant = 0.8
       actx.decodeAudioData(xhr.response, buffer => {
         var asource = actx.createBufferSource()
         asource.buffer = buffer
         asource.loop = true
-
         var splitter = actx.createChannelSplitter()
         asource.connect(splitter)
         splitter.connect(analyser, 0, 0)
@@ -30,6 +31,13 @@ var loadAudio = (url) => {
         asource.start()
         resolve()
       })
+    }
+    xhr.onprogress = (o) => {
+      // console.log(o);
+      // loaded: 2574559, total: 2679663
+      var {loaded, total} = o
+
+      $precent.textContent = Math.round(loaded / total * 100) + '%'
     }
     xhr.send()
   })
@@ -92,9 +100,9 @@ loadAudio(media).then(data => {
     var avg = getAvg(frequencyData)
 
     analyser.getByteFrequencyData(frequencyData)
-    fqbBot.render(frequencyData)
-    fqbTop.render(frequencyData)
-    variants.render(frequencyData, avg)
+    fqbBot.update(frequencyData)
+    fqbTop.update(frequencyData)
+    variants.update(frequencyData, avg)
     text.scaleX = text.scaleY = 1 + avg * 0.01
     stage.update()
   })()

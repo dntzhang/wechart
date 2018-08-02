@@ -60,149 +60,11 @@
 /******/ 	__webpack_require__.p = "";
 /******/
 /******/ 	// Load entry module and return exports
-/******/ 	return __webpack_require__(__webpack_require__.s = 0);
+/******/ 	return __webpack_require__(__webpack_require__.s = 1);
 /******/ })
 /************************************************************************/
 /******/ ([
 /* 0 */
-/***/ (function(module, exports, __webpack_require__) {
-
-"use strict";
-
-
-var _cax = __webpack_require__(1);
-
-var _cax2 = _interopRequireDefault(_cax);
-
-function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
-
-var AudioContext = window.AudioContext || window.webkitAudioContext;
-var analyser, timeDomainData;
-var actx = new AudioContext();
-var media = './asset/miku.mp3';
-// var imgSrc = './asset/logox2.png'
-var imgSrc = './asset/logox3.png';
-
-var loadAudio = function loadAudio(url) {
-  var xhr = new window.XMLHttpRequest();
-  xhr.open('GET', url, true);
-  xhr.responseType = 'arraybuffer';
-  return new Promise(function (resolve) {
-    var $precent = document.querySelector('#precent');
-    $precent.style.display = 'block';
-    xhr.onload = function () {
-      $precent.style.display = 'none';
-      // resolve(xhr.response)
-      analyser = actx.createAnalyser();
-      analyser.fftSize = 2048;
-      analyser.smoothingTimeConstant = 0.8;
-      actx.decodeAudioData(xhr.response, function (buffer) {
-        var asource = actx.createBufferSource();
-        asource.buffer = buffer;
-        asource.loop = true;
-        var splitter = actx.createChannelSplitter();
-        asource.connect(splitter);
-        splitter.connect(analyser, 0, 0);
-        analyser.connect(actx.destination);
-        asource.start();
-        resolve();
-      });
-    };
-    xhr.onprogress = function (o) {
-      // console.log(o);
-      // loaded: 2574559, total: 2679663
-      var loaded = o.loaded,
-          total = o.total;
-
-
-      $precent.textContent = Math.round(loaded / total * 100) + '%';
-    };
-    xhr.send();
-  });
-};
-
-loadAudio(media).then(function (data) {
-  timeDomainData = new Uint8Array(analyser.frequencyBinCount);
-  var stage = new _cax2.default.Stage(window.innerWidth, window.innerHeight, 'body');
-  var bg = new _cax2.default.Rect(stage.width, stage.height, { fillStyle: 'black' });
-  stage.add(bg);
-
-  //new TimeDomainPic('./asset/logox3.png',256,256)
-
-  //console.log(new cax.Bitmap('./asset/logox3.png'))
-
-  var imgW = 256,
-      imgH = 256;
-
-  var slice = Math.min(256, imgW);
-  var perW = imgW / slice;
-  var bitmaps = Array.from({ length: slice }, function (v, i) {
-    // const bitmap = new cax.Bitmap('./enemy.png')
-    // const bitmap = new cax.Bitmap('./logox.png')
-    var bitmap = new _cax2.default.Bitmap(imgSrc);
-    bitmap.originX = imgW * 0.5;
-    bitmap.originY = imgH * 0.5;
-    var clipPath = new _cax2.default.Graphics();
-    clipPath.rect(imgW * i / slice, 0, perW, imgH);
-    bitmap.clip(clipPath);
-    stage.add(bitmap);
-    // bitmap.x = stage.width * 0.5 + imgW * i / slice
-    bitmap.x = stage.width * 0.5;
-    bitmap.y = bitmap.yy = stage.height * 0.5;
-    return bitmap;
-  })
-
-  // var [imgW, imgH] = [256, 256]
-  // const bitmap = new cax.Bitmap('./logox2.png')
-  // bitmap.originX = imgW * 0.5
-  // bitmap.originY = imgH * 0.5
-  // const clipPath = new cax.Graphics()
-  // clipPath.rect(0, imgH*.5, imgW, imgH*.5)
-  // bitmap.clip(clipPath)
-  // stage.add(bitmap)
-  // // bitmap.x = stage.width * 0.5 + imgW * i / slice
-  // bitmap.x = stage.width * 0.5
-  // bitmap.y = bitmap.yy = stage.height * 0.5
-
-  // var [imgW, imgH] = [256, 256]
-  // var slice = Math.min(250, imgH)
-  // var perH = imgH / slice
-  // var bitmaps = Array.from({length: slice}, (v, i) => {
-  //   // const bitmap = new cax.Bitmap('./enemy.png')
-  //   // const bitmap = new cax.Bitmap('./logox.png')
-  //   const bitmap = new cax.Bitmap('./asset/logox3.png')
-  //   bitmap.originX = imgW * 0.5
-  //   bitmap.originY = imgH * 0.5
-  //   const clipPath = new cax.Graphics()
-  //   clipPath.rect(0, imgH * i / slice, imgW, perH)
-  //   bitmap.clip(clipPath)
-  //   stage.add(bitmap)
-  //   // bitmap.x = stage.width * 0.5 + imgW * i / slice
-  //   bitmap.x = stage.width * 0.5
-  //   bitmap.y = bitmap.yy = stage.height * 0.5
-  //   return bitmap
-  // })
-
-  ;(function animate() {
-    window.requestAnimationFrame(animate);
-    analyser.getByteTimeDomainData(timeDomainData);
-    Array.from(timeDomainData, function (v, i) {
-      // console.log(v)
-      var bitmap = bitmaps[i / timeDomainData.length * slice | 0];
-      bitmap.scaleY = v / 128;
-    });
-    // Array.from(timeDomainData, (v, i) => {
-    //   // console.log(v)
-    //   var bitmap = bitmaps[i / timeDomainData.length * slice | 0]
-    //   bitmap.scaleX = v / 128
-    // })
-
-    stage.update();
-  })();
-});
-
-/***/ }),
-/* 1 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -7087,6 +6949,102 @@ var _typeof2 = typeof Symbol === "function" && typeof Symbol.iterator === "symbo
 /* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(2)(module)))
 
 /***/ }),
+/* 1 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
+var _cax = __webpack_require__(0);
+
+var _cax2 = _interopRequireDefault(_cax);
+
+var _loader = __webpack_require__(3);
+
+var _loader2 = _interopRequireDefault(_loader);
+
+var _scale_timedomain = __webpack_require__(4);
+
+var _scale_timedomain2 = _interopRequireDefault(_scale_timedomain);
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+var AudioContext = window.AudioContext || window.webkitAudioContext;
+var analyser, timeDomainData;
+var actx = new AudioContext();
+var media = './asset/miku.mp3';
+var loadAudio = function loadAudio(url) {
+  var xhr = new window.XMLHttpRequest();
+  xhr.open('GET', url, true);
+  xhr.responseType = 'arraybuffer';
+  return new Promise(function (resolve) {
+    var $precent = document.querySelector('#precent');
+    $precent.style.display = 'block';
+    xhr.onload = function () {
+      $precent.style.display = 'none';
+      // resolve(xhr.response)
+      analyser = actx.createAnalyser();
+      analyser.fftSize = 2048;
+      analyser.smoothingTimeConstant = 0.8;
+      actx.decodeAudioData(xhr.response, function (buffer) {
+        var asource = actx.createBufferSource();
+        asource.buffer = buffer;
+        asource.loop = true;
+        var splitter = actx.createChannelSplitter();
+        asource.connect(splitter);
+        splitter.connect(analyser, 0, 0);
+        analyser.connect(actx.destination);
+        asource.start();
+        resolve();
+      });
+    };
+    xhr.onprogress = function (o) {
+      // console.log(o);
+      // loaded: 2574559, total: 2679663
+      var loaded = o.loaded,
+          total = o.total;
+
+
+      $precent.textContent = Math.round(loaded / total * 100) + '%';
+    };
+    xhr.send();
+  });
+};
+
+loadAudio(media).then(function (data) {
+  timeDomainData = new Uint8Array(analyser.frequencyBinCount);
+
+  var stage = new _cax2.default.Stage(window.innerWidth, window.innerHeight, 'body');
+  var bg = new _cax2.default.Rect(stage.width, stage.height, { fillStyle: 'black' });
+  stage.add(bg);
+
+  var loader = new _loader2.default({
+    res: [{ id: 'logo', src: './asset/logox3.png' }],
+    complete: function complete() {
+      var tex = loader.get('logo');
+      var tdpic1 = new _scale_timedomain2.default(tex, 'horizontal');
+      var tdpic2 = new _scale_timedomain2.default(tex, 'vertical');
+      stage.add(tdpic1, tdpic2);
+      tdpic1.y = stage.height * 0.5 - 150;
+      tdpic1.x = stage.width * 0.5;
+
+      tdpic2.y = stage.height * 0.5 + 150;
+      tdpic2.x = stage.width * 0.5;
+
+      tdpic1.scaleX = tdpic1.scaleY = 0.8;
+      tdpic2.scaleX = tdpic2.scaleY = 0.8;(function animate() {
+        window.requestAnimationFrame(animate);
+        analyser.getByteTimeDomainData(timeDomainData);
+        stage.update();
+        tdpic1.update(timeDomainData);
+        tdpic2.update(timeDomainData);
+      })();
+    }
+  });
+  loader.start();
+});
+
+/***/ }),
 /* 2 */
 /***/ (function(module, exports, __webpack_require__) {
 
@@ -7115,6 +7073,261 @@ module.exports = function (module) {
 	}
 	return module;
 };
+
+/***/ }),
+/* 3 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
+Object.defineProperty(exports, "__esModule", {
+    value: true
+});
+
+function Loader(option) {
+    this.res = {};
+    this.loadedCount = 0;
+    this.resCount = -1;
+    this.FILE_PATTERN = /(\w+:\/{2})?((?:\w+\.){2}\w+)?(\/?[\S]+\/|\/)?([\w\-%\.]+)(?:\.)(\w+)?(\?\S+)?/i;
+    this.ns = 6;
+    this.sounds = [];
+    for (var i = 0; i < this.ns; i++) {
+        this.sounds.push([]);
+    }this.playing = [];
+
+    if (option) {
+        this.progress(option.progress);
+        this.complete(option.complete);
+        this._readyToLoadRes = option.res;
+    }
+}
+
+Loader.prototype = {
+
+    "start": function start() {
+        if (this._readyToLoadRes) {
+            this.loadRes(this._readyToLoadRes);
+        }
+    },
+    "get": function get(id) {
+        return this.res[id];
+    },
+    "loadRes": function loadRes(arr) {
+        this.resCount = arr.length;
+        for (var i = 0; i < arr.length; i++) {
+            var type = this._getTypeByExtension(arr[i].src.match(this.FILE_PATTERN)[5]);
+            if (type === "audio") {
+                this.loadAudio(arr[i].id, arr[i].src);
+            } else if (type === "js") {
+                this.loadScript(arr[i].src);
+            } else if (type === "img") {
+                this.loadImage(arr[i].id, arr[i].src);
+            }
+        }
+    },
+    "loadImage": function loadImage(id, src) {
+        var img = document.createElement("img");
+        var self = this;
+        img.onload = function () {
+            self._handleLoad(this, id);
+            img.onreadystatechange = null;
+        };
+        img.onreadystatechange = function () {
+            if (img.readyState == "loaded" || img.readyState == "complete") {
+                self._handleLoad(this, id);
+                img.onload = null;
+            }
+        };
+        img.onerror = function () {};
+        img.src = src;
+    },
+    "loadAudio": function loadAudio(id, src) {
+        var tag = document.createElement("audio");
+        tag.autoplay = false;
+        this.res[id] = tag;
+        tag.src = null;
+        tag.preload = "auto";
+        tag.onerror = function () {};
+        tag.onstalled = function () {};
+        var self = this;
+        var _audioCanPlayHandler = function _audioCanPlayHandler() {
+            self.playing[id] = 0;
+            for (var i = 0; i < self.ns; i++) {
+                self.sounds[i][id] = new Audio(src);
+            }
+            self.loadedCount++;
+            self.handleProgress && self.handleProgress(self.loadedCount, self.resCount);
+            self._clean(this);
+            this.removeEventListener && this.removeEventListener("canplaythrough", _audioCanPlayHandler, false);
+            self.checkComplete();
+        };
+        tag.addEventListener("canplaythrough", _audioCanPlayHandler, false);
+        tag.src = src;
+        if (tag.load != null) {
+            tag.load();
+        }
+    },
+    "loadScript": function loadScript(url) {
+        var script = document.createElement("script");
+        script.type = "text/javascript";
+        var self = this;
+        if (script.readyState) {
+            //IE
+            script.onreadystatechange = function () {
+                if (script.readyState == "loaded" || script.readyState == "complete") {
+                    script.onreadystatechange = null;
+                    self._handleLoad();
+                }
+            };
+        } else {
+            //Others
+            script.onload = function () {
+                self._handleLoad();
+            };
+        }
+
+        script.src = url;
+        document.getElementsByTagName("head")[0].appendChild(script);
+    },
+    "checkComplete": function checkComplete() {
+        if (this.loadedCount === this.resCount) {
+            this.handleComplete();
+        }
+    },
+    "complete": function complete(fn) {
+        this.handleComplete = fn;
+    },
+    "progress": function progress(fn) {
+        this.handleProgress = fn;
+    },
+    "playSound": function playSound(id, volume) {
+        var sound = this.sounds[this.playing[id]][id];
+        sound.volume = volume === undefined ? 1 : volume;
+        sound.play();
+        ++this.playing[id];
+        if (this.playing[id] >= this.ns) this.playing[id] = 0;
+    },
+    "_handleLoad": function _handleLoad(currentImg, id) {
+        if (currentImg) {
+            this._clean(currentImg);
+            this.res[id] = currentImg;
+        }
+        this.loadedCount++;
+        if (this.handleProgress) this.handleProgress(this.loadedCount, this.resCount);
+        this.checkComplete();
+    },
+    "_getTypeByExtension": function _getTypeByExtension(extension) {
+        switch (extension) {
+            case "jpeg":
+            case "jpg":
+            case "gif":
+            case "png":
+            case "webp":
+            case "bmp":
+                return "img";
+            case "ogg":
+            case "mp3":
+            case "wav":
+                return "audio";
+            case "js":
+                return "js";
+        }
+    },
+    "_clean": function _clean(tag) {
+        tag.onload = null;
+        tag.onstalled = null;
+        tag.onprogress = null;
+        tag.onerror = null;
+    }
+};
+
+exports.default = Loader;
+
+/***/ }),
+/* 4 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+
+var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
+
+var _cax = __webpack_require__(0);
+
+var _cax2 = _interopRequireDefault(_cax);
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+
+function _possibleConstructorReturn(self, call) { if (!self) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return call && (typeof call === "object" || typeof call === "function") ? call : self; }
+
+function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
+
+var ScaleTimeDoamin = function (_cax$Group) {
+  _inherits(ScaleTimeDoamin, _cax$Group);
+
+  function ScaleTimeDoamin(tex) {
+    var dir = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : 'horizontal';
+    var slice = arguments.length > 2 && arguments[2] !== undefined ? arguments[2] : 123;
+
+    _classCallCheck(this, ScaleTimeDoamin);
+
+    var _this = _possibleConstructorReturn(this, (ScaleTimeDoamin.__proto__ || Object.getPrototypeOf(ScaleTimeDoamin)).call(this));
+
+    var _ref = [tex.width, tex.height],
+        imgW = _ref[0],
+        imgH = _ref[1];
+
+
+    _this.dir = dir;
+    _this.slice = _this.dir !== 'horizontal' ? Math.max(imgW, slice) : Math.max(imgH, slice);
+
+    var val = _this.dir !== 'horizontal' ? imgW : imgH;
+
+    var w = _this.dir !== 'horizontal' ? imgW / slice : imgW;
+
+    var h = _this.dir !== 'horizontal' ? imgH : imgH / slice;
+
+    _this.bitmaps = Array.from({ length: _this.slice }, function (v, i) {
+      var bitmap = new _cax2.default.Bitmap(tex);
+      bitmap.originX = imgW * 0.5;
+      bitmap.originY = imgH * 0.5;
+      var clipPath = new _cax2.default.Graphics();
+
+      _this.dir !== 'horizontal' ? clipPath.rect(val * i / _this.slice, 0, w, h) : clipPath.rect(0, val * i / slice, w, h);
+
+      bitmap.clip(clipPath);
+      _this.add(bitmap);
+      return bitmap;
+    });
+    return _this;
+  }
+
+  _createClass(ScaleTimeDoamin, [{
+    key: 'update',
+    value: function update(timeDomainData) {
+      var _this2 = this;
+
+      Array.from(timeDomainData, function (v, i) {
+        // console.log(v)
+        var bitmap = _this2.bitmaps[i / timeDomainData.length * _this2.slice | 0];
+        // console.log(bitmap);
+        // return
+        _this2.dir !== 'horizontal' ? bitmap.scaleY = v / 128 : bitmap.scaleX = v / 128;
+      });
+    }
+  }]);
+
+  return ScaleTimeDoamin;
+}(_cax2.default.Group);
+
+exports.default = ScaleTimeDoamin;
 
 /***/ })
 /******/ ]);

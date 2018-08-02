@@ -24,7 +24,7 @@ class FrequencyBars extends cax.Group {
       }
     })
   }
-  render (frequencyData) {
+  update (frequencyData) {
     let pFrequency = frequencyData.length / this.num | 0
     let frequencyStep = 0
     this.rects.forEach((o, i) => {

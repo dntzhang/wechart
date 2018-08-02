@@ -1,11 +1,10 @@
 import cax from 'cax'
+import Loader from '../../../common/loader'
+import ScaleTimeDomain from './scale_timedomain'
 var AudioContext = window.AudioContext || window.webkitAudioContext
 var analyser, timeDomainData
 var actx = new AudioContext()
 var media = './asset/miku.mp3'
-// var imgSrc = './asset/logox2.png'
-var imgSrc = './asset/logox3.png'
-
 var loadAudio = (url) => {
   var xhr = new window.XMLHttpRequest()
   xhr.open('GET', url, true)
@@ -44,79 +43,37 @@ var loadAudio = (url) => {
 
 loadAudio(media).then(data => {
   timeDomainData = new Uint8Array(analyser.frequencyBinCount)
+
   var stage = new cax.Stage(window.innerWidth, window.innerHeight, 'body')
   var bg = new cax.Rect(stage.width, stage.height, {fillStyle: 'black'})
   stage.add(bg)
 
+  var loader = new Loader({
+    res: [
+      { id: 'logo', src: './asset/logox3.png' }
+    ],
+    complete: () => {
+      var tex = loader.get('logo')
+      var tdpic1 = new ScaleTimeDomain(tex, 'horizontal')
+      var tdpic2 = new ScaleTimeDomain(tex, 'vertical')
+      stage.add(tdpic1, tdpic2)
+      tdpic1.y = stage.height * 0.5 - 150
+      tdpic1.x = stage.width * 0.5
 
-  //new TimeDomainPic('./asset/logox3.png',256,256)
-  
-  //console.log(new cax.Bitmap('./asset/logox3.png'))
+      tdpic2.y = stage.height * 0.5 + 150
+      tdpic2.x = stage.width * 0.5
 
-  var [imgW, imgH] = [256, 256]
-  var slice = Math.min(256, imgW)
-  var perW = imgW / slice
-  var bitmaps = Array.from({length: slice}, (v, i) => {
-    // const bitmap = new cax.Bitmap('./enemy.png')
-    // const bitmap = new cax.Bitmap('./logox.png')
-    const bitmap = new cax.Bitmap(imgSrc)
-    bitmap.originX = imgW * 0.5
-    bitmap.originY = imgH * 0.5
-    const clipPath = new cax.Graphics()
-    clipPath.rect(imgW * i / slice, 0, perW, imgH)
-    bitmap.clip(clipPath)
-    stage.add(bitmap)
-    // bitmap.x = stage.width * 0.5 + imgW * i / slice
-    bitmap.x = stage.width * 0.5
-    bitmap.y = bitmap.yy = stage.height * 0.5
-    return bitmap
+      tdpic1.scaleX = tdpic1.scaleY = 0.8
+      tdpic2.scaleX = tdpic2.scaleY = 0.8
+
+      ;(function animate () {
+        window.requestAnimationFrame(animate)
+        analyser.getByteTimeDomainData(timeDomainData)
+        stage.update()
+        tdpic1.update(timeDomainData)
+        tdpic2.update(timeDomainData)
+      })()
+    }
   })
-
-  // var [imgW, imgH] = [256, 256]
-  // const bitmap = new cax.Bitmap('./logox2.png')
-  // bitmap.originX = imgW * 0.5
-  // bitmap.originY = imgH * 0.5
-  // const clipPath = new cax.Graphics()
-  // clipPath.rect(0, imgH*.5, imgW, imgH*.5)
-  // bitmap.clip(clipPath)
-  // stage.add(bitmap)
-  // // bitmap.x = stage.width * 0.5 + imgW * i / slice
-  // bitmap.x = stage.width * 0.5
-  // bitmap.y = bitmap.yy = stage.height * 0.5
-
-  // var [imgW, imgH] = [256, 256]
-  // var slice = Math.min(250, imgH)
-  // var perH = imgH / slice
-  // var bitmaps = Array.from({length: slice}, (v, i) => {
-  //   // const bitmap = new cax.Bitmap('./enemy.png')
-  //   // const bitmap = new cax.Bitmap('./logox.png')
-  //   const bitmap = new cax.Bitmap('./asset/logox3.png')
-  //   bitmap.originX = imgW * 0.5
-  //   bitmap.originY = imgH * 0.5
-  //   const clipPath = new cax.Graphics()
-  //   clipPath.rect(0, imgH * i / slice, imgW, perH)
-  //   bitmap.clip(clipPath)
-  //   stage.add(bitmap)
-  //   // bitmap.x = stage.width * 0.5 + imgW * i / slice
-  //   bitmap.x = stage.width * 0.5
-  //   bitmap.y = bitmap.yy = stage.height * 0.5
-  //   return bitmap
-  // })
-
-  ;(function animate () {
-    window.requestAnimationFrame(animate)
-    analyser.getByteTimeDomainData(timeDomainData)
-    Array.from(timeDomainData, (v, i) => {
-      // console.log(v)
-      var bitmap = bitmaps[i / timeDomainData.length * slice | 0]
-      bitmap.scaleY = v / 128
-    })
-    // Array.from(timeDomainData, (v, i) => {
-    //   // console.log(v)
-    //   var bitmap = bitmaps[i / timeDomainData.length * slice | 0]
-    //   bitmap.scaleX = v / 128
-    // })
-
-    stage.update()
-  })()
+  loader.start()
 })

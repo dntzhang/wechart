@@ -6965,8 +6965,8 @@ var _cax2 = _interopRequireDefault(_cax);
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
-var stage = new _cax2.default.Stage(window.innerWidth, window.innerHeight, 'body');
-exports.default = stage;
+var $b = document.body;
+exports.default = new _cax2.default.Stage($b.offsetWidth, $b.offsetHeight, 'body');
 
 /***/ }),
 /* 2 */
@@ -6999,21 +6999,22 @@ var actx = new AudioContext();
 var media = './asset/miku.mp3';
 
 var loadAudio = function loadAudio(url) {
-
   var xhr = new window.XMLHttpRequest();
-  xhr.open('GET', media, true);
+  xhr.open('GET', url, true);
   xhr.responseType = 'arraybuffer';
   return new Promise(function (resolve) {
+    var $precent = document.querySelector('#precent');
+    $precent.style.display = 'block';
     xhr.onload = function () {
+      $precent.style.display = 'none';
       // resolve(xhr.response)
       analyser = actx.createAnalyser();
-      analyser.fftSize = 1024;
+      analyser.fftSize = 2048;
       analyser.smoothingTimeConstant = 0.8;
       actx.decodeAudioData(xhr.response, function (buffer) {
         var asource = actx.createBufferSource();
         asource.buffer = buffer;
         asource.loop = true;
-
         var splitter = actx.createChannelSplitter();
         asource.connect(splitter);
         splitter.connect(analyser, 0, 0);
@@ -7021,6 +7022,15 @@ var loadAudio = function loadAudio(url) {
         asource.start();
         resolve();
       });
+    };
+    xhr.onprogress = function (o) {
+      // console.log(o);
+      // loaded: 2574559, total: 2679663
+      var loaded = o.loaded,
+          total = o.total;
+
+
+      $precent.textContent = Math.round(loaded / total * 100) + '%';
     };
     xhr.send();
   });
@@ -7082,9 +7092,9 @@ loadAudio(media).then(function (data) {
     var avg = getAvg(frequencyData);
 
     analyser.getByteFrequencyData(frequencyData);
-    fqbBot.render(frequencyData);
-    fqbTop.render(frequencyData);
-    variants.render(frequencyData, avg);
+    fqbBot.update(frequencyData);
+    fqbTop.update(frequencyData);
+    variants.update(frequencyData, avg);
     text.scaleX = text.scaleY = 1 + avg * 0.01;
     _stage2.default.update();
   })();
@@ -7213,8 +7223,8 @@ var Variants = function (_cax$Group2) {
   }
 
   _createClass(Variants, [{
-    key: 'render',
-    value: function render(frequencyData, avg) {
+    key: 'update',
+    value: function update(frequencyData, avg) {
       var _this3 = this;
 
       this.h += 0.1;
@@ -7304,8 +7314,8 @@ var FrequencyBars = function (_cax$Group) {
   }
 
   _createClass(FrequencyBars, [{
-    key: 'render',
-    value: function render(frequencyData) {
+    key: 'update',
+    value: function update(frequencyData) {
       var pFrequency = frequencyData.length / this.num | 0;
       var frequencyStep = 0;
       this.rects.forEach(function (o, i) {
