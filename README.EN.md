@@ -114,9 +114,9 @@ English | [简体中文](./README.md)
 </tr>
 
 <tr>
-<td align="center"><a title="Astar" href="https://dntzhang.github.io/wechart/packages/astar/" rel="nofollow"><img alt="Astar" src="./asset/c98.png" style="max-width:100%;"></a></td>
-<td align="center"><a href="https://github.com/dntzhang/wechart/blob/master/packages/astar">Source</a></td>
-<td align="center">dntzhang</td>
+<td align="center"><a title="Astar" href="https://dntzhang.github.io/wechart/packages/astar/" rel="nofollow"><img alt="Astar" src="./asset/c98.png" style="max-width:100%;"></a><br><a href="https://github.com/dntzhang/wechart/blob/master/packages/astar">Astar</a> by dntzhang</td>
+<td>Coming</td>
+<td>Coming</td>
 </tr>
 
 </tbody></table>
