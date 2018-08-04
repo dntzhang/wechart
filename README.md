@@ -15,6 +15,21 @@
 </tr>
 </thead>
 <tbody>
+
+<tr>
+<td align="center">
+<a title="Dragonbones" href="
+https://dntzhang.github.io/wechart/packages/cax-dragonbones/examples/simple/index.html" rel="nofollow"><img alt="Dragonbones" src="./asset/c94.jpg" style="max-width:100%;"></a><br>
+<a href="https://github.com/dntzhang/wechart/tree/master/packages/Dragonbones/">Cax + Dragonbones</a> by <a href="https://github.com/06wj">06wj</a> & dntzhang</a>
+</td>
+
+
+<td align="center"><a title="Skatch" href="https://dntzhang.github.io/wechart/packages/skatch/examples/simple/" rel="nofollow"><img alt="Skatch" src="./asset/c96.jpg" style="max-width:100%;"></a><br><a href="https://github.com/dntzhang/wechart/blob/master/packages/skatch/">Skatch</a> by dntzhang</td>
+
+<td align="center">Coming
+</td>
+</tr>
+
 <tr>
 
 <td align="center">
@@ -36,7 +51,7 @@
 <tr>
 <td align="center"><a title="Word Penetrating" href="https://dntzhang.github.io/wechart/packages/word-penetrating/examples/simple/" rel="nofollow"><img alt="Word Penetrating" src="./asset/c97.png" style="max-width:100%;"></a><br><a href="https://github.com/dntzhang/wechart/blob/master/packages/word-penetrating/examples/simple/">Word Penetrating</a> by dntzhang</td>
 
-<td align="center"><a title="Skatch" href="https://dntzhang.github.io/wechart/packages/skatch/examples/simple/" rel="nofollow"><img alt="Skatch" src="./asset/c96.jpg" style="max-width:100%;"></a><br><a href="https://github.com/dntzhang/wechart/blob/master/packages/skatch/">Skatch</a> by dntzhang</td>
+<td align="center"><a title="Astar" href="https://dntzhang.github.io/wechart/packages/astar/" rel="nofollow"><img alt="Astar" src="./asset/c98.png" style="max-width:100%;"></a><br><a href="https://github.com/dntzhang/wechart/blob/master/packages/astar">Astar</a> by dntzhang</td>
 
 <td align="center"><a title="Filter" href="https://dntzhang.github.io/wechart/packages/filter/examples/simple/" rel="nofollow"><img alt="Filter" src="./asset/c99.png" style="max-width:100%;"></a><br><a href="https://github.com/dntzhang/wechart/blob/master/packages/filter/examples/simple/main.js">Filter</a> by dntzhang</td>
 </tr>
@@ -111,12 +126,6 @@
 <td align="center"><a title="Texture Mapping" href="https://dntzhang.github.io/wechart/packages/texture-mapping/examples/simple/" rel="nofollow"><img alt="Texture Mapping" src="./asset/c27.png" style="max-width:100%;"></a><br><a href="https://github.com/dntzhang/wechart/blob/master/packages/texture-mapping/">Texture Mapping</a> by dntzhang</td>
 
 <td align="center"><a title="Heatmap" href="https://dntzhang.github.io/wechart/packages/heatmap/examples/simple/" rel="nofollow"><img alt="Heatmap" src="./asset/c32.png" style="max-width:100%;"></a><br><a href="https://github.com/dntzhang/wechart/blob/master/packages/heatmap/">Heatmap</a> by dntzhang</td>
-</tr>
-
-<tr>
-<td align="center"><a title="Astar" href="https://dntzhang.github.io/wechart/packages/astar/" rel="nofollow"><img alt="Astar" src="./asset/c98.png" style="max-width:100%;"></a><br><a href="https://github.com/dntzhang/wechart/blob/master/packages/astar">Astar</a> by dntzhang</td>
-<td align="center">Coming</td>
-<td align="center">Coming</td>
 </tr>
 
 </tbody></table>
