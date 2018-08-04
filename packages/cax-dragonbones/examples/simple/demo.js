@@ -71,7 +71,7 @@ var demo = {
     },
     bindEvent:function(){
         var that = this;
-        window.onclick = window.ontouchstart = function(){
+        window.onclick  = function(){
             if(that.armature.animation._animationList.length > 1){
                 that.play();
             }
