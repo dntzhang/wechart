@@ -28,10 +28,14 @@ const pyramid = new MagicCube({
 
 let { rotateControl } = pyramid
 
-rotateControl.add('x', 1)
-rotateControl.add('y', 2)
-rotateControl.add('z', 1)
-rotateControl.start()
+rotateControl.add('x', 1);
+rotateControl.add('y', 2);
+rotateControl.add('z', 1);
+
+rotateControl.run();
+
+rotateControl.trigger('x', 1);
+rotateControl.trigger('y', 1);
 
 group.add(pyramid)
 scene.add(group)
