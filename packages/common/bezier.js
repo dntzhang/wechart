@@ -34,23 +34,22 @@ export function slopeByPoints(p1x, p1y, c1x, c1y, c2x, c2y, p2x, p2y, t) {
 }
 
 export function slope(points, t, dt) {
-  let p1 = getValue(points, t),
-    p2 = getValue(points, t + (dt || 0.01)),
-    dy = p2.y - p1.y, dx = p2.x - p1.x;
-  return dy == 0 ? Infinity : Math.atan(dy / dx);
 
-  // let p1x =points[0], p1y=points[1], c1x=points[2], c1y=points[3], c2x=points[4], c2y=points[5], p2x=points[6], p2y=points[7]
-  // let ax = p1x * 3 - c1x * 9 + 9 * c2x - 3 * p2x
-  // let bx = c1x * 6 - 12 * c2x + 6 * p2x
-  // let cx = 3 * c2x - 3 * p2x
+  //P(t) = (1 - t)^3 * P0 + 3t(1-t)^2 * P1 + 3t^2 (1-t) * P2 + t^3 * P3
+  //dP(t) / dt = -3(1-t)^2 * P0 + 3(1-t)^2 * P1 - 6t(1-t) * P1 - 3t^2 * P2 + 6t(1-t) * P2 + 3t^2 * P3 
+  const  p1x =points[0], p1y=points[1], c1x=points[2], c1y=points[3], c2x=points[4], c2y=points[5], p2x=points[6], p2y=points[7]
+  const t1 = 1 - t
+  const  t1Sqr = t1 * t1
+  const tSqr = t* t 
 
-  // let ay = p1y * 3 - c1y * 9 + 9 * c2y - 3 * p2y
-  // let by = c1y * 6 - 12 * c2y + 6 * p2y
-  // let cy = 3 * c2y - 3 * p2y
+  const dx = -3* t1Sqr*  p1x +3*t1Sqr*c1x - 6*t*t1*c1x - 3*tSqr*c2x+6*t*t1*c2x+3*tSqr*p2x
+  const dy = -3* t1Sqr * p1y +3*t1Sqr*c1y - 6*t*t1*c1y - 3*tSqr*c2y+6*t*t1*c2y+3*tSqr*p2y
+  return dy == 0 ? Infinity : Math.atan(dy / dx)
 
-  // let sqt = t * t
-
-  // return Math.atan((ay * sqt + by * t + cy) / (ax * sqt + bx * t + cx))
+  // let p1 = getValue(points, t),
+  // p2 = getValue(points, t + (dt || 0.01)),
+  // dy = p2.y - p1.y, dx = p2.x - p1.x;
+  // return dy == 0 ? Infinity : Math.atan(dy / dx);
 }
 
 export function getValueByPoints(p1x, p1y, c1x, c1y, c2x, c2y, p2x, p2y, t) {

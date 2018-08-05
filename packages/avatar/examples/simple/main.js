@@ -98,20 +98,18 @@ const loader = new Loader({
 
     let tag = false
 
-    
     document.querySelector('#btnA').addEventListener('click', () => {
-      if(tag){
+      if (tag) {
         groupA.compositeOperation = 'source-atop'
         group.uncache()
         group.cache(0, 0, 400, 800)
-      }else{
+      } else {
         groupA.compositeOperation = 'source-over'
         group.uncache()
         group.cache(0, 0, 400, 800)
       }
       tag = !tag
     })
-
   }
 })
 

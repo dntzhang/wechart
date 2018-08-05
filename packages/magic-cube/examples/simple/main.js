@@ -14,8 +14,8 @@ const controls = new THREE.OrbitControls(camera, renderer.domElement)
 const group = new THREE.Group()
 
 const pyramid = new MagicCube({
-  size:100,
-  control:{
+  size: 100,
+  control: {
     camera,
     controls
   },
@@ -26,7 +26,7 @@ const pyramid = new MagicCube({
   }
 })
 
-let { rotateControl } = pyramid;
+let { rotateControl } = pyramid
 
 rotateControl.add('x', 1);
 rotateControl.add('y', 2);
@@ -52,7 +52,6 @@ var raycaster = new THREE.Raycaster()
 var mouse = new THREE.Vector2()
 
 function animate () {
-
   requestAnimationFrame(animate)
   renderer.render(scene, camera)
   controls.update()

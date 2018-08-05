@@ -36,8 +36,6 @@ document.querySelector('#tgBtn').addEventListener('click', () => {
   tag = !tag
 })
 
-
-
 // const g = new cax.Graphics()
 // g.moveTo(123, 91)
 // //均匀分布控制点，防止速度前快后慢，因为 getPosition是根据路程求 t

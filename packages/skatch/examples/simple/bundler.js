@@ -73,7 +73,7 @@
 var _typeof2 = typeof Symbol === "function" && typeof Symbol.iterator === "symbol" ? function (obj) { return typeof obj; } : function (obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj; };
 
 /*!
- *  cax v1.2.1
+ *  cax v1.2.3
  *  By https://github.com/dntzhang 
  *  Github: https://github.com/dntzhang/cax
  *  MIT Licensed.
@@ -3404,6 +3404,34 @@ var _typeof2 = typeof Symbol === "function" && typeof Symbol.iterator === "symbo
         _to2.default.easing[itemLower + 'InOut'] = _tween2.default.Easing[item].InOut;
       });
 
+      cax.loadImg = function (option) {
+        var img = new Image();
+        img.onload = function () {
+          option.complete(this);
+        };
+        img.src = option.img;
+      };
+
+      cax.loadImgs = function (option) {
+        var result = [];
+        var loaded = 0;
+        var len = option.imgs.length;
+        option.imgs.forEach(function (src, index) {
+          var img = new Image();
+          img.onload = function (i, img) {
+            return function () {
+              result[i] = img;
+              loaded++;
+              option.progress && option.progress(loaded / len, loaded, i, img, result);
+              if (loaded === len) {
+                option.complete && option.complete(result);
+              }
+            };
+          }(index, img);
+          img.src = src;
+        });
+      };
+
       module.exports = cax;
 
       /***/
@@ -4027,6 +4055,9 @@ var _typeof2 = typeof Symbol === "function" && typeof Symbol.iterator === "symbo
         }, {
           key: '_setCursor',
           value: function _setCursor(obj) {
+            if (!this.canvas.style) {
+              return;
+            }
             if (obj.cursor) {
               this.canvas.style.cursor = obj.cursor;
             } else if (obj.parent) {
@@ -6942,8 +6973,7 @@ document.querySelector('#refreshBtn').addEventListener('click', function () {
 });
 
 function render() {
-
-  var ss = new _src2.default.Shape({
+  var skatch = new _src2.default({
     gap: 5,
     randomRange: 4,
     fillAngle: -45,
@@ -6956,19 +6986,23 @@ function render() {
     fillStyle: '#ee5c63'
   });
 
-  stage.add(ss);
+  stage.add(skatch);
 
-  ss.rect(50, 80, 100, 100);
+  skatch.rect(50, 70, 80, 100);
 
-  ss.circle(310, 280, 50, { fillStyle: '#f5a431' });
+  skatch.circle(310, 220, 30, { fillStyle: '#f5a431' });
 
-  ss.ellipse(290, 120, 160, 80, { fillStyle: '#459130' });
+  skatch.ellipse(290, 120, 160, 80, { fillStyle: '#459130' });
 
-  var ss2 = new _src2.default.Shape({
+  skatch.polygon([[200, 10], [150, 70], [250, 70]], { fillStyle: 'blue', fillAngle: 45, fillRepeat: 4, fillWidth: 4 });
+
+  skatch.sector(300, 300, 40, Math.PI / 3, Math.PI * 2, { strokeRepeat: 3, fillStyle: '#A37AC1' });
+
+  var skatch2 = new _src2.default({
     gap: 5,
     randomRange: 10,
     fillAngle: -45,
-    strokeRepeat: 12,
+    strokeRepeat: 2,
     curveRange: 45,
     fillRepeat: 2,
     strokeWidth: 1,
@@ -6977,33 +7011,21 @@ function render() {
     fillStyle: '#6aa8df',
     filter: 0.8
   });
-  ss2.path('M595,82.1c1,1-1,2-1,2s-6.9,2-8.9,4.9c-2,2-4.9,8.8-4.9,8.8c3.9-1,8.9-2,13.8-4c1,0,2,1,3,2c1,0-11.8,4.9-14.8,6.9c-2,2-11.8,9.9-14.8,9.9c-2.9,0-9.9,1-9.9,1c1,2,2,3.9,3.9,6.9c0,0-6.9,4-6.9,4.9c-1,1-5.9,6.9-5.9,6.9s17.7,1.9,23.6-7.9c-5.9,9.8-19.7,19.7-48.2,19.7c-29.5,0-53.1-11.8-68.9-17.7c-16.7-6.9-38.4-14.8-56.1-14.8c-16.7,0-36.4,4.9-49.2,16.8c-22.6-8.8-54.1-4-68.9,9.8c-13.8,13.8-27.5,30.5-29.5,42.3c-2.9,12.9-9.8,43.3-19.7,57.2c-13.8,22.5-29.5,28.5-34.5,38.3c-4.9,9.9-4.9,30.5-4,30.5c2,1,8.9,0,12.8-2c7.9-2.9,29.5-25.6,37.4-36.4c7.9-10.9,34.5-58.1,38.4-74.8s7.9-33.5,19.7-42.3c12.8-8.8,28.5-4.9,28.5-3.9c0,0-14.7,11.8-15.7,44.3s18.7,28.6,8.8,49.2c-9.9,17.7-39.3,5.9-49.2,16.7c-7.9,8.9,0,40.3,0,46.2c0,6-3,33.5-4.9,40.4c-1,5.9,0,9.8-1,13.8c-1,3,6,3.9,6,3.9s-6,7.8-8.9,5.9c-2.9-1-4.9-1-6.9,0c-2,0-5.9,1.9-9.9,0L232.9,401c2,1,4.9,1.9,7.9,1c4-1,23.6-9.9,25.6-11.9c2.9-1,19.7-10.8,22.6-16.7c2-5.9,5.9-24.6,5.9-30.5c1-6,2-24.6,2-29.5s-1-13.8,0-17.7c2-2.9,4.9-6.9,8.9-8.9c4.9-1,10.8-1,11.8-1c2,0,18.7,2,21.6,2c3.9,0,19.7-2.9,23.6-5c4.9-0.9,7.8,0,8.9,2c2,1.9-2,4.9-2,5.9c-1,1-8.8,10.8-10.8,14.7c-2,4.9-8.8,13.8-6.9,17.7c2,3.9,2,4.9,7.8,7.9c5.9,1.9,28.5,13.8,41.3,25.6c13.8,12.7,26.6,28.4,28.6,36.4c2.9,8.9,7.8,9.8,10.8,9.8c3,1,8.9,2,8.9,5.9s-1,8.8-1,8.8l36.4,13.8c0,0,0-12.8-1-17.7c-1-5.9-6.9-11.8-11.8-17.7c-4.9-6.9-56-57.1-61-61c-4.9-3-8.9-6.9-9.8-14.7c-1-7.9,8.8-13.8,14.8-20.6c3.9-4.9,14.7-27.6,16.7-30.6c2-2.9,8.9-10.8,12.8-10.8c4.9,0,15.8,6.9,29.5,11.8c5.9,2,48.2,12.8,54.1,14.8c5.9,1,18.6,0,22.6,3.9c3.9,2.9,0,10.9-1,15.8c-1,5.9-11.8,27.5-11.8,27.5s2,7.8,2,13.8c0,6.9-2.9,31.5-5.9,39.3c-2,8.9-15.8,31.6-18.7,35.5c-2,2.9-4.9,4.9-4.9,9.9c0,4.9,8.8,6,11.8,9.8c4,3,1,8.8,0,14.8l39.4,16.7c0-2.9,2-7.9,0-9.9c-1-2.9-5.9-8.8-8.8-12.8c-2-2.9-8.9-13.8-10.8-15.8c-2-2.9-2-8.8,0-13.8c1-4.9,13.8-38.3,14.7-42.3c2-4.9,20.7-44.3,22.6-49.2c2-5.9,17.7-34.4,19.7-39.4c2-5.9,14.8-10.8,18.7-10.8c4.9,0,29.5,8.8,33.4,10.8c2.9,1,25.6,10.9,29.5,12.8c4.9,1.9,2,5.9-1,6.9c-2.9,1.9-39.4,26.5-42.3,27.5c-2.9,1-5.9,3.9-7.9,3.9c-2.9,0-6.9,3.1-6.9,4c0,2-1,5.9-5.9,5.9c-3.9,0-11.8-5.9-16.7-11.8c-6.9,3.9-11.8,6.9-14.8,12.8c-4.9,4.9-6.9,8.9-9.8,15.8c2,2,5.9,2.9,8.8,2.9h31.5c3,0,6.9-0.9,9.9-1.9c2.9-2,80.7-53.1,80.7-53.1s12.8-9.9,12.8-18.7c0-6.9-5.9-8.9-7.9-11.8c-3-1.9-20.7-13.8-23.6-15.7c-4-2.9-17.7-10.9-21.6-12.9c-3-1.9-13.8-5.8-13.8-5.8c3-8.9,5-15.8,5.9-17.7c1-2,1-19.7,2-22.7c0-2.9,5-15.7,6.9-17.7c2-2,6.9-17.7,7.9-20.7c1-1.9,8.8-24.6,12.8-24.6c3.9-1,7.9,2.9,11.8,2.9c4,1,18.7-1,26.6,0c6.9,1,15.8,9.9,17.7,10.8c2.9,1,9.8,3.9,11.8,3.9c1,0,10.8-6.9,10.8-8.8c0-2-6.9-5.9-7.9-5.9c-1-1-7.8-4.9-7.8-4.9c0,1,2.9-1.9,7.8-1.9c3.9,0,7.9,3.9,8.8,4.9c2,1,6.9,3.9,7.9,1.9c1-1,4.9-5.9,4.9-8.9c0-4-3.9-8.8-5.9-10.8s-24.6-23.6-26.6-24.6c-2.9-1-14.7-11.8-14.7-14.7c-1-2-6.9-6.9-7.9-7.9s-30.5-21.6-34.5-24.6c-3.9-2.9-7.9-7.8-7.9-12.7s-2-17.7-2-17.7s-6.9-1-9.8,1.9c-2.9,2-9.8,17.8-13.8,17.8c-10.9-2-24.6,1-24.6,2.9c1,2.9,10.8,1,10.8,1c0,1-3.9,5.9-6.9,5.9c-2,0-7.8,2-8.8,2.9c-2,0-5.9,3.1-5.9,3.1c2.9,0,5.9,0,9.8,0.9c0,0-5.9,4-8.9,4c-2.9,0-12.8,2.9-15.7,3.9c-2,1.9-9.9,7.9-9.9,7.9H589l1,2h4.9L595,82.1L595,82.1z');
+  skatch2.path('M595,82.1c1,1-1,2-1,2s-6.9,2-8.9,4.9c-2,2-4.9,8.8-4.9,8.8c3.9-1,8.9-2,13.8-4c1,0,2,1,3,2c1,0-11.8,4.9-14.8,6.9c-2,2-11.8,9.9-14.8,9.9c-2.9,0-9.9,1-9.9,1c1,2,2,3.9,3.9,6.9c0,0-6.9,4-6.9,4.9c-1,1-5.9,6.9-5.9,6.9s17.7,1.9,23.6-7.9c-5.9,9.8-19.7,19.7-48.2,19.7c-29.5,0-53.1-11.8-68.9-17.7c-16.7-6.9-38.4-14.8-56.1-14.8c-16.7,0-36.4,4.9-49.2,16.8c-22.6-8.8-54.1-4-68.9,9.8c-13.8,13.8-27.5,30.5-29.5,42.3c-2.9,12.9-9.8,43.3-19.7,57.2c-13.8,22.5-29.5,28.5-34.5,38.3c-4.9,9.9-4.9,30.5-4,30.5c2,1,8.9,0,12.8-2c7.9-2.9,29.5-25.6,37.4-36.4c7.9-10.9,34.5-58.1,38.4-74.8s7.9-33.5,19.7-42.3c12.8-8.8,28.5-4.9,28.5-3.9c0,0-14.7,11.8-15.7,44.3s18.7,28.6,8.8,49.2c-9.9,17.7-39.3,5.9-49.2,16.7c-7.9,8.9,0,40.3,0,46.2c0,6-3,33.5-4.9,40.4c-1,5.9,0,9.8-1,13.8c-1,3,6,3.9,6,3.9s-6,7.8-8.9,5.9c-2.9-1-4.9-1-6.9,0c-2,0-5.9,1.9-9.9,0L232.9,401c2,1,4.9,1.9,7.9,1c4-1,23.6-9.9,25.6-11.9c2.9-1,19.7-10.8,22.6-16.7c2-5.9,5.9-24.6,5.9-30.5c1-6,2-24.6,2-29.5s-1-13.8,0-17.7c2-2.9,4.9-6.9,8.9-8.9c4.9-1,10.8-1,11.8-1c2,0,18.7,2,21.6,2c3.9,0,19.7-2.9,23.6-5c4.9-0.9,7.8,0,8.9,2c2,1.9-2,4.9-2,5.9c-1,1-8.8,10.8-10.8,14.7c-2,4.9-8.8,13.8-6.9,17.7c2,3.9,2,4.9,7.8,7.9c5.9,1.9,28.5,13.8,41.3,25.6c13.8,12.7,26.6,28.4,28.6,36.4c2.9,8.9,7.8,9.8,10.8,9.8c3,1,8.9,2,8.9,5.9s-1,8.8-1,8.8l36.4,13.8c0,0,0-12.8-1-17.7c-1-5.9-6.9-11.8-11.8-17.7c-4.9-6.9-56-57.1-61-61c-4.9-3-8.9-6.9-9.8-14.7c-1-7.9,8.8-13.8,14.8-20.6c3.9-4.9,14.7-27.6,16.7-30.6c2-2.9,8.9-10.8,12.8-10.8c4.9,0,15.8,6.9,29.5,11.8c5.9,2,48.2,12.8,54.1,14.8c5.9,1,18.6,0,22.6,3.9c3.9,2.9,0,10.9-1,15.8c-1,5.9-11.8,27.5-11.8,27.5s2,7.8,2,13.8c0,6.9-2.9,31.5-5.9,39.3c-2,8.9-15.8,31.6-18.7,35.5c-2,2.9-4.9,4.9-4.9,9.9c0,4.9,8.8,6,11.8,9.8c4,3,1,8.8,0,14.8l39.4,16.7c0-2.9,2-7.9,0-9.9c-1-2.9-5.9-8.8-8.8-12.8c-2-2.9-8.9-13.8-10.8-15.8c-2-2.9-2-8.8,0-13.8c1-4.9,13.8-38.3,14.7-42.3c2-4.9,20.7-44.3,22.6-49.2c2-5.9,17.7-34.4,19.7-39.4c2-5.9,14.8-10.8,18.7-10.8c4.9,0,29.5,8.8,33.4,10.8c2.9,1,25.6,10.9,29.5,12.8c4.9,1.9,2,5.9-1,6.9c-2.9,1.9-39.4,26.5-42.3,27.5c-2.9,1-5.9,3.9-7.9,3.9c-2.9,0-6.9,3.1-6.9,4c0,2-1,5.9-5.9,5.9c-3.9,0-11.8-5.9-16.7-11.8c-6.9,3.9-11.8,6.9-14.8,12.8c-4.9,4.9-6.9,8.9-9.8,15.8c2,2,5.9,2.9,8.8,2.9h31.5c3,0,6.9-0.9,9.9-1.9c2.9-2,80.7-53.1,80.7-53.1s12.8-9.9,12.8-18.7c0-6.9-5.9-8.9-7.9-11.8c-3-1.9-20.7-13.8-23.6-15.7c-4-2.9-17.7-10.9-21.6-12.9c-3-1.9-13.8-5.8-13.8-5.8c3-8.9,5-15.8,5.9-17.7c1-2,1-19.7,2-22.7c0-2.9,5-15.7,6.9-17.7c2-2,6.9-17.7,7.9-20.7c1-1.9,8.8-24.6,12.8-24.6c3.9-1,7.9,2.9,11.8,2.9c4,1,18.7-1,26.6,0c6.9,1,15.8,9.9,17.7,10.8c2.9,1,9.8,3.9,11.8,3.9c1,0,10.8-6.9,10.8-8.8c0-2-6.9-5.9-7.9-5.9c-1-1-7.8-4.9-7.8-4.9c0,1,2.9-1.9,7.8-1.9c3.9,0,7.9,3.9,8.8,4.9c2,1,6.9,3.9,7.9,1.9c1-1,4.9-5.9,4.9-8.9c0-4-3.9-8.8-5.9-10.8s-24.6-23.6-26.6-24.6c-2.9-1-14.7-11.8-14.7-14.7c-1-2-6.9-6.9-7.9-7.9s-30.5-21.6-34.5-24.6c-3.9-2.9-7.9-7.8-7.9-12.7s-2-17.7-2-17.7s-6.9-1-9.8,1.9c-2.9,2-9.8,17.8-13.8,17.8c-10.9-2-24.6,1-24.6,2.9c1,2.9,10.8,1,10.8,1c0,1-3.9,5.9-6.9,5.9c-2,0-7.8,2-8.8,2.9c-2,0-5.9,3.1-5.9,3.1c2.9,0,5.9,0,9.8,0.9c0,0-5.9,4-8.9,4c-2.9,0-12.8,2.9-15.7,3.9c-2,1.9-9.9,7.9-9.9,7.9H589l1,2h4.9L595,82.1L595,82.1z');
 
-  stage.add(ss2);
-  ss2.y = 160;
-  ss2.x = -50;
-  ss2.scaleX = ss2.scaleY = 0.4;
+  stage.add(skatch2);
+  skatch2.y = 160;
+  skatch2.x = -50;
+  skatch2.scaleX = skatch2.scaleY = 0.4;
+
+  // skatch.line(300,100,200,200,{ strokeRepeat: 3})
+
+  // skatch.curve(100,100,150,0,200,200,250,100,{ strokeRepeat: 5})
+
+  // skatch.arc (100, 100, 100,100,Math.PI/3, Math.PI*2 ,{ strokeRepeat:3} )
+
+  //  skatch.linearPath ([[100,100],[200,200],[300,100]],{ strokeRepeat: 3})
 }
-// const sg = new sketch.Graphics({
-//   randomRange: 4,
-//   strokeRepeat: 1,
-//   curveRange: 45,
-//   strokeWidth: 1,
-//   strokeStyle: 'black'
-// })
-
-
-// sg.beginPath()
-// .moveTo(100, 100)
-// .lineTo(100, 200)
-// .lineTo(200, 200)
-// .lineTo(200, 100)
-// .lineTo(100, 100)
-// .stroke()
-
-
-// sg.y = 120
-// stage.add(sg)
 
 /***/ }),
 /* 2 */
@@ -7043,32 +7065,6 @@ module.exports = function (module) {
 
 
 Object.defineProperty(exports, "__esModule", {
-    value: true
-});
-
-var _graphics = __webpack_require__(4);
-
-var _graphics2 = _interopRequireDefault(_graphics);
-
-var _shape = __webpack_require__(5);
-
-var _shape2 = _interopRequireDefault(_shape);
-
-function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
-
-exports.default = {
-    Graphics: _graphics2.default,
-    Shape: _shape2.default
-};
-
-/***/ }),
-/* 4 */
-/***/ (function(module, exports, __webpack_require__) {
-
-"use strict";
-
-
-Object.defineProperty(exports, "__esModule", {
   value: true
 });
 
@@ -7078,6 +7074,22 @@ var _cax = __webpack_require__(0);
 
 var _cax2 = _interopRequireDefault(_cax);
 
+var _ellipse = __webpack_require__(4);
+
+var _ellipse2 = _interopRequireDefault(_ellipse);
+
+var _fillRect2 = __webpack_require__(5);
+
+var _fillRect3 = _interopRequireDefault(_fillRect2);
+
+var _pathToShapes = __webpack_require__(6);
+
+var _pathToShapes2 = _interopRequireDefault(_pathToShapes);
+
+var _arc2bezier = __webpack_require__(9);
+
+var _arc2bezier2 = _interopRequireDefault(_arc2bezier);
+
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
 function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
@@ -7086,26 +7098,13 @@ function _possibleConstructorReturn(self, call) { if (!self) { throw new Referen
 
 function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
 
-var assMap = {
-  fillStyle: true,
-  strokeStyle: true,
-  lineWidth: true,
-  lineCap: true,
-  lineDashOffset: true,
-  lineJoin: true,
-  miterLimit: true
-};
+var Skatch = function (_cax$Group) {
+  _inherits(Skatch, _cax$Group);
 
-var Graphics = function (_cax$Group) {
-  _inherits(Graphics, _cax$Group);
+  function Skatch(option) {
+    _classCallCheck(this, Skatch);
 
-  function Graphics(option) {
-    _classCallCheck(this, Graphics);
-
-    var _this = _possibleConstructorReturn(this, (Graphics.__proto__ || Object.getPrototypeOf(Graphics)).call(this));
-
-    _this.cmds = [];
-    _this.currentGradient = null;
+    var _this = _possibleConstructorReturn(this, (Skatch.__proto__ || Object.getPrototypeOf(Skatch)).call(this));
 
     _this.option = Object.assign({
       gap: 5,
@@ -7118,267 +7117,96 @@ var Graphics = function (_cax$Group) {
       strokeStyle: 'black',
       fillStyle: 'black'
     }, option);
-
-    _this.strokeGroup = new _cax2.default.Group();
-    for (var i = 0; i < _this.option.strokeRepeat; i++) {
-      _this.strokeGroup.add(new _cax2.default.Graphics());
-    }
-
-    _this.add(_this.strokeGroup);
     return _this;
   }
 
-  _createClass(Graphics, [{
-    key: 'clearRect',
-    value: function clearRect() {
-      this.cmds.push(['clearRect', arguments]);
-      return this;
+  _createClass(Skatch, [{
+    key: 'linearPath',
+    value: function linearPath(points, option) {
+      var _this2 = this;
+
+      var len = points.length;
+      points.forEach(function (p, index) {
+        if (index < len - 1) {
+          _this2.line(p[0], p[1], points[index + 1][0], points[index + 1][1], option);
+        }
+      });
     }
   }, {
-    key: 'rect',
-    value: function rect() {
-      this.cmds.push(['rect', arguments]);
-      return this;
+    key: 'line',
+    value: function line(x1, y1, x2, y2, option) {
+      var o = Object.assign({}, this.option, option);
+      var g = new _cax2.default.Graphics();
+      g.beginPath().strokeStyle(o.strokeStyle).lineWidth(o.strokeWidth);
+      for (var i = 0; i < o.strokeRepeat; i++) {
+        g.moveTo.apply(g, this._shake(x1, y1));
+        g.lineTo.apply(g, this._shake(x2, y2));
+      }
+      g.stroke();
+      this.add(g);
     }
   }, {
-    key: 'clear',
-    value: function clear() {
-      this.cmds.length = 0;
-      return this;
+    key: 'sector',
+    value: function sector(x, y, r, start, stop, option) {
+      var o = Object.assign({}, this.option, option);
+      this.strokeSector(x, y, r, start, stop, o);
+
+      this.fillSector(x, y, r, start, stop, option);
     }
   }, {
-    key: 'setLineDash',
-    value: function setLineDash() {
-      this.cmds.push(['setLineDash', arguments]);
-      return this;
+    key: 'strokeSector',
+    value: function strokeSector(x, y, r, start, stop, o) {
+      this.arc(x, y, r * 2, r * 2, start, stop, o);
+      this.line(x, y, x + r * Math.cos(start), y + r * Math.sin(start), o);
+      this.line(x, y, x + r * Math.cos(stop), y + r * Math.sin(stop), o);
     }
   }, {
-    key: 'strokeRect',
-    value: function strokeRect() {
-      this.cmds.push(['strokeRect', arguments]);
+    key: 'fillSector',
+    value: function fillSector(x, y, r, start, stop, option) {
+      var bmp = new _cax2.default.Bitmap((0, _fillRect3.default)(r * 2, r * 2, Object.assign({}, this.option, option)));
+      bmp.x = x - r;
+      bmp.y = y - r;
+      var graphics = new _cax2.default.Graphics();
+      graphics.moveTo(r, r).arc(r, r, r, start, stop).closePath();
+      //  graphics.arc(r, r, r, 0, Math.PI * 2)
+      bmp.clip(graphics);
+      this.add(bmp);
       return this;
     }
   }, {
     key: 'arc',
-    value: function arc() {
-      this.cmds.push(['arc', arguments]);
-      return this;
-    }
-  }, {
-    key: 'closePath',
-    value: function closePath() {
-      this.cmds.push(['closePath', arguments]);
-      return this;
-    }
-  }, {
-    key: 'strokeStyle',
-    value: function strokeStyle() {
-      this.cmds.push(['strokeStyle', arguments]);
-      return this;
-    }
-  }, {
-    key: 'lineWidth',
-    value: function lineWidth() {
-      this.cmds.push(['lineWidth', arguments]);
-      return this;
-    }
-  }, {
-    key: 'lineCap',
-    value: function lineCap() {
-      this.cmds.push(['lineCap', arguments]);
-      return this;
-    }
-  }, {
-    key: 'lineDashOffset',
-    value: function lineDashOffset() {
-      this.cmds.push(['lineDashOffset', arguments]);
-      return this;
-    }
-  }, {
-    key: 'lineJoin',
-    value: function lineJoin() {
-      this.cmds.push(['lineJoin', arguments]);
-      return this;
-    }
-  }, {
-    key: 'miterLimit',
-    value: function miterLimit() {
-      this.cmds.push(['miterLimit', arguments]);
-      return this;
-    }
-  }, {
-    key: 'bezierCurveTo',
-    value: function bezierCurveTo() {
-      this.cmds.push(['bezierCurveTo', arguments]);
-      return this;
-    }
-  }, {
-    key: 'quadraticCurveTo',
-    value: function quadraticCurveTo() {
-      this.cmds.push(['quadraticCurveTo', arguments]);
-      return this;
-    }
-  }, {
-    key: 'createRadialGradient',
-    value: function createRadialGradient() {
-      this.cmds.push(['createRadialGradient', arguments]);
-      return this;
-    }
-  }, {
-    key: 'createLinearGradient',
-    value: function createLinearGradient() {
-      this.cmds.push(['createLinearGradient', arguments]);
-      return this;
-    }
-  }, {
-    key: 'addColorStop',
-    value: function addColorStop() {
-      this.cmds.push(['addColorStop', arguments]);
-      return this;
-    }
-  }, {
-    key: 'arcTo',
-    value: function arcTo() {
-      this.cmds.push(['arcTo', arguments]);
-      return this;
-    }
-  }, {
-    key: '_shake',
-    value: function _shake(x, y) {
-      var r = Math.random() * this.option.randomRange;
-      var a = Math.random() * 360 * Math.PI / 180;
-      return [x + r * Math.cos(a), y + r * Math.sin(a)];
-    }
-  }, {
-    key: 'stroke',
-    value: function stroke() {
-      var _this2 = this;
-
-      this.strokeGroup.children.forEach(function (g) {
-        g.strokeStyle(_this2.option.strokeStyle);
-        g.lineWidth(_this2.option.strokeWidth);
-        g.stroke();
-      });
-      return this;
-    }
-  }, {
-    key: 'beginPath',
-    value: function beginPath() {
-      this.strokeGroup.children.forEach(function (g) {
-        g.beginPath();
-      });
-      return this;
-    }
-  }, {
-    key: 'moveTo',
-    value: function moveTo(x, y) {
+    value: function arc(x, y, width, height, start, stop, option) {
       var _this3 = this;
 
-      this.strokeGroup.children.forEach(function (g) {
-        g.moveTo.apply(g, _this3._shake(x, y));
+      var aa = (0, _arc2bezier2.default)(x, y, width, height, start, stop);
+
+      var o = Object.assign({}, this.option, option);
+      var g = new _cax2.default.Graphics();
+      g.strokeStyle(o.strokeStyle).lineWidth(o.strokeWidth);
+      aa.forEach(function (c) {
+        c.push(o);
+        _this3.curve.apply(_this3, c);
       });
-      return this;
     }
   }, {
-    key: 'lineTo',
-    value: function lineTo(x, y) {
-      var _this4 = this;
-
-      this.strokeGroup.children.forEach(function (g) {
-        g.lineTo.apply(g, _this4._shake(x, y));
-      });
-      return this;
+    key: 'curve',
+    value: function curve(x1, y1, cx1, cy1, cx2, cy2, x2, y2, option) {
+      var o = Object.assign({}, this.option, option);
+      var g = new _cax2.default.Graphics();
+      g.beginPath().strokeStyle(o.strokeStyle).lineWidth(o.strokeWidth);
+      for (var i = 0; i < o.strokeRepeat; i++) {
+        g.moveTo.apply(g, this._shake(x1, y1));
+        var c1 = this._shake(cx1, cy1);
+        var c2 = this._shake(cx2, cy2);
+        var p2 = this._shake(x2, y2);
+        g.bezierCurveTo(c1[0], c1[1], c2[0], c2[1], p2[0], p2[1]);
+      }
+      g.stroke();
+      this.add(g);
     }
   }, {
-    key: 'render',
-    value: function render(ctx) {
-      var _this5 = this;
-
-      this.cmds.forEach(function (cmd) {
-        var methodName = cmd[0];
-        if (assMap[methodName]) {
-          ctx[methodName] = cmd[1][0];
-        } else if (methodName === 'addColorStop') {
-          _this5.currentGradient && _this5.currentGradient.addColorStop(cmd[1][0], cmd[1][1]);
-        } else {
-          var result = ctx[methodName].apply(ctx, Array.prototype.slice.call(cmd[1]));
-          if (methodName === 'createRadialGradient' || methodName === 'createLinearGradient') {
-            _this5.currentGradient = result;
-          }
-        }
-      });
-    }
-  }]);
-
-  return Graphics;
-}(_cax2.default.Group);
-
-exports.default = Graphics;
-
-/***/ }),
-/* 5 */
-/***/ (function(module, exports, __webpack_require__) {
-
-"use strict";
-
-
-Object.defineProperty(exports, "__esModule", {
-  value: true
-});
-
-var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
-
-var _cax = __webpack_require__(0);
-
-var _cax2 = _interopRequireDefault(_cax);
-
-var _ellipse = __webpack_require__(6);
-
-var _ellipse2 = _interopRequireDefault(_ellipse);
-
-var _fillRect2 = __webpack_require__(7);
-
-var _fillRect3 = _interopRequireDefault(_fillRect2);
-
-var _pathToShapes = __webpack_require__(8);
-
-var _pathToShapes2 = _interopRequireDefault(_pathToShapes);
-
-function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
-
-function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
-
-function _possibleConstructorReturn(self, call) { if (!self) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return call && (typeof call === "object" || typeof call === "function") ? call : self; }
-
-function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
-
-var SketchShape = function (_cax$Group) {
-  _inherits(SketchShape, _cax$Group);
-
-  function SketchShape(option) {
-    _classCallCheck(this, SketchShape);
-
-    var _this = _possibleConstructorReturn(this, (SketchShape.__proto__ || Object.getPrototypeOf(SketchShape)).call(this));
-
-    _this.option = Object.assign({
-      gap: 5,
-      randomRange: 4,
-      fillAngle: -45,
-      strokeRepeat: 2,
-      fillRepeat: 2,
-      strokeWidth: 1,
-      fillWidth: 1,
-      strokeStyle: 'black',
-      fillStyle: 'black'
-    }, option);
-
-    return _this;
-  }
-
-  _createClass(SketchShape, [{
     key: 'fillCircle',
     value: function fillCircle(x, y, r, option) {
-
       var bmp = new _cax2.default.Bitmap((0, _fillRect3.default)(r * 2, r * 2, Object.assign({}, this.option, option)));
       bmp.x = x - r;
       bmp.y = y - r;
@@ -7391,7 +7219,6 @@ var SketchShape = function (_cax$Group) {
   }, {
     key: 'fillEllipse',
     value: function fillEllipse(x, y, w, h, option) {
-
       var bmp = new _cax2.default.Bitmap((0, _fillRect3.default)(w, h, Object.assign({}, this.option, option)));
       bmp.x = x - w / 2;
       bmp.y = y - h / 2;
@@ -7426,9 +7253,67 @@ var SketchShape = function (_cax$Group) {
       ellipse.y = y;
       ellipse.originX = w / 2;
       ellipse.originY = h / 2;
-      //ellipse.rotation = Math.random()*360
+      // ellipse.rotation = Math.random()*360
 
       this.add(ellipse);
+    }
+  }, {
+    key: 'polygon',
+    value: function polygon(vertices, option) {
+      var o = Object.assign({}, this.option, option);
+      this.fillPolygon(vertices, o);
+      this.strokePolygon(vertices, o);
+    }
+  }, {
+    key: 'strokePolygon',
+    value: function strokePolygon(vertices, option) {
+      var _this4 = this;
+
+      var polygon = new _cax2.default.Graphics();
+      for (var i = 0; i < option.strokeRepeat; i++) {
+        polygon.beginPath();
+        vertices.forEach(function (v, i) {
+          polygon[i === 0 ? 'moveTo' : 'lineTo'].apply(polygon, _this4._shake(v[0], v[1]));
+        });
+        polygon.lineTo.apply(polygon, this._shake(vertices[0][0], vertices[0][1]));
+        polygon.stroke();
+      }
+      this.add(polygon);
+    }
+  }, {
+    key: 'fillPolygon',
+    value: function fillPolygon(vertices, option) {
+      var box = this._getPolygonBox(vertices);
+      var bmp = new _cax2.default.Bitmap((0, _fillRect3.default)(box[2], box[3], Object.assign({}, this.option, option)));
+      bmp.x = box[0];
+      bmp.y = box[1];
+      var g = new _cax2.default.Graphics();
+      vertices.forEach(function (v, i) {
+        g[i === 0 ? 'moveTo' : 'lineTo'](v[0], v[1]);
+      });
+      g.lineTo(vertices[0][0], vertices[0][1]);
+      g.x = box[0] * -1;
+      g.y = box[1] * -1;
+      bmp.clip(g);
+      this.add(bmp);
+      return this;
+    }
+  }, {
+    key: '_getPolygonBox',
+    value: function _getPolygonBox(vertices) {
+      var minX = vertices[0][0],
+          minY = vertices[0][1],
+          maxX = minX,
+          maxY = minY;
+
+      vertices.forEach(function (v) {
+        minX = Math.min(minX, v[0]);
+        maxX = Math.max(maxX, v[0]);
+        minY = Math.min(minY, v[1]);
+        maxY = Math.max(maxY, v[1]);
+      });
+
+      return [minX, minY, maxX - minX, maxY - minY];
     }
   }, {
     key: 'strokeCircle',
@@ -7458,7 +7343,6 @@ var SketchShape = function (_cax$Group) {
   }, {
     key: 'fillRect',
     value: function fillRect(x, y, w, h) {
-
       var bmp = new _cax2.default.Bitmap((0, _fillRect3.default)(w, h, this.option));
       bmp.x = x;
       bmp.y = y;
@@ -7490,7 +7374,6 @@ var SketchShape = function (_cax$Group) {
   }, {
     key: 'rect',
     value: function rect(x, y, w, h, option) {
-
       var o = Object.assign({}, this.option, option);
       this.fillRect(x, y, w, h, o);
       this.strokeRect(x, y, w, h, o);
@@ -7499,35 +7382,38 @@ var SketchShape = function (_cax$Group) {
     }
   }, {
     key: 'strokePath',
-    value: function strokePath(path) {
-      var _this2 = this;
+    value: function strokePath(path, option) {
+      var _this5 = this;
 
-      var shapes = this._shakeShapes((0, _pathToShapes2.default)(path));
-      shapes.forEach(function (shape) {
-        var g = new _cax2.default.Graphics();
-        g.beginPath().moveTo(shape[0][0], shape[0][1]);
-        shape.forEach(function (curve) {
-          g.bezierCurveTo(curve[2], curve[3], curve[4], curve[5], curve[6], curve[7]);
+      var o = Object.assign({}, this.option, option);
+      for (var i = 0; i < o.strokeRepeat; i++) {
+        var shapes = this._shakeShapes((0, _pathToShapes2.default)(path));
+        shapes.forEach(function (shape) {
+          var g = new _cax2.default.Graphics();
+          g.beginPath().moveTo(shape[0][0], shape[0][1]);
+          shape.forEach(function (curve) {
+            g.bezierCurveTo(curve[2], curve[3], curve[4], curve[5], curve[6], curve[7]);
+          });
+          g.stroke();
+          _this5.add(g);
         });
-        g.stroke();
-        _this2.add(g);
-      });
+      }
     }
   }, {
     key: '_shakeShapes',
     value: function _shakeShapes(shapes) {
-      var _this3 = this;
+      var _this6 = this;
 
       var ns = [];
       shapes.forEach(function (shape) {
         var s = [];
-        var p1 = _this3._shake(shape[0][0], shape[0][1], _this3.option.randomRange);
+        var p1 = _this6._shake(shape[0][0], shape[0][1], _this6.option.randomRange);
         shape.forEach(function (curve, index) {
           var c = null;
-          if (Math.random() < _this3.option.filter) {
-            var p2 = _this3._shake(curve[2], curve[3], _this3.option.randomRange);
-            var p3 = _this3._shake(curve[4], curve[5], _this3.option.randomRange);
-            var p4 = _this3._shake(curve[6], curve[7], _this3.option.randomRange);
+          if (Math.random() < _this6.option.filter) {
+            var p2 = _this6._shake(curve[2], curve[3], _this6.option.randomRange);
+            var p3 = _this6._shake(curve[4], curve[5], _this6.option.randomRange);
+            var p4 = _this6._shake(curve[6], curve[7], _this6.option.randomRange);
 
             c = [p1[0], p1[1], p2[0], p2[1], p3[0], p3[1], p4[0], p4[1]];
             s.push(c);
@@ -7541,7 +7427,6 @@ var SketchShape = function (_cax$Group) {
   }, {
     key: 'path',
     value: function path(_path, option) {
-
       var o = Object.assign({}, this.option, option);
       this.fillPath(_path, o);
       this.strokePath(_path, o);
@@ -7551,7 +7436,6 @@ var SketchShape = function (_cax$Group) {
   }, {
     key: 'fillPath',
     value: function fillPath(path, option) {
-
       var shapes = (0, _pathToShapes2.default)(path);
       var box = this._getShapesBox(shapes);
       var bmp = new _cax2.default.Bitmap((0, _fillRect3.default)(box[2], box[3], Object.assign({}, this.option, option)));
@@ -7574,7 +7458,6 @@ var SketchShape = function (_cax$Group) {
   }, {
     key: '_getShapesBox',
     value: function _getShapesBox(shapes) {
-
       var curve = shapes[0][0];
       var minX = curve[0],
           minY = curve[1],
@@ -7582,7 +7465,6 @@ var SketchShape = function (_cax$Group) {
           maxY = curve[1];
 
       shapes.forEach(function (shape) {
-
         shape.forEach(function (curve, index) {
           minX = Math.min(minX, curve[2], curve[4], curve[6]);
           maxX = Math.max(maxX, curve[2], curve[4], curve[6]);
@@ -7599,45 +7481,41 @@ var SketchShape = function (_cax$Group) {
       this.empty();
       return this;
     }
-  }, {
-    key: 'setLineDash',
-    value: function setLineDash() {
-      this.cmds.push(['setLineDash', arguments]);
-      return this;
-    }
-  }, {
-    key: 'lineCap',
-    value: function lineCap() {
-      this.cmds.push(['lineCap', arguments]);
-      return this;
-    }
-  }, {
-    key: 'lineDashOffset',
-    value: function lineDashOffset() {
-      this.cmds.push(['lineDashOffset', arguments]);
-      return this;
-    }
-  }, {
-    key: 'lineJoin',
-    value: function lineJoin() {
-      this.cmds.push(['lineJoin', arguments]);
-      return this;
-    }
-  }, {
-    key: 'miterLimit',
-    value: function miterLimit() {
-      this.cmds.push(['miterLimit', arguments]);
-      return this;
-    }
+
+    //   setLineDash () {
+    //     this.cmds.push(['setLineDash', arguments])
+    //     return this
+    //   }
+
+    //   lineCap () {
+    //     this.cmds.push(['lineCap', arguments])
+    //     return this
+    //   }
+
+    //   lineDashOffset () {
+    //     this.cmds.push(['lineDashOffset', arguments])
+    //     return this
+    //   }
+
+    //   lineJoin () {
+    //     this.cmds.push(['lineJoin', arguments])
+    //     return this
+    //   }
+
+    //   miterLimit () {
+    //     this.cmds.push(['miterLimit', arguments])
+    //     return this
+    //   }
+
   }]);
 
-  return SketchShape;
+  return Skatch;
 }(_cax2.default.Group);
 
-exports.default = SketchShape;
+exports.default = Skatch;
 
 /***/ }),
-/* 6 */
+/* 4 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -7681,10 +7559,8 @@ var Ellipse = function (_cax$Shape) {
 
     _this.pointsList = [];
     for (var i = 0; i < _this.option.strokeRepeat; i++) {
-
       _this.pointsList.push([_shake(0, ym, _this.option.randomRange), _shake(0, ym - oy, _this.option.randomRange), _shake(xm - ox, 0, _this.option.randomRange), _shake(xm, 0, _this.option.randomRange), _shake(xm + ox, 0, _this.option.randomRange), _shake(xe, ym - oy, _this.option.randomRange), _shake(xe, ym, _this.option.randomRange), _shake(xe, ym + oy, _this.option.randomRange), _shake(xm + ox, ye, _this.option.randomRange), _shake(xm, ye, _this.option.randomRange), _shake(xm - ox, ye, _this.option.randomRange), _shake(0, ym + oy, _this.option.randomRange), _shake(0, ym, _this.option.randomRange)]);
     }
-
     return _this;
   }
 
@@ -7694,7 +7570,6 @@ var Ellipse = function (_cax$Shape) {
       var _this2 = this;
 
       this.pointsList.forEach(function (points) {
-
         _this2.beginPath();
         _this2.moveTo(points[0][0], points[0][1]);
         _this2.bezierCurveTo(points[1][0], points[1][1], points[2][0], points[2][1], points[3][0], points[3][1]);
@@ -7703,7 +7578,6 @@ var Ellipse = function (_cax$Shape) {
         _this2.bezierCurveTo(points[10][0], points[10][1], points[11][0], points[11][1], points[12][0], points[12][1]);
 
         if (_this2.option.strokeStyle) {
-
           if (_this2.option.lineWidth !== undefined) {
             _this2.lineWidth(_this2.option.lineWidth);
           }
@@ -7731,325 +7605,323 @@ function _shake(x, y, randomRange) {
 exports.default = Ellipse;
 
 /***/ }),
-/* 7 */
+/* 5 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
 
 
 Object.defineProperty(exports, "__esModule", {
-    value: true
+  value: true
 });
 exports.default = fillRect;
-
 
 var canvas = document.createElement('canvas');
 var ctx = canvas.getContext('2d');
 
 function fillRect(width, height, option) {
-    option = Object.assign({
-        gap: 5,
-        randomRange: 4,
-        curveRange: 35,
-        fillAngle: -45,
-        fillRepeat: 3,
-        fillWidth: 1,
-        fillStyle: 'black'
-    }, option);
-    canvas.width = width;
-    canvas.height = height;
-    ctx.clearRect(0, 0, width, height);
-    var maxLen = Math.sqrt(width * width + height * height);
-    var count = maxLen / option.gap;
+  option = Object.assign({
+    gap: 5,
+    randomRange: 4,
+    curveRange: 35,
+    fillAngle: -45,
+    fillRepeat: 3,
+    fillWidth: 1,
+    fillStyle: 'black'
+  }, option);
+  canvas.width = width;
+  canvas.height = height;
+  ctx.clearRect(0, 0, width, height);
+  var maxLen = Math.sqrt(width * width + height * height);
+  var count = maxLen / option.gap;
 
-    ctx.save();
-    ctx.translate(width / 2, height / 2);
-    ctx.lineWidth = option.fillWidth;
-    ctx.strokeStyle = option.fillStyle;
-    for (var j = 0; j < option.fillRepeat; j++) {
-        var ba = option.fillAngle * Math.PI / 180;
-        var ea = (option.fillAngle + 180) * Math.PI / 180;
-        var ca = (option.fillAngle + 90) * Math.PI / 180;
-        ctx.beginPath();
-        for (var i = -Math.ceil(count / 2); i < Math.ceil(count / 2); i++) {
-            var x1 = i * option.gap * Math.cos(ca) + maxLen / 2 * Math.cos(ba);
-            var y1 = i * option.gap * Math.sin(ca) + maxLen / 2 * Math.sin(ba);
-            var x2 = i * option.gap * Math.cos(ca) + maxLen / 2 * Math.cos(ea);
-            var y2 = i * option.gap * Math.sin(ca) + maxLen / 2 * Math.sin(ea);
-            ctx.moveTo.apply(ctx, _shake(x1, y1, option.randomRange));
-            var qp = _shake(x2, y2, option.randomRange);
-            var cp = _shake((x1 + x2) / 2, (y1 + y2) / 2, option.curveRange);
-            ctx.quadraticCurveTo(cp[0], cp[1], qp[0], qp[1]);
-        }
-
-        ctx.stroke();
+  ctx.save();
+  ctx.translate(width / 2, height / 2);
+  ctx.lineWidth = option.fillWidth;
+  ctx.strokeStyle = option.fillStyle;
+  for (var j = 0; j < option.fillRepeat; j++) {
+    var ba = option.fillAngle * Math.PI / 180;
+    var ea = (option.fillAngle + 180) * Math.PI / 180;
+    var ca = (option.fillAngle + 90) * Math.PI / 180;
+    ctx.beginPath();
+    for (var i = -Math.ceil(count / 2); i < Math.ceil(count / 2); i++) {
+      var x1 = i * option.gap * Math.cos(ca) + maxLen / 2 * Math.cos(ba);
+      var y1 = i * option.gap * Math.sin(ca) + maxLen / 2 * Math.sin(ba);
+      var x2 = i * option.gap * Math.cos(ca) + maxLen / 2 * Math.cos(ea);
+      var y2 = i * option.gap * Math.sin(ca) + maxLen / 2 * Math.sin(ea);
+      ctx.moveTo.apply(ctx, _shake(x1, y1, option.randomRange));
+      var qp = _shake(x2, y2, option.randomRange);
+      var cp = _shake((x1 + x2) / 2, (y1 + y2) / 2, option.curveRange);
+      ctx.quadraticCurveTo(cp[0], cp[1], qp[0], qp[1]);
     }
-    ctx.restore();
 
-    return canvas.toDataURL();
+    ctx.stroke();
+  }
+  ctx.restore();
+
+  return canvas.toDataURL();
 }
 
 function _shake(x, y, randomRange) {
-    var r = Math.random() * randomRange;
-    var a = Math.random() * 360 * Math.PI / 180;
-    return [x + r * Math.cos(a), y + r * Math.sin(a)];
+  var r = Math.random() * randomRange;
+  var a = Math.random() * 360 * Math.PI / 180;
+  return [x + r * Math.cos(a), y + r * Math.sin(a)];
 }
 
 /***/ }),
-/* 8 */
+/* 6 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
 
 
 Object.defineProperty(exports, "__esModule", {
-    value: true
+  value: true
 });
 exports.default = pathToShapes;
 
-var _pathParser = __webpack_require__(9);
+var _pathParser = __webpack_require__(7);
 
 var _pathParser2 = _interopRequireDefault(_pathParser);
 
-var _arcToBezier = __webpack_require__(10);
+var _arcToBezier = __webpack_require__(8);
 
 var _arcToBezier2 = _interopRequireDefault(_arcToBezier);
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
 function pathToShapes(path) {
-    //https://developer.mozilla.org/zh-CN/docs/Web/SVG/Tutorial/Paths
-    //M = moveto
-    //L = lineto
-    //H = horizontal lineto
-    //V = vertical lineto
-    //C = curveto
-    //S = smooth curveto
-    //Q = quadratic Belzier curve
-    //T = smooth quadratic Belzier curveto
-    //A = elliptical Arc
-    //Z = closepath
-    //以上所有命令均允许小写字母。大写表示绝对定位，小写表示相对定位(从上一个点开始)。
-    var cmds = (0, _pathParser2.default)(path),
-        preX = 0,
-        preY = 0,
-        j = 0,
-        len = cmds.length,
-        shapes = [],
-        current = null,
-        closeX = void 0,
-        closeY = void 0,
-        preCX = void 0,
-        preCY = void 0,
-        sLen = void 0,
-        curves = void 0,
-        lastCurve = void 0;
+  // https://developer.mozilla.org/zh-CN/docs/Web/SVG/Tutorial/Paths
+  // M = moveto
+  // L = lineto
+  // H = horizontal lineto
+  // V = vertical lineto
+  // C = curveto
+  // S = smooth curveto
+  // Q = quadratic Belzier curve
+  // T = smooth quadratic Belzier curveto
+  // A = elliptical Arc
+  // Z = closepath
+  // 以上所有命令均允许小写字母。大写表示绝对定位，小写表示相对定位(从上一个点开始)。
+  var cmds = (0, _pathParser2.default)(path),
+      preX = 0,
+      preY = 0,
+      j = 0,
+      len = cmds.length,
+      shapes = [],
+      current = null,
+      closeX = void 0,
+      closeY = void 0,
+      preCX = void 0,
+      preCY = void 0,
+      sLen = void 0,
+      curves = void 0,
+      lastCurve = void 0;
 
-    for (; j < len; j++) {
-        var item = cmds[j];
-        var action = item[0];
-        var preItem = cmds[j - 1];
+  for (; j < len; j++) {
+    var item = cmds[j];
+    var action = item[0];
+    var preItem = cmds[j - 1];
 
-        switch (action) {
-            case 'm':
-                sLen = shapes.length;
-                shapes[sLen] = [];
-                current = shapes[sLen];
-                preX = preX + item[1];
-                preY = preY + item[2];
-                break;
-            case 'M':
+    switch (action) {
+      case 'm':
+        sLen = shapes.length;
+        shapes[sLen] = [];
+        current = shapes[sLen];
+        preX = preX + item[1];
+        preY = preY + item[2];
+        break;
+      case 'M':
 
-                sLen = shapes.length;
-                shapes[sLen] = [];
-                current = shapes[sLen];
-                preX = item[1];
-                preY = item[2];
-                break;
+        sLen = shapes.length;
+        shapes[sLen] = [];
+        current = shapes[sLen];
+        preX = item[1];
+        preY = item[2];
+        break;
 
-            case 'l':
-                current.push([preX, preY, preX, preY, preX, preY, preX + item[1], preY + item[2]]);
-                preX += item[1];
-                preY += item[2];
-                break;
+      case 'l':
+        current.push([preX, preY, preX, preY, preX, preY, preX + item[1], preY + item[2]]);
+        preX += item[1];
+        preY += item[2];
+        break;
 
-            case 'L':
+      case 'L':
 
-                current.push([preX, preY, item[1], item[2], item[1], item[2], item[1], item[2]]);
-                preX = item[1];
-                preY = item[2];
+        current.push([preX, preY, item[1], item[2], item[1], item[2], item[1], item[2]]);
+        preX = item[1];
+        preY = item[2];
 
-                break;
+        break;
 
-            case 'h':
+      case 'h':
 
-                current.push([preX, preY, preX, preY, preX, preY, preX + item[1], preY]);
-                preX += item[1];
-                break;
+        current.push([preX, preY, preX, preY, preX, preY, preX + item[1], preY]);
+        preX += item[1];
+        break;
 
-            case 'H':
-                current.push([preX, preY, item[1], preY, item[1], preY, item[1], preY]);
-                preX = item[1];
-                break;
+      case 'H':
+        current.push([preX, preY, item[1], preY, item[1], preY, item[1], preY]);
+        preX = item[1];
+        break;
 
-            case 'v':
-                current.push([preX, preY, preX, preY, preX, preY, preX, preY + item[1]]);
-                preY += item[1];
-                break;
+      case 'v':
+        current.push([preX, preY, preX, preY, preX, preY, preX, preY + item[1]]);
+        preY += item[1];
+        break;
 
-            case 'V':
-                current.push([preX, preY, preX, item[1], preX, item[1], preX, item[1]]);
-                preY = item[1];
-                break;
+      case 'V':
+        current.push([preX, preY, preX, item[1], preX, item[1], preX, item[1]]);
+        preY = item[1];
+        break;
 
-            case 'C':
+      case 'C':
 
-                current.push([preX, preY, item[1], item[2], item[3], item[4], item[5], item[6]]);
-                preX = item[5];
-                preY = item[6];
-                break;
-            case 'S':
-                if (preItem[0] === 'C' || preItem[0] === 'c') {
-                    current.push([preX, preY, preX + preItem[5] - preItem[3], preY + preItem[6] - preItem[4], item[1], item[2], item[3], item[4]]);
-                } else if (preItem[0] === 'S' || preItem[0] === 's') {
-                    current.push([preX, preY, preX + preItem[3] - preItem[1], preY + preItem[4] - preItem[2], item[1], item[2], item[3], item[4]]);
-                }
-                preX = item[3];
-                preY = item[4];
-                break;
-
-            case 'c':
-                current.push([preX, preY, preX + item[1], preY + item[2], preX + item[3], preY + item[4], preX + item[5], preY + item[6]]);
-                preX = preX + item[5];
-                preY = preY + item[6];
-                break;
-            case 's':
-                if (preItem[0] === 'C' || preItem[0] === 'c') {
-
-                    current.push([preX, preY, preX + preItem[5] - preItem[3], preY + preItem[6] - preItem[4], preX + item[1], preY + item[2], preX + item[3], preY + item[4]]);
-                } else if (preItem[0] === 'S' || preItem[0] === 's') {
-                    current.push([preX, preY, preX + preItem[3] - preItem[1], preY + preItem[4] - preItem[2], preX + item[1], preY + item[2], preX + item[3], preY + item[4]]);
-                }
-
-                preX = preX + item[3];
-                preY = preY + item[4];
-
-                break;
-            case 'a':
-                curves = (0, _arcToBezier2.default)({
-                    rx: item[1],
-                    ry: item[2],
-                    px: preX,
-                    py: preY,
-                    xAxisRotation: item[3],
-                    largeArcFlag: item[4],
-                    sweepFlag: item[5],
-                    cx: preX + item[6],
-                    cy: preX + item[7]
-                });
-                lastCurve = curves[curves.length - 1];
-
-                curves.forEach(function (curve, index) {
-                    if (index === 0) {
-                        current.push([preX, preY, curve.x1, curve.y1, curve.x2, curve.y2, curve.x, curve.y]);
-                    } else {
-                        current.push([curves[index - 1].x, curves[index - 1].y, curve.x1, curve.y1, curve.x2, curve.y2, curve.x, curve.y]);
-                    }
-                });
-
-                preX = lastCurve.x;
-                preY = lastCurve.y;
-
-                break;
-
-            case 'A':
-
-                curves = (0, _arcToBezier2.default)({
-                    rx: item[1],
-                    ry: item[2],
-                    px: preX,
-                    py: preY,
-                    xAxisRotation: item[3],
-                    largeArcFlag: item[4],
-                    sweepFlag: item[5],
-                    cx: item[6],
-                    cy: item[7]
-                });
-                lastCurve = curves[curves.length - 1];
-
-                curves.forEach(function (curve, index) {
-                    if (index === 0) {
-                        current.push([preX, preY, curve.x1, curve.y1, curve.x2, curve.y2, curve.x, curve.y]);
-                    } else {
-                        current.push([curves[index - 1].x, curves[index - 1].y, curve.x1, curve.y1, curve.x2, curve.y2, curve.x, curve.y]);
-                    }
-                });
-
-                preX = lastCurve.x;
-                preY = lastCurve.y;
-
-                break;
-            case 'Q':
-                current.push(pasition.q2b(preX, preY, item[1], item[2], item[3], item[4]));
-                preX = item[3];
-                preY = item[4];
-
-                break;
-            case 'q':
-                current.push(pasition.q2b(preX, preY, preX + item[1], preY + item[2], item[3] + preX, item[4] + preY));
-                preX += item[3];
-                preY += item[4];
-                break;
-
-            case 'T':
-
-                if (preItem[0] === 'Q' || preItem[0] === 'q') {
-                    preCX = preX + preItem[3] - preItem[1];
-                    preCY = preY + preItem[4] - preItem[2];
-                    current.push(pasition.q2b(preX, preY, preCX, preCY, item[1], item[2]));
-                } else if (preItem[0] === 'T' || preItem[0] === 't') {
-                    current.push(pasition.q2b(preX, preY, preX + preX - preCX, preY + preY - preCY, item[1], item[2]));
-                    preCX = preX + preX - preCX;
-                    preCY = preY + preY - preCY;
-                }
-
-                preX = item[1];
-                preY = item[2];
-                break;
-
-            case 't':
-                if (preItem[0] === 'Q' || preItem[0] === 'q') {
-                    preCX = preX + preItem[3] - preItem[1];
-                    preCY = preY + preItem[4] - preItem[2];
-                    current.push(pasition.q2b(preX, preY, preCX, preCY, preX + item[1], preY + item[2]));
-                } else if (preItem[0] === 'T' || preItem[0] === 't') {
-                    current.push(pasition.q2b(preX, preY, preX + preX - preCX, preY + preY - preCY, preX + item[1], preY + item[2]));
-                    preCX = preX + preX - preCX;
-                    preCY = preY + preY - preCY;
-                }
-
-                preX += item[1];
-                preY += item[2];
-                break;
-
-            case 'Z':
-                closeX = current[0][0];
-                closeY = current[0][1];
-                current.push([preX, preY, closeX, closeY, closeX, closeY, closeX, closeY]);
-                break;
-            case 'z':
-                closeX = current[0][0];
-                closeY = current[0][1];
-                current.push([preX, preY, closeX, closeY, closeX, closeY, closeX, closeY]);
-                break;
+        current.push([preX, preY, item[1], item[2], item[3], item[4], item[5], item[6]]);
+        preX = item[5];
+        preY = item[6];
+        break;
+      case 'S':
+        if (preItem[0] === 'C' || preItem[0] === 'c') {
+          current.push([preX, preY, preX + preItem[5] - preItem[3], preY + preItem[6] - preItem[4], item[1], item[2], item[3], item[4]]);
+        } else if (preItem[0] === 'S' || preItem[0] === 's') {
+          current.push([preX, preY, preX + preItem[3] - preItem[1], preY + preItem[4] - preItem[2], item[1], item[2], item[3], item[4]]);
         }
-    }
+        preX = item[3];
+        preY = item[4];
+        break;
 
-    return shapes;
+      case 'c':
+        current.push([preX, preY, preX + item[1], preY + item[2], preX + item[3], preY + item[4], preX + item[5], preY + item[6]]);
+        preX = preX + item[5];
+        preY = preY + item[6];
+        break;
+      case 's':
+        if (preItem[0] === 'C' || preItem[0] === 'c') {
+          current.push([preX, preY, preX + preItem[5] - preItem[3], preY + preItem[6] - preItem[4], preX + item[1], preY + item[2], preX + item[3], preY + item[4]]);
+        } else if (preItem[0] === 'S' || preItem[0] === 's') {
+          current.push([preX, preY, preX + preItem[3] - preItem[1], preY + preItem[4] - preItem[2], preX + item[1], preY + item[2], preX + item[3], preY + item[4]]);
+        }
+
+        preX = preX + item[3];
+        preY = preY + item[4];
+
+        break;
+      case 'a':
+        curves = (0, _arcToBezier2.default)({
+          rx: item[1],
+          ry: item[2],
+          px: preX,
+          py: preY,
+          xAxisRotation: item[3],
+          largeArcFlag: item[4],
+          sweepFlag: item[5],
+          cx: preX + item[6],
+          cy: preX + item[7]
+        });
+        lastCurve = curves[curves.length - 1];
+
+        curves.forEach(function (curve, index) {
+          if (index === 0) {
+            current.push([preX, preY, curve.x1, curve.y1, curve.x2, curve.y2, curve.x, curve.y]);
+          } else {
+            current.push([curves[index - 1].x, curves[index - 1].y, curve.x1, curve.y1, curve.x2, curve.y2, curve.x, curve.y]);
+          }
+        });
+
+        preX = lastCurve.x;
+        preY = lastCurve.y;
+
+        break;
+
+      case 'A':
+
+        curves = (0, _arcToBezier2.default)({
+          rx: item[1],
+          ry: item[2],
+          px: preX,
+          py: preY,
+          xAxisRotation: item[3],
+          largeArcFlag: item[4],
+          sweepFlag: item[5],
+          cx: item[6],
+          cy: item[7]
+        });
+        lastCurve = curves[curves.length - 1];
+
+        curves.forEach(function (curve, index) {
+          if (index === 0) {
+            current.push([preX, preY, curve.x1, curve.y1, curve.x2, curve.y2, curve.x, curve.y]);
+          } else {
+            current.push([curves[index - 1].x, curves[index - 1].y, curve.x1, curve.y1, curve.x2, curve.y2, curve.x, curve.y]);
+          }
+        });
+
+        preX = lastCurve.x;
+        preY = lastCurve.y;
+
+        break;
+      case 'Q':
+        current.push(pasition.q2b(preX, preY, item[1], item[2], item[3], item[4]));
+        preX = item[3];
+        preY = item[4];
+
+        break;
+      case 'q':
+        current.push(pasition.q2b(preX, preY, preX + item[1], preY + item[2], item[3] + preX, item[4] + preY));
+        preX += item[3];
+        preY += item[4];
+        break;
+
+      case 'T':
+
+        if (preItem[0] === 'Q' || preItem[0] === 'q') {
+          preCX = preX + preItem[3] - preItem[1];
+          preCY = preY + preItem[4] - preItem[2];
+          current.push(pasition.q2b(preX, preY, preCX, preCY, item[1], item[2]));
+        } else if (preItem[0] === 'T' || preItem[0] === 't') {
+          current.push(pasition.q2b(preX, preY, preX + preX - preCX, preY + preY - preCY, item[1], item[2]));
+          preCX = preX + preX - preCX;
+          preCY = preY + preY - preCY;
+        }
+
+        preX = item[1];
+        preY = item[2];
+        break;
+
+      case 't':
+        if (preItem[0] === 'Q' || preItem[0] === 'q') {
+          preCX = preX + preItem[3] - preItem[1];
+          preCY = preY + preItem[4] - preItem[2];
+          current.push(pasition.q2b(preX, preY, preCX, preCY, preX + item[1], preY + item[2]));
+        } else if (preItem[0] === 'T' || preItem[0] === 't') {
+          current.push(pasition.q2b(preX, preY, preX + preX - preCX, preY + preY - preCY, preX + item[1], preY + item[2]));
+          preCX = preX + preX - preCX;
+          preCY = preY + preY - preCY;
+        }
+
+        preX += item[1];
+        preY += item[2];
+        break;
+
+      case 'Z':
+        closeX = current[0][0];
+        closeY = current[0][1];
+        current.push([preX, preY, closeX, closeY, closeX, closeY, closeX, closeY]);
+        break;
+      case 'z':
+        closeX = current[0][0];
+        closeY = current[0][1];
+        current.push([preX, preY, closeX, closeY, closeX, closeY, closeX, closeY]);
+        break;
+    }
+  }
+
+  return shapes;
 }
 
 /***/ }),
-/* 9 */
+/* 7 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -8117,7 +7989,7 @@ function parseValues(args) {
 exports.default = parse;
 
 /***/ }),
-/* 10 */
+/* 8 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -8302,6 +8174,116 @@ var arcToBezier = function arcToBezier(_ref2) {
 };
 
 exports.default = arcToBezier;
+
+/***/ }),
+/* 9 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+exports.default = arc2bezier;
+/*
+ * Approximate a general elliptical arc using [up to four] cubic Beziers.
+ * https://www.joecridge.me/content/pdf/bezier-arcs.pdf
+ */
+var PI = Math.PI;
+var TWO_PI = PI * 2;
+var atan = Math.atan;
+var tan = Math.tan;
+var cos = Math.cos;
+var sin = Math.sin;
+var HALF_PI = PI / 2;
+var min = Math.min;
+
+function arc2bezier(x, y, w, h, start, stop) {
+  // Make all angles positive...
+  while (start < 0) {
+    start += TWO_PI;
+  }
+  while (stop < 0) {
+    stop += TWO_PI;
+  }
+
+  // ...and confine them to the interval [0,TWO_PI).
+  // start %= TWO_PI;
+  // stop %= TWO_PI;
+
+  // Adjust angles to counter linear scaling.
+  if (start <= HALF_PI) {
+    start = atan(w / h * tan(start));
+  } else if (start > HALF_PI && start <= 3 * HALF_PI) {
+    start = atan(w / h * tan(start)) + PI;
+  } else {
+    start = atan(w / h * tan(start)) + TWO_PI;
+  }
+  if (stop <= HALF_PI) {
+    stop = atan(w / h * tan(stop));
+  } else if (stop > HALF_PI && stop <= 3 * HALF_PI) {
+    stop = atan(w / h * tan(stop)) + PI;
+  } else {
+    stop = atan(w / h * tan(stop)) + TWO_PI;
+  }
+
+  // Exceed the interval if necessary in order to preserve the size and
+  // orientation of the arc.
+  if (start > stop) {
+    stop += TWO_PI;
+  }
+
+  // Create curves
+  var epsilon = 0.00001; // Smallest visible angle on displays up to 4K.
+  var arcToDraw = 0;
+  var curves = [];
+  while (stop - start > epsilon) {
+    arcToDraw = min(stop - start, HALF_PI);
+    curves.push(acuteArcToBezier(start, arcToDraw));
+    start += arcToDraw;
+  }
+
+  // Draw curves
+  var rx = w / 2.0;
+  var ry = h / 2.0;
+  var result = [];
+  curves.forEach(function (curve, index) {
+    result.push([x + rx * curve.ax, y + ry * curve.ay, x + rx * curve.bx, y + ry * curve.by, x + rx * curve.cx, y + ry * curve.cy, x + rx * curve.dx, y + ry * curve.dy]);
+  });
+
+  return result;
+}
+
+/**
+* Generate a cubic Bezier representing an arc on the unit circle of total
+* angle ‘size‘ radians, beginning ‘start‘ radians above the x-axis.
+*/
+function acuteArcToBezier(start, size) {
+  // Evaluate constants.
+  var alpha = size / 2.0,
+      cos_alpha = cos(alpha),
+      sin_alpha = sin(alpha),
+      cot_alpha = 1.0 / tan(alpha),
+      phi = start + alpha,
+      // This is how far the arc needs to be rotated.
+  cos_phi = cos(phi),
+      sin_phi = sin(phi),
+      lambda = (4.0 - cos_alpha) / 3.0,
+      mu = sin_alpha + (cos_alpha - lambda) * cot_alpha;
+
+  // Return rotated waypoints.
+  return {
+    ax: cos(start),
+    ay: sin(start),
+    bx: lambda * cos_phi + mu * sin_phi,
+    by: lambda * sin_phi - mu * cos_phi,
+    cx: lambda * cos_phi - mu * sin_phi,
+    cy: lambda * sin_phi + mu * cos_phi,
+    dx: cos(start + size),
+    dy: sin(start + size)
+  };
+}
 
 /***/ })
 /******/ ]);

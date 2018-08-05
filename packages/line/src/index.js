@@ -206,9 +206,9 @@ function createCircles (eps, option) {
     const circle = new Circle(3, { fillStyle: option.color })
     circle.x = ep.x
     circle.y = ep.y
-    const text = new cax.Text(ep.value, {color: option.color,font:'14px Arial'})
-    text.x = ep.x - text.getWidth()/2
-    text.y = ep.y+2
+    const text = new cax.Text(ep.value, {color: option.color, font: '14px Arial'})
+    text.x = ep.x - text.getWidth() / 2
+    text.y = ep.y + 2
     group.add(text)
     group.add(circle)
   })
