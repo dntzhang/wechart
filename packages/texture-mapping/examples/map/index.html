@@ -1,143 +1,203 @@
-<canvas id="myCanvas" width="500" height="500"></canvas>
+<canvas id="myCanvas" width="459" height="662">
+
+</canvas>
 
 <script>
 
-
-    window.onload = function () {
-
-        var canvas = document.getElementById('myCanvas');
-        var context = canvas.getContext('2d');
-        var distance = 400;
-        var eyePosition = { x: 0, y: 0, z: 400 };
-
-        //画上一张图（矩形4个点坐标）
-        //   context.drawImage(document.querySelector("img"),0,0)
-        //得其中4个点沿着Y轴变换后的坐标（4点坐标）
-        var rect = { p1: { x: -64, y: -64, z: 0 }, p2: { x: 64, y: -64, z: 0 }, p3: { x: 64, y: 64, z: 0 }, p4: { x: -64, y: 64, z: 0 } };
-        context.translate(canvas.width / 2, canvas.height / 2)
-        // context.beginPath();
-        // context.moveTo(rect.p1.x, rect.p1.y);
-        // context.lineTo(rect.p2.x, rect.p2.y);
-        // context.lineTo(rect.p3.x, rect.p3.y);
-
-        // context.closePath();
-
-      //  context.stroke();
-        var ag = 1;
-        setInterval(function () {
-            context.clearRect(-1 * canvas.width / 2, -1 * canvas.height / 2, canvas.width, canvas.height)
-            var tp1 = rotatePoint(rect.p1, ag, "y");
-            var tp2 = rotatePoint(rect.p2, ag, "y");
-            var tp3 = rotatePoint(rect.p3, ag, "y");
-            var tp4 = rotatePoint(rect.p4, ag, "y");
-           // ag++;
-            changeDistance(tp1);
-            changeDistance(tp2);
-            changeDistance(tp3);
-            changeDistance(tp4);
-
-            var tf = createTransform(rect, 
-            { p1: { x: tp1.x, y: tp1.y }, p2: { x: tp2.x, y: tp2.y }, p3: { x: tp3.x, y: tp3.y } })
-            var tf2 = createTransform({ p1: rect.p1, p2: rect.p3, p3: rect.p4 },
-             { p1: { x: tp1.x, y: tp1.y }, p2: { x: tp3.x, y: tp3.y }, p3: { x: tp4.x, y: tp4.y } })
-            // 
-            //context.beginPath();
-            //context.moveTo(tp1.x, tp1.y);
-            //context.lineTo(tp2.x, tp2.y);
-            //context.lineTo(tp3.x, tp3.y);
-            //context.closePath();
-            //context.stroke();
-
-            //context.beginPath();
-            //context.moveTo(tp1.x, tp1.y);
-            //context.lineTo(tp3.x, tp3.y);
-            //context.lineTo(tp4.x, tp4.y);
-            //context.closePath();
-            //context.stroke();
-
-            context.save();
-            context.beginPath();
-            context.moveTo(tp1.x, tp1.y);
-            context.lineTo(tp2.x, tp2.y);
-            context.lineTo(tp3.x, tp3.y);
-          
-            // ---- clip ----
-            context.clip();
-            // ---- texture mapping ----
-            context.transform.apply(context, tf);
-            context.drawImage(document.querySelector("img"), -64, -64);
-            context.restore();
-
-            context.save()
-            context.beginPath();
-            context.moveTo(tp1.x, tp1.y);
-            context.lineTo(tp3.x, tp3.y);
-            context.lineTo(tp4.x, tp4.y);
-            context.closePath();
-
-            // ---- clip ----
-
-            context.clip();
-
-            // ---- texture mapping ----
-            context.transform.apply(context, tf2);
-            context.drawImage(document.querySelector("img"), -64, -64);
-            context.restore();
-        }, 15)
+    var canvas = document.getElementById('myCanvas');
+    var ctx = canvas.getContext('2d');
+    var size = 20
+    var debug = true
+    var img = new Image()
+    img.onload = function () {
 
 
-        function changeDistance(p) {
-            p.x = p.x * distance / Math.abs(eyePosition.z - p.z);
-            p.y = p.y * distance / Math.abs(eyePosition.z - p.z);
+        var result1 = rectToTriangle(img.width, img.height, size)
+        drawImage(ctx, img, result1.ts)
 
-        }
-        function createTransform(source, dest) {
-            var x11 = source.p1.x;
-            var x12 = source.p1.y;
-            var x21 = source.p2.x;
-            var x22 = source.p2.y;
-            var x31 = source.p3.x;
-            var x32 = source.p3.y;
-            var y11 = dest.p1.x;
-            var y12 = dest.p1.y;
-            var y21 = dest.p2.x;
-            var y22 = dest.p2.y;
-            var y31 = dest.p3.x;
-            var y32 = dest.p3.y;
-
-            var a1 = ((y11 - y21) * (x12 - x32) - (y11 - y31) * (x12 - x22)) /
-                ((x11 - x21) * (x12 - x32) - (x11 - x31) * (x12 - x22));
-            var a2 = ((y11 - y21) * (x11 - x31) - (y11 - y31) * (x11 - x21)) /
-                ((x12 - x22) * (x11 - x31) - (x12 - x32) * (x11 - x21));
-            var a3 = y11 - a1 * x11 - a2 * x12;
-            var a4 = ((y12 - y22) * (x12 - x32) - (y12 - y32) * (x12 - x22)) /
-                ((x11 - x21) * (x12 - x32) - (x11 - x31) * (x12 - x22));
-            var a5 = ((y12 - y22) * (x11 - x31) - (y12 - y32) * (x11 - x21)) /
-                ((x12 - x22) * (x11 - x31) - (x12 - x32) * (x11 - x21));
-            var a6 = y12 - a4 * x11 - a5 * x12;
-            return [a1, a4, a2, a5, a3, a6];
-        }
+        //覆盖缝隙
+        var result2 = rectToTriangle(img.width + 3, img.height + 3, size)
+        drawImage(ctx, img, result2.ts)
 
 
-        function rotatePoint(p, angle, d) {
-            var angle = angle * Math.PI / 180;
-            if (d == "y") {
-                var x = p.x * Math.cos(angle) + p.z * Math.sin(angle);
-                var z = p.z * Math.cos(angle) - p.x * Math.sin(angle);
-                return { x: x, y: p.y, z: z };
-            } else if (d == "x") {
-                var y = p.z * Math.sin(angle) + p.y * Math.cos(angle);
-                var z = p.z * Math.cos(angle) - p.y * Math.sin(angle);
-                return { x: p.x, y: y, z: z };
-            }
-            else if (d == "z") {
-                var x = p.y * Math.sin(angle) + p.x * Math.cos(angle);
-                var y = p.y * Math.cos(angle) - p.x * Math.sin(angle);
-                return { x: x, y: y, z: p.z };
-            }
-        }
+        var offset = canvas.getBoundingClientRect()
+        var index, isMouseDown
+        canvas.addEventListener('mousedown', function (evt) {
+            let x = evt.clientX - offset.left
+            let y = evt.clientY - offset.top
+            index = getIndex(result1.points, x, y, img.width / size, img.height / size, size)
+            updatePoints(result1.points, x, y, index)
 
+            updatePoints(result2.points, x, y, index)
+            drawImage(ctx, img, result1.ts)
+
+            drawImage(ctx, img, result2.ts)
+            isMouseDown = true
+        })
+
+        canvas.addEventListener('mousemove', function (evt) {
+            if (!isMouseDown) return
+            let x = evt.clientX - offset.left
+            let y = evt.clientY - offset.top
+
+            ctx.clearRect(0, 0, img.width, img.height)
+            result1.points[index].x = x
+            result1.points[index].y = y
+            result2.points[index].x = x
+            result2.points[index].y = y
+            updatePoints(result1.points, x, y, index)
+
+            updatePoints(result2.points, x, y, index)
+            drawImage(ctx, img, result1.ts)
+
+            drawImage(ctx, img, result2.ts)
+        })
+
+        canvas.addEventListener('mouseup', function (evt) {
+            isMouseDown = false
+        })
     }
-</script>
 
-<img src="bg.png">
+    img.src = './bl.jpg'
+
+
+
+
+    function createTransform(source, dest) {
+        var x11 = source.p1.x;
+        var x12 = source.p1.y;
+        var x21 = source.p2.x;
+        var x22 = source.p2.y;
+        var x31 = source.p3.x;
+        var x32 = source.p3.y;
+        var y11 = dest.p1.x;
+        var y12 = dest.p1.y;
+        var y21 = dest.p2.x;
+        var y22 = dest.p2.y;
+        var y31 = dest.p3.x;
+        var y32 = dest.p3.y;
+
+        var a1 = ((y11 - y21) * (x12 - x32) - (y11 - y31) * (x12 - x22)) /
+            ((x11 - x21) * (x12 - x32) - (x11 - x31) * (x12 - x22));
+        var a2 = ((y11 - y21) * (x11 - x31) - (y11 - y31) * (x11 - x21)) /
+            ((x12 - x22) * (x11 - x31) - (x12 - x32) * (x11 - x21));
+        var a3 = y11 - a1 * x11 - a2 * x12;
+        var a4 = ((y12 - y22) * (x12 - x32) - (y12 - y32) * (x12 - x22)) /
+            ((x11 - x21) * (x12 - x32) - (x11 - x31) * (x12 - x22));
+        var a5 = ((y12 - y22) * (x11 - x31) - (y12 - y32) * (x11 - x21)) /
+            ((x12 - x22) * (x11 - x31) - (x12 - x32) * (x11 - x21));
+        var a6 = y12 - a4 * x11 - a5 * x12;
+        return [a1, a4, a2, a5, a3, a6];
+    }
+
+    function rectToTriangle(width, height, lev) {
+
+        var points = [];
+        // ---- create points ----
+        for (var i = 0; i <= lev; i++) {
+            for (var j = 0; j <= lev; j++) {
+                var x = (i * (width / lev));
+                var y = (j * (height / lev));
+                var p = {
+                    x: x,
+                    y: y,
+                    preX: x,
+                    preY: y,
+                    // u: x / width,
+                    // v: y / height
+                };
+                points.push(p);
+            }
+        }
+
+        var ts = []
+
+        var count = lev + 1;
+        for (var i = 0; i < lev; i++) {
+            for (var j = 0; j < lev; j++) {
+                // ---- up ----
+                var p1 = points[j + i * count]
+                var p2 = points[j + i * count + 1]
+                var p3 = points[j + (i + 1) * count]
+                var p4 = points[j + (i + 1) * count + 1]
+                ts.push([
+                    p1, p2, p3
+                ])
+
+                // ---- down ----
+                ts.push([p4, p3, p2])
+
+                // ts.push([ p4,p1,p2])
+
+                //  ts.push([ p4,p3,p1])
+
+
+            }
+        }
+        return { ts: ts, points: points }
+    }
+
+
+    function drawImage(ctx, img, ts) {
+        ts.forEach((t, index) => {
+            if (debug) {
+                ctx.beginPath()
+                ctx.moveTo(t[0].x, t[0].y)
+                ctx.lineTo(t[1].x, t[1].y)
+                ctx.lineTo(t[2].x, t[2].y)
+                ctx.closePath()
+                ctx.stroke()
+            }
+
+            ctx.save()
+            ctx.beginPath()
+            ctx.moveTo(t[0].x, t[0].y)
+            ctx.lineTo(t[1].x, t[1].y)
+            ctx.lineTo(t[2].x, t[2].y)
+            ctx.closePath()
+            ctx.clip()
+            //if(index%2===0)  ctx.drawImage(img, 0, 0);
+
+
+
+            let matrix = createTransform(
+                {
+                    p1: { x: t[0].preX, y: t[0].preY },
+                    p2: { x: t[1].preX, y: t[1].preY },
+                    p3: { x: t[2].preX, y: t[2].preY }
+                },
+                {
+                    p1: t[0],
+                    p2: t[1],
+                    p3: t[2]
+                }
+
+            )
+
+            ctx.setTransform.apply(ctx, matrix)
+            ctx.drawImage(img, 0, 0);
+
+            ctx.restore()
+        })
+    }
+
+
+
+    function getIndex(points, x, y, dx, dy, size) {
+        var col = Math.round(x / dx)
+        var row = Math.round(y / dy)
+        return col * (size + 1) + row
+    }
+
+    function updatePoints(points, x, y, index) {
+
+
+        var p = points[index]
+        p.prex = p.x
+        p.preY = p.y
+        p.x = x
+        p.y = y
+    }
+
+
+</script>
