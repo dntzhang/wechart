@@ -106,14 +106,19 @@ var pyramid = new _index2.default({
 var rotateControl = pyramid.rotateControl;
 
 
-rotateControl.add('x', 1);
-rotateControl.add('y', 2);
-rotateControl.add('z', 1);
-
+var controlList = [],
+    axisList = ['x', 'y', 'z'];
+for (var i = 0; i < 50; i++) {
+  controlList.push({
+    axis: axisList[Math.round(Math.random() * 3)],
+    layer: Math.round(Math.random() * 4),
+    isF: !Math.random(Math.random() * 4)
+  });
+}
+controlList.forEach(function (d) {
+  rotateControl.add(d.axis, d.layer, d.isF);
+});
 rotateControl.run();
-
-rotateControl.trigger('x', 1);
-rotateControl.trigger('y', 1);
 
 group.add(pyramid);
 scene.add(group);
