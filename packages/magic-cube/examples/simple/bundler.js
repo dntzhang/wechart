@@ -130,7 +130,6 @@ var raycaster = new THREE.Raycaster();
 var mouse = new THREE.Vector2();
 
 function animate() {
-
   requestAnimationFrame(animate);
   renderer.render(scene, camera);
   controls.update();
@@ -299,7 +298,7 @@ var yAxis = function yAxis(isF, pyramid, camera) {
     selectAxis === 'x' ? selectAxis = 'z' : selectAxis = 'x';
     var angle = selectAxis === 'x' ? 90 : -90;
     angle = isF ? angle : -angle;
-    // angle = selectAhead ? angle : - angle;
+    angle = selectAhead ? angle : -angle;
 
     rotateControl.trigger(selectAxis, selectCube[selectAxis], angle > 0);
   } else {

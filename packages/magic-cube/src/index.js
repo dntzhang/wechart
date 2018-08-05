@@ -129,7 +129,7 @@ const yAxis = function(isF, pyramid, camera){
     selectAxis === 'x' ? selectAxis = 'z' : selectAxis = 'x';
     let angle = selectAxis === 'x' ? 90 : -90;
     angle = isF ? angle : -angle;
-    // angle = selectAhead ? angle : - angle;
+    angle = selectAhead ? angle : - angle;
 
     rotateControl.trigger(selectAxis,selectCube[selectAxis], angle>0)
   }else{
