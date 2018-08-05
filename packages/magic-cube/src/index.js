@@ -3,6 +3,52 @@ const threePow = n => Math.pow(n, 3)
 const FaceName = ['all', 'top', 'bottom', 'left', 'right', 'ahead', 'back', 'center', 'edge']
 const renderSort = [ 'right', 'left', 'top', 'bottom', 'ahead', 'back' ]
 
+const Animation = function(fps) {
+  if (fps) this.fps = fps;
+}
+Animation.prototype.animationList = [];
+Animation.prototype.fps = 60;
+Animation.prototype.stop = function(index) {
+  let intervalIndex = this.animationList[index];
+  clearInterval(intervalIndex);
+  this.animationList = this.animationList.filter(function(d) {
+    return d != index;
+  });
+}
+Animation.prototype.getNum = (start, end, current) => current * (end - start);
+Animation.prototype.start = function(render, time, domain, onEnd, mode) {
+  let Time = new Date().getTime(),
+    oldTime = Time,
+    initFlag = true;
+  let index = this.animationList.push(setInterval(()=>{
+    if(initFlag){
+      oldTime = Time = new Date().getTime();
+      initFlag = false;
+      return;
+    }
+    let currentTime = new Date().getTime();
+    if(currentTime - Time > time) {
+      this.stop(index-1);
+      render(domain[1], this.getNum(domain[0], domain[1], (time - (oldTime-Time)) / time ));
+      if(onEnd) onEnd();
+      return;
+    }
+    render(domain[0] + this.getNum(domain[0], domain[1], (currentTime - Time) / time ), this.getNum(domain[0], domain[1], (currentTime - oldTime) / time ));
+    oldTime = currentTime;
+
+  }, 1000 / this.fps));
+  
+  return index;
+}
+Animation.prototype.stopAll = function() {
+  this.animationList.forEach(function(d) {
+    return clearInterval(d);
+  })
+  this.animationList.splice(0);
+}
+
+const ani = new Animation();
+  
 // 圆角矩形
 CanvasRenderingContext2D.prototype.roundRect = function (x, y, w, h, r) {
   var min_size = Math.min(w, h)
@@ -67,6 +113,11 @@ const xAxis = function(isF, pyramid, camera){
     let quadrant = pyramid.getQuadrant(camera.position.x, camera.position.z);
     let angle = pyramid.getAngle(camera.position.x, camera.position.z);
     let direction = getDirection(quadrant, angle, 'x', 'z');
+    let f1 = quadrant === 2 && angle > -45;
+    if(f1 || quadrant === 3 || (quadrant === 4 && angle > 45)){
+      isF =!isF;
+    }
+    if(!selectAhead) isF = !isF;
     rotateControl.trigger(direction, selectCube[direction], isF);
   }
   flag = false;
@@ -78,13 +129,17 @@ const yAxis = function(isF, pyramid, camera){
     selectAxis === 'x' ? selectAxis = 'z' : selectAxis = 'x';
     let angle = selectAxis === 'x' ? 90 : -90;
     angle = isF ? angle : -angle;
-    angle = selectAhead ? angle : - angle;
+    // angle = selectAhead ? angle : - angle;
 
     rotateControl.trigger(selectAxis,selectCube[selectAxis], angle>0)
   }else{
     let quadrant = pyramid.getQuadrant(camera.position.x, camera.position.z);
     let angle = pyramid.getAngle(camera.position.x, camera.position.z);
     let direction = getDirection(quadrant, angle, 'z', 'x');
+    let f1 = angle > 45 ;
+    if(f1 || (angle> -45 && angle < 0 && quadrant !== 2) || quadrant === 4){
+      isF =!isF;
+    }
     rotateControl.trigger(direction, selectCube[direction], isF)
   }
   flag = false;
@@ -360,13 +415,29 @@ class MagicCube extends THREE.Group {
   rotateControl = {
     start:function(){
       let action = this.rotateControl.actionList.shift();
-      if(!action) return;
+      if(!action) return this.rotateControl.running = false;
       let {axis, layer, isF}  = action;
-      this.rotateControl.trigger(axis, layer, isF);
-      this.rotateControl.next();
+      this.rotateControl.trigger(axis, layer, isF, function(){
+        this.rotateControl.next();
+      }.bind(this), true);
     }.bind(this),
 
-    trigger:function(axis, layer, isF){
+    run:function(){
+      if(this.rotateControl.running) return;
+      this.rotateControl.running = true;
+      this.rotateControl.start();
+    }.bind(this),
+
+    trigger:function(axis, layer, isF, callback, isRun){
+      if(!isRun && this.rotateControl.running) {
+        this.rotateControl.add(axis, layer, isF);
+        return;
+      }
+      if(!this.rotateControl.running){
+        this.rotateControl.add(axis, layer, isF);
+        this.rotateControl.run();
+        return;
+      }
       let mb = (layer -1) * this.size;
       if(axis === 'x'){
         mb -= this.offset;
@@ -381,7 +452,11 @@ class MagicCube extends THREE.Group {
         return num < 0.00000000001 && d;
       }).filter(d=>d);
 
-      this.rotate(isF ? 90 : -90, readyList, axis)
+      ani.start(function(current, space){
+        this.rotate(isF ? space : -space, readyList, axis)
+      }.bind(this), 80, [0, 90], function(){
+        if(callback) callback();
+      })
       return readyList;
     }.bind(this),
 
@@ -396,6 +471,8 @@ class MagicCube extends THREE.Group {
     next:function(){
       this.rotateControl.start();
     }.bind(this),
+
+    triggerList: [],
 
     actionList :[],
   }
