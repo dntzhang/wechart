@@ -25,11 +25,23 @@ const group = new THREE.Group()
 const pyramid = new magicCube({
   level:4,
   size:100,
+  control:{
+    camera,
+    controls
+  },
   cubeStyle:{
     top:[null,null,{url:'../../asset/bbb.bmp'}],
     ahead:{11:{url:'../../asset/bbb.bmp'}}
   }
 })
+
+const { rotateControl } = pyramid;
+
+rotateControl.add('x', 1)
+rotateControl.add('y', 2)
+rotateControl.add('z', 1)
+rotateControl.start();
+
 
 group.add(pyramid)
 scene.add(group)
@@ -106,4 +118,55 @@ const pyramid = new magicCube({
     ahead:{11:{url:'../../asset/bbb.bmp'}}
   },
 })
+```
+
+### 开启魔方控制
+```javascript
+const camera = window.c = new THREE.PerspectiveCamera(45, window.innerWidth / window.innerHeight, 0.01, 500)
+camera.position.set(150, 100, 150)
+
+const scene = new THREE.Scene()
+
+const renderer = new THREE.WebGLRenderer({ antialias: true })
+renderer.setSize(window.innerWidth, window.innerHeight)
+renderer.setClearColor(0x000000)
+document.body.appendChild(renderer.domElement)
+const controls = new THREE.OrbitControls(camera, renderer.domElement)
+
+const pyramid = new magicCube({
+  // 传入control对象
+  control:{
+    // 传入 camera
+    camera,
+    // 传入 相机控制器
+    controls
+  },
+})
+```
+
+
+### 手动控制魔方
+```javascript
+
+let rotateControl = pyramid.rotateControl;
+
+// 队列
+rotateControl.add('x', 1)
+rotateControl.add('y', 2)
+rotateControl.add('z', 1)
+rotateControl.run();
+
+// 单次旋转
+rotateControl.trigger('x', 1)
+rotateControl.trigger('x', 1)
+
+// 反向旋转
+rotateControl.trigger('x', 1, true)
+
+// 旋转回调
+rotateControl.trigger('x', 1, true, function(){
+  console.log('旋转完成')
+})
+// 如果当前有旋转或旋转队列尚未完成将会排在队列后
+
 ```

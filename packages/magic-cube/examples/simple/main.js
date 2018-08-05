@@ -14,13 +14,33 @@ const controls = new THREE.OrbitControls(camera, renderer.domElement)
 const group = new THREE.Group()
 
 const pyramid = new MagicCube({
-  level: 4,
   size: 100,
+  control: {
+    camera,
+    controls
+  },
+  level: 4,
   cubeStyle: {
     bottom: [null, null, null, null, null, null, {url: '../../asset/wepay-diy.jpg'}],
     ahead: {6: {url: '../../asset/qq.png'}}
   }
 })
+
+let { rotateControl } = pyramid
+
+let controlList = [], axisList = ['x', 'y', 'z'];
+for(var i = 0;i<50;i++){
+  controlList.push({
+    axis:axisList[Math.round(Math.random()*3)],
+    layer:Math.round(Math.random()*4),
+    isF:!Math.random(Math.random()*4),
+  })
+}
+controlList.forEach(d=>{
+  rotateControl.add(d.axis, d.layer, d.isF);
+})
+rotateControl.run();
+
 
 group.add(pyramid)
 scene.add(group)
@@ -36,20 +56,7 @@ scene.add(DricetionalLight)
 var raycaster = new THREE.Raycaster()
 var mouse = new THREE.Vector2()
 
-window.addEventListener('mousemove', function (event) {
-  mouse.x = (event.clientX / window.innerWidth) * 2 - 1
-  mouse.y = -(event.clientY / window.innerHeight) * 2 + 1
-}, false)
-
 function animate () {
-  raycaster.setFromCamera(mouse, camera)
-  var intersects = raycaster.intersectObjects(pyramid.meshList)
-
-  if (intersects.length) {
-    let cube = intersects[0]
-    window.a = cube
-  }
-
   requestAnimationFrame(animate)
   renderer.render(scene, camera)
   controls.update()

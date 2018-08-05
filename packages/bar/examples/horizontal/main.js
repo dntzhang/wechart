@@ -6,7 +6,7 @@ const stage = new cax.Stage(800, 520, 'body')
 
 const data = [ // 数据
   { name: 'JS', count: 211 },
-  { name: 'C#', count: 183  },
+  { name: 'C#', count: 183 },
   { name: 'C++', count: 157 },
   { name: 'CSS', count: 133},
   { name: 'HTML', count: 111 },
@@ -69,14 +69,14 @@ const axisConfig = {
     color: 'black',
     text: {
       color: '#444',
-      value: (index) => {
-        return data[index].name
+      value: (item) => {
+        return item.name
       },
       x: 0,
       y: 7,
       font: '12px Verdana',
-      range: [0, 14],
-     // rotation: -30
+      range: [0, 14]
+      // rotation: -30
     },
     gird: {
       color: '#ddd',

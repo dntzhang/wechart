@@ -1,0 +1,65 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+        <meta name="viewport" content="width=device-width,initial-scale=1,user-scalable=no">
+    <meta charset="UTF-8">
+    <title>Cax + Dragonbones</title>
+    <style>
+        body,ul,li, h1{
+            margin: 0;
+            padding: 0;
+            text-align: center;
+        }
+        @media screen and (max-width: 500px) {  
+        canvas {
+            width : 310px
+        }
+    }
+
+        canvas{
+            border: 1px solid #000;
+        }
+    </style>
+</head>
+<body>
+        <a href="https://github.com/dntzhang/wechart/tree/master/packages/cax-dragonbones" target="_blank" style="position: fixed; right: 0; top: 0; z-index: 3;">
+            <img src="//alloyteam.github.io/github.png" alt="">
+        </a>
+    <h2>Cax + Dragonbones 骨骼动画<br>点击 Canvas改变动画</h2>
+    <div id='animContainer'></div>
+    <ul id='navContainer'></ul>
+    <script src='./utils.js'></script>
+    <script src='./demo.js'></script>
+    <script>
+        var factoryLib = {
+         
+            cax:[
+                './cax.js',
+                '../../src/cax-db.js'
+            ]
+        };
+
+        var animPosDict = {
+            dragon:[550, 550],
+            cocos:[500, 800],
+            anim:[600, 500],
+            spine:[600, 630]
+        }
+        var animList = [];
+        for(var animName in animPosDict){
+            animList.push(animName);
+        }
+
+        var keys = utils.getUrlKey();
+        var animName = keys.anim;
+        var factoryType = keys.type;
+
+        utils.loadScript(factoryLib[factoryType], function(){
+            demo.pos = animPosDict[animName];
+            demo.init(animName);
+        });
+
+    </script>
+</body>
+</html>

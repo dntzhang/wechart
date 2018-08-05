@@ -2,13 +2,13 @@ import cax from 'cax'
 
 import Player from './player'
 
-const stage = new cax.Stage(520, 377, 'body')
+const stage = new cax.Stage(520, 377, '#canvasCtn')
 
 const bg = new cax.Bitmap('./track.jpg')
 stage.add(bg)
 
 const shape = [
-  //直线用控制点均分贝赛尔曲线防止速度不均匀
+  // 直线用控制点均分贝赛尔曲线防止速度不均匀
   [123, 91, 211, 91, 300, 91, 389, 91],
   [389, 91, 430, 90, 473, 145, 474, 213],
   [474, 213, 475, 278, 420, 340, 346, 334],
@@ -24,6 +24,17 @@ cax.tick(() => {
   player.update()
 })
 stage.add(player)
+
+let tag = true
+
+document.querySelector('#tgBtn').addEventListener('click', () => {
+  if (tag) {
+    player.speed = 0
+  } else {
+    player.speed = 5
+  }
+  tag = !tag
+})
 
 // const g = new cax.Graphics()
 // g.moveTo(123, 91)

@@ -94,11 +94,9 @@ var loader = new _loader2.default({
     stage.on('click', function (evt) {
       stage.empty();
       if (evt.stageX > 220) {
-
         points[4] = evt.stageX;
         points[5] = evt.stageY;
       } else {
-
         points[2] = evt.stageX;
         points[3] = evt.stageY;
       }
@@ -108,7 +106,6 @@ var loader = new _loader2.default({
 });
 
 function render() {
-
   var dw = 10;
   var img = loader.get('a1');
   var dt = 0.03;
@@ -117,7 +114,6 @@ function render() {
   g.beginPath();
 
   for (var i = 0; i < 1; i += dt) {
-
     var p = (0, _bezier.getValue)(points, i);
 
     var angle = (0, _bezier.slope)(points, i, 0.01) * 180 / Math.PI;
@@ -131,7 +127,6 @@ function render() {
       if (img.width - offsetX % img.width < dw) {
         offsetX = 0;
       } else {
-
         offsetX = Math.ceil(offsetX % img.width / dw) * dw;
       }
     }
@@ -139,7 +134,7 @@ function render() {
     bitmap.x = p.x;
     bitmap.y = p.y;
 
-    //skew(half of rotation)导致宽度不一致
+    // skew(half of rotation)导致宽度不一致
     bitmap.skewY = angle;
     bitmap.scaleX = ((0, _bezier.getValue)(points, i + dt).x - p.x) / (dw * Math.cos(angle * Math.PI / 180)) + 0.1;
     stage.add(bitmap);
@@ -164,7 +159,7 @@ loader.start();
 var _typeof2 = typeof Symbol === "function" && typeof Symbol.iterator === "symbol" ? function (obj) { return typeof obj; } : function (obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj; };
 
 /*!
- *  cax v1.1.10
+ *  cax v1.2.4
  *  By https://github.com/dntzhang 
  *  Github: https://github.com/dntzhang/cax
  *  MIT Licensed.
@@ -484,7 +479,7 @@ var _typeof2 = typeof Symbol === "function" && typeof Symbol.iterator === "symbo
           key: 'destroy',
           value: function destroy() {
             this.empty();
-            //Stage does not have a parent 
+            // Stage does not have a parent
             this.parent && _get(Group.prototype.__proto__ || Object.getPrototypeOf(Group.prototype), 'destroy', this).call(this);
           }
         }]);
@@ -688,7 +683,6 @@ var _typeof2 = typeof Symbol === "function" && typeof Symbol.iterator === "symbo
         }, {
           key: 'cache',
           value: function cache(x, y, width, height, scale, cacheUpdating) {
-
             this._cacheData = {
               x: x || 0,
               y: y || 0,
@@ -708,8 +702,8 @@ var _typeof2 = typeof Symbol === "function" && typeof Symbol.iterator === "symbo
             this.cacheCanvas.width = this._cacheData.width * this._cacheData.scale;
             this.cacheCanvas.height = this._cacheData.height * this._cacheData.scale;
 
-            //debug cache canvas
-            //this.cacheCtx.fillRect(0,0,1000,1000)
+            // debug cache canvas
+            // this.cacheCtx.fillRect(0,0,1000,1000)
             this._readyToCache = true;
           }
         }, {
@@ -720,7 +714,13 @@ var _typeof2 = typeof Symbol === "function" && typeof Symbol.iterator === "symbo
         }, {
           key: 'filter',
           value: function filter(filterName, filterBox) {
-            this.cache(filterBox.x || 0, filterBox.y || 0, filterBox.width || this.width, filterBox.height || this.height);
+            filterBox = Object.assign({}, {
+              x: 0,
+              y: 0,
+              width: this.width,
+              height: this.height
+            }, filterBox);
+            this.cache(filterBox.x, filterBox.y, filterBox.width, filterBox.height);
             this._readyToFilter = true;
             this._filterName = filterName;
           }
@@ -1108,10 +1108,10 @@ var _typeof2 = typeof Symbol === "function" && typeof Symbol.iterator === "symbo
         _createClass(Bitmap, [{
           key: 'clone',
           value: function clone() {
-            var bitmap = new Bitmap(this.img);
+            // 复制完img宽度0？？所以直接传字符串
+            var bitmap = new Bitmap(typeof this.img === 'string' ? this.img : this.img.src);
             bitmap.x = this.x;
             bitmap.y = this.y;
-
             bitmap.scaleX = this.scaleX;
             bitmap.scaleY = this.scaleY;
             bitmap.rotation = this.rotation;
@@ -1121,6 +1121,7 @@ var _typeof2 = typeof Symbol === "function" && typeof Symbol.iterator === "symbo
             bitmap.originY = this.originY;
             bitmap.width = this.width;
             bitmap.height = this.height;
+            bitmap.cursor = this.cursor;
 
             return bitmap;
           }
@@ -2927,7 +2928,6 @@ var _typeof2 = typeof Symbol === "function" && typeof Symbol.iterator === "symbo
         _createClass(Renderer, [{
           key: 'update',
           value: function update(stage) {
-
             this.renderer.clear(this.ctx, this.width, this.height);
             this.renderer.render(this.ctx, stage);
             this.ctx.draw && this.ctx.draw();
@@ -3056,7 +3056,7 @@ var _typeof2 = typeof Symbol === "function" && typeof Symbol.iterator === "symbo
 
       var _renderer2 = _interopRequireDefault(_renderer);
 
-      var _wxHitRender = __webpack_require__(31);
+      var _wxHitRender = __webpack_require__(38);
 
       var _wxHitRender2 = _interopRequireDefault(_wxHitRender);
 
@@ -3390,39 +3390,43 @@ var _typeof2 = typeof Symbol === "function" && typeof Symbol.iterator === "symbo
 
       var _sprite2 = _interopRequireDefault(_sprite);
 
+      var _shape = __webpack_require__(0);
+
+      var _shape2 = _interopRequireDefault(_shape);
+
       var _roundedRect = __webpack_require__(15);
 
       var _roundedRect2 = _interopRequireDefault(_roundedRect);
 
-      var _arrowPath = __webpack_require__(32);
+      var _arrowPath = __webpack_require__(39);
 
       var _arrowPath2 = _interopRequireDefault(_arrowPath);
 
-      var _ellipse = __webpack_require__(33);
+      var _ellipse = __webpack_require__(40);
 
       var _ellipse2 = _interopRequireDefault(_ellipse);
 
-      var _path = __webpack_require__(34);
+      var _path = __webpack_require__(41);
 
       var _path2 = _interopRequireDefault(_path);
 
-      var _button = __webpack_require__(37);
+      var _button = __webpack_require__(44);
 
       var _button2 = _interopRequireDefault(_button);
 
-      var _rect = __webpack_require__(38);
+      var _rect = __webpack_require__(45);
 
       var _rect2 = _interopRequireDefault(_rect);
 
-      var _circle = __webpack_require__(39);
+      var _circle = __webpack_require__(46);
 
       var _circle2 = _interopRequireDefault(_circle);
 
-      var _polygon = __webpack_require__(40);
+      var _polygon = __webpack_require__(47);
 
       var _polygon2 = _interopRequireDefault(_polygon);
 
-      var _equilateralPolygon = __webpack_require__(41);
+      var _equilateralPolygon = __webpack_require__(48);
 
       var _equilateralPolygon2 = _interopRequireDefault(_equilateralPolygon);
 
@@ -3453,6 +3457,8 @@ var _typeof2 = typeof Symbol === "function" && typeof Symbol.iterator === "symbo
         Text: _text2.default,
         Group: _group2.default,
         Sprite: _sprite2.default,
+        Shape: _shape2.default,
+
         ArrowPath: _arrowPath2.default,
         Ellipse: _ellipse2.default,
         Path: _path2.default,
@@ -3489,6 +3495,34 @@ var _typeof2 = typeof Symbol === "function" && typeof Symbol.iterator === "symbo
         _to2.default.easing[itemLower + 'Out'] = _tween2.default.Easing[item].Out;
         _to2.default.easing[itemLower + 'InOut'] = _tween2.default.Easing[item].InOut;
       });
+
+      cax.loadImg = function (option) {
+        var img = new Image();
+        img.onload = function () {
+          option.complete(this);
+        };
+        img.src = option.img;
+      };
+
+      cax.loadImgs = function (option) {
+        var result = [];
+        var loaded = 0;
+        var len = option.imgs.length;
+        option.imgs.forEach(function (src, index) {
+          var img = new Image();
+          img.onload = function (i, img) {
+            return function () {
+              result[i] = img;
+              loaded++;
+              option.progress && option.progress(loaded / len, loaded, i, img, result);
+              if (loaded === len) {
+                option.complete && option.complete(result);
+              }
+            };
+          }(index, img);
+          img.src = src;
+        });
+      };
 
       module.exports = cax;
 
@@ -3835,7 +3869,7 @@ var _typeof2 = typeof Symbol === "function" && typeof Symbol.iterator === "symbo
 
       var _renderer2 = _interopRequireDefault(_renderer);
 
-      var _hitRender = __webpack_require__(30);
+      var _hitRender = __webpack_require__(37);
 
       var _hitRender2 = _interopRequireDefault(_hitRender);
 
@@ -4113,6 +4147,9 @@ var _typeof2 = typeof Symbol === "function" && typeof Symbol.iterator === "symbo
         }, {
           key: '_setCursor',
           value: function _setCursor(obj) {
+            if (!this.canvas.style) {
+              return;
+            }
             if (obj.cursor) {
               this.canvas.style.cursor = obj.cursor;
             } else if (obj.parent) {
@@ -4640,8 +4677,8 @@ var _typeof2 = typeof Symbol === "function" && typeof Symbol.iterator === "symbo
             }
             mtx = o._matrix;
 
-            //group 进行 cache canvas 内部的子元素需要进行appendTransform
-            //cache canvas 渲染不叠加自身的 transform，因为进入主渲染会进行appendTransform
+            // group 进行 cache canvas 内部的子元素需要进行appendTransform
+            // cache canvas 渲染不叠加自身的 transform，因为进入主渲染会进行appendTransform
             if (inGroup || !cacheData) {
               mtx.appendTransform(o.x, o.y, o.scaleX, o.scaleY, o.rotation, o.skewX, o.skewY, o.originX, o.originY);
             }
@@ -4665,9 +4702,9 @@ var _typeof2 = typeof Symbol === "function" && typeof Symbol.iterator === "symbo
               ctx.clip(o.absClipRuleNonzero ? 'nonzero' : 'evenodd');
             }
 
-            //if(!cacheData){
+            // if(!cacheData){
             ctx.setTransform(mtx.a, mtx.b, mtx.c, mtx.d, mtx.tx, mtx.ty);
-            //}
+            // }
             if (o._readyToCache || o.cacheUpdating) {
               this.setComplexProps(ctx, o);
               o._readyToCache = false;
@@ -4675,8 +4712,8 @@ var _typeof2 = typeof Symbol === "function" && typeof Symbol.iterator === "symbo
               o.cacheCtx.save();
               this.render(o.cacheCtx, o, o._cacheData);
               o.cacheCtx.restore();
-              //debug cacheCanvas
-              //document.body.appendChild(o.cacheCanvas)
+              // debug cacheCanvas
+              // document.body.appendChild(o.cacheCanvas)
               if (o._readyToFilter) {
                 o.cacheCtx.putImageData((0, _index.filter)(o.cacheCtx.getImageData(0, 0, o.cacheCanvas.width, o.cacheCanvas.height), o._filterName), 0, 0);
                 this._readyToFilter = false;
@@ -4798,12 +4835,58 @@ var _typeof2 = typeof Symbol === "function" && typeof Symbol.iterator === "symbo
 
       var _blur = __webpack_require__(28);
 
-      function filter(pixels, name) {
+      var _brightness = __webpack_require__(30);
 
-        if (name.indexOf('invert(') === 0) {
-          return (0, _invert.invert)(pixels, Number(name.replace('invert(', '').replace('%)', '')) / 100);
-        } else if (name.indexOf('blur(') === 0) {
-          return (0, _blur.blur)(pixels, Number(name.replace('blur(', '').replace('px)', '')));
+      var _contrast = __webpack_require__(31);
+
+      var _grayscale = __webpack_require__(32);
+
+      var _sepia = __webpack_require__(33);
+
+      var _threshold = __webpack_require__(34);
+
+      var _gamma = __webpack_require__(35);
+
+      var _colorize = __webpack_require__(36);
+
+      function filter(pixels, name) {
+        if (typeof name === 'string') {
+          var type = name.split('(')[0];
+          var num = getNumber(name);
+          switch (type) {
+            case 'invert':
+              return (0, _invert.invert)(pixels, num);
+            case 'brightness':
+              return (0, _brightness.brightness)(pixels, -255 + num * 255);
+            case 'blur':
+              return (0, _blur.blur)(pixels, num);
+            case 'contrast':
+              return (0, _contrast.contrast)(pixels, -255 + num * 255);
+            case 'grayscale':
+              return (0, _grayscale.grayscale)(pixels, num);
+            case 'sepia':
+              return (0, _sepia.sepia)(pixels, num);
+            case 'threshold':
+              return (0, _threshold.threshold)(pixels, num);
+            case 'gamma':
+              return (0, _gamma.gamma)(pixels, num);
+          }
+        } else {
+          switch (name.type) {
+            case 'colorize':
+              return (0, _colorize.colorize)(pixels, name);
+          }
+        }
+      }
+
+      function getNumber(str) {
+        str = str.replace(/(invert)|(brightness)|(blur)|(contrast)|(grayscale)|(sepia)|(threshold)|(gamma)?\(/g, '').replace(')', '');
+        if (str.indexOf('%') !== -1) {
+          return Number(str.replace('%', '')) / 100;
+        } else if (str.indexOf('px') !== -1) {
+          return Number(str.replace('px', ''));
+        } else {
+          return Number(str);
         }
       }
 
@@ -4819,14 +4902,12 @@ var _typeof2 = typeof Symbol === "function" && typeof Symbol.iterator === "symbo
       });
       exports.invert = invert;
       function invert(pixels, ratio) {
-
         var d = pixels.data;
         ratio = ratio === undefined ? 1 : ratio;
         for (var i = 0; i < d.length; i += 4) {
           d[i] = d[i] + ratio * (255 - 2 * d[i]);
           d[i + 1] = d[i + 1] + ratio * (255 - 2 * d[i + 1]);
           d[i + 2] = d[i + 2] + ratio * (255 - 2 * d[i + 2]);
-          d[i + 3] = d[i + 3];
         }
         return pixels;
       }
@@ -4972,7 +5053,7 @@ var _typeof2 = typeof Symbol === "function" && typeof Symbol.iterator === "symbo
       exports.createImageData = createImageData;
       var tmpCtx = null;
 
-      if (typeof document != 'undefined') {
+      if (typeof document !== 'undefined') {
         tmpCtx = document.createElement('canvas').getContext('2d');
       } else if (typeof wx !== 'undefined' && wx.createCanvas) {
         tmpCtx = wx.createCanvas().getContext('2d');
@@ -4985,6 +5066,189 @@ var _typeof2 = typeof Symbol === "function" && typeof Symbol.iterator === "symbo
       /***/
     },
     /* 30 */
+    /***/function (module, exports, __webpack_require__) {
+
+      "use strict";
+
+      Object.defineProperty(exports, "__esModule", {
+        value: true
+      });
+      exports.brightness = brightness;
+      function brightness(pixels, adjustment) {
+        var data = pixels.data;
+        var length = data.length;
+        for (var i = 0; i < length; i += 4) {
+          data[i] += adjustment;
+          data[i + 1] += adjustment;
+          data[i + 2] += adjustment;
+        }
+        return pixels;
+      }
+
+      /***/
+    },
+    /* 31 */
+    /***/function (module, exports, __webpack_require__) {
+
+      "use strict";
+
+      Object.defineProperty(exports, "__esModule", {
+        value: true
+      });
+      exports.contrast = contrast;
+      function contrast(pixels, contrast) {
+        var data = pixels.data;
+        var length = data.length;
+        var factor = 259 * (contrast + 255) / (255 * (259 - contrast));
+
+        for (var i = 0; i < length; i += 4) {
+          data[i] = factor * (data[i] - 128) + 128;
+          data[i + 1] = factor * (data[i + 1] - 128) + 128;
+          data[i + 2] = factor * (data[i + 2] - 128) + 128;
+        }
+
+        return pixels;
+      };
+
+      /***/
+    },
+    /* 32 */
+    /***/function (module, exports, __webpack_require__) {
+
+      "use strict";
+
+      Object.defineProperty(exports, "__esModule", {
+        value: true
+      });
+      exports.grayscale = grayscale;
+      function grayscale(pixels, adjustment) {
+        var data = pixels.data;
+        var length = data.length;
+        for (var i = 0; i < length; i += 4) {
+          var r = data[i];
+          var g = data[i + 1];
+          var b = data[i + 2];
+
+          // CIE luminance for the RGB
+          // The human eye is bad at seeing red and blue, so we de-emphasize them.
+          var v = 0.2126 * r + 0.7152 * g + 0.0722 * b;
+          data[i] = r + (v - r) * adjustment;
+          data[i + 1] = g + (v - g) * adjustment;
+          data[i + 2] = b + (v - b) * adjustment;
+        }
+        return pixels;
+      };
+
+      /***/
+    },
+    /* 33 */
+    /***/function (module, exports, __webpack_require__) {
+
+      "use strict";
+
+      Object.defineProperty(exports, "__esModule", {
+        value: true
+      });
+      exports.sepia = sepia;
+      function sepia(pixels, adjustment) {
+        var data = pixels.data;
+        var length = data.length;
+        for (var i = 0; i < length; i += 4) {
+          var r = data[i];
+          var g = data[i + 1];
+          var b = data[i + 2];
+
+          var sr = r * 0.393 + g * 0.769 + b * 0.189;
+          var sg = r * 0.349 + g * 0.686 + b * 0.168;
+          var sb = r * 0.272 + g * 0.534 + b * 0.131;
+
+          data[i] = r + (sr - r) * adjustment;
+          data[i + 1] = g + (sg - g) * adjustment;
+          data[i + 2] = b + (sb - b) * adjustment;
+        }
+
+        return pixels;
+      };
+
+      /***/
+    },
+    /* 34 */
+    /***/function (module, exports, __webpack_require__) {
+
+      "use strict";
+
+      Object.defineProperty(exports, "__esModule", {
+        value: true
+      });
+      exports.threshold = threshold;
+      function threshold(pixels, threshold) {
+        var data = pixels.data;
+        var length = data.length;
+        for (var i = 0; i < length; i += 4) {
+          var r = data[i];
+          var g = data[i + 1];
+          var b = data[i + 2];
+          var v = 0.2126 * r + 0.7152 * g + 0.0722 * b >= threshold ? 255 : 0;
+          data[i] = data[i + 1] = data[i + 2] = v;
+        }
+        return pixels;
+      };
+
+      /***/
+    },
+    /* 35 */
+    /***/function (module, exports, __webpack_require__) {
+
+      "use strict";
+
+      Object.defineProperty(exports, "__esModule", {
+        value: true
+      });
+      exports.gamma = gamma;
+      function gamma(pixels, adjustment) {
+        var data = pixels.data;
+        var length = data.length;
+        for (var i = 0; i < length; i += 4) {
+          data[i] = Math.pow(data[i] / 255, adjustment) * 255;
+          data[i + 1] = Math.pow(data[i + 1] / 255, adjustment) * 255;
+          data[i + 2] = Math.pow(data[i + 2] / 255, adjustment) * 255;
+        }
+        return pixels;
+      };
+
+      /***/
+    },
+    /* 36 */
+    /***/function (module, exports, __webpack_require__) {
+
+      "use strict";
+
+      Object.defineProperty(exports, "__esModule", {
+        value: true
+      });
+      exports.colorize = colorize;
+      function colorize(pixels, option) {
+        var data = pixels.data;
+        var length = data.length;
+        var hex = option.color.charAt(0) === '#' ? option.color.substr(1) : option.color;
+        var colorRGB = {
+          r: parseInt(hex.substr(0, 2), 16),
+          g: parseInt(hex.substr(2, 2), 16),
+          b: parseInt(hex.substr(4, 2), 16)
+        };
+
+        for (var i = 0; i < length; i += 4) {
+          data[i] -= (data[i] - colorRGB.r) * option.amount;
+          data[i + 1] -= (data[i + 1] - colorRGB.g) * option.amount;
+          data[i + 2] -= (data[i + 2] - colorRGB.b) * option.amount;
+        }
+
+        return pixels;
+      };
+
+      /***/
+    },
+    /* 37 */
     /***/function (module, exports, __webpack_require__) {
 
       "use strict";
@@ -5198,7 +5462,6 @@ var _typeof2 = typeof Symbol === "function" && typeof Symbol.iterator === "symbo
                 if (target) return target;
               }
             } else {
-
               ctx.setTransform(mtx.a, mtx.b, mtx.c, mtx.d, mtx.tx, mtx.ty);
               if (o instanceof _graphics2.default) {
                 this.setComplexProps(ctx, o);
@@ -5235,7 +5498,7 @@ var _typeof2 = typeof Symbol === "function" && typeof Symbol.iterator === "symbo
           value: function setComplexProps(ctx, o) {
             ctx.globalCompositeOperation = o.complexCompositeOperation;
             ctx.globalAlpha = o.complexAlpha;
-            //The shadow does not trigger the event, so remove it
+            // The shadow does not trigger the event, so remove it
             // if(o.complexShadow){
             //   ctx.shadowColor = o.complexShadow.color
             //   ctx.shadowOffsetX = o.complexShadow.offsetX
@@ -5263,7 +5526,7 @@ var _typeof2 = typeof Symbol === "function" && typeof Symbol.iterator === "symbo
 
       /***/
     },
-    /* 31 */
+    /* 38 */
     /***/function (module, exports, __webpack_require__) {
 
       "use strict";
@@ -5446,7 +5709,7 @@ var _typeof2 = typeof Symbol === "function" && typeof Symbol.iterator === "symbo
 
       /***/
     },
-    /* 32 */
+    /* 39 */
     /***/function (module, exports, __webpack_require__) {
 
       "use strict";
@@ -5529,7 +5792,6 @@ var _typeof2 = typeof Symbol === "function" && typeof Symbol.iterator === "symbo
         }, {
           key: 'drawArrow',
           value: function drawArrow(fromX, fromY, toX, toY, theta) {
-
             var angle = Math.atan2(fromY - toY, fromX - toX) * 180 / Math.PI,
                 angle1 = (angle + theta) * Math.PI / 180,
                 angle2 = (angle - theta) * Math.PI / 180,
@@ -5564,7 +5826,7 @@ var _typeof2 = typeof Symbol === "function" && typeof Symbol.iterator === "symbo
 
       /***/
     },
-    /* 33 */
+    /* 40 */
     /***/function (module, exports, __webpack_require__) {
 
       "use strict";
@@ -5665,7 +5927,7 @@ var _typeof2 = typeof Symbol === "function" && typeof Symbol.iterator === "symbo
 
       /***/
     },
-    /* 34 */
+    /* 41 */
     /***/function (module, exports, __webpack_require__) {
 
       "use strict";
@@ -5684,7 +5946,7 @@ var _typeof2 = typeof Symbol === "function" && typeof Symbol.iterator === "symbo
         };
       }();
 
-      var _pathParser = __webpack_require__(35);
+      var _pathParser = __webpack_require__(42);
 
       var _pathParser2 = _interopRequireDefault(_pathParser);
 
@@ -5692,7 +5954,7 @@ var _typeof2 = typeof Symbol === "function" && typeof Symbol.iterator === "symbo
 
       var _shape2 = _interopRequireDefault(_shape);
 
-      var _arcToBezier = __webpack_require__(36);
+      var _arcToBezier = __webpack_require__(43);
 
       var _arcToBezier2 = _interopRequireDefault(_arcToBezier);
 
@@ -5962,7 +6224,7 @@ var _typeof2 = typeof Symbol === "function" && typeof Symbol.iterator === "symbo
 
       /***/
     },
-    /* 35 */
+    /* 42 */
     /***/function (module, exports, __webpack_require__) {
 
       "use strict";
@@ -6030,7 +6292,7 @@ var _typeof2 = typeof Symbol === "function" && typeof Symbol.iterator === "symbo
 
       /***/
     },
-    /* 36 */
+    /* 43 */
     /***/function (module, exports, __webpack_require__) {
 
       "use strict";
@@ -6065,7 +6327,7 @@ var _typeof2 = typeof Symbol === "function" && typeof Symbol.iterator === "symbo
         };
       }();
 
-      //https://github.com/colinmeinke/svg-arc-to-cubic-bezier
+      // https://github.com/colinmeinke/svg-arc-to-cubic-bezier
 
       var TAU = Math.PI * 2;
 
@@ -6241,7 +6503,7 @@ var _typeof2 = typeof Symbol === "function" && typeof Symbol.iterator === "symbo
 
       /***/
     },
-    /* 37 */
+    /* 44 */
     /***/function (module, exports, __webpack_require__) {
 
       "use strict";
@@ -6330,7 +6592,6 @@ var _typeof2 = typeof Symbol === "function" && typeof Symbol.iterator === "symbo
               textGroup.add(_this.text);
             });
           } else {
-
             _this.text.x = option.width / 2 - _this.text.getWidth() / 2 * _this.text.scaleX + (option.textX || 0);
             _this.text.y = option.height / 2 - 10 + 5 * _this.text.scaleY + (option.textY || 0);
             textGroup.add(_this.text);
@@ -6373,7 +6634,7 @@ var _typeof2 = typeof Symbol === "function" && typeof Symbol.iterator === "symbo
 
       /***/
     },
-    /* 38 */
+    /* 45 */
     /***/function (module, exports, __webpack_require__) {
 
       "use strict";
@@ -6454,7 +6715,7 @@ var _typeof2 = typeof Symbol === "function" && typeof Symbol.iterator === "symbo
 
       /***/
     },
-    /* 39 */
+    /* 46 */
     /***/function (module, exports, __webpack_require__) {
 
       "use strict";
@@ -6542,7 +6803,7 @@ var _typeof2 = typeof Symbol === "function" && typeof Symbol.iterator === "symbo
 
       /***/
     },
-    /* 40 */
+    /* 47 */
     /***/function (module, exports, __webpack_require__) {
 
       "use strict";
@@ -6638,7 +6899,7 @@ var _typeof2 = typeof Symbol === "function" && typeof Symbol.iterator === "symbo
 
       /***/
     },
-    /* 41 */
+    /* 48 */
     /***/function (module, exports, __webpack_require__) {
 
       "use strict";
@@ -7027,24 +7288,29 @@ function slopeByPoints(p1x, p1y, c1x, c1y, c2x, c2y, p2x, p2y, t) {
 }
 
 function slope(points, t, dt) {
-  var p1 = getValue(points, t),
-      p2 = getValue(points, t + (dt || 0.01)),
-      dy = p2.y - p1.y,
-      dx = p2.x - p1.x;
+
+  //P(t) = (1 - t)^3 * P0 + 3t(1-t)^2 * P1 + 3t^2 (1-t) * P2 + t^3 * P3
+  //dP(t) / dt = -3(1-t)^2 * P0 + 3(1-t)^2 * P1 - 6t(1-t) * P1 - 3t^2 * P2 + 6t(1-t) * P2 + 3t^2 * P3 
+  var p1x = points[0],
+      p1y = points[1],
+      c1x = points[2],
+      c1y = points[3],
+      c2x = points[4],
+      c2y = points[5],
+      p2x = points[6],
+      p2y = points[7];
+  var t1 = 1 - t;
+  var t1Sqr = t1 * t1;
+  var tSqr = t * t;
+
+  var dx = -3 * t1Sqr * p1x + 3 * t1Sqr * c1x - 6 * t * t1 * c1x - 3 * tSqr * c2x + 6 * t * t1 * c2x + 3 * tSqr * p2x;
+  var dy = -3 * t1Sqr * p1y + 3 * t1Sqr * c1y - 6 * t * t1 * c1y - 3 * tSqr * c2y + 6 * t * t1 * c2y + 3 * tSqr * p2y;
   return dy == 0 ? Infinity : Math.atan(dy / dx);
 
-  // let p1x =points[0], p1y=points[1], c1x=points[2], c1y=points[3], c2x=points[4], c2y=points[5], p2x=points[6], p2y=points[7]
-  // let ax = p1x * 3 - c1x * 9 + 9 * c2x - 3 * p2x
-  // let bx = c1x * 6 - 12 * c2x + 6 * p2x
-  // let cx = 3 * c2x - 3 * p2x
-
-  // let ay = p1y * 3 - c1y * 9 + 9 * c2y - 3 * p2y
-  // let by = c1y * 6 - 12 * c2y + 6 * p2y
-  // let cy = 3 * c2y - 3 * p2y
-
-  // let sqt = t * t
-
-  // return Math.atan((ay * sqt + by * t + cy) / (ax * sqt + bx * t + cx))
+  // let p1 = getValue(points, t),
+  // p2 = getValue(points, t + (dt || 0.01)),
+  // dy = p2.y - p1.y, dx = p2.x - p1.x;
+  // return dy == 0 ? Infinity : Math.atan(dy / dx);
 }
 
 function getValueByPoints(p1x, p1y, c1x, c1y, c2x, c2y, p2x, p2y, t) {
@@ -7062,7 +7328,7 @@ function getLength(p1x, p1y, c1x, c1y, c2x, c2y, p2x, p2y, steps) {
 
   var len = 0;
   for (var t = 0; t < 1.0 + step; t += step) {
-    points.push(getValue(p1x, p1y, c1x, c1y, c2x, c2y, p2x, p2y, Math.min(t, 1)));
+    points.push(getValueByPoints(p1x, p1y, c1x, c1y, c2x, c2y, p2x, p2y, Math.min(t, 1)));
   }
   var p0 = void 0,
       p1 = void 0,
@@ -7106,7 +7372,7 @@ function getPosition(length, shape) {
 
 function getPoint(t, index, shape) {
   var ps = shape[index];
-  return getValue(ps[0], ps[1], ps[2], ps[3], ps[4], ps[5], ps[6], ps[7], t);
+  return getValue(ps, t);
 }
 
 /***/ })

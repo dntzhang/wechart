@@ -2,7 +2,7 @@ import cax from 'cax'
 const { Graphics, Text, Group } = cax
 
 class Axis extends Group {
-  constructor (axis, orient) {
+  constructor (axis, orient, data) {
     super()
     const scale = axis.scale
     const f = scale.domain[0]
@@ -46,8 +46,8 @@ class Axis extends Group {
           }
 
           if (!axis.text.range || i >= axis.text.range[0] && i <= axis.text.range[1]) {
-            const text = new Text(axis.text.value ? axis.text.value(i) : i, {font:axis.text.font, color:axis.text.color})
-            text.x = current + axis.text.x
+            const text = new Text(axis.text.value ? axis.text.value(data[i], i) : i, {font: axis.text.font, color: axis.text.color})
+            text.x = current + axis.text.x - text.getWidth() / 2
             text.y = y + 5 + axis.text.y
             text.rotation = axis.text.rotation || 0
             this.add(text)
@@ -64,7 +64,7 @@ class Axis extends Group {
             g.beginPath().strokeStyle(axis.gird.color).moveTo(x + 1, current).lineTo(x + axis.gird.length, current).stroke()
           }
           if (!axis.text.range || i >= axis.text.range[0] && i <= axis.text.range[1]) {
-            const text = new Text(axis.text.value ? axis.text.value(i) : i, {font:axis.text.font, color:axis.text.color})
+            const text = new Text(axis.text.value ? axis.text.value(data[i], i) : i, {font: axis.text.font, color: axis.text.color})
             text.x = x - 5 + axis.text.x - text.getWidth()
             text.y = current + axis.text.y
             text.rotation = axis.text.rotation || 0
@@ -83,8 +83,8 @@ class Axis extends Group {
           }
 
           if (!axis.text.range || i >= axis.text.range[0] && i <= axis.text.range[1]) {
-            const text = new Text(axis.text.value ? axis.text.value(i) : i, {font:axis.text.font, color:axis.text.color})
-            text.x = current + axis.text.x
+            const text = new Text(axis.text.value ? axis.text.value(data[i], i) : i, {font: axis.text.font, color: axis.text.color})
+            text.x = current + axis.text.x - text.getWidth() / 2
             text.y = y - 5 + axis.text.y
             text.rotation = axis.text.rotation || 0
             this.add(text)
@@ -102,7 +102,7 @@ class Axis extends Group {
             g.beginPath().strokeStyle(axis.gird.color).moveTo(x + 1, current).lineTo(x + axis.gird.length, current).stroke()
           }
           if (!axis.text.range || i >= axis.text.range[0] && i <= axis.text.range[1]) {
-            const text = new Text(axis.text.value ? axis.text.value(i) : i, {font:axis.text.font, color:axis.text.color})
+            const text = new Text(axis.text.value ? axis.text.value(data[i], i) : i, {font: axis.text.font, color: axis.text.color})
             text.x = x + 5 + axis.text.x
             text.y = current + axis.text.y
             text.rotation = axis.text.rotation || 0

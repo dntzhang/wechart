@@ -12,12 +12,12 @@ export default class Line extends Group {
 
     Object.keys(axisConfig).forEach(key => {
       if (axisConfig[key]) {
-        const axis = new Axis(axisConfig[key], key)
+        const axis = new Axis(axisConfig[key], key, data)
         this.add(axis)
       }
     })
 
-    lines.forEach(item => {
+    lines.forEach((item) => {
       item.processedData = item.processing ? data.map(item.processing) : data
 
       this.add(new OneLine(item, data))
@@ -38,7 +38,7 @@ class OneLine extends Group {
     option.processedData.forEach((value, index) => {
       const x = option.width + index * option.interval
       const y = 0
-      option.endPoints.push({ x, y: option.mapping[1] * value / option.mapping[0] })
+      option.endPoints.push({ x, y: option.scale(value), value })
       path.push({ x, y })
     })
 
@@ -203,9 +203,13 @@ function fadeIn (obj) {
 function createCircles (eps, option) {
   const group = new Group()
   eps.forEach((ep, index) => {
-    const circle = new Circle(4, { fillStyle: option.color })
+    const circle = new Circle(3, { fillStyle: option.color })
     circle.x = ep.x
     circle.y = ep.y
+    const text = new cax.Text(ep.value, {color: option.color, font: '14px Arial'})
+    text.x = ep.x - text.getWidth() / 2
+    text.y = ep.y + 2
+    group.add(text)
     group.add(circle)
   })
   group.alpha = 0
