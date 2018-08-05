@@ -33,6 +33,21 @@
 <tr>
 
 <td align="center">
+<a title="Music" href="https://dntzhang.github.io/wechart/packages/music-visualization/examples/frequency2/index.html" rel="nofollow"><img alt="Music" src="./asset/c38.jpg" style="max-width:100%;"></a><br>
+<a href="https://github.com/dntzhang/wechart/tree/master/packages/music-visualization/examples/">Music3d</a> by <a href="https://github.com/dwqdaiwenqi">dwqdaiwenqi</a>
+</td>
+
+<td align="center">
+<a title="Music" href="https://dntzhang.github.io/wechart/packages/music-visualization/examples/frequency1/index.html" rel="nofollow"><img alt="Music" src="./asset/c39.jpg" style="max-width:100%;"></a><br>
+<a href="https://github.com/dntzhang/wechart/tree/master/packages/music-visualization/examples/">Music</a> by <a href="https://github.com/dwqdaiwenqi">dwqdaiwenqi</a>
+</td>
+
+<td align="center"><a title="Texture Mapping" href="https://dntzhang.github.io/wechart/packages/texture-mapping/examples/map/" rel="nofollow"><img alt="Texture Mapping" src="./asset/c40.jpg" style="max-width:100%;"></a><br><a href="https://github.com/dntzhang/wechart/blob/master/packages/texture-mapping/">Texture Mapping</a> by dntzhang</td>
+</tr>
+
+<tr>
+
+<td align="center">
 <a title="Music" href="https://dntzhang.github.io/wechart/packages/music-visualization/examples/timedomain1/index.html" rel="nofollow"><img alt="Music" src="./asset/c95.png" style="max-width:100%;"></a><br>
 <a href="https://github.com/dntzhang/wechart/tree/master/packages/music-visualization/examples/timedomain1">Music</a> by <a href="https://github.com/dwqdaiwenqi">dwqdaiwenqi</a>
 </td>
