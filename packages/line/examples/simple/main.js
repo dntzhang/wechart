@@ -78,7 +78,7 @@ const axisConfig = {
   bottom: {
     interval: 1,
     from: 0,
-    scale:xScale,
+    scale: xScale,
     x: 30,
     y: 450,
     to: 7,
@@ -103,7 +103,7 @@ const axisConfig = {
   left: {
     color: 'black',
     interval: 6,
-    scale:yScaleLeft,
+    scale: yScaleLeft,
 
     x: 30,
     y: 50,
@@ -121,7 +121,7 @@ const axisConfig = {
   right: {
     color: 'black',
     interval: 100,
-    scale:yScaleRight,
+    scale: yScaleRight,
 
     x: 730,
     y: 50,

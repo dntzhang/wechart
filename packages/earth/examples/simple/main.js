@@ -59,7 +59,7 @@ const earth = new Earth({
 group.add(earth)
 scene.add(group)
 
-earth.bindEvent(scene, camera);
+earth.bindEvent(scene, camera)
 
 const light = new THREE.PointLight(0xffffff, 1, 1000)
 light.position.set(0, 10, 100)

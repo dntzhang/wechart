@@ -1,13 +1,11 @@
 import cax from 'cax'
 
-
 const stage = new cax.Stage(300, 400, '#canvasCtn')
 
 const bitmap = new cax.Bitmap('./wepay-diy.jpg')
 bitmap.x = 20
 bitmap.y = 30
 stage.add(bitmap)
-
 
 const bitmapA = bitmap.clone()
 bitmapA.x = 20
@@ -62,51 +60,50 @@ bitmapK.x = 200
 bitmapK.y = 270
 stage.add(bitmapK)
 
-
 filter()
 
 let tag = true
 document.querySelector('#toggleBtn').addEventListener('click', function () {
-    if (tag) {
-        unfilter()
-    } else {
-        filter()
-    }
-    tag = !tag
+  if (tag) {
+    unfilter()
+  } else {
+    filter()
+  }
+  tag = !tag
 })
 
-function unfilter(){
-    bitmapA.unfilter()
-    bitmapB.unfilter() 
-    bitmapC.unfilter()
-    bitmapD.unfilter()
-    bitmapE.unfilter()
-    bitmapF.unfilter()
-    bitmapG.unfilter()
-    bitmapH.unfilter()
-    bitmapI.unfilter()
-    bitmapJ.unfilter()
-    bitmapK.unfilter()
+function unfilter () {
+  bitmapA.unfilter()
+  bitmapB.unfilter()
+  bitmapC.unfilter()
+  bitmapD.unfilter()
+  bitmapE.unfilter()
+  bitmapF.unfilter()
+  bitmapG.unfilter()
+  bitmapH.unfilter()
+  bitmapI.unfilter()
+  bitmapJ.unfilter()
+  bitmapK.unfilter()
 }
 
-function filter(){
-    bitmapA.filter('invert(1)', { x: 0, y: 0, width: 80, height: 80 })
-    bitmapB.filter('brightness(1.3)', { x: 0, y: 0, width: 80, height: 80 })
-    bitmapC.filter('blur(15px)', { x: 0, y: 0, width: 80, height: 80 })
-    bitmapD.filter('contrast(1.3)', { x: 0, y: 0, width: 80, height: 80 })
-    bitmapE.filter('brightness(0.5)', { x: 0, y: 0, width: 80, height: 80 })
-    bitmapF.filter('contrast(0.3)', { x: 0, y: 0, width: 80, height: 80 })
-    bitmapG.filter('grayscale(1)', { x: 0, y: 0, width: 80, height: 80 })
-    bitmapH.filter('sepia(1)', { x: 0, y: 0, width: 80, height: 80 })
-    bitmapI.filter('threshold(168)', { x: 0, y: 0, width: 80, height: 80 })
-    bitmapJ.filter('gamma(10)', { x: 0, y: 0, width: 80, height: 80 })
-    bitmapK.filter({
-        type:'colorize',
-        color:'#FF0000',
-        amount: 0.6
-    }, { x: 0, y: 0, width: 80, height: 80 })
+function filter () {
+  bitmapA.filter('invert(1)', { x: 0, y: 0, width: 80, height: 80 })
+  bitmapB.filter('brightness(1.3)', { x: 0, y: 0, width: 80, height: 80 })
+  bitmapC.filter('blur(15px)', { x: 0, y: 0, width: 80, height: 80 })
+  bitmapD.filter('contrast(1.3)', { x: 0, y: 0, width: 80, height: 80 })
+  bitmapE.filter('brightness(0.5)', { x: 0, y: 0, width: 80, height: 80 })
+  bitmapF.filter('contrast(0.3)', { x: 0, y: 0, width: 80, height: 80 })
+  bitmapG.filter('grayscale(1)', { x: 0, y: 0, width: 80, height: 80 })
+  bitmapH.filter('sepia(1)', { x: 0, y: 0, width: 80, height: 80 })
+  bitmapI.filter('threshold(168)', { x: 0, y: 0, width: 80, height: 80 })
+  bitmapJ.filter('gamma(10)', { x: 0, y: 0, width: 80, height: 80 })
+  bitmapK.filter({
+    type: 'colorize',
+    color: '#FF0000',
+    amount: 0.6
+  }, { x: 0, y: 0, width: 80, height: 80 })
 }
 
 cax.tick(() => {
-    stage.update()
+  stage.update()
 })

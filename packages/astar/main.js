@@ -1,1 +1,1 @@
-﻿new App();
+new App()
