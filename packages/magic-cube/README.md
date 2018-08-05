@@ -154,9 +154,11 @@ let rotateControl = pyramid.rotateControl;
 rotateControl.add('x', 1)
 rotateControl.add('y', 2)
 rotateControl.add('z', 1)
-rotateControl.start();
+rotateControl.run();
 
 // 单次旋转
+rotateControl.trigger('x', 1)
+rotateControl.trigger('x', 1)
 rotateControl.trigger('x', 1)
 
 ```
