@@ -25,104 +25,6 @@ var extrudeOption = {
  * 创建3D地图.
  * @class
  * @example
- * //配置默认值
- * let opt={
- *      name:'',                // 调试使用，window['name']为该实例对象，注意设置debugger:true启用
- *      el:document.body,       // 容器
- *      geoData:null,           // 地图geojson数据
- *      hasStats:true,          // 是否显示性能面板
- *      hasControls:true,       // 用户是否能控制视角
- *      autoRotate:false,       // 是否自动旋转视角
- *      ambientColor:0x333333,  // 环境光颜色
- *      directionalColor:0xffffff,// 平行光颜色
- *      hasLoadEffect:false,    // 是否有加载效果
- *      debugger:false,         // 调试模式
- *      cameraPosition:{x:0,y:0,z:40},// 相机位置
- *      visualMap:null,         // 直观图图例
- *      extrude:extrudeOption,  // 立体厚度参数
- *
- *      area:{
- *          data:[],            // 地图用户数据[{ name:'北京', value:, color:0xff3333 }...]
- *          // area参数默认值
- *          name:'',            // 区域名称
- *          color:0x3366ff,     // 地图颜色
- *          hoverColor:0xff9933,// 鼠标移入颜色
- *          lineColor:0xffffff, // 线颜色
- *          opacity:1,          // 地图透明度
- *          hasPhong:true,      // 是否反光材质
- *          shininess:50,       // 反光材质光滑度
- *          hoverAnimaTime:100, // 鼠标移入动画过渡时间
- *          loadEffect:false,   // 区域加载效果
- *          hasHoverHeight:true,// 鼠标移入区域升高
- *      },
- *
- *      mark:{
- *          data:[],            // 标注点数据[{ name:'XXX', coord:[11,22], value:13 }...]
- *          // mark参数默认值
- *          name:'',            // 标注名称
- *          color:0xffffff,     // 标注点颜色
- *          hoverColor:0xff9933,// 鼠标移入颜色
- *          hoverAnimaTime:100, // 鼠标移入动画过渡时间
- *          min:0.01,
- *          max:5,
- *      },
- *
- *      line:{
- *          data:[],                        //线数据[{ fromName:'', toName:'', coords:[toCoord, fromCoord] }...]
- *          // line参数默认值
- *          color:0x55eeff,                 // 颜色
- *          hoverColor:0xff9933,            // 鼠标移入颜色
- *          hoverExclusive:true,            // 鼠标移入排除其他线条
- *          hoverAnimaTime:100,             // 鼠标移入动画过渡时间
- *          spaceHeight:5,                  // 曲线空间高度
- *          hasHalo:true,                   // 是否开启光晕效果
- *          hasHaloAnimate:true,            // 是否开启光晕动画效果
- *          haloDensity:2,                  // 光点密度 值越大 越浓密，越消耗性能
- *          haloRunRate:0.01,               // 光点运动频率
- *          haloColor:0xffffff,             // 默认继承color颜色[不建议修改]
- *          haloSize:10,                    // 光晕大小
- *          decayColor:0x222222,            // 未激活线条颜色
- *      },
- *
- *      //内置对象
- *      mapObject:null,     // 地图对象
- *      areaGroup:null,     // 区域组
- *      lineGroup:null,     // 线条组
- *      markGroup:null,     // 标记组
- *      scene:null,         // 场景对象
- *      camera:null,        // 相机对象
- *      renderer:null,      // 渲染器对象
- *      stats:null,         // 性能对象
- *      controls:null,      // 控制器对象
- *      _w:0,               // 呈现宽度
- *      _h:0,               // 呈现高度
- *      __event:null,        // 事件对象
- *  }
- *
- * let map = new Map3D(opt);
- *
- * //事件注册
- *   map.addEventListener('mousedown', function (event) {
- *        let obj = event.target;
- *        if(obj.type==='Area') //type='Area|Line|Mark'
- *          obj.setColor('#ff6666', 500);
- *      });
- *
- *   map.addEventListener('mouseout', (event) => {
- *        let obj = event.target;
- *        console.log(obj.type+':out')
- *      });
- *
- *   map.addEventListener('mouseover', (event) => {
- *        let obj = event.target;
- *        console.log(obj.userData.name);
- *        //self.mapTitlePositon.left = $(window).scrollLeft() + event.clientX + 20 + 'px';
- *        //self.mapTitlePositon.top = $(window).scrollTop() + event.clientY + 20 + 'px';
- *      })
- *
- *   map.addEventListener('resize', function (event) {
- *        console.log('resize...');
- *      });
  */
 class Map3D {
   constructor(o) {
@@ -651,17 +553,6 @@ class Map3D {
     this.renderer.clear();
     requestAnimationFrame(this.renderScene.bind(this));
 
-    // this.pos=this.pos||0;
-    // let light = this.scene.getObjectByName('pointLight');
-    // let p = this.scene.getObjectByName('point');
-    // if(this.pos < 1){
-    //   let v3=this.curve.getPointAt(this.pos);
-    //   light.position.set(v3.x,v3.y,v3.z);
-    //   p.position.set(v3.x,v3.y,v3.z);
-    //     this.pos += 0.001
-    // }else{
-    //   this.pos = 0;
-    // }
     this.lineGroup.children.map(line => {
       if (line.halo) line.halo.update();
     });
@@ -806,8 +697,6 @@ class Map3D {
     }
   }
 
-  //创建地图区域块
-  //结构 parentObj:[area1,area2...]
   /**
    * 创建区域
    * @param {Object} item
@@ -1021,22 +910,6 @@ DataRange.count = 0;
  * @class
  * @extends THREE.Object3D
  * @example
- *
- *  let opt = {
- *     color:0x3366ff,     //地图颜色
- *     hoverColor:0xff9933,//鼠标移入颜色
- *     lineColor:0xffffff, //线颜色
- *     opacity:1,          //地图透明度
- *     hasPhong:true,      //是否反光材质
- *     shininess:50,       //反光材质光滑度
- *     hoverAnimaTime:100, //鼠标移入动画过渡时间
- *     loadEffect:false,      //区域加载效果
- *     hasHoverHeight:true,  //鼠标移入区域升高
- *  }
- *  // 创建一个区域
- *  let area = new Area(opt);
- *  // map 初始化以后可以获取
- *  let area = map.areaGroup.getObjectByName('北京')
  */
 class Area extends THREE.Object3D {
   /**
@@ -1055,14 +928,6 @@ class Area extends THREE.Object3D {
 
     this.add(this._mesh);
     this.add(this._line);
-    // 文字添加 待完善
-    // let tg=new THREE.Group();
-    // tg.name=this.name+'_text';
-    // tg.position.z=0.01;
-    // this._text = Font3D.create(this.name,{size:30,color:'#333333'});
-    // this._text.position.z=2.01;
-    // tg.add(this._text)
-    // this.add(tg);
 
     if (pros.loadEffect) {
       this.setPosition({ x: 0, y: 0, z: -100 });
@@ -1187,8 +1052,6 @@ class Area extends THREE.Object3D {
       geoMesh = new THREE.Mesh(geo, new THREE.MeshPhongMaterial(mateOption));
     else
       geoMesh = new THREE.Mesh(geo, new THREE.MeshLambertMaterial(mateOption));
-    //var geoMesh = THREE.SceneUtils.createMultiMaterialObject(geo,[new THREE.MeshPhongMaterial(mateOption),new
-    // THREE.MeshBasicMaterial({wireframe:true,color:0xffffff,transparent:true,opacity:0.35})])
     return geoMesh;
   }
 
@@ -1210,10 +1073,6 @@ class Area extends THREE.Object3D {
 
   /**
    * 设置区域颜色
-   * @param {color} color - 格式 0xff9933,'#ff9933','rgb(255,160,50)','hsl(340,100%,50%)'
-   * @param {number} [time] - 动画完成时间,与transition时间类似
-   * @param {number} [delay=0] - 动画延迟时间
-   * @param {callback} [callback] - 动画完成后回调
    */
   setColor(color, time, delay, callback) {
     this.userData.color = colorToHex(color);
@@ -1227,10 +1086,6 @@ class Area extends THREE.Object3D {
 
   /**
    * 设置区域位置
-   * @param {v3} v3 - 格式{x:0,y:0,z:0}
-   * @param {number} [time] - 动画完成时间,与transition时间类似
-   * @param {number} [delay=0] - 动画延迟时间
-   * @param {callback} [callback] - 动画完成后回调
    */
   setPosition(v3, time, delay, callback) {
     if (time && typeof time === "number")
@@ -1240,10 +1095,6 @@ class Area extends THREE.Object3D {
 
   /**
    * 设置区域旋转
-   * @param {v3} v3 - 格式{x:0,y:0,z:0}
-   * @param {number} [time] - 动画完成时间,与transition时间类似
-   * @param {number} [delay=0] - 动画延迟时间
-   * @param {callback} [callback] - 动画完成后回调
    */
   setRotation(v3, time, delay, callback) {
     v3.x = v3.x * (Math.PI / 180);
@@ -1254,10 +1105,6 @@ class Area extends THREE.Object3D {
 
   /**
    * 设置区域大小
-   * @param {v3} v3 - 格式{x:0,y:0,z:0}
-   * @param {number} [time] - 动画完成时间,与transition时间类似
-   * @param {number} [delay=0] - 动画延迟时间
-   * @param {callback} [callback] - 动画完成后回调
    */
   setScale(v3, time, delay, callback) {
     if (time && typeof time === "number")
@@ -1270,11 +1117,6 @@ class Area extends THREE.Object3D {
    * @param dispatcher
    * @param event
    * @example
-   *
-   * map.addEventListener('mouseout', (event) => {
-   *    let obj = event.target;
-   *    console.log(obj.type+':out')
-   *  });
    */
   onmouseout(dispatcher, event) {
     if (this.userData.hasHoverHeight)
@@ -1300,14 +1142,8 @@ class Area extends THREE.Object3D {
    * @param event
    * @example
    *
-   * map.addEventListener('mouseover', (event) => {
-   *    let obj = event.target;
-   *    console.log(obj.type+':over')
-   *  });
    */
   onmouseover(dispatcher, event) {
-    //区域移入高度
-    //this.selectedArea.position.z=1;
     if (this.userData.hasHoverHeight)
       new TWEEN.Tween(this.position)
         .to(
@@ -1334,11 +1170,6 @@ class Area extends THREE.Object3D {
    * @param dispatcher
    * @param event
    * @example
-   *
-   * map.addEventListener('mousedown', (event) => {
-   *    let obj = event.target;
-   *    console.log(obj.type+':click')
-   *  });
    */
   onmousedown(dispatcher, event) {
     dispatcher.dispatchEvent({
@@ -1361,17 +1192,6 @@ Area.count = 0;
  * @class
  * @extends THREE.Sprite
  * @example
- *
- * let opt={
- *  name:'台风-依安',
- *  coord:[116,23],
- *  color:0xff0000,
- *  size:4,
- *  value:2,
- *  userAttrA:'A'
- * }
- * let mark = new Mark(opt);
- * console.log(mark.userData.value +  mark.userData.userAttrA)  //'2A'
  */
 class Mark extends THREE.Sprite {
   /**
@@ -1400,13 +1220,6 @@ class Mark extends THREE.Sprite {
    * @param {context} context - Canvas上下文对象
    *   {@link https://developer.mozilla.org/zh-CN/docs/Web/API/HTMLCanvasElement/getContext|Canvas.context}
    * @example
-   *
-   * Mark.draw=(ctx)=>{
-   *  context.clearRect(0, 0, 128, 128);
-   *  context.fillStyle = '#ff0000';
-   *  context.arc(64, 64, 20, 0, Math.PI * 2, false);
-   *  context.fill();
-   * }
    */
   static draw(context, v) {
     v = v || 1;
@@ -1462,18 +1275,6 @@ class Mark extends THREE.Sprite {
 
       let time = Date.now() * 0.005;
       let size = Math.abs(Math.sin(0.1 + time));
-      // new TWEEN.Tween(this.scale).to({x:size,y:size},100).delay(Mark.count*10).start()
-
-      // let context = this.material.map.image.getContext('2d');
-      // Mark.draw(context,size);
-      // this.material.map.needsUpdate = true;
-
-      // let geometry = this.geometry;
-      // let attributes = geometry.attributes;
-      // for ( let i = 0; i < attributes.size.array.length; i++ ) {
-      //   attributes.size.array[ i ] = size + size * Math.sin( 0.1 * i + time );
-      // }
-      // attributes.size.needsUpdate = true;
     };
 
     Mark.count++;
@@ -1486,13 +1287,6 @@ class Mark extends THREE.Sprite {
    * @param {number} [delay=0] - 动画延迟时间
    * @param {callback} [callback] - 动画完成后回调
    * @example
-   *  map.addEventListener('mouseover', (event) => {
-   *    let obj = event.target;
-   *    if(obj.type==='Mark')
-   *    {
-   *      obj.setColor('#ff5555',100);// 鼠标移入设置为红色
-   *    }
-   *  });
    */
   setColor(color, time, delay, callback) {
     this.userData.color = colorToHex(color);
@@ -1511,15 +1305,6 @@ class Mark extends THREE.Sprite {
    * @param {number} [delay=0] - 动画延迟时间
    * @param {callback} [callback] - 动画完成后回调
    * @example
-   *
-   * map.addEventListener('mouseover', (event) => {
-   *     let obj = event.target;
-   *     if(obj.type==='Mark')
-   *     {
-   *       obj.setPosition({x:0,y:0,z:4},300) //标注升高
-   *     }
-   *   });
-   *
    */
   setPosition(v3, time, delay, callback) {
     if (time && typeof time === "number")
@@ -1529,10 +1314,6 @@ class Mark extends THREE.Sprite {
 
   /**
    * 设置标注旋转
-   * @param {v3} v3 - 格式{x:11,y:33,z:2}
-   * @param {number} [time] - 动画完成时间,与transition时间类似
-   * @param {number} [delay=0] - 动画延迟时间
-   * @param {callback} [callback] - 动画完成后回调
    */
   setRotation(v3, time, delay, callback) {
     v3.x = v3.x * (Math.PI / 180);
@@ -1543,10 +1324,6 @@ class Mark extends THREE.Sprite {
 
   /**
    * 设置标注大小
-   * @param {v3} v3 - 格式{x:11,y:33,z:2}
-   * @param {number} [time] - 动画完成时间,与transition时间类似
-   * @param {number} [delay=0] - 动画延迟时间
-   * @param {callback} [callback] - 动画完成后回调
    */
   setScale(v3, time, delay, callback) {
     if (time && typeof time === "number")
@@ -1605,28 +1382,13 @@ class Mark extends THREE.Sprite {
  * 所有标注数量,静态属性
  * @type {number}
  * @example
- * //查看地图所有标注数
- * console.log(Mark.count);
  */
 Mark.count = 0;
 Mark._texture = null;
 
 /** Class representing a Line.
  * @extends THREE.Line
- *
  * @example
- * var opt={
- *   color:0x55eeff,                 // 基线颜色
- *   hoverColor:0xff9933,            // 线的鼠标移入基线颜色
- *   spaceHeight:5,                  // 曲线空间高度
- *   hasHalo:true,                   // 是否有发光线
- *   hasHaloAnimate:true,            // 是否开启发光线动画效果
- *   haloDensity:2,                  // 光点密度 值越大 越浓密，越消耗性能
- *   haloRunRate:0.01,               // 光点运动频率
- *   haloColor:0xffffff,             // 发光线颜色，默认继承color
- *   haloSize:10,                    // 发光线粗细
- * }
- * let line = new Line(opt);
  * */
 class Line extends THREE.Line {
   /**
@@ -1656,12 +1418,6 @@ class Line extends THREE.Line {
    *   {@link https://developer.mozilla.org/zh-CN/docs/Web/API/HTMLCanvasElement/getContext|Canvas.context}
    * @example
    *
-   * Line.draw=(ctx)=>{
-   *  context.clearRect(0, 0, 128, 128);
-   *  context.fillStyle = '#ff0000';
-   *  context.arc(64, 64, 20, 0, Math.PI * 2, false);
-   *  context.fill();
-   * }
    */
   static draw(context) {
     context.clearRect(0, 0, 128, 128);
@@ -1693,18 +1449,6 @@ class Line extends THREE.Line {
    * @param {number} pros.haloSize - Halo line color width | 发光线粗细
    */
   constructor(pros) {
-    // pros:
-    // {
-    //   color:0x55eeff,                 // 基线颜色
-    //   hoverColor:0xff9933,            // 线的鼠标移入基线颜色
-    //   spaceHeight:5,                  // 曲线空间高度
-    //   hasHalo:true,                   // 是否有发光线
-    //   hasHaloAnimate:true,            // 是否开启发光线动画效果
-    //   haloDensity:2,                  // 光点密度 值越大 越浓密，越消耗性能
-    //   haloRunRate:0.01,               // 光点运动频率
-    //   haloColor:0xffffff,             // 发光线颜色，默认继承color
-    //   haloSize:10,                    // 发光线粗细
-    // }
     let fromCoord = pros.coords[0];
     let toCoord = pros.coords[1];
     let x1 = fromCoord[0];
@@ -1777,15 +1521,9 @@ class Line extends THREE.Line {
       vertex.z = geometry.vertices[i].z;
       vertex.toArray(positions, i * 3);
 
-      // if ( vertex.x < 0 ) {
-      //   color.setHSL( 0.5 + 0.1 * ( i / amount ), 0.7, 0.5 );
-      // } else {
-      //   color.setHSL( 0.0 + 0.1 * ( i / amount ), 0.9, 0.5 );
-      // }
       color.toArray(colors, i * 3);
       sizes[i] = line.userData.haloSize;
     }
-    //positions = geometry.vertices;
 
     let psBufferGeometry = new THREE.BufferGeometry();
     psBufferGeometry.addAttribute(
@@ -1844,7 +1582,6 @@ class Line extends THREE.Line {
    * @private
    */
   update() {
-    //if(!this.userData.hasHalo || !this.userData.hasHaloAnimate)
     this.halo.update();
   }
 
@@ -1853,26 +1590,11 @@ class Line extends THREE.Line {
    * @param {color} color - 线条颜色
    * @example
    *
-   * line.setColor(0xff0000);
-   * line.setColor('hsl(240,100%,50%)');
-   * line.setColor('rgb(255,255,0)');
    */
   setColor(color, haloColor) {
     //基线
     if (typeof color !== "undefined")
       this.material.color = new THREE.Color(colorToHex(color));
-    // //光线
-    // if(typeof haloColor!=='undefined' && this.userData.hasHalo )
-    // {
-    //   let color = new THREE.Color(colorToHex(haloColor));
-    //   let colors=this.halo.geometry.attributes.customColor;
-    //   for ( let i = 0; i < colors.array.length; i+=3 ) {
-    //     colors.array[ i ] = color.r;
-    //     colors.array[ i + 1] = color.g;
-    //     colors.array[ i + 2] = color.b;
-    //   }
-    //   this.halo.geometry.attributes.customColor.needsUpdate = true;
-    // }
   }
 
   /**
@@ -1894,15 +1616,6 @@ class Line extends THREE.Line {
    * @param event
    * @protected
    * @example
-   *  // 注册事件
-   *  map.addEventListener('mouseout', (event) => {
-   *        let obj = event.target;
-   *
-   *        if(obj.type==='Line')
-   *        {
-   *           // 这里做鼠标移出操作
-   *        }
-   *      });
    */
   onmouseout(dispatcher, event) {
     if (this.userData.hoverExclusive) {
@@ -1936,15 +1649,6 @@ class Line extends THREE.Line {
    * @param event
    * @protected
    * @example
-   *  // 注册事件
-   *  map.addEventListener('mouseover', (event) => {
-   *        let obj = event.target;
-   *
-   *        if(obj.type==='Line')
-   *        {
-   *           // 这里做鼠标移入操作
-   *        }
-   *      });
    */
   onmouseover(dispatcher, event) {
     if (this.userData.hoverExclusive) {
@@ -1980,15 +1684,6 @@ class Line extends THREE.Line {
    * @param event
    * @protected
    * @example
-   *  // 注册事件
-   *  map.addEventListener('mousedown', (event) => {
-   *        let obj = event.target;
-   *
-   *        if(obj.type==='Line')
-   *        {
-   *           // 这里做鼠标单击操作
-   *        }
-   *      });
    */
   onmousedown(dispatcher, event) {
     dispatcher.dispatchEvent({
@@ -2041,9 +1736,6 @@ let shader = {
  * @param {string|number} color - 需要转换的颜色表达式
  * @returns {number} - 颜色的16进制
  * @example
- *
- * let color = colorToHex('#336699')
- *
  */
 function colorToHex(color) {
   if (typeof color === "string") {
