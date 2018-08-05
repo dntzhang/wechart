@@ -26,7 +26,7 @@
 <td align="center"><a title="Skatch" href="https://dntzhang.github.io/wechart/packages/skatch/examples/simple/" rel="nofollow"><img alt="Skatch" src="./asset/c96.jpg" style="max-width:100%;"></a><br><a href="https://github.com/dntzhang/wechart/blob/master/packages/skatch/">Skatch</a> by dntzhang</td>
 
 
-<td align="center"><a title="Map3d" href="https://dntzhang.github.io/wechart/packages/map3d/examples/Map3d/" rel="nofollow"><img alt="Map3d" src="./asset/c37.jpg" style="max-width:100%;"></a><br><a href="https://github.com/dntzhang/wechart/blob/master/packages/Map3d/">Map3d</a> by <a href="https://github.com/TwistFateCarry">TwistFateCarry</a></td>
+<td align="center"><a title="Map3d" href="https://dntzhang.github.io/wechart/packages/map3d/examples/Map3d/" rel="nofollow"><img alt="Map3d" src="./asset/c37.jpg" style="max-width:100%;"></a><br><a href="https://github.com/dntzhang/wechart/blob/master/packages/map3d/">Map3d</a> by <a href="https://github.com/TwistFateCarry">TwistFateCarry</a></td>
 
 </tr>
 
