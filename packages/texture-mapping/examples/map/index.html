@@ -9,10 +9,12 @@
     var size = 20
     var debug = true
     var img = new Image()
+    var baseTs 
     img.onload = function () {
 
 
         var result1 = rectToTriangle(img.width, img.height, size)
+        baseTs = JSON.parse(JSON.stringify(result1.ts)) 
         drawImage(ctx, img, result1.ts)
 
         //覆盖缝隙
@@ -25,6 +27,7 @@
         canvas.addEventListener('mousedown', function (evt) {
             let x = evt.clientX - offset.left
             let y = evt.clientY - offset.top
+            ctx.clearRect(0, 0, img.width, img.height)
             index = getIndex(result1.points, x, y, img.width / size, img.height / size, size)
             updatePoints(result1.points, x, y, index)
 
@@ -39,7 +42,7 @@
             if (!isMouseDown) return
             let x = evt.clientX - offset.left
             let y = evt.clientY - offset.top
-
+            
             ctx.clearRect(0, 0, img.width, img.height)
             result1.points[index].x = x
             result1.points[index].y = y
@@ -159,12 +162,12 @@
             //if(index%2===0)  ctx.drawImage(img, 0, 0);
 
 
-
+            let bt = baseTs[index]
             let matrix = createTransform(
                 {
-                    p1: { x: t[0].preX, y: t[0].preY },
-                    p2: { x: t[1].preX, y: t[1].preY },
-                    p3: { x: t[2].preX, y: t[2].preY }
+                    p1: { x: bt[0].x, y: bt[0].y },
+                    p2: { x: bt[1].x, y: bt[1].y },
+                    p3: { x: bt[2].x, y: bt[2].y }
                 },
                 {
                     p1: t[0],
