@@ -53,7 +53,7 @@ loadAudio(media).then(buffer => {
 
   frequencyData = new Uint8Array(analyser.frequencyBinCount)
 
-  var hemiLight = new THREE.HemisphereLight( 0xffffff, 0xffffff, 0.6)
+  var hemiLight = new THREE.HemisphereLight(0xffffff, 0xffffff, 0.6)
   hemiLight.color.setHSL(0.6, 1, 0.6)
   hemiLight.groundColor.setHSL(0.095, 1, 0.75)
   hemiLight.position.set(0, 50, 0)
@@ -79,7 +79,7 @@ loadAudio(media).then(buffer => {
   // /////////////////////////////////////////////////
   var [h, s, l] = [Math.random() * 0.7, 0.75, 0.75]
   var geo = new THREE.TorusGeometry(5, 1.8, 10, 15)
-  var mat =  new THREE.MeshPhongMaterial({specular: 0xffffff, shininess: 20,  vertexColors: THREE.FaceColors, flatShading: true})
+  var mat = new THREE.MeshPhongMaterial({specular: 0xffffff, shininess: 20, vertexColors: THREE.FaceColors, flatShading: true})
 
   var mesh1 = new FrequencyMesh(geo, mat.clone())
   geo.faces.forEach(f => {
@@ -117,7 +117,7 @@ loadAudio(media).then(buffer => {
   })
   scene.add(mesh3)
   mesh3.position.set(0, 0, -7)
-  /////////////////////////////////////////////////////////////
+  /// //////////////////////////////////////////////////////////
 
   ;(function animate () {
     window.requestAnimationFrame(animate)

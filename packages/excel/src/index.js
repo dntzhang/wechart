@@ -101,14 +101,12 @@ class Excel extends Group {
             if (value !== undefined && value !== null) {
               this.mCtx.font = style.fontStyle + ' ' + style.fontWeight + ' ' + style.fontSize + 'px ' + style.fontFamily
 
-           
-
               text.x = this._getX(style.textAlign, boxWidth, text.getWidth(), this.offset.x[x])
               text.y = this._getY(style.verticalAlign, boxHeight, style.fontSize, this.offset.y[y])
 
               const clipPath = new cax.Graphics()
 
-              clipPath.rect(this.offset.x[x]-text.x, this.offset.y[y]-text.y, boxWidth, boxHeight)
+              clipPath.rect(this.offset.x[x] - text.x, this.offset.y[y] - text.y, boxWidth, boxHeight)
               text.clip(clipPath)
               this.textGroup.add(text)
             }
@@ -231,7 +229,7 @@ class Excel extends Group {
     for (let i = 0; i < this.rowCount; i++) {
       boxHeight += this.option.rowAutoHeight[i] || this.option.rowHeight[i]
     }
-    this.grid.fillStyle(this.option.backgroundColor).fillRect(0,0,arrSum(this.option.colWidth), boxHeight)
+    this.grid.fillStyle(this.option.backgroundColor).fillRect(0, 0, arrSum(this.option.colWidth), boxHeight)
     for (let i = 0; i < this.rowCount; i++) {
       for (let j = 0; j < this.colCount; j++) {
         const h = this.option.rowAutoHeight[i] || this.option.rowHeight[i]
@@ -481,7 +479,7 @@ class Excel extends Group {
           cell.textList = this.stringSplit(text, step)
 
           maxHeight = Math.max(cell.textList.length * cell.lineHeight + 8, maxHeight)
-        }else{
+        } else {
           cell.textList = null
         }
         option.rowAutoHeight[y] = maxHeight
