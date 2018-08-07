@@ -12,7 +12,9 @@
     "test": "karma start test/karma.conf.js"
   },
   "dependencies": {
-    "cax": "latest"
+    "cax": "latest",
+    "matter-js": "^0.14.2",
+    "to2to": "^1.0.2"
   },
   "devDependencies": {
     "axios": "^0.18.0",
