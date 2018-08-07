@@ -28,19 +28,18 @@ const pyramid = new MagicCube({
 
 let { rotateControl } = pyramid
 
-let controlList = [], axisList = ['x', 'y', 'z'];
-for(var i = 0;i<50;i++){
+let controlList = [], axisList = ['x', 'y', 'z']
+for (var i = 0; i < 50; i++) {
   controlList.push({
-    axis:axisList[Math.round(Math.random()*3)],
-    layer:Math.round(Math.random()*4),
-    isF:!Math.random(Math.random()*4),
+    axis: axisList[Math.round(Math.random() * 3)],
+    layer: Math.round(Math.random() * 4),
+    isF: !Math.random(Math.random() * 4)
   })
 }
-controlList.forEach(d=>{
-  rotateControl.add(d.axis, d.layer, d.isF);
+controlList.forEach(d => {
+  rotateControl.add(d.axis, d.layer, d.isF)
 })
-rotateControl.run();
-
+rotateControl.run()
 
 group.add(pyramid)
 scene.add(group)

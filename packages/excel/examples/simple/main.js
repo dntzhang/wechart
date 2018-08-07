@@ -15,7 +15,7 @@ const excel = new Excel([
   [6, 'center middle', 'top right', null],
   [7, 'Powered By Wechart & Cax & dntzhang & Tencent', null, null]
 ], {
-  backgroundColor:'white',
+  backgroundColor: 'white',
   colWidth: [40, 100, 100, 90],
   rowHeight: [20, 30, 50, 30, 50, 60, 60, 60],
   merge: [
