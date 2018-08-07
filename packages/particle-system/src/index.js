@@ -1,63 +1,64 @@
 import cax from 'cax'
+import Particle from './particle'
 
-const defaultOption = {
-  'texture': 'newParticle.png',
-  'rotatePerSecond': 30,
-  'startSizeVariance': 10,
-  'minRadius': 20,
-  'rotatePerSecondVariance': 10,
-  'endBlue': 255,
-  'startGreen': 255,
-  'endSizeVariance': 5,
-  'startRed': 255,
-  'emitAngle': 180,
-  'emitter': { 'x': 483, 'y': 146 },
-  'emitAngleVariance': 360,
-  'startAlphaVariance': 0,
-  'maxRadius': 100,
-  'startRotation': 0,
-  'engGreenVariance': 0,
-  'startRotationVariance': 45,
-  'endRed': 255,
-  'endRotation': 263.58,
-  'emitterVariance': { 'x': 7, 'y': 8 },
-  'endBlueVariance': 0,
-  'endRotationVariance': 292.07,
-  'startBlueVariance': 0,
-  'endRedVariance': 0,
-  'speedVariance': 0,
-  'startRedVariance': 0,
-  'endAlpha': 1,
-  'gravity': { 'x': 0, 'y': 110 },
-  'endAlphaVariance': 0,
-  'speed': 20,
-  'radialAcceleration': 0,
-  'endSize': 10,
-  'radialAccelerationVariance': 0,
-  'emitterType': 0,
-  'blendFactorSource': 'one',
-  'maxParticles': 200,
-  'startAlpha': 0.8901960784313725,
-  'tangentialAccelerationVariance': 0,
-  'endGreen': 255,
-  'duration': -1,
-  'startGreenVariance': 0,
-  'tangentialAcceleration': 0,
-  'maxRadiusVariance': 30,
-  'lifespan': 2230,
-  'blendFactorDestination': 'oneMinusSourceAlpha',
-  'startBlue': 255,
-  'lifespanVariance': 700,
-  'minRadiusVariance': 10,
-  'startSize': 20
-}
+class ParticleSystem extends cax.Group {
+  constructor(option) {
+    super()
 
-class ParticleSystem extends Group {
-  constructor () {
+    this.speedRange = option.speedRange
+    this.angleRange = option.angleRange
+    this.emitRange = option.emitRange //支持圆形和方形
+    this.gravity = option.gravity || { x: 0, y: 0 }
+    this.filter = option.filter
 
+    this.emitCount = option.emitCount || 1
+    this.maxCount = option.maxCount || 100
+    this.emitX = option.emitX || 0
+    this.emitY = option.emitY || 0
+    this.texture = option.texture
+    this.option = option
   }
 
-  update () {
+  emit() {
+    const angle = randomInt(this.angleRange[0], this.angleRange[1]) * Math.PI / 180
+    const speed = randomInt(this.speedRange[0], this.speedRange[1])
+    const hw = this.emitRange[0] / 2
+    const hh = this.emitRange[1] / 2
+    const particle = new Particle({
+      x: this.emitX+ randomInt(-hw, hw),
+      y:  this.emitY+randomInt(-hh, hh),
+      velocity: { x: speed * Math.cos(angle), y: speed * Math.sin(angle) },
+      texture: this.texture,
+      acceleration: this.gravity,
+      scale:this.option.scale
+    })
+    this.add(particle);
+  }
+
+  update() {
+
+    let len = this.children.length;
+    if (len < this.maxCount) {
+      for (let k = 0; k < this.emitCount; k++) {
+        this.emit();
+      }
+    }
+    for (let i = 0; i < len; i++) {
+      const item = this.children[i];
+      if (item.isVisible()) {
+        item.update();
+      } else {
+        this.remove(item);
+        i--;
+        len--;
+      }
+    }
 
   }
 }
+
+function randomInt(min, max) {
+  return min + Math.floor(Math.random() * (max - min + 1))
+}
+
+export default ParticleSystem
