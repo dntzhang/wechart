@@ -98,7 +98,7 @@
 <tr>
 <td align="center"><a title="WordSphere" href="https://dntzhang.github.io/wechart/packages/word-sphere/examples/simple/" rel="nofollow"><img alt="WordSphere" src="./asset/c21.png" style="max-width:100%;"></a><br><a href="https://github.com/dntzhang/wechart/blob/master/packages/word-sphere/">WordSphere</a> by dntzhang</td>
 
-<td align="center"><a title="Clock" href="https://dntzhang.github.io/wechart/packages/clock/examples/simple/" rel="nofollow"><img alt="Clock" src="./asset/c20.png" style="max-width:100%;"></a><br><a href="https://github.com/dntzhang/wechart/blob/master/packages/clock/">Clock</a>by dntzhang</td>
+<td align="center"><a title="Clock" href="https://dntzhang.github.io/wechart/packages/clock/examples/simple/" rel="nofollow"><img alt="Clock" src="./asset/c20.png" style="max-width:100%;"></a><br><a href="https://github.com/dntzhang/wechart/blob/master/packages/clock/">Clock</a> by dntzhang</td>
 
 <td align="center"><a title="Excel" href="https://dntzhang.github.io/wechart/packages/excel/examples/simple/" rel="nofollow"><img alt="Excel" src="./asset/c18.png" style="max-width:100%;"></a><br><a href="https://github.com/dntzhang/wechart/blob/master/packages/excel/">Excel</a> by dntzhang</td>
 </tr>
