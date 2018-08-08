@@ -47,7 +47,8 @@ class Axis extends Group {
 
           if (!axis.text.range || i >= axis.text.range[0] && i <= axis.text.range[1]) {
             const text = new Text(axis.text.value ? axis.text.value(data[i], i) : i, {font: axis.text.font, color: axis.text.color})
-            text.x = current + axis.text.x - text.getWidth() / 2
+            text.textAlign = 'center'
+            text.x = current + axis.text.x
             text.y = y + 5 + axis.text.y
             text.rotation = axis.text.rotation || 0
             this.add(text)
@@ -84,7 +85,8 @@ class Axis extends Group {
 
           if (!axis.text.range || i >= axis.text.range[0] && i <= axis.text.range[1]) {
             const text = new Text(axis.text.value ? axis.text.value(data[i], i) : i, {font: axis.text.font, color: axis.text.color})
-            text.x = current + axis.text.x - text.getWidth() / 2
+            text.textAlign = 'center'
+            text.x = current + axis.text.x
             text.y = y - 5 + axis.text.y
             text.rotation = axis.text.rotation || 0
             this.add(text)
