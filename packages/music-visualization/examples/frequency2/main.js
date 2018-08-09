@@ -119,12 +119,7 @@ loadAudio(media).then(buffer => {
   })
   scene.add(mesh3)
   mesh3.position.set(0, 0, -7)
-<<<<<<< HEAD
-  // ///////////////////////////////////////////////////////////
-=======
-  /// //////////////////////////////////////////////////////////
->>>>>>> upstream/master
-
+  
   ;(function animate () {
     window.requestAnimationFrame(animate)
     renderer.render(scene, camera)
