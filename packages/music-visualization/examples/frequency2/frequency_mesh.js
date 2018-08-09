@@ -19,9 +19,9 @@ export default class FrequencyMesh extends THREE.Group {
     this.vxNormals = genVxNormal(geo)
     this.add(this.mesh)
   }
-  update (frequencyData, frequencyBinCount, n = 1) {
+  update (frequencyData, n = 1) {
     this.positions.forEach((v, i) => {
-      var val = frequencyData[i / this.positions.length * frequencyBinCount | 0] / 128
+      var val = frequencyData[i / this.positions.length * frequencyData.length | 0] / 128
       this.mesh.geometry.vertices[i].copy(
         v.clone().add(this.vxNormals[i].clone().multiplyScalar(val * n))
       )

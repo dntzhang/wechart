@@ -1,0 +1,139 @@
+<!DOCTYPE html>
+<html>
+<head lang="en">
+    <meta name="viewport" content="width=device-width,initial-scale=1,user-scalable=no">
+    <meta charset="UTF-8">
+    <title>Wechart Pixel Displacement</title>
+    <style>
+    canvas{
+        margin-left: 0;
+        margin-right: 0;
+        padding: 0;
+        background-color: white;
+    }
+
+    /* @media screen and (max-width: 500px) {  
+        canvas {
+            width : 320px
+        }
+    } */
+
+    html,body{
+        margin: 0;
+        padding: 0;
+        background:#444444;
+        text-align: center;
+        overflow: hidden;
+
+        width:100%;
+        height:100%;
+    }
+    body{
+        max-width:750px;
+        margin:0 auto;
+
+    }
+    </style>
+</head>
+<body>
+    <script src="../../../common/three.min.js"></script>
+    <a href="https://github.com/dntzhang/wechart" target="_blank" style="position: fixed; right: 0; top: 0; z-index: 3;">
+        <img src="//alloyteam.github.io/github.png" alt="">
+    </a>
+    <script src="bundler.js"></script>
+
+    <script>
+      var c = document.getElementById('c'),
+    c_ = document.createElement('canvas'),
+    ctx = c.getContext('2d'),
+    ctx_ = c_.getContext('2d'),
+    image = document.getElementById('image'),
+    img, original = false,
+    src = "https://images-na.ssl-images-amazon.com/images/I/91McsWOj8sL._SL1500_.jpg",
+    s = {
+        'scale': 4,
+        'font size': 8,
+        'color': '#fff'
+    };
+
+image.src = src;
+image.style.display = 'none';
+
+img = new Image();
+img.crossOrigin = 'anonymous';
+img.src = src;
+img.onload = function() {
+    c.width = img.width;
+    c.height = img.height;
+    c.style.marginLeft = image.style.marginLeft = -c.width/2 + 'px';
+    c.style.marginTop = image.style.marginTop = -c.height/2 + 'px';
+    
+    c_.width = img.width = c.width / s.scale;
+    c_.height = img.height = c.height / s.scale;
+    draw();
+}
+
+function symbol(gs) {
+    var s;
+    
+    if(gs > 230) {
+        s = '.';
+    } else if(gs > 195) {
+        s = ',';
+    } else if(gs > 170) {
+        s = ';';
+    } else if(gs > 155) {
+        s = '*';
+    } else if(gs > 130) {
+        s = 'o';
+    } else if(gs > 105) {
+        s = '&';
+    } else if(gs > 80) {
+        s = '8';
+    } else if(gs > 60) {
+        s = '#';
+    } else {
+        s = '@';
+    }
+    
+    return s;
+}
+
+function draw() {
+    ctx_.drawImage(img, 0, 0, img.width, img.height);
+    
+    var imgData = ctx_.getImageData(0, 0, c_.width, c_.height),
+        pixels = imgData.data;
+
+    for(var y = 0; y < c_.height; y++) {
+        for(var x = 0; x < c_.width; x++) {
+            var index = 4*(x + y*c_.width),
+                r = pixels[index + 0],
+                g = pixels[index + 1],
+                b = pixels[index + 2],
+                greyscl = Math.round((r + g + b)/3);
+            
+            var symb = symbol(greyscl);
+            
+            ctx.fillStyle = s.color;
+            ctx.font = s['font size'] + "px Courier New";
+            ctx.fillText(symb, x*s.scale, y*s.scale);
+        }
+    }
+}
+
+c.addEventListener('click', function() {
+    original = !original;
+    
+    if(original) {
+        ctx.clearRect(0, 0, c.width, c.height);
+        image.style.display = 'block';
+    } else {
+        image.style.display = 'none';
+        draw();
+    }
+});
+
+    </script>
+</body>
+</html>
