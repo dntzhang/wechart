@@ -24,8 +24,9 @@ class Excel extends Group {
     this.offset = this._processOffset(option)
 
     this.textGroup = new Group()
-    this.add(this.textGroup)
     this.renderGrid()
+
+    this.add(this.grid, this.textGroup)
     this.renderText()
 
     this.borderLevel = 0
@@ -100,13 +101,13 @@ class Excel extends Group {
             if (value !== undefined && value !== null) {
               this.mCtx.font = style.fontStyle + ' ' + style.fontWeight + ' ' + style.fontSize + 'px ' + style.fontFamily
 
-              const clipPath = new cax.Graphics()
-
-              clipPath.rect(this.x + this.offset.x[x], this.y + this.offset.y[y], boxWidth, boxHeight)
-              text.absClip(clipPath)
-
               text.x = this._getX(style.textAlign, boxWidth, text.getWidth(), this.offset.x[x])
               text.y = this._getY(style.verticalAlign, boxHeight, style.fontSize, this.offset.y[y])
+
+              const clipPath = new cax.Graphics()
+
+              clipPath.rect(this.offset.x[x] - text.x, this.offset.y[y] - text.y, boxWidth, boxHeight)
+              text.clip(clipPath)
               this.textGroup.add(text)
             }
           }
@@ -117,8 +118,12 @@ class Excel extends Group {
 
   update () {
     this.textGroup.empty()
-    this.renderText()
+
+    this._processOption(this.option)
+    this.height = this.getHeight()
+    this.offset = this._processOffset(this.option)
     this.renderGrid()
+    this.renderText()
   }
 
   setLeftBorder (row, col, color) {
@@ -220,6 +225,11 @@ class Excel extends Group {
 
   renderGrid () {
     this.grid.clear()
+    let boxHeight = 0
+    for (let i = 0; i < this.rowCount; i++) {
+      boxHeight += this.option.rowAutoHeight[i] || this.option.rowHeight[i]
+    }
+    this.grid.fillStyle(this.option.backgroundColor).fillRect(0, 0, arrSum(this.option.colWidth), boxHeight)
     for (let i = 0; i < this.rowCount; i++) {
       for (let j = 0; j < this.colCount; j++) {
         const h = this.option.rowAutoHeight[i] || this.option.rowHeight[i]
@@ -271,8 +281,6 @@ class Excel extends Group {
         }
       }
     }
-
-    this.add(this.grid)
   }
 
   getMergeInfo (y, x) {
@@ -471,6 +479,8 @@ class Excel extends Group {
           cell.textList = this.stringSplit(text, step)
 
           maxHeight = Math.max(cell.textList.length * cell.lineHeight + 8, maxHeight)
+        } else {
+          cell.textList = null
         }
         option.rowAutoHeight[y] = maxHeight
       })

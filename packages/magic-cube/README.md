@@ -154,9 +154,19 @@ let rotateControl = pyramid.rotateControl;
 rotateControl.add('x', 1)
 rotateControl.add('y', 2)
 rotateControl.add('z', 1)
-rotateControl.start();
+rotateControl.run();
 
 // 单次旋转
 rotateControl.trigger('x', 1)
+rotateControl.trigger('x', 1)
+
+// 反向旋转
+rotateControl.trigger('x', 1, true)
+
+// 旋转回调
+rotateControl.trigger('x', 1, true, function(){
+  console.log('旋转完成')
+})
+// 如果当前有旋转或旋转队列尚未完成将会排在队列后
 
 ```

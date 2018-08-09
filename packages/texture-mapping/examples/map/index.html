@@ -1,0 +1,250 @@
+<!DOCTYPE html>
+<html>
+
+<head lang="en">
+    <meta name="viewport" content="width=device-width,initial-scale=1,user-scalable=no">
+    <meta charset="UTF-8">
+    <title>Wechart Texture Mapping Demo</title>
+    <style>
+        canvas {
+            border: 1px solid #ccc;
+            margin-top: 10px;
+            margin-left: 0;
+            margin-right: 0;
+            padding: 0;
+            background-color: #ccc;
+        }
+
+        /* @media screen and (max-width: 500px) {
+            canvas {
+                width: 320px
+            }
+        } */
+
+        html,
+        body {
+            margin: 0;
+            padding: 0;
+            background: #444444;
+            text-align: center;
+        }
+    </style>
+</head>
+
+<body>
+    <a href="https://github.com/dntzhang/wechart/blob/master/packages/texture-mapping/examples/map/index.html" target="_blank"
+        style="position: fixed; right: 0; top: 0; z-index: 3;">
+        <img src="//alloyteam.github.io/github.png" alt="">
+    </a>
+    <div>
+        <div style="color: white;">Drag the Gird!</div>
+        <canvas id="myCanvas" width="459" height="662">
+
+        </canvas>
+    </div>
+
+    <script>
+
+        var canvas = document.getElementById('myCanvas');
+        var ctx = canvas.getContext('2d');
+        var size = 20
+        var debug = true
+        var img = new Image()
+        var baseTs
+        img.onload = function () {
+
+
+            var result1 = rectToTriangle(img.width, img.height, size)
+            baseTs = JSON.parse(JSON.stringify(result1.ts))
+            drawImage(ctx, img, result1.ts)
+
+            //覆盖缝隙
+            var result2 = rectToTriangle(img.width + 3, img.height + 3, size)
+            drawImage(ctx, img, result2.ts)
+
+
+            var offset = canvas.getBoundingClientRect()
+            var index, isMouseDown
+            canvas.addEventListener('mousedown', function (evt) {
+                let x = evt.clientX - offset.left
+                let y = evt.clientY - offset.top
+                ctx.clearRect(0, 0, img.width, img.height)
+                index = getIndex(result1.points, x, y, img.width / size, img.height / size, size)
+                updatePoints(result1.points, x, y, index)
+
+                updatePoints(result2.points, x, y, index)
+                drawImage(ctx, img, result1.ts)
+
+                drawImage(ctx, img, result2.ts)
+                isMouseDown = true
+            })
+
+            canvas.addEventListener('mousemove', function (evt) {
+                if (!isMouseDown) return
+                let x = evt.clientX - offset.left
+                let y = evt.clientY - offset.top
+
+                ctx.clearRect(0, 0, img.width, img.height)
+                result1.points[index].x = x
+                result1.points[index].y = y
+                result2.points[index].x = x
+                result2.points[index].y = y
+                updatePoints(result1.points, x, y, index)
+
+                updatePoints(result2.points, x, y, index)
+                drawImage(ctx, img, result1.ts)
+
+                drawImage(ctx, img, result2.ts)
+            })
+
+            canvas.addEventListener('mouseup', function (evt) {
+                isMouseDown = false
+            })
+        }
+
+        img.src = './bl.jpg'
+
+
+
+
+        function createTransform(source, dest) {
+            var x11 = source.p1.x;
+            var x12 = source.p1.y;
+            var x21 = source.p2.x;
+            var x22 = source.p2.y;
+            var x31 = source.p3.x;
+            var x32 = source.p3.y;
+            var y11 = dest.p1.x;
+            var y12 = dest.p1.y;
+            var y21 = dest.p2.x;
+            var y22 = dest.p2.y;
+            var y31 = dest.p3.x;
+            var y32 = dest.p3.y;
+
+            var a1 = ((y11 - y21) * (x12 - x32) - (y11 - y31) * (x12 - x22)) /
+                ((x11 - x21) * (x12 - x32) - (x11 - x31) * (x12 - x22));
+            var a2 = ((y11 - y21) * (x11 - x31) - (y11 - y31) * (x11 - x21)) /
+                ((x12 - x22) * (x11 - x31) - (x12 - x32) * (x11 - x21));
+            var a3 = y11 - a1 * x11 - a2 * x12;
+            var a4 = ((y12 - y22) * (x12 - x32) - (y12 - y32) * (x12 - x22)) /
+                ((x11 - x21) * (x12 - x32) - (x11 - x31) * (x12 - x22));
+            var a5 = ((y12 - y22) * (x11 - x31) - (y12 - y32) * (x11 - x21)) /
+                ((x12 - x22) * (x11 - x31) - (x12 - x32) * (x11 - x21));
+            var a6 = y12 - a4 * x11 - a5 * x12;
+            return [a1, a4, a2, a5, a3, a6];
+        }
+
+        function rectToTriangle(width, height, lev) {
+
+            var points = [];
+            // ---- create points ----
+            for (var i = 0; i <= lev; i++) {
+                for (var j = 0; j <= lev; j++) {
+                    var x = (i * (width / lev));
+                    var y = (j * (height / lev));
+                    var p = {
+                        x: x,
+                        y: y,
+                        preX: x,
+                        preY: y,
+                        // u: x / width,
+                        // v: y / height
+                    };
+                    points.push(p);
+                }
+            }
+
+            var ts = []
+
+            var count = lev + 1;
+            for (var i = 0; i < lev; i++) {
+                for (var j = 0; j < lev; j++) {
+                    // ---- up ----
+                    var p1 = points[j + i * count]
+                    var p2 = points[j + i * count + 1]
+                    var p3 = points[j + (i + 1) * count]
+                    var p4 = points[j + (i + 1) * count + 1]
+                    ts.push([
+                        p1, p2, p3
+                    ])
+
+                    // ---- down ----
+                    ts.push([p4, p3, p2])
+
+                    // ts.push([ p4,p1,p2])
+
+                    //  ts.push([ p4,p3,p1])
+
+
+                }
+            }
+            return { ts: ts, points: points }
+        }
+
+
+        function drawImage(ctx, img, ts) {
+            ts.forEach((t, index) => {
+                if (debug) {
+                    ctx.beginPath()
+                    ctx.moveTo(t[0].x, t[0].y)
+                    ctx.lineTo(t[1].x, t[1].y)
+                    ctx.lineTo(t[2].x, t[2].y)
+                    ctx.closePath()
+                    ctx.stroke()
+                }
+
+                ctx.save()
+                ctx.beginPath()
+                ctx.moveTo(t[0].x, t[0].y)
+                ctx.lineTo(t[1].x, t[1].y)
+                ctx.lineTo(t[2].x, t[2].y)
+                ctx.closePath()
+                ctx.clip()
+                //if(index%2===0)  ctx.drawImage(img, 0, 0);
+
+
+                let bt = baseTs[index]
+                let matrix = createTransform(
+                    {
+                        p1: { x: bt[0].x, y: bt[0].y },
+                        p2: { x: bt[1].x, y: bt[1].y },
+                        p3: { x: bt[2].x, y: bt[2].y }
+                    },
+                    {
+                        p1: t[0],
+                        p2: t[1],
+                        p3: t[2]
+                    }
+
+                )
+
+                ctx.setTransform.apply(ctx, matrix)
+                ctx.drawImage(img, 0, 0);
+
+                ctx.restore()
+            })
+        }
+
+
+
+        function getIndex(points, x, y, dx, dy, size) {
+            var col = Math.round(x / dx)
+            var row = Math.round(y / dy)
+            return col * (size + 1) + row
+        }
+
+        function updatePoints(points, x, y, index) {
+
+
+            var p = points[index]
+            p.prex = p.x
+            p.preY = p.y
+            p.x = x
+            p.y = y
+        }
+
+
+    </script>
+</body>
+
+</html>
