@@ -60,11 +60,227 @@
 /******/ 	__webpack_require__.p = "";
 /******/
 /******/ 	// Load entry module and return exports
-/******/ 	return __webpack_require__(__webpack_require__.s = 1);
+/******/ 	return __webpack_require__(__webpack_require__.s = 0);
 /******/ })
 /************************************************************************/
 /******/ ([
 /* 0 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
+var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
+
+var _cax = __webpack_require__(1);
+
+var _cax2 = _interopRequireDefault(_cax);
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+
+function _possibleConstructorReturn(self, call) { if (!self) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return call && (typeof call === "object" || typeof call === "function") ? call : self; }
+
+function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
+
+// debugger;
+var GraphNode = function (_cax$Group) {
+  _inherits(GraphNode, _cax$Group);
+
+  function GraphNode() {
+    var x = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : 0;
+    var y = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : 0;
+    var name = arguments.length > 2 && arguments[2] !== undefined ? arguments[2] : '123';
+
+    _classCallCheck(this, GraphNode);
+
+    var _this = _possibleConstructorReturn(this, (GraphNode.__proto__ || Object.getPrototypeOf(GraphNode)).call(this));
+
+    _this.cir = new _cax2.default.Circle(15, { fillStyle: 'black' });
+    _this.add(_this.cir);
+
+    _this.pos = new Vector(x, y);
+    _this.edges = [];
+    _this.name = name;
+
+    _this.text = new _cax2.default.Text(name, {
+      color: 'red'
+    });
+
+    _this.text.x = 0;
+    _this.text.y = 0;
+    _this.add(_this.text);
+
+    _this.on('drag', function (e) {
+      // console.log(e)
+      _this.pos.x = e.stageX;
+      _this.pos.y = e.stageY;
+    });
+
+    _this.on('mousedown', function (e) {
+      // debugger
+      console.log('touchstart!');
+    });
+    _this.on('mouseup', function (e) {
+      // debugger
+      console.log('touchend!');
+    });
+    return _this;
+  }
+
+  _createClass(GraphNode, [{
+    key: 'connect',
+    value: function connect(other) {
+      this.edges.push(other);
+      other.edges.push(this);
+    }
+  }, {
+    key: 'hasEdge',
+    value: function hasEdge(other) {
+      for (var i = 0; i < this.edges.length; i++) {
+        if (this.edges[i] === other) {
+          return true;
+        }
+      }
+    }
+  }, {
+    key: 'drag',
+    value: function drag() {}
+  }, {
+    key: 'update',
+    value: function update() {
+      this.x = this.pos.x;
+      this.y = this.pos.y;
+    }
+  }]);
+
+  return GraphNode;
+}(_cax2.default.Group);
+
+var Vector = function () {
+  function Vector(x, y) {
+    _classCallCheck(this, Vector);
+
+    this.x = x;
+    this.y = y;
+  }
+
+  _createClass(Vector, [{
+    key: 'minus',
+    value: function minus(vec) {
+      return new Vector(this.x - vec.x, this.y - vec.y);
+    }
+  }, {
+    key: 'times',
+    value: function times(s) {
+      return new Vector(this.x * s, this.y * s);
+    }
+  }, {
+    key: 'plus',
+    value: function plus(vec) {
+      return new Vector(this.x + vec.x, this.y + vec.y);
+    }
+  }, {
+    key: 'length',
+    get: function get() {
+      return Math.sqrt(this.x * this.x + this.y * this.y);
+    }
+  }]);
+
+  return Vector;
+}();
+
+// var springLength = 40
+// var springStrength = 0.01
+// var repulsionStrength = 1500
+var _ref = [window.innerWidth, window.innerHeight],
+    w = _ref[0],
+    h = _ref[1];
+
+// var springLength = w * 0.5
+
+var springLength = 100;
+var springStrength = 0.1;
+var repulsionStrength = 1500;
+
+var forceDirected_simple = function forceDirected_simple(graph) {
+  graph.forEach(function (node) {
+    graph.forEach(function (other) {
+      if (other === node) return;
+      var apart = other.pos.minus(node.pos);
+      var distance = Math.max(1, apart.length);
+      var forceSize = -repulsionStrength / (distance * distance);
+
+      if (Math.abs(forceSize) < 0.1) forceSize = 0;
+      // console.log(forceSize);
+      if (node.hasEdge(other)) {
+        // 静止长度&当前长度
+        forceSize += (distance - springLength) * springStrength;
+        var line = new _cax2.default.Graphics();
+        line.beginPath().moveTo(node.pos.x, node.pos.y).lineTo(other.pos.x, other.pos.y).closePath().stroke();
+
+        stage.add(line);
+
+        lines.push(line);
+      }
+      var normalized = apart.times(1 / distance);
+      node.pos = node.pos.plus(normalized.times(forceSize));
+    });
+  });
+};
+
+var lines = [];
+var graph = [];
+var stage = new _cax2.default.Stage(w, h, 'body');
+
+// var relation = require('./relation1.json')
+// console.log(relation)
+// var {nodes, links} = relation
+// node
+
+var nodes = [{ name: "桂林", image: '' }, { name: "广州" }, { name: "厦门" }, { name: "杭州" }, { name: "上海" }, { name: "青岛" }, { name: "天津" }];
+
+var links = [{ source: 0, target: 1, relation: '挚友', lineWidth: '', strokeStyle: '' }, { source: 0, target: 2 }, { source: 0, target: 3 }, { source: 1, target: 4 }, { source: 1, target: 5 }, { source: 1, target: 6 }];
+
+Array.from(nodes, function (o, i) {
+  var gnode = new GraphNode(w * Math.random(), h * Math.random(), o.name);
+  graph.push(gnode);
+  stage.add(gnode);
+});
+Array.from(links, function (o, i) {
+  // { "source" : 0 , "target": 1 }
+
+  graph[o.source].connect(graph[o.target]);
+})
+
+// ;[...Array(3)].forEach((v, i) => {
+//   var gnode = new GraphNode(w * Math.random(), h * Math.random(), 'gnode1')
+//   graph.push(gnode)
+//   stage.add(gnode)
+//   if (i > 0) {
+//     gnode.connect(graph[i - 1])
+//   }
+// })
+
+// graph[0].connect(graph[graph.length - 1])
+
+;(function animate() {
+  window.requestAnimationFrame(animate);
+  stage.update();
+
+  lines.forEach(function (line) {
+    stage.remove(line);
+  });
+  forceDirected_simple(graph);
+  // console.log(stage.children.length)
+  graph.forEach(function (gnode) {
+    gnode.update();
+  });
+})();
+
+/***/ }),
+/* 1 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -6949,171 +7165,6 @@ var _typeof2 = typeof Symbol === "function" && typeof Symbol.iterator === "symbo
 /* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(2)(module)))
 
 /***/ }),
-/* 1 */
-/***/ (function(module, exports, __webpack_require__) {
-
-"use strict";
-
-
-var _cax = __webpack_require__(0);
-
-var _cax2 = _interopRequireDefault(_cax);
-
-var _index = __webpack_require__(3);
-
-var _index2 = _interopRequireDefault(_index);
-
-var _scale = __webpack_require__(5);
-
-function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
-
-var stage = new _cax2.default.Stage(800, 520, 'body');
-
-var data = [// 数据
-{ name: 'dntzhang', age: _cax2.default.util.randomInt(-20, 20), exp: _cax2.default.util.randomInt(500, 1000) }, { name: 'Canvas', age: _cax2.default.util.randomInt(-20, 20), exp: _cax2.default.util.randomInt(500, 1000) }, { name: 'Wechart', age: _cax2.default.util.randomInt(-20, 20), exp: _cax2.default.util.randomInt(500, 1000) }, { name: 'Tencent', age: _cax2.default.util.randomInt(-20, 20), exp: _cax2.default.util.randomInt(500, 1000) }, { name: 'Cax', age: _cax2.default.util.randomInt(-20, 20), exp: _cax2.default.util.randomInt(500, 1000) }, { name: 'SVG', age: _cax2.default.util.randomInt(-20, 20), exp: _cax2.default.util.randomInt(500, 1000) }, { name: 'WebGL', age: _cax2.default.util.randomInt(-20, 20), exp: _cax2.default.util.randomInt(500, 1000) }, { name: 'CSS3', age: _cax2.default.util.randomInt(-20, 20), exp: _cax2.default.util.randomInt(500, 1000) }, { name: 'React', age: _cax2.default.util.randomInt(-20, 20), exp: _cax2.default.util.randomInt(500, 1000) }, { name: 'Three.js', age: _cax2.default.util.randomInt(-20, 20), exp: _cax2.default.util.randomInt(500, 1000) }, { name: 'HTML', age: _cax2.default.util.randomInt(-20, 20), exp: _cax2.default.util.randomInt(500, 1000) }, { name: 'Omi', age: _cax2.default.util.randomInt(-20, 20), exp: _cax2.default.util.randomInt(500, 1000) }, { name: 'Javascript', age: _cax2.default.util.randomInt(-20, 20), exp: _cax2.default.util.randomInt(500, 1000) }];
-var xScale = (0, _scale.scaleLinear)([0, 13], [0, 720]);
-var yScaleLeft = (0, _scale.scaleLinear)([-30, 30], [200, -200]);
-var yScaleRight = (0, _scale.scaleLinear)([500, 1000], [200, -200]);
-
-var config = [{ // rects代表拆分多个rect，下面是相关的配置
-  scale: yScaleLeft,
-  size: 15,
-  interval: 55.1,
-  x: 43,
-  y: 250,
-  processing: function processing(item) {
-    return item.age;
-  }, // 数据预处理，提取影响形状的报表
-  color: function color(index) {
-    // 每个柱子的颜色
-    return '#4BC0C0';
-    // return ['#4BC0C0', '#FF6485', '#FFCE5C', '#ADACB9', '#A37AC1'][index]
-  },
-  tooltip: function tooltip(item) {
-    return item.name + '-age<br/>' + item.age;
-  },
-  transition: {
-    duration: 600 // 动画的时间
-  },
-  show: { // 过渡动画
-    // from: { y: -510 },//起始点
-    // to: { y: 0 },//终点
-    from: { scaleY: 0 }, // 起始点
-    to: { scaleY: 1 }, // 终点
-    duration: 2000, // 动画的时间
-    easing: _cax2.default.easing.elasticOut, // 缓动函数
-    delay: function delay(i) {
-      return i * 100;
-    } // 每个柱子的动画依次开始
-  },
-  hide: {
-    from: { scaleY: 1 }, // 起始点
-    to: { scaleY: 0 }, // 终点
-    duration: 1000 // 动画的时间
-    // delay: (i) => { return i * 300 }//每个柱子的动画依次开始
-  }
-}, { // rects代表拆分多个rect，下面是相关的配置
-  // age 30 对应 200像素高
-  scale: yScaleRight,
-  size: 15,
-  interval: 55,
-  x: 64,
-  y: 250,
-  processing: function processing(item) {
-    return item.exp;
-  }, // 数据预处理，提取影响形状的报表
-  color: function color(index) {
-    // 每个柱子的颜色
-    return '#FF6485';
-    // return ['#4BC0C0', '#FF6485', '#FFCE5C', '#ADACB9', '#A37AC1'][index]
-  },
-  tooltip: function tooltip(item) {
-    return item.name + '-exp<br/>' + item.exp;
-  },
-  transition: {
-    duration: 600 // 动画的时间
-  },
-  show: { // 过渡动画
-    from: { scaleY: 0 }, // 起始点
-    to: { scaleY: 1 }, // 终点
-    duration: 2000, // 动画的时间
-    easing: _cax2.default.easing.elasticOut, // 缓动函数
-    delay: function delay(i) {
-      return i * 100 + 150;
-    } // 每个柱子的动画依次开始
-  },
-  hide: {
-    from: { scaleY: 1 }, // 起始点
-    to: { scaleY: 0 }, // 终点
-    duration: 1000 // 动画的时间
-    // delay: (i) => { return i * 300+ 150 }//每个柱子的动画依次开始
-  }
-}];
-
-var axisConfig = {
-  bottom: {
-    scale: xScale,
-    interval: 1,
-    x: 30,
-    y: 450,
-    color: 'black',
-    text: {
-      color: '#444',
-      value: function value(item, index) {
-        return item.name;
-      },
-      x: 25,
-      y: 3,
-      font: '10px Verdana',
-      range: [0, 12],
-      rotation: -10
-    },
-    gird: {
-      color: '#ddd',
-
-      length: 400
-    }
-  },
-  left: {
-    scale: yScaleLeft,
-    color: 'black',
-    interval: 6,
-    x: 30,
-    y: 250,
-    text: {
-      color: '#444',
-      x: -5,
-      y: -8
-    },
-    gird: {
-      color: '#ddd',
-
-      length: 720
-    }
-  },
-  right: {
-    scale: yScaleRight,
-    color: 'black',
-    interval: 60,
-    x: 750,
-    y: 250,
-    text: {
-      color: '#444',
-      x: 10,
-      y: -8
-      // gird: {
-      //   color: '#eee',
-
-      //   length: -700
-      // }
-    } }
-};
-
-stage.add(new _index2.default(data, config, axisConfig));
-
-_cax2.default.tick(stage.update.bind(stage));
-
-/***/ }),
 /* 2 */
 /***/ (function(module, exports, __webpack_require__) {
 
@@ -7142,460 +7193,6 @@ module.exports = function (module) {
 	}
 	return module;
 };
-
-/***/ }),
-/* 3 */
-/***/ (function(module, exports, __webpack_require__) {
-
-"use strict";
-
-
-Object.defineProperty(exports, "__esModule", {
-  value: true
-});
-exports.hideRects = hideRects;
-exports.getRectsInfo = getRectsInfo;
-exports.animateRect = animateRect;
-
-var _cax = __webpack_require__(0);
-
-var _cax2 = _interopRequireDefault(_cax);
-
-var _src = __webpack_require__(4);
-
-var _src2 = _interopRequireDefault(_src);
-
-function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
-
-function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
-
-function _possibleConstructorReturn(self, call) { if (!self) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return call && (typeof call === "object" || typeof call === "function") ? call : self; }
-
-function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
-
-var Rect = _cax2.default.Rect,
-    Group = _cax2.default.Group;
-
-
-var defaultOption = {
-  vertical: true
-};
-
-var Bar = function (_Group) {
-  _inherits(Bar, _Group);
-
-  function Bar(data, config, axisConfig) {
-    _classCallCheck(this, Bar);
-
-    var _this = _possibleConstructorReturn(this, (Bar.__proto__ || Object.getPrototypeOf(Bar)).call(this));
-
-    Object.keys(axisConfig).forEach(function (key) {
-      if (axisConfig[key]) {
-        var axis = new _src2.default(axisConfig[key], key, data);
-        _this.add(axis);
-      }
-    });
-
-    var tooltip = document.createElement('div');
-    document.body.appendChild(tooltip);
-    tooltip.style.position = 'absolute';
-    tooltip.style.width = 'auto';
-    tooltip.style.maxWidth = '400px';
-    tooltip.style.height = 'auto';
-    tooltip.style.padding = '4px 8px';
-    tooltip.style.display = 'none';
-    tooltip.style.minWidth = '100px';
-    tooltip.style.pointerEvents = 'none';
-    tooltip.style.transition = 'all .6s';
-    tooltip.style.backgroundColor = 'rgba(0,0,0,.5)';
-    tooltip.style.color = 'white';
-    tooltip.style.textAlign = 'center';
-
-    config.forEach(function (rect) {
-      rect.processedData = rect.processing ? data.map(rect.processing) : data;
-
-      rect.processedData.forEach(function (value, index) {
-        _this.add(new OneBar(value, rect, index, tooltip, data));
-      });
-    });
-    return _this;
-  }
-
-  return Bar;
-}(Group);
-
-var OneBar = function (_Group2) {
-  _inherits(OneBar, _Group2);
-
-  function OneBar(value, option, index, tooltip, data) {
-    _classCallCheck(this, OneBar);
-
-    var _this2 = _possibleConstructorReturn(this, (OneBar.__proto__ || Object.getPrototypeOf(OneBar)).call(this));
-
-    option = Object.assign({}, defaultOption, option);
-
-    var rect = void 0;
-    if (option.vertical) {
-      var height = option.scale(value) * -1;
-
-      var size = option.size;
-
-      rect = new Rect(size, height, {
-        fillStyle: option.color(index)
-      });
-
-      rect.x = index * option.interval + option.x;
-      rect.y = option.y;
-      rect.originY = height;
-    } else {
-      var _size = option.size;
-      var width = option.scale(value);
-
-      rect = new Rect(width, _size, { fillStyle: option.color(index) });
-
-      rect.x = option.x;
-      rect.y = index * option.interval + option.y;
-      rect.originY = _size;
-    }
-
-    var from = Object.assign({}, option.show.from);
-    var to = Object.assign({}, option.show.to);
-    if (from.hasOwnProperty('x')) {
-      from.x += rect.x;
-      to.x += rect.x;
-    }
-
-    if (from.hasOwnProperty('y')) {
-      from.y += rect.y;
-      to.y += rect.y;
-    }
-
-    if (option.show) {
-      Object.assign(rect, from);
-    }
-
-    if (option.tooltip) {
-      rect.addEventListener('mouseover', function (evt) {
-        tooltip.style.left = evt.pureEvent.pageX + 5 + 'px';
-        tooltip.style.top = evt.pureEvent.pageY + 5 + 'px';
-        tooltip.innerHTML = option.tooltip(data[index]);
-        tooltip.style.display = 'block';
-      });
-
-      rect.addEventListener('mousemove', function (evt) {
-        tooltip.style.left = evt.pureEvent.pageX + 5 + 'px';
-        tooltip.style.top = evt.pureEvent.pageY + 5 + 'px';
-      });
-      rect.addEventListener('mouseout', function () {
-        tooltip.style.display = 'none';
-      });
-    }
-
-    _this2.add(rect);
-
-    _cax2.default.To.get(from).wait(typeof option.show.delay === 'number' ? option.show.delay : option.show.delay(index)).to(to, option.show.duration, option.show.easing).progress(function (object) {
-      Object.assign(rect, object);
-    }).start();
-    return _this2;
-  }
-
-  return OneBar;
-}(Group);
-
-function hideRects(group, options, callback) {
-  var cpt = false;
-
-  group.children.forEach(function (subGroup, index) {
-    var option = options[index];
-    var compLen = 0;
-    var from = Object.assign({}, option.hide.from);
-    var to = Object.assign({}, option.hide.to);
-
-    var total = subGroup.children.length;
-    subGroup.children.forEach(function (rect, rectIndex) {
-      _cax2.default.To.get(from).wait(typeof option.hide.delay === 'function' ? option.hide.delay(rectIndex) : option.hide.delay || 0).to(to, option.hide.duration, option.hide.easing).progress(function (object) {
-        Object.assign(rect, object);
-      }).end(function () {
-        compLen++;
-        if (compLen === total && !cpt) {
-          callback();
-          cpt = true;
-        }
-      }).start();
-    });
-  });
-}
-
-function getRectsInfo(value, option, index, stage) {
-  // const option = options.rects
-
-  var height = option.mapping[1] * value / option.mapping[0];
-  var width = option.width;
-
-  var rect = {
-    left: 0,
-    top: 0,
-    width: width,
-    height: height,
-    color: option.color(index)
-  };
-
-  rect.x = index * option.interval + option.x;
-  // rect.y = option.y - height
-  rect.y = option.y;
-  rect.originY = height;
-
-  stage.push(rect);
-}
-
-// color 待定
-// A-> B
-function animateRect(rectA, rectB, transition) {
-  var to = {};
-
-  ['left', 'top', 'width', 'height', 'alpha', 'scaleX', 'scaleY', 'x', 'y', 'rotation', 'skewX', 'skewY', 'originX', 'originY'].forEach(function (key) {
-    if (rectA[key] !== rectB[key] && rectB[key] !== undefined) {
-      to[key] = rectB[key];
-    }
-  });
-
-  _cax2.default.To.get(rectA).to(to, transition.duration, transition.easing).start();
-}
-
-exports.default = Bar;
-
-/***/ }),
-/* 4 */
-/***/ (function(module, exports, __webpack_require__) {
-
-"use strict";
-
-
-Object.defineProperty(exports, "__esModule", {
-  value: true
-});
-
-var _cax = __webpack_require__(0);
-
-var _cax2 = _interopRequireDefault(_cax);
-
-function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
-
-function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
-
-function _possibleConstructorReturn(self, call) { if (!self) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return call && (typeof call === "object" || typeof call === "function") ? call : self; }
-
-function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
-
-var Graphics = _cax2.default.Graphics,
-    Text = _cax2.default.Text,
-    Group = _cax2.default.Group;
-
-var Axis = function (_Group) {
-  _inherits(Axis, _Group);
-
-  function Axis(axis, orient, data) {
-    _classCallCheck(this, Axis);
-
-    var _this = _possibleConstructorReturn(this, (Axis.__proto__ || Object.getPrototypeOf(Axis)).call(this));
-
-    var scale = axis.scale;
-    var f = scale.domain[0];
-    var t = scale.domain[1];
-    var rf = scale.range[0];
-    var rt = scale.range[1];
-
-    var x = axis.x;
-    var y = axis.y;
-    var g = new Graphics();
-    var moveTo = [0, 0];
-    var lineTo = [0, 0];
-    switch (orient) {
-      case 'left':
-      case 'right':
-        moveTo[0] = x;
-        moveTo[1] = y + rf;
-        lineTo[0] = x;
-        lineTo[1] = y + rt;
-        break;
-      case 'top':
-      case 'bottom':
-        moveTo[0] = x + rf;
-        moveTo[1] = y;
-        lineTo[0] = x + rt;
-        lineTo[1] = y;
-        break;
-    }
-
-    g.beginPath().strokeStyle(axis.color).moveTo(moveTo[0], moveTo[1]).lineTo(lineTo[0], lineTo[1]).stroke();
-
-    var current = void 0;
-    switch (orient) {
-      case 'bottom':
-        for (var i = f; i <= t; i += axis.interval) {
-          current = scale(i) + x;
-          g.beginPath().strokeStyle(axis.color).moveTo(current, y).lineTo(current, y + 5).stroke();
-
-          if (axis.gird && i > f) {
-            g.beginPath().strokeStyle(axis.gird.color).moveTo(current, y - 1).lineTo(current, y - axis.gird.length).stroke();
-          }
-
-          if (!axis.text.range || i >= axis.text.range[0] && i <= axis.text.range[1]) {
-            var text = new Text(axis.text.value ? axis.text.value(data[i], i) : i, { font: axis.text.font, color: axis.text.color });
-            text.textAlign = 'center';
-            text.x = current + axis.text.x;
-            text.y = y + 5 + axis.text.y;
-            text.rotation = axis.text.rotation || 0;
-            _this.add(text);
-          }
-        }
-        break;
-      case 'left':
-
-        for (var _i = f; _i <= t; _i += axis.interval) {
-          current = scale(_i) + y;
-          g.beginPath().strokeStyle(axis.color).moveTo(x, current).lineTo(x - 5, current).stroke();
-
-          if (axis.gird && _i > f) {
-            g.beginPath().strokeStyle(axis.gird.color).moveTo(x + 1, current).lineTo(x + axis.gird.length, current).stroke();
-          }
-          if (!axis.text.range || _i >= axis.text.range[0] && _i <= axis.text.range[1]) {
-            var _text = new Text(axis.text.value ? axis.text.value(data[_i], _i) : _i, { font: axis.text.font, color: axis.text.color });
-            _text.x = x - 5 + axis.text.x - _text.getWidth();
-            _text.y = current + axis.text.y;
-            _text.rotation = axis.text.rotation || 0;
-            _this.add(_text);
-          }
-        }
-        break;
-
-      case 'top':
-        for (var _i2 = f; _i2 <= t; _i2 += axis.interval) {
-          current = scale(_i2) + x;
-          g.beginPath().strokeStyle(axis.color).moveTo(current, y).lineTo(current, y - 5).stroke();
-
-          if (axis.gird && _i2 > f) {
-            g.beginPath().strokeStyle(axis.gird.color).moveTo(current, y - 1).lineTo(current, y - axis.gird.length).stroke();
-          }
-
-          if (!axis.text.range || _i2 >= axis.text.range[0] && _i2 <= axis.text.range[1]) {
-            var _text2 = new Text(axis.text.value ? axis.text.value(data[_i2], _i2) : _i2, { font: axis.text.font, color: axis.text.color });
-            _text2.textAlign = 'center';
-            _text2.x = current + axis.text.x;
-            _text2.y = y - 5 + axis.text.y;
-            _text2.rotation = axis.text.rotation || 0;
-            _this.add(_text2);
-          }
-        }
-        break;
-
-      case 'right':
-
-        for (var _i3 = f; _i3 <= t; _i3 += axis.interval) {
-          current = scale(_i3) + y;
-          g.beginPath().strokeStyle(axis.color).moveTo(x, current).lineTo(x + 5, current).stroke();
-
-          if (axis.gird && _i3 > f) {
-            g.beginPath().strokeStyle(axis.gird.color).moveTo(x + 1, current).lineTo(x + axis.gird.length, current).stroke();
-          }
-          if (!axis.text.range || _i3 >= axis.text.range[0] && _i3 <= axis.text.range[1]) {
-            var _text3 = new Text(axis.text.value ? axis.text.value(data[_i3], _i3) : _i3, { font: axis.text.font, color: axis.text.color });
-            _text3.x = x + 5 + axis.text.x;
-            _text3.y = current + axis.text.y;
-            _text3.rotation = axis.text.rotation || 0;
-            _this.add(_text3);
-          }
-        }
-        break;
-    }
-
-    _this.add(g);
-    return _this;
-  }
-
-  return Axis;
-}(Group);
-
-exports.default = Axis;
-
-/***/ }),
-/* 5 */
-/***/ (function(module, exports, __webpack_require__) {
-
-"use strict";
-
-
-Object.defineProperty(exports, "__esModule", {
-    value: true
-});
-exports.scaleLinear = undefined;
-
-var _linear = __webpack_require__(6);
-
-exports.scaleLinear = _linear.scaleLinear;
-exports.default = {
-    scaleLinear: _linear.scaleLinear
-};
-
-/***/ }),
-/* 6 */
-/***/ (function(module, exports, __webpack_require__) {
-
-"use strict";
-
-
-Object.defineProperty(exports, "__esModule", {
-    value: true
-});
-
-var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
-
-exports.scaleLinear = scaleLinear;
-
-function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
-
-var ScaleLinear = function () {
-    function ScaleLinear(domain, range) {
-        _classCallCheck(this, ScaleLinear);
-
-        this.domainFrom = domain[0];
-        this.domainTo = domain[1];
-        this.domainInterval = this.domainTo - this.domainFrom;
-
-        this.rangeFrom = range[0];
-        this.rangeTo = range[1];
-        this.rangeInterval = this.rangeTo - this.rangeFrom;
-    }
-
-    _createClass(ScaleLinear, [{
-        key: "calculate",
-        value: function calculate(value) {
-            return this.rangeFrom + (value - this.domainFrom) / this.domainInterval * this.rangeInterval;
-        }
-    }, {
-        key: "invert",
-        value: function invert(value) {
-
-            return this.domainFrom + (value - this.rangeFrom) / this.rangeInterval * this.domainInterval;
-        }
-    }]);
-
-    return ScaleLinear;
-}();
-
-function scaleLinear(domain, range) {
-    var instance = new ScaleLinear(domain, range);
-
-    var calculate = function calculate(v) {
-        return instance.calculate(v);
-    };
-
-    calculate.domain = domain;
-    calculate.range = range;
-    calculate.invert = instance.invert.bind(instance);
-
-    return calculate;
-}
 
 /***/ })
 /******/ ]);
