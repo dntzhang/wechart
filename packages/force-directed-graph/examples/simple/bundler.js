@@ -60,227 +60,11 @@
 /******/ 	__webpack_require__.p = "";
 /******/
 /******/ 	// Load entry module and return exports
-/******/ 	return __webpack_require__(__webpack_require__.s = 0);
+/******/ 	return __webpack_require__(__webpack_require__.s = 1);
 /******/ })
 /************************************************************************/
 /******/ ([
 /* 0 */
-/***/ (function(module, exports, __webpack_require__) {
-
-"use strict";
-
-
-var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
-
-var _cax = __webpack_require__(1);
-
-var _cax2 = _interopRequireDefault(_cax);
-
-function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
-
-function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
-
-function _possibleConstructorReturn(self, call) { if (!self) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return call && (typeof call === "object" || typeof call === "function") ? call : self; }
-
-function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
-
-// debugger;
-var GraphNode = function (_cax$Group) {
-  _inherits(GraphNode, _cax$Group);
-
-  function GraphNode() {
-    var x = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : 0;
-    var y = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : 0;
-    var name = arguments.length > 2 && arguments[2] !== undefined ? arguments[2] : '123';
-
-    _classCallCheck(this, GraphNode);
-
-    var _this = _possibleConstructorReturn(this, (GraphNode.__proto__ || Object.getPrototypeOf(GraphNode)).call(this));
-
-    _this.cir = new _cax2.default.Circle(15, { fillStyle: 'black' });
-    _this.add(_this.cir);
-
-    _this.pos = new Vector(x, y);
-    _this.edges = [];
-    _this.name = name;
-
-    _this.text = new _cax2.default.Text(name, {
-      color: 'red'
-    });
-
-    _this.text.x = 0;
-    _this.text.y = 0;
-    _this.add(_this.text);
-
-    _this.on('drag', function (e) {
-      // console.log(e)
-      _this.pos.x = e.stageX;
-      _this.pos.y = e.stageY;
-    });
-
-    _this.on('mousedown', function (e) {
-      // debugger
-      console.log('touchstart!');
-    });
-    _this.on('mouseup', function (e) {
-      // debugger
-      console.log('touchend!');
-    });
-    return _this;
-  }
-
-  _createClass(GraphNode, [{
-    key: 'connect',
-    value: function connect(other) {
-      this.edges.push(other);
-      other.edges.push(this);
-    }
-  }, {
-    key: 'hasEdge',
-    value: function hasEdge(other) {
-      for (var i = 0; i < this.edges.length; i++) {
-        if (this.edges[i] === other) {
-          return true;
-        }
-      }
-    }
-  }, {
-    key: 'drag',
-    value: function drag() {}
-  }, {
-    key: 'update',
-    value: function update() {
-      this.x = this.pos.x;
-      this.y = this.pos.y;
-    }
-  }]);
-
-  return GraphNode;
-}(_cax2.default.Group);
-
-var Vector = function () {
-  function Vector(x, y) {
-    _classCallCheck(this, Vector);
-
-    this.x = x;
-    this.y = y;
-  }
-
-  _createClass(Vector, [{
-    key: 'minus',
-    value: function minus(vec) {
-      return new Vector(this.x - vec.x, this.y - vec.y);
-    }
-  }, {
-    key: 'times',
-    value: function times(s) {
-      return new Vector(this.x * s, this.y * s);
-    }
-  }, {
-    key: 'plus',
-    value: function plus(vec) {
-      return new Vector(this.x + vec.x, this.y + vec.y);
-    }
-  }, {
-    key: 'length',
-    get: function get() {
-      return Math.sqrt(this.x * this.x + this.y * this.y);
-    }
-  }]);
-
-  return Vector;
-}();
-
-// var springLength = 40
-// var springStrength = 0.01
-// var repulsionStrength = 1500
-var _ref = [window.innerWidth, window.innerHeight],
-    w = _ref[0],
-    h = _ref[1];
-
-// var springLength = w * 0.5
-
-var springLength = 100;
-var springStrength = 0.1;
-var repulsionStrength = 1500;
-
-var forceDirected_simple = function forceDirected_simple(graph) {
-  graph.forEach(function (node) {
-    graph.forEach(function (other) {
-      if (other === node) return;
-      var apart = other.pos.minus(node.pos);
-      var distance = Math.max(1, apart.length);
-      var forceSize = -repulsionStrength / (distance * distance);
-
-      if (Math.abs(forceSize) < 0.1) forceSize = 0;
-      // console.log(forceSize);
-      if (node.hasEdge(other)) {
-        // 静止长度&当前长度
-        forceSize += (distance - springLength) * springStrength;
-        var line = new _cax2.default.Graphics();
-        line.beginPath().moveTo(node.pos.x, node.pos.y).lineTo(other.pos.x, other.pos.y).closePath().stroke();
-
-        stage.add(line);
-
-        lines.push(line);
-      }
-      var normalized = apart.times(1 / distance);
-      node.pos = node.pos.plus(normalized.times(forceSize));
-    });
-  });
-};
-
-var lines = [];
-var graph = [];
-var stage = new _cax2.default.Stage(w, h, 'body');
-
-// var relation = require('./relation1.json')
-// console.log(relation)
-// var {nodes, links} = relation
-// node
-
-var nodes = [{ name: "桂林", image: '' }, { name: "广州" }, { name: "厦门" }, { name: "杭州" }, { name: "上海" }, { name: "青岛" }, { name: "天津" }];
-
-var links = [{ source: 0, target: 1, relation: '挚友', lineWidth: '', strokeStyle: '' }, { source: 0, target: 2 }, { source: 0, target: 3 }, { source: 1, target: 4 }, { source: 1, target: 5 }, { source: 1, target: 6 }];
-
-Array.from(nodes, function (o, i) {
-  var gnode = new GraphNode(w * Math.random(), h * Math.random(), o.name);
-  graph.push(gnode);
-  stage.add(gnode);
-});
-Array.from(links, function (o, i) {
-  // { "source" : 0 , "target": 1 }
-
-  graph[o.source].connect(graph[o.target]);
-})
-
-// ;[...Array(3)].forEach((v, i) => {
-//   var gnode = new GraphNode(w * Math.random(), h * Math.random(), 'gnode1')
-//   graph.push(gnode)
-//   stage.add(gnode)
-//   if (i > 0) {
-//     gnode.connect(graph[i - 1])
-//   }
-// })
-
-// graph[0].connect(graph[graph.length - 1])
-
-;(function animate() {
-  window.requestAnimationFrame(animate);
-  stage.update();
-
-  lines.forEach(function (line) {
-    stage.remove(line);
-  });
-  forceDirected_simple(graph);
-  // console.log(stage.children.length)
-  graph.forEach(function (gnode) {
-    gnode.update();
-  });
-})();
-
-/***/ }),
-/* 1 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -7165,6 +6949,84 @@ var _typeof2 = typeof Symbol === "function" && typeof Symbol.iterator === "symbo
 /* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(2)(module)))
 
 /***/ }),
+/* 1 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
+var _cax = __webpack_require__(0);
+
+var _cax2 = _interopRequireDefault(_cax);
+
+var _src = __webpack_require__(3);
+
+var _src2 = _interopRequireDefault(_src);
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+var stage = new _cax2.default.Stage(document.body.offsetWidth, document.body.offsetHeight, 'body');
+
+var graph = new _src2.default([{ 'name': 'Aqua', 'image': './asset/aqua.png' }, { 'name': '高海千歌', 'image': './asset/Chika.jpg' }, { 'name': '樱内梨子', 'image': './asset/Riko.jpg' }, { 'name': '松浦果南', 'image': './asset/kanan.jpg' }, { 'name': '黑泽黛雅', 'image': './asset/Dia.jpg' }, { 'name': '渡边曜', 'image': './asset/You.jpg' }, { 'name': '津岛善子', 'image': './asset/yoshiko.jpg' }, { 'name': '国木田花丸', 'image': './asset/Hanamaru.jpg' }, { 'name': '小原鞠莉', 'image': './asset/mari.jpg' }, { 'name': '黑泽露比', 'image': './asset/rubi.jpg' }], [{ 'source': 0, target: 1, 'relation': '团员' }, { 'source': 0, target: 2, 'relation': '团员' }, { 'source': 0, target: 3, 'relation': '团员' }, { 'source': 0, target: 4, 'relation': '团员' }, { 'source': 0, target: 5, 'relation': '团员' }, { 'source': 0, target: 6, 'relation': '团员', strokeStyle: '#42487a', lineWidth: 3, alpha: 1 }, { 'source': 0, target: 7, 'relation': '团员' }, { 'source': 0, target: 8, 'relation': '团员' }, { 'source': 0, target: 9, 'relation': '团员' }], {
+  constrain: {
+    left: 0,
+    right: stage.width,
+    top: 0,
+    bottom: stage.height
+  },
+  springStrength: 0.15,
+  repulsionStrength: 3500,
+  springLength: stage.width * 0.5,
+  processing: function processing(param, i) {
+    var image = param.image,
+        name = param.name;
+
+    var graphNode, text;
+
+    if (image) {
+      graphNode = new _cax2.default.Bitmap(image);
+      graphNode.originX = image.width * 0.5;
+      graphNode.originY = image.height * 0.5;
+      graphNode.scaleX = graphNode.scaleY = i === 0 ? 0.4 : 1;
+    } else {
+      graphNode = new _cax2.default.Circle(10, { fillStyle: 'pink' });
+    }
+
+    // debugger
+    graphNode.x = Math.random() * stage.width;
+    graphNode.y = Math.random() * stage.height;
+
+    text = new _cax2.default.Text(i === 6 ? name + '(\u5815\u5929\u4F7F\u591C\u7FBD)' : '', {
+      font: '14px Arial',
+      color: i === 6 ? '#42487a' : 'black',
+      baseline: 'middle',
+      textAlign: 'center'
+    });
+    text.originX = text.getWidth() * 0.5;
+    text.x = 0;
+    text.y = 50;
+
+    return {
+      graphNode: graphNode, text: text
+    };
+  },
+  tooltip: function tooltip(param, i) {
+    if (i === 0) return false;
+    return param.name + 'OvO';
+  }
+});
+
+stage.on('touchstart', function (e) {
+  // alert(1)
+  e.preventDefault();
+});
+stage.add(graph);
+_cax2.default.tick(function () {
+  stage.update();
+  graph.update();
+});
+
+/***/ }),
 /* 2 */
 /***/ (function(module, exports, __webpack_require__) {
 
@@ -7193,6 +7055,727 @@ module.exports = function (module) {
 	}
 	return module;
 };
+
+/***/ }),
+/* 3 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+
+var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
+
+var _cax = __webpack_require__(0);
+
+var _cax2 = _interopRequireDefault(_cax);
+
+var _graphnode = __webpack_require__(4);
+
+var _graphnode2 = _interopRequireDefault(_graphnode);
+
+var _edge = __webpack_require__(6);
+
+var _edge2 = _interopRequireDefault(_edge);
+
+var _loader = __webpack_require__(7);
+
+var _loader2 = _interopRequireDefault(_loader);
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+
+function _possibleConstructorReturn(self, call) { if (!self) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return call && (typeof call === "object" || typeof call === "function") ? call : self; }
+
+function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
+
+// debugger
+var ForceDirectedGraph = function (_cax$Group) {
+  _inherits(ForceDirectedGraph, _cax$Group);
+
+  function ForceDirectedGraph(nodes, edges, config) {
+    _classCallCheck(this, ForceDirectedGraph);
+
+    var _this = _possibleConstructorReturn(this, (ForceDirectedGraph.__proto__ || Object.getPrototypeOf(ForceDirectedGraph)).call(this));
+
+    config = Object.assign({}, {
+      springLength: 123,
+      springStrength: 0.1,
+      repulsionStrength: 2500,
+      bound: {
+        left: 0,
+        right: 600,
+        top: 0,
+        bottom: 600
+      }
+    }, config);
+    // debugger
+    _this.config = config;
+
+    _this.nodeGroup = new _cax2.default.Group();
+    _this.edgeTextGroup = new _cax2.default.Group();
+    _this.edgeLineGroup = new _cax2.default.Group();
+    _this.nodes = [];
+    _this.edges = [];
+    _this.Edges = Object.create(null);
+    _this.xedges = edges;
+
+    _this.add(_this.edgeLineGroup, _this.edgeTextGroup, _this.nodeGroup);
+
+    _this.createTooltip();
+    _this.adapterNodes(nodes).then(function (nodes) {
+      _this.nodes = nodes.map(function (o, i) {
+        var processing = config.processing || _this.processing.bind(_this);
+
+        var _processing = processing({ name: o.name, image: o.image }, i),
+            graphNode = _processing.graphNode,
+            text = _processing.text;
+
+        var node = new _graphnode2.default(graphNode, text, {});
+
+        _this.nodeGroup.add(node);
+
+        node.onMouseMove(function (e) {
+          if (!config.tooltip) return false;
+          var val = config.tooltip({ name: o.name, node: node }, i);
+          if (!val) return false;
+          _this.$tooltip.innerHTML = val;
+          // console.log(e.stageX, e.stageY)
+          // debugger
+          _this.$tooltip.style.left = e.stageX + 10 + 'px';
+          _this.$tooltip.style.top = e.stageY + 10 + 'px';
+          _this.$tooltip.style.display = 'block';
+        });
+
+        node.onMouseOut(function () {
+          if (!config.tooltip) return false;
+          _this.$tooltip.style.display = 'none';
+        });
+
+        return node;
+      });
+
+      edges.forEach(function (o, i) {
+        var source = o.source,
+            target = o.target;
+
+        if (_this.nodes[source]) {
+          _this.nodes[source].connect(_this.nodes[target]);
+        }
+      });
+
+      _this.nodes.forEach(function (node, i) {
+        // 0 1
+        // 0 2
+        // 1 2
+        for (var j = i + 1, len = _this.nodes.length; j < len; j++) {
+          // console.log(i, j)
+          var other = _this.nodes[j];
+          if (node.hasEdge(other)) {
+            var attr = _this.findEdgeAttr(i, j);
+            if (attr.length) {
+              var edgeAttr = attr[0];
+              edgeAttr = Object.assign({}, { font: '15px Arial', color: 'black', strokeStyle: 'gray', lineWidth: '1', alpha: 0.7, relation: '' }, edgeAttr);
+              // let {relation, font, color, strokeStyle, lineWidth, alpha} = edgeAttr
+
+              // debugger
+              if (!_this.Edges[i]) _this.Edges[i] = {};
+
+              _this.Edges[i][j] = (0, _edge2.default)(edgeAttr);
+
+              _this.Edges[i][j].lineGroup = _this.edgeLineGroup;
+
+              _this.edgeLineGroup.add(_this.Edges[i][j].line);
+              _this.edgeTextGroup.add(_this.Edges[i][j].text);
+
+              _this.Edges[i][j].init();
+
+              _this.Edges[i][j].updateLine();
+            }
+          }
+        }
+      });
+    });
+    return _this;
+  }
+
+  _createClass(ForceDirectedGraph, [{
+    key: 'processing',
+    value: function processing(param, i) {
+      var image = param.image,
+          name = param.name;
+
+      var graphNode, text, wh;
+
+      if (image) {
+        graphNode = new _cax2.default.Bitmap(image);
+        graphNode.originX = image.width * 0.5;
+        graphNode.originY = image.height * 0.5;
+        graphNode.scaleX = graphNode.scaleY = 1;
+      } else {
+        graphNode = new _cax2.default.Circle(10, { fillStyle: 'gray' });
+      }
+
+      if (typeof this.parent.width !== 'undefined') {
+        wh = { w: this.parent.width, h: this.parent.height };
+      } else {
+        wh = { w: 600, h: 600 };
+      }
+      graphNode.x = Math.random() * wh.w;
+      graphNode.y = Math.random() * wh.h;
+
+      text = new _cax2.default.Text(name, {
+        font: '14px Arial',
+        color: 'black',
+        baseline: 'middle',
+        textAlign: 'center'
+      });
+      text.originX = text.getWidth() * 0.5;
+      text.x = 0;
+      text.y = image ? image.height * 0.7 : graphNode.r * 2;
+      return {
+        graphNode: graphNode, text: text
+      };
+    }
+  }, {
+    key: 'createTooltip',
+    value: function createTooltip() {
+      var tooltip = document.createElement('div');
+      document.body.appendChild(tooltip);
+      tooltip.style.position = 'absolute';
+      tooltip.style.width = 'auto';
+      tooltip.style.maxWidth = '400px';
+      tooltip.style.height = 'auto';
+      tooltip.style.padding = '4px 8px';
+      tooltip.style.display = 'none';
+      tooltip.style.minWidth = '100px';
+      tooltip.style.pointerEvents = 'none';
+      if (window.devicePixelRatio === 1) {
+        tooltip.style.transition = 'all .6s';
+      }
+      tooltip.style.backgroundColor = 'rgba(0,0,0,.5)';
+      tooltip.style.color = 'white';
+      tooltip.style.textAlign = 'center';
+      this.$tooltip = tooltip;
+    }
+  }, {
+    key: 'adapterNodes',
+    value: function adapterNodes(nodes) {
+      var pms = nodes.map(function (o, i) {
+        return new Promise(function (resolve) {
+          if (o.image && typeof o.image === 'string') {
+            var loader = new _loader2.default({
+              res: [{ id: 'tex', src: o.image }],
+              complete: function complete() {
+                var tex = loader.get('tex');
+                resolve({ name: o.name, image: tex }, i);
+              }
+            });
+
+            loader.start();
+            return;
+          }
+          resolve(o, i);
+        });
+      });
+
+      return Promise.all(pms);
+    }
+  }, {
+    key: 'findEdgeAttr',
+    value: function findEdgeAttr(i, j) {
+      return this.xedges.filter(function (o) {
+        return o.source === i && o.target === j || o.source === j && o.target === i;
+      });
+    }
+  }, {
+    key: 'constrain',
+    value: function constrain(node) {
+      var _config$constrain = this.config.constrain,
+          left = _config$constrain.left,
+          right = _config$constrain.right,
+          top = _config$constrain.top,
+          bottom = _config$constrain.bottom;
+      // debugger
+
+      var _node$pos = node.pos,
+          x = _node$pos.x,
+          y = _node$pos.y;
+
+      if (x < left) node.pos.x = left;
+      if (x > right) node.pos.x = right;
+      if (y < top) node.pos.y = top;
+      if (y > bottom) node.pos.y = bottom;
+    }
+  }, {
+    key: 'update',
+    value: function update() {
+      var _this2 = this;
+
+      var _config = this.config,
+          springLength = _config.springLength,
+          springStrength = _config.springStrength,
+          repulsionStrength = _config.repulsionStrength;
+      // // // console.log('------------------------')
+      // console.log(this.config)
+
+      this.nodes.forEach(function (node, i) {
+        _this2.constrain(node);
+
+        for (var j = i + 1, len = _this2.nodes.length; j < len; j++) {
+          var other = _this2.nodes[j];
+          if (other === node) return;
+
+          var apart = other.pos.sub(node.pos);
+          var distance = Math.max(1, apart.length);
+          var forceSize = -repulsionStrength / (distance * distance);
+          // console.log(j)
+          if (node.hasEdge(other)) {
+            forceSize += (distance - springLength) * springStrength;
+
+            var normalized = apart.multiplyScalar(1 / distance);
+            var v = normalized.multiplyScalar(distance * 0.5);
+
+            if (_this2.Edges[i][j]) {
+              _this2.Edges[i][j].updateLine(node.pos, other.pos);
+              _this2.Edges[i][j].updateText(node.pos.x + v.x, node.pos.y + v.y);
+            }
+          }
+
+          if (Math.abs(forceSize) < 0.3) forceSize = 0;
+
+          var applied = apart.multiplyScalar(forceSize / distance);
+          if (!node.dragged) node.pos = node.pos.add(applied);
+          if (!other.dragged) other.pos = other.pos.add(applied.multiplyScalar(-1));
+
+          _this2.constrain(node);
+          _this2.constrain(other);
+        }
+      });
+      // // console.log('------------------------')
+      this.nodes.forEach(function (node) {
+        node.update();
+      });
+    }
+  }]);
+
+  return ForceDirectedGraph;
+}(_cax2.default.Group);
+exports.default = ForceDirectedGraph;
+
+/***/ }),
+/* 4 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+
+var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
+
+var _cax = __webpack_require__(0);
+
+var _cax2 = _interopRequireDefault(_cax);
+
+var _vector = __webpack_require__(5);
+
+var _vector2 = _interopRequireDefault(_vector);
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+
+function _possibleConstructorReturn(self, call) { if (!self) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return call && (typeof call === "object" || typeof call === "function") ? call : self; }
+
+function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
+
+var GraphNode = function (_cax$Group) {
+  _inherits(GraphNode, _cax$Group);
+
+  function GraphNode(node, text, config) {
+    _classCallCheck(this, GraphNode);
+
+    var _this = _possibleConstructorReturn(this, (GraphNode.__proto__ || Object.getPrototypeOf(GraphNode)).call(this));
+
+    _this.node = node;
+    _this.add(_this.node);
+
+    _this.edges = [];
+
+    _this.text = text;
+    // debugger
+
+    if (_this.text) {
+      _this.text = text;
+      _this.add(text);
+    }
+
+    _this.pos = new _vector2.default(_this.node.x, _this.node.y);
+    _this.node.x = 0;
+    _this.node.y = 0;
+
+    _this.on('drag', function (e) {
+      // console.log(e)
+      _this.pos.x = e.stageX;
+      _this.pos.y = e.stageY;
+    });
+    _this.on('mousedown', function (e) {
+      _this.dragged = true;
+      // debugger
+    });
+    _this.on('touchstart', function (e) {
+      _this.dragged = true;
+    });
+    _this.on('mouseup', function (e) {
+      // debugger
+      _this.dragged = false;
+    });
+    _this.on('touchend', function (e) {
+      _this.dragged = false;
+    });
+
+    _this.node.on('mousemove', function (e) {
+      // console.log('mouseover')
+      _this.handle_move(e);
+    });
+    _this.node.on('mouseout', function (e) {
+      // debugger
+      // console.log('mouseout')
+      _this.handle_out(e);
+    });
+    _this.node.on('touchend', function (e) {
+      _this.handle_out(e);
+    });
+    return _this;
+  }
+
+  _createClass(GraphNode, [{
+    key: 'onMouseMove',
+    value: function onMouseMove(handle) {
+      this.handle_move = handle;
+    }
+  }, {
+    key: 'onMouseOut',
+    value: function onMouseOut(handle) {
+      this.handle_out = handle;
+    }
+  }, {
+    key: 'connect',
+    value: function connect(other) {
+      this.edges.push(other);
+      other.edges.push(this);
+    }
+  }, {
+    key: 'hasEdge',
+    value: function hasEdge(other) {
+      for (var i = 0; i < this.edges.length; i++) {
+        if (this.edges[i] === other) {
+          return true;
+        }
+      }
+    }
+  }, {
+    key: 'drag',
+    value: function drag() {}
+  }, {
+    key: 'update',
+    value: function update() {
+      this.x = this.pos.x;
+      this.y = this.pos.y;
+    }
+  }]);
+
+  return GraphNode;
+}(_cax2.default.Group);
+exports.default = GraphNode;
+
+/***/ }),
+/* 5 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+
+var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
+
+function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+
+var Vector = function () {
+  function Vector(x, y) {
+    _classCallCheck(this, Vector);
+
+    this.x = x;
+    this.y = y;
+    this.z = 0;
+  }
+
+  _createClass(Vector, [{
+    key: "sub",
+    value: function sub(vec) {
+      return new Vector(this.x - vec.x, this.y - vec.y);
+    }
+  }, {
+    key: "multiplyScalar",
+    value: function multiplyScalar(s) {
+      return new Vector(this.x * s, this.y * s);
+    }
+  }, {
+    key: "add",
+    value: function add(vec) {
+      return new Vector(this.x + vec.x, this.y + vec.y);
+    }
+  }, {
+    key: "length",
+    get: function get() {
+      return Math.sqrt(this.x * this.x + this.y * this.y);
+    }
+  }]);
+
+  return Vector;
+}();
+
+exports.default = Vector;
+
+/***/ }),
+/* 6 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+
+exports.default = function (_ref) {
+  var relation = _ref.relation,
+      font = _ref.font,
+      color = _ref.color,
+      strokeStyle = _ref.strokeStyle,
+      lineWidth = _ref.lineWidth,
+      alpha = _ref.alpha;
+
+  return {
+    // node: `${i},${j}`,
+    line: new _cax2.default.Graphics(),
+    text: new _cax2.default.Text(relation, {
+      font: font,
+      color: color,
+      baseline: 'middle',
+      textAlign: 'center'
+    }),
+    init: function init() {
+      this.text.originX = this.text.getWidth() * 0.5;
+    },
+    updateLine: function updateLine() {
+      var v1 = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : { x: 0, y: 0 };
+      var v2 = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : { x: 0, y: 0 };
+
+
+      var parent = this.lineGroup;
+      parent.remove(this.line);
+      this.line = new _cax2.default.Graphics();
+      this.line.strokeStyle(strokeStyle).lineWidth(lineWidth).beginPath().moveTo(v1.x, v1.y).lineTo(v2.x, v2.y).closePath().stroke();
+
+      this.line.alpha = alpha;
+      parent.add(this.line);
+      // debugger
+      // this.line.parent
+      // this.line.opacity
+    },
+    updateText: function updateText(x, y) {
+      this.text.x = x;
+      this.text.y = y;
+    }
+  };
+};
+
+var _cax = __webpack_require__(0);
+
+var _cax2 = _interopRequireDefault(_cax);
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+/***/ }),
+/* 7 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
+Object.defineProperty(exports, "__esModule", {
+    value: true
+});
+
+function Loader(option) {
+    this.res = {};
+    this.loadedCount = 0;
+    this.resCount = -1;
+    this.FILE_PATTERN = /(\w+:\/{2})?((?:\w+\.){2}\w+)?(\/?[\S]+\/|\/)?([\w\-%\.]+)(?:\.)(\w+)?(\?\S+)?/i;
+    this.ns = 6;
+    this.sounds = [];
+    for (var i = 0; i < this.ns; i++) {
+        this.sounds.push([]);
+    }this.playing = [];
+
+    if (option) {
+        this.progress(option.progress);
+        this.complete(option.complete);
+        this._readyToLoadRes = option.res;
+    }
+}
+
+Loader.prototype = {
+
+    "start": function start() {
+        if (this._readyToLoadRes) {
+            this.loadRes(this._readyToLoadRes);
+        }
+    },
+    "get": function get(id) {
+        return this.res[id];
+    },
+    "loadRes": function loadRes(arr) {
+        this.resCount = arr.length;
+        for (var i = 0; i < arr.length; i++) {
+            var type = this._getTypeByExtension(arr[i].src.match(this.FILE_PATTERN)[5]);
+            if (type === "audio") {
+                this.loadAudio(arr[i].id, arr[i].src);
+            } else if (type === "js") {
+                this.loadScript(arr[i].src);
+            } else if (type === "img") {
+                this.loadImage(arr[i].id, arr[i].src);
+            }
+        }
+    },
+    "loadImage": function loadImage(id, src) {
+        var img = document.createElement("img");
+        var self = this;
+        img.onload = function () {
+            self._handleLoad(this, id);
+            img.onreadystatechange = null;
+        };
+        img.onreadystatechange = function () {
+            if (img.readyState == "loaded" || img.readyState == "complete") {
+                self._handleLoad(this, id);
+                img.onload = null;
+            }
+        };
+        img.onerror = function () {};
+        img.src = src;
+    },
+    "loadAudio": function loadAudio(id, src) {
+        var tag = document.createElement("audio");
+        tag.autoplay = false;
+        this.res[id] = tag;
+        tag.src = null;
+        tag.preload = "auto";
+        tag.onerror = function () {};
+        tag.onstalled = function () {};
+        var self = this;
+        var _audioCanPlayHandler = function _audioCanPlayHandler() {
+            self.playing[id] = 0;
+            for (var i = 0; i < self.ns; i++) {
+                self.sounds[i][id] = new Audio(src);
+            }
+            self.loadedCount++;
+            self.handleProgress && self.handleProgress(self.loadedCount, self.resCount);
+            self._clean(this);
+            this.removeEventListener && this.removeEventListener("canplaythrough", _audioCanPlayHandler, false);
+            self.checkComplete();
+        };
+        tag.addEventListener("canplaythrough", _audioCanPlayHandler, false);
+        tag.src = src;
+        if (tag.load != null) {
+            tag.load();
+        }
+    },
+    "loadScript": function loadScript(url) {
+        var script = document.createElement("script");
+        script.type = "text/javascript";
+        var self = this;
+        if (script.readyState) {
+            //IE
+            script.onreadystatechange = function () {
+                if (script.readyState == "loaded" || script.readyState == "complete") {
+                    script.onreadystatechange = null;
+                    self._handleLoad();
+                }
+            };
+        } else {
+            //Others
+            script.onload = function () {
+                self._handleLoad();
+            };
+        }
+
+        script.src = url;
+        document.getElementsByTagName("head")[0].appendChild(script);
+    },
+    "checkComplete": function checkComplete() {
+        if (this.loadedCount === this.resCount) {
+            this.handleComplete();
+        }
+    },
+    "complete": function complete(fn) {
+        this.handleComplete = fn;
+    },
+    "progress": function progress(fn) {
+        this.handleProgress = fn;
+    },
+    "playSound": function playSound(id, volume) {
+        var sound = this.sounds[this.playing[id]][id];
+        sound.volume = volume === undefined ? 1 : volume;
+        sound.play();
+        ++this.playing[id];
+        if (this.playing[id] >= this.ns) this.playing[id] = 0;
+    },
+    "_handleLoad": function _handleLoad(currentImg, id) {
+        if (currentImg) {
+            this._clean(currentImg);
+            this.res[id] = currentImg;
+        }
+        this.loadedCount++;
+        if (this.handleProgress) this.handleProgress(this.loadedCount, this.resCount);
+        this.checkComplete();
+    },
+    "_getTypeByExtension": function _getTypeByExtension(extension) {
+        switch (extension) {
+            case "jpeg":
+            case "jpg":
+            case "gif":
+            case "png":
+            case "webp":
+            case "bmp":
+                return "img";
+            case "ogg":
+            case "mp3":
+            case "wav":
+                return "audio";
+            case "js":
+                return "js";
+        }
+    },
+    "_clean": function _clean(tag) {
+        tag.onload = null;
+        tag.onstalled = null;
+        tag.onprogress = null;
+        tag.onerror = null;
+    }
+};
+
+exports.default = Loader;
 
 /***/ })
 /******/ ]);

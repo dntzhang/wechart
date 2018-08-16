@@ -6,26 +6,34 @@
     <meta charset="UTF-8">
     <title>Wechart Force Directed Graph Demo</title>
     <style>
-    canvas{
-        border: 1px solid #ccc;
-        margin-top: 120px; 
+     canvas{
         margin-left: 0;
         margin-right: 0;
         padding: 0;
         background-color: white;
     }
 
-    @media screen and (max-width: 500px) {  
+    /* @media screen and (max-width: 500px) {  
         canvas {
             width : 320px
         }
-    }
+    } */
 
     html,body{
         margin: 0;
         padding: 0;
         background:#444444;
         text-align: center;
+        overflow: hidden;
+
+        width:100%;
+        height:100%;
+    }
+    body{
+        max-width:750px;
+        margin:0 auto;
+        position: relative;
+
     }
     </style>
 </head>
