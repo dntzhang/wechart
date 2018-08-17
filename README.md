@@ -23,7 +23,7 @@
 </td>
 
 
-<td align="center"><a title="Skatch" href="https://dntzhang.github.io/wechart/packages/force-directed-graph/examples/simple/" rel="nofollow"><img alt="Skatch" src="./asset/c42.png" style="max-width:100%;"></a><br><a href="https://github.com/dntzhang/wechart/tree/master/packages/force-directed-graph">Force Directed Graph</a> by <a href="https://github.com/TwistFateCarry">TwistFateCarry</a></td>
+<td align="center"><a title="Skatch" href="https://dntzhang.github.io/wechart/packages/force-directed-graph/examples/simple/" rel="nofollow"><img alt="Skatch" src="./asset/c42.png" style="max-width:100%;"></a><br><a href="https://github.com/dntzhang/wechart/tree/master/packages/force-directed-graph">Force Directed Graph</a> by <a href="https://github.com/dwqdaiwenqi">dwqdaiwenqi</a></td>
 
 
 <td align="center">Coming</td>
