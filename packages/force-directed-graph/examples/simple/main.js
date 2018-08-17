@@ -6,7 +6,7 @@ var stage = new cax.Stage(document.body.offsetWidth, document.body.offsetHeight,
 var graph = new ForceDirectedGraph(
   [
     {'name': 'Aqua', 'image': './asset/aqua.png'},
-    {'name': '高海千歌', 'image': './asset/Chika.jpg'},
+    {'name': '高海千歌', 'image': './asset/chika.jpg'},
     {'name': '樱内梨子', 'image': './asset/Riko.jpg'},
     {'name': '松浦果南', 'image': './asset/kanan.jpg'},
     {'name': '黑泽黛雅', 'image': './asset/Dia.jpg'},
