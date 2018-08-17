@@ -19,7 +19,7 @@ English | [简体中文](./README.md)
 <tr>
 <td align="center">
 <img alt="weapp-line" src="./asset/c41.png" style="max-width:100%;"><br>
-<a href="https://github.com/dntzhang/wechart/tree/master/packages/weapp-line">Weapp Line Chart</a> by <a href="https://github.com/dntzhang">dntzhang</a> & dntzhang</a>
+<a href="https://github.com/dntzhang/wechart/tree/master/packages/weapp-line">Weapp Line Chart</a> by <a href="https://github.com/dntzhang">dntzhang</a>
 </td>
 
 
