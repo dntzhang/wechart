@@ -6,6 +6,7 @@ var analyser, frequencyData
 var actx = new AudioContext()
 
 var media = './asset/miku.mp3'
+// -ab 100k -ar 23k
 
 var loadAudio = (url) => {
   var xhr = new window.XMLHttpRequest()
@@ -32,6 +33,7 @@ var loadAudio = (url) => {
         resolve()
       })
     }
+
     xhr.onprogress = (o) => {
       var {loaded, total} = o
 
@@ -117,15 +119,14 @@ loadAudio(media).then(buffer => {
   })
   scene.add(mesh3)
   mesh3.position.set(0, 0, -7)
-  /// //////////////////////////////////////////////////////////
 
   ;(function animate () {
     window.requestAnimationFrame(animate)
     renderer.render(scene, camera)
     analyser.getByteFrequencyData(frequencyData)
 
-    mesh1.update(frequencyData, analyser.frequencyBinCount, 1)
-    mesh2.update(frequencyData, analyser.frequencyBinCount, 0.34)
-    mesh3.update(frequencyData, analyser.frequencyBinCount, 0.7)
+    mesh1.update(frequencyData.slice(0, frequencyData.length * 0.5 | 0), 1)
+    mesh2.update(frequencyData.slice(0, frequencyData.length * 0.5 | 0), 0.34)
+    mesh3.update(frequencyData.slice(0, frequencyData.length * 0.5 | 0), 0.6)
   })()
 })

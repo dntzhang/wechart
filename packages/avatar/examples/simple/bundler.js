@@ -204,7 +204,7 @@ loader.start();
 var _typeof2 = typeof Symbol === "function" && typeof Symbol.iterator === "symbol" ? function (obj) { return typeof obj; } : function (obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj; };
 
 /*!
- *  cax v1.2.0
+ *  cax v1.2.4
  *  By https://github.com/dntzhang 
  *  Github: https://github.com/dntzhang/cax
  *  MIT Licensed.
@@ -759,7 +759,13 @@ var _typeof2 = typeof Symbol === "function" && typeof Symbol.iterator === "symbo
         }, {
           key: 'filter',
           value: function filter(filterName, filterBox) {
-            this.cache(filterBox.x || 0, filterBox.y || 0, filterBox.width || this.width, filterBox.height || this.height);
+            filterBox = Object.assign({}, {
+              x: 0,
+              y: 0,
+              width: this.width,
+              height: this.height
+            }, filterBox);
+            this.cache(filterBox.x, filterBox.y, filterBox.width, filterBox.height);
             this._readyToFilter = true;
             this._filterName = filterName;
           }
@@ -3429,6 +3435,10 @@ var _typeof2 = typeof Symbol === "function" && typeof Symbol.iterator === "symbo
 
       var _sprite2 = _interopRequireDefault(_sprite);
 
+      var _shape = __webpack_require__(0);
+
+      var _shape2 = _interopRequireDefault(_shape);
+
       var _roundedRect = __webpack_require__(15);
 
       var _roundedRect2 = _interopRequireDefault(_roundedRect);
@@ -3492,6 +3502,8 @@ var _typeof2 = typeof Symbol === "function" && typeof Symbol.iterator === "symbo
         Text: _text2.default,
         Group: _group2.default,
         Sprite: _sprite2.default,
+        Shape: _shape2.default,
+
         ArrowPath: _arrowPath2.default,
         Ellipse: _ellipse2.default,
         Path: _path2.default,
@@ -3528,6 +3540,34 @@ var _typeof2 = typeof Symbol === "function" && typeof Symbol.iterator === "symbo
         _to2.default.easing[itemLower + 'Out'] = _tween2.default.Easing[item].Out;
         _to2.default.easing[itemLower + 'InOut'] = _tween2.default.Easing[item].InOut;
       });
+
+      cax.loadImg = function (option) {
+        var img = new Image();
+        img.onload = function () {
+          option.complete(this);
+        };
+        img.src = option.img;
+      };
+
+      cax.loadImgs = function (option) {
+        var result = [];
+        var loaded = 0;
+        var len = option.imgs.length;
+        option.imgs.forEach(function (src, index) {
+          var img = new Image();
+          img.onload = function (i, img) {
+            return function () {
+              result[i] = img;
+              loaded++;
+              option.progress && option.progress(loaded / len, loaded, i, img, result);
+              if (loaded === len) {
+                option.complete && option.complete(result);
+              }
+            };
+          }(index, img);
+          img.src = src;
+        });
+      };
 
       module.exports = cax;
 
@@ -4152,6 +4192,9 @@ var _typeof2 = typeof Symbol === "function" && typeof Symbol.iterator === "symbo
         }, {
           key: '_setCursor',
           value: function _setCursor(obj) {
+            if (!this.canvas.style) {
+              return;
+            }
             if (obj.cursor) {
               this.canvas.style.cursor = obj.cursor;
             } else if (obj.parent) {
@@ -4910,7 +4953,6 @@ var _typeof2 = typeof Symbol === "function" && typeof Symbol.iterator === "symbo
           d[i] = d[i] + ratio * (255 - 2 * d[i]);
           d[i + 1] = d[i + 1] + ratio * (255 - 2 * d[i + 1]);
           d[i + 2] = d[i + 2] + ratio * (255 - 2 * d[i + 2]);
-          d[i + 3] = d[i + 3];
         }
         return pixels;
       }

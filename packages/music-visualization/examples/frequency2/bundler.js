@@ -85,6 +85,7 @@ var analyser, frequencyData;
 var actx = new AudioContext();
 
 var media = './asset/miku.mp3';
+// -ab 100k -ar 23k
 
 var loadAudio = function loadAudio(url) {
   var xhr = new window.XMLHttpRequest();
@@ -111,6 +112,7 @@ var loadAudio = function loadAudio(url) {
         resolve();
       });
     };
+
     xhr.onprogress = function (o) {
       var loaded = o.loaded,
           total = o.total;
@@ -195,16 +197,16 @@ loadAudio(media).then(function (buffer) {
   });
   scene.add(mesh3);
   mesh3.position.set(0, 0, -7)
-  /////////////////////////////////////////////////////////////
+  // ///////////////////////////////////////////////////////////
 
   ;(function animate() {
     window.requestAnimationFrame(animate);
     renderer.render(scene, camera);
     analyser.getByteFrequencyData(frequencyData);
 
-    mesh1.update(frequencyData, analyser.frequencyBinCount, 1);
-    mesh2.update(frequencyData, analyser.frequencyBinCount, 0.34);
-    mesh3.update(frequencyData, analyser.frequencyBinCount, 0.7);
+    mesh1.update(frequencyData.slice(0, frequencyData.length * 0.5 | 0), 1);
+    mesh2.update(frequencyData.slice(0, frequencyData.length * 0.5 | 0), 0.34);
+    mesh3.update(frequencyData.slice(0, frequencyData.length * 0.5 | 0), 0.6);
   })();
 });
 
@@ -7175,13 +7177,13 @@ var FrequencyMesh = function (_THREE$Group) {
 
   _createClass(FrequencyMesh, [{
     key: "update",
-    value: function update(frequencyData, frequencyBinCount) {
+    value: function update(frequencyData) {
       var _this2 = this;
 
-      var n = arguments.length > 2 && arguments[2] !== undefined ? arguments[2] : 1;
+      var n = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : 1;
 
       this.positions.forEach(function (v, i) {
-        var val = frequencyData[i / _this2.positions.length * frequencyBinCount | 0] / 128;
+        var val = frequencyData[i / _this2.positions.length * frequencyData.length | 0] / 128;
         _this2.mesh.geometry.vertices[i].copy(v.clone().add(_this2.vxNormals[i].clone().multiplyScalar(val * n)));
       });
       this.mesh.geometry.verticesNeedUpdate = true;

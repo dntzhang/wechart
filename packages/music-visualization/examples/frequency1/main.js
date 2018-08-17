@@ -6,6 +6,7 @@ var AudioContext = window.AudioContext || window.webkitAudioContext
 var analyser, frequencyData
 var actx = new AudioContext()
 var media = './asset/miku.mp3'
+// -ab 100k -ar 23k
 
 var loadAudio = (url) => {
   var xhr = new window.XMLHttpRequest()
@@ -98,9 +99,9 @@ loadAudio(media).then(data => {
     var avg = getAvg(frequencyData)
 
     analyser.getByteFrequencyData(frequencyData)
-    fqbBot.update(frequencyData)
-    fqbTop.update(frequencyData)
-    variants.update(frequencyData, avg)
+    fqbBot.update(frequencyData.slice(0, frequencyData.length * 0.5 | 0))
+    fqbTop.update(frequencyData.slice(0, frequencyData.length * 0.5 | 0))
+    variants.update(frequencyData.slice(0, frequencyData.length * 0.5 | 0), avg)
     text.scaleX = text.scaleY = 1 + avg * 0.01
     stage.update()
   })()
