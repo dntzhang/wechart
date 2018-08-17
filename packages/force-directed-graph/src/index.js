@@ -135,7 +135,7 @@ var ForceDirectedGraph = class extends cax.Group {
       baseline: 'middle',
       textAlign: 'center'
     })
-    text.originX = text.getWidth() * 0.5
+    // text.originX = text.getWidth() * 0.5
     text.x = 0
     text.y = image ? image.height * 0.7 : graphNode.r * 2
     return {

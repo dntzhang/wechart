@@ -9,13 +9,10 @@ var GraphNode = class extends cax.Group {
     this.edges = []
 
     this.text = text
-    // debugger
 
     if (this.text) {
-      this.text = text
       this.add(text)
     }
-
     this.pos = new Vector(this.node.x, this.node.y)
     this.node.x = 0
     this.node.y = 0

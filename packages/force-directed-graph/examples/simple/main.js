@@ -60,7 +60,6 @@ var graph = new ForceDirectedGraph(
         baseline: 'middle',
         textAlign: 'center'
       })
-      text.originX = text.getWidth() * 0.5
       text.x = 0
       text.y = 50
 
@@ -76,7 +75,6 @@ var graph = new ForceDirectedGraph(
 )
 
 stage.on('touchstart', e => {
-  // alert(1)
   e.preventDefault()
 })
 stage.add(graph)

@@ -7150,7 +7150,6 @@ var graph = new _src2.default([{ 'name': 'Aqua', 'image': './asset/aqua.png' }, 
       baseline: 'middle',
       textAlign: 'center'
     });
-    text.originX = text.getWidth() * 0.5;
     text.x = 0;
     text.y = 50;
 
@@ -7165,7 +7164,6 @@ var graph = new _src2.default([{ 'name': 'Aqua', 'image': './asset/aqua.png' }, 
 });
 
 stage.on('touchstart', function (e) {
-  // alert(1)
   e.preventDefault();
 });
 stage.add(graph);
@@ -7382,7 +7380,7 @@ var ForceDirectedGraph = function (_cax$Group) {
         baseline: 'middle',
         textAlign: 'center'
       });
-      text.originX = text.getWidth() * 0.5;
+      // text.originX = text.getWidth() * 0.5
       text.x = 0;
       text.y = image ? image.height * 0.7 : graphNode.r * 2;
       return {
@@ -7558,13 +7556,10 @@ var GraphNode = function (_cax$Group) {
     _this.edges = [];
 
     _this.text = text;
-    // debugger
 
     if (_this.text) {
-      _this.text = text;
       _this.add(text);
     }
-
     _this.pos = new _vector2.default(_this.node.x, _this.node.y);
     _this.node.x = 0;
     _this.node.y = 0;
