@@ -18,8 +18,23 @@ English | [简体中文](./README.md)
 
 <tr>
 <td align="center">
+<img alt="weapp-line" src="./asset/c41.png" style="max-width:100%;"><br>
+<a href="https://github.com/dntzhang/wechart/tree/master/packages/weapp-line">Weapp Line Chart</a> by <a href="https://github.com/dntzhang">dntzhang</a>
+</td>
+
+
+<td align="center"><a title="Skatch" href="https://dntzhang.github.io/wechart/packages/force-directed-graph/examples/simple/" rel="nofollow"><img alt="Skatch" src="./asset/c42.png" style="max-width:100%;"></a><br><a href="https://github.com/dntzhang/wechart/tree/master/packages/force-directed-graph">Force Directed Graph</a> by <a href="https://github.com/dwqdaiwenqi">dwqdaiwenqi</a></td>
+
+
+<td align="center">Coming</td>
+
+</tr>
+
+
+<tr>
+<td align="center">
 <a title="Dragonbones" href="https://dntzhang.github.io/wechart/packages/cax-dragonbones/examples/simple/index.html" rel="nofollow"><img alt="Dragonbones" src="./asset/c94.jpg" style="max-width:100%;"></a><br>
-<a href="https://github.com/dntzhang/wechart/tree/master/packages/Dragonbones/">Cax + Dragonbones</a> by <a href="https://github.com/06wj">06wj</a> & dntzhang</a>
+<a href="https://github.com/dntzhang/wechart/tree/master/packages/cax-dragonbones">Cax + Dragonbones</a> by <a href="https://github.com/06wj">06wj</a> & dntzhang</a>
 </td>
 
 
