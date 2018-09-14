@@ -29,8 +29,9 @@ var loadAudio = (url) => {
         asource.connect(splitter)
         splitter.connect(analyser, 0, 0)
         analyser.connect(actx.destination)
-        asource.start()
-        resolve()
+        // asource.start()
+        // resolve()
+        resolve(asource)
       })
     }
 
@@ -43,7 +44,10 @@ var loadAudio = (url) => {
   })
 }
 
-loadAudio(media).then(buffer => {
+loadAudio(media).then(asource => {
+  var play = false, $play = document.querySelector('#play')
+  $play.style.visibility = 'visible'
+
   var scene = new THREE.Scene()
   var renderer = new THREE.WebGLRenderer({antialias: true})
   var $b = document.body
@@ -53,15 +57,14 @@ loadAudio(media).then(buffer => {
   document.body.appendChild(renderer.domElement)
   camera.position.copy(new THREE.Vector3(0, 1, 60))
 
-  frequencyData = new Uint8Array(analyser.frequencyBinCount)
+  // frequencyData = new Uint8Array(analyser.frequencyBinCount)
 
   var hemiLight = new THREE.HemisphereLight(0xffffff, 0xffffff, 0.6)
   hemiLight.color.setHSL(0.6, 1, 0.6)
   hemiLight.groundColor.setHSL(0.095, 1, 0.75)
   hemiLight.position.set(0, 50, 0)
   scene.add(hemiLight)
-  var hemiLightHelper = new THREE.HemisphereLightHelper(hemiLight, 10)
-  scene.add(hemiLightHelper)
+
   var dirLight = new THREE.DirectionalLight(0xffffff, 1)
   dirLight.color.setHSL(0.1, 1, 0.95)
   dirLight.position.set(-1, 1.75, 1)
@@ -120,13 +123,22 @@ loadAudio(media).then(buffer => {
   scene.add(mesh3)
   mesh3.position.set(0, 0, -7)
 
+  $play.addEventListener('click', function () {
+    this.style.visibility = 'hidden'
+    this.style.webkitAnimation = 'none'
+    asource.start()
+    frequencyData = new Uint8Array(analyser.frequencyBinCount)
+    play = true
+  })
   ;(function animate () {
     window.requestAnimationFrame(animate)
     renderer.render(scene, camera)
-    analyser.getByteFrequencyData(frequencyData)
 
-    mesh1.update(frequencyData.slice(0, frequencyData.length * 0.5 | 0), 1)
-    mesh2.update(frequencyData.slice(0, frequencyData.length * 0.5 | 0), 0.34)
-    mesh3.update(frequencyData.slice(0, frequencyData.length * 0.5 | 0), 0.6)
+    if (play) {
+      analyser.getByteFrequencyData(frequencyData)
+      mesh1.update(frequencyData.slice(0, frequencyData.length * 0.5 | 0), 1)
+      mesh2.update(frequencyData.slice(0, frequencyData.length * 0.5 | 0), 0.34)
+      mesh3.update(frequencyData.slice(0, frequencyData.length * 0.5 | 0), 0.6)
+    }
   })()
 })

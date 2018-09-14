@@ -29,8 +29,10 @@ var loadAudio = (url) => {
         asource.connect(splitter)
         splitter.connect(analyser, 0, 0)
         analyser.connect(actx.destination)
-        asource.start()
-        resolve()
+        // asource.start()
+        // resolve()
+
+        resolve(asource)
       })
     }
     xhr.onprogress = (o) => {
@@ -50,8 +52,19 @@ var getAvg = (frequencyData) => {
   return value / values.length
 }
 
-loadAudio(media).then(data => {
-  frequencyData = new Uint8Array(analyser.frequencyBinCount)
+loadAudio(media).then(asource => {
+  var changePolygon = () => {
+    var polygon = ++variants.n % 2 === 0 ? 'cir' : 'rect'
+    variants.usePolygon(polygon, function () {
+      setTimeout(() => {
+        changePolygon()
+      }, 2333 + Math.random() * 2333)
+    })
+  }
+
+  var play = false, $play = document.querySelector('#play')
+  $play.style.visibility = 'visible'
+
   var bg = new cax.Rect(stage.width, stage.height, {fillStyle: 'black'})
   stage.add(bg)
 
@@ -77,32 +90,36 @@ loadAudio(media).then(data => {
   text.alpha = 0.6
   text.x = stage.width * 0.5
   text.y = stage.height * 0.5
-  text.originX = text.getWidth() * 0.5
+  text.visible = false
+  // text.originX = text.getWidth() * 0.5
 
+  // console.log(text.x, stage.width)
   stage.add(variants)
   stage.add(fqbTop)
   stage.add(fqbBot)
   stage.add(text)
 
-  var callee = () => {
-    var polygon = ++variants.n % 2 === 0 ? 'rect' : 'cir'
-    variants.usePolygon(polygon, function () {
-      setTimeout(() => {
-        callee()
-      }, 2333 + Math.random() * 2333)
-    })
-  }
-  callee()
-  ;(function animate () {
-    window.requestAnimationFrame(animate)
+  $play.addEventListener('click', function () {
+    this.style.visibility = 'hidden'
+    this.style.webkitAnimation = 'none'
+    asource.start()
+    frequencyData = new Uint8Array(analyser.frequencyBinCount)
+    play = true
+    text.visible = true
+    changePolygon()
+  })
 
-    var avg = getAvg(frequencyData)
-
-    analyser.getByteFrequencyData(frequencyData)
-    fqbBot.update(frequencyData.slice(0, frequencyData.length * 0.5 | 0))
-    fqbTop.update(frequencyData.slice(0, frequencyData.length * 0.5 | 0))
-    variants.update(frequencyData.slice(0, frequencyData.length * 0.5 | 0), avg)
-    text.scaleX = text.scaleY = 1 + avg * 0.01
+  cax.tick(() => {
     stage.update()
-  })()
+
+    if (play) {
+      let avg = getAvg(frequencyData)
+
+      analyser.getByteFrequencyData(frequencyData)
+      fqbBot.update(frequencyData.slice(0, frequencyData.length * 0.5 | 0))
+      fqbTop.update(frequencyData.slice(0, frequencyData.length * 0.5 | 0))
+      variants.update(frequencyData.slice(0, frequencyData.length * 0.5 | 0), avg)
+      text.scaleX = text.scaleY = 1 + avg * 0.01
+    }
+  })
 })

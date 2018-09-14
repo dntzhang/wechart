@@ -108,8 +108,9 @@ var loadAudio = function loadAudio(url) {
         asource.connect(splitter);
         splitter.connect(analyser, 0, 0);
         analyser.connect(actx.destination);
-        asource.start();
-        resolve();
+        // asource.start()
+        // resolve()
+        resolve(asource);
       });
     };
 
@@ -124,7 +125,11 @@ var loadAudio = function loadAudio(url) {
   });
 };
 
-loadAudio(media).then(function (buffer) {
+loadAudio(media).then(function (asource) {
+  var play = false,
+      $play = document.querySelector('#play');
+  $play.style.visibility = 'visible';
+
   var scene = new THREE.Scene();
   var renderer = new THREE.WebGLRenderer({ antialias: true });
   var $b = document.body;
@@ -134,15 +139,14 @@ loadAudio(media).then(function (buffer) {
   document.body.appendChild(renderer.domElement);
   camera.position.copy(new THREE.Vector3(0, 1, 60));
 
-  frequencyData = new Uint8Array(analyser.frequencyBinCount);
+  // frequencyData = new Uint8Array(analyser.frequencyBinCount)
 
   var hemiLight = new THREE.HemisphereLight(0xffffff, 0xffffff, 0.6);
   hemiLight.color.setHSL(0.6, 1, 0.6);
   hemiLight.groundColor.setHSL(0.095, 1, 0.75);
   hemiLight.position.set(0, 50, 0);
   scene.add(hemiLight);
-  var hemiLightHelper = new THREE.HemisphereLightHelper(hemiLight, 10);
-  scene.add(hemiLightHelper);
+
   var dirLight = new THREE.DirectionalLight(0xffffff, 1);
   dirLight.color.setHSL(0.1, 1, 0.95);
   dirLight.position.set(-1, 1.75, 1);
@@ -196,17 +200,24 @@ loadAudio(media).then(function (buffer) {
     f.color = new THREE.Color().setHSL(h + Math.random() * 0.3, s, l + Math.random() * 0.25);
   });
   scene.add(mesh3);
-  mesh3.position.set(0, 0, -7)
-  // ///////////////////////////////////////////////////////////
+  mesh3.position.set(0, 0, -7);
 
-  ;(function animate() {
+  $play.addEventListener('click', function () {
+    this.style.visibility = 'hidden';
+    this.style.webkitAnimation = 'none';
+    asource.start();
+    frequencyData = new Uint8Array(analyser.frequencyBinCount);
+    play = true;
+  });(function animate() {
     window.requestAnimationFrame(animate);
     renderer.render(scene, camera);
-    analyser.getByteFrequencyData(frequencyData);
 
-    mesh1.update(frequencyData.slice(0, frequencyData.length * 0.5 | 0), 1);
-    mesh2.update(frequencyData.slice(0, frequencyData.length * 0.5 | 0), 0.34);
-    mesh3.update(frequencyData.slice(0, frequencyData.length * 0.5 | 0), 0.6);
+    if (play) {
+      analyser.getByteFrequencyData(frequencyData);
+      mesh1.update(frequencyData.slice(0, frequencyData.length * 0.5 | 0), 1);
+      mesh2.update(frequencyData.slice(0, frequencyData.length * 0.5 | 0), 0.34);
+      mesh3.update(frequencyData.slice(0, frequencyData.length * 0.5 | 0), 0.6);
+    }
   })();
 });
 
@@ -220,7 +231,7 @@ loadAudio(media).then(function (buffer) {
 var _typeof2 = typeof Symbol === "function" && typeof Symbol.iterator === "symbol" ? function (obj) { return typeof obj; } : function (obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj; };
 
 /*!
- *  cax v1.2.4
+ *  cax v1.2.9
  *  By https://github.com/dntzhang 
  *  Github: https://github.com/dntzhang/cax
  *  MIT Licensed.
@@ -345,7 +356,7 @@ var _typeof2 = typeof Symbol === "function" && typeof Symbol.iterator === "symbo
         }
       };
 
-      var _graphics = __webpack_require__(3);
+      var _graphics = __webpack_require__(4);
 
       var _graphics2 = _interopRequireDefault(_graphics);
 
@@ -439,7 +450,7 @@ var _typeof2 = typeof Symbol === "function" && typeof Symbol.iterator === "symbo
         }
       };
 
-      var _displayObject = __webpack_require__(2);
+      var _displayObject = __webpack_require__(3);
 
       var _displayObject2 = _interopRequireDefault(_displayObject);
 
@@ -483,8 +494,13 @@ var _typeof2 = typeof Symbol === "function" && typeof Symbol.iterator === "symbo
             var len = arguments.length;
 
             for (var i = 0; i < len; i++) {
-              this.children.push(arguments[i]);
-              arguments[i].parent = this;
+              var c = arguments[i];
+              var parent = c.parent;
+              if (parent) {
+                parent.removeChildAt(parent.children.indexOf(c));
+              }
+              this.children.push(c);
+              c.parent = this;
             }
           }
         }, {
@@ -571,6 +587,144 @@ var _typeof2 = typeof Symbol === "function" && typeof Symbol.iterator === "symbo
         };
       }();
 
+      var _displayObject = __webpack_require__(3);
+
+      var _displayObject2 = _interopRequireDefault(_displayObject);
+
+      var _util = __webpack_require__(9);
+
+      var _util2 = _interopRequireDefault(_util);
+
+      function _interopRequireDefault(obj) {
+        return obj && obj.__esModule ? obj : { default: obj };
+      }
+
+      function _classCallCheck(instance, Constructor) {
+        if (!(instance instanceof Constructor)) {
+          throw new TypeError("Cannot call a class as a function");
+        }
+      }
+
+      function _possibleConstructorReturn(self, call) {
+        if (!self) {
+          throw new ReferenceError("this hasn't been initialised - super() hasn't been called");
+        }return call && ((typeof call === 'undefined' ? 'undefined' : _typeof2(call)) === "object" || typeof call === "function") ? call : self;
+      }
+
+      function _inherits(subClass, superClass) {
+        if (typeof superClass !== "function" && superClass !== null) {
+          throw new TypeError("Super expression must either be null or a function, not " + (typeof superClass === 'undefined' ? 'undefined' : _typeof2(superClass)));
+        }subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } });if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass;
+      }
+
+      var Bitmap = function (_DisplayObject) {
+        _inherits(Bitmap, _DisplayObject);
+
+        function Bitmap(img, onLoad) {
+          _classCallCheck(this, Bitmap);
+
+          var _this = _possibleConstructorReturn(this, (Bitmap.__proto__ || Object.getPrototypeOf(Bitmap)).call(this));
+
+          if (typeof img === 'string') {
+            if (Bitmap.cache[img]) {
+              if (_util2.default.isWeapp) {
+                _this.img = Bitmap.cache[img].img;
+                _this.rect = [0, 0, Bitmap.cache[img].width, Bitmap.cache[img].height];
+                _this.width = _this.rect[2];
+                _this.height = _this.rect[3];
+              } else {
+                _this.img = Bitmap.cache[img];
+                _this.rect = [0, 0, _this.img.width, _this.img.height];
+                _this.width = _this.img.width;
+                _this.height = _this.img.height;
+              }
+              onLoad && onLoad.call(_this);
+            } else if (_util2.default.isWeapp) {
+              _util2.default.getImageInWx(img, function (result) {
+                _this.img = result.img;
+                if (!_this.rect) {
+                  _this.rect = [0, 0, result.width, result.height];
+                }
+                _this.width = result.width;
+                _this.height = result.height;
+                onLoad && onLoad.call(_this);
+                Bitmap.cache[img] = result;
+              });
+            } else {
+              _this.img = _util2.default.isWegame ? wx.createImage() : new window.Image();
+              _this.visible = false;
+              _this.img.onload = function () {
+                _this.visible = true;
+                if (!_this.rect) {
+                  _this.rect = [0, 0, _this.img.width, _this.img.height];
+                }
+                _this.width = _this.img.width;
+                _this.height = _this.img.height;
+                onLoad && onLoad.call(_this);
+                Bitmap.cache[img] = _this.img;
+              };
+              _this.img.src = img;
+            }
+          } else {
+            _this.img = img;
+            _this.rect = [0, 0, img.width, img.height];
+            _this.width = img.width;
+            _this.height = img.height;
+            Bitmap.cache[img.src] = img;
+          }
+          return _this;
+        }
+
+        _createClass(Bitmap, [{
+          key: 'clone',
+          value: function clone() {
+            // 复制完img宽度0？？所以直接传字符串
+            var bitmap = new Bitmap(typeof this.img === 'string' ? this.img : this.img.src);
+            bitmap.x = this.x;
+            bitmap.y = this.y;
+            bitmap.scaleX = this.scaleX;
+            bitmap.scaleY = this.scaleY;
+            bitmap.rotation = this.rotation;
+            bitmap.skewX = this.skewX;
+            bitmap.skewY = this.skewY;
+            bitmap.originX = this.originX;
+            bitmap.originY = this.originY;
+            bitmap.width = this.width;
+            bitmap.height = this.height;
+            bitmap.cursor = this.cursor;
+
+            return bitmap;
+          }
+        }]);
+
+        return Bitmap;
+      }(_displayObject2.default);
+
+      Bitmap.cache = {};
+
+      exports.default = Bitmap;
+
+      /***/
+    },
+    /* 3 */
+    /***/function (module, exports, __webpack_require__) {
+
+      "use strict";
+
+      Object.defineProperty(exports, "__esModule", {
+        value: true
+      });
+
+      var _createClass = function () {
+        function defineProperties(target, props) {
+          for (var i = 0; i < props.length; i++) {
+            var descriptor = props[i];descriptor.enumerable = descriptor.enumerable || false;descriptor.configurable = true;if ("value" in descriptor) descriptor.writable = true;Object.defineProperty(target, descriptor.key, descriptor);
+          }
+        }return function (Constructor, protoProps, staticProps) {
+          if (protoProps) defineProperties(Constructor.prototype, protoProps);if (staticProps) defineProperties(Constructor, staticProps);return Constructor;
+        };
+      }();
+
       var _matrix2d = __webpack_require__(21);
 
       var _matrix2d2 = _interopRequireDefault(_matrix2d);
@@ -628,6 +782,20 @@ var _typeof2 = typeof Symbol === "function" && typeof Symbol.iterator === "symbo
           _this.absClipGraphics = null;
           _this.absClipRuleNonzero = true;
           _this.cacheUpdating = false;
+
+          try {
+            Object.defineProperties(_this, {
+              stage: { get: _this._getStage },
+              scale: {
+                get: function get() {
+                  return this.scaleX;
+                },
+                set: function set(scale) {
+                  this.scaleX = this.scaleY = scale;
+                }
+              }
+            });
+          } catch (e) {}
           return _this;
         }
 
@@ -786,9 +954,39 @@ var _typeof2 = typeof Symbol === "function" && typeof Symbol.iterator === "symbo
             this._filterName = filterName;
           }
         }, {
+          key: 'setTransform',
+          value: function setTransform(x, y, scaleX, scaleY, rotation, skewX, skewY, originX, originY) {
+            this.x = x || 0;
+            this.y = y || 0;
+            this.scaleX = scaleX == null ? 1 : scaleX;
+            this.scaleY = scaleY == null ? 1 : scaleY;
+            this.rotation = rotation || 0;
+            this.skewX = skewX || 0;
+            this.skewY = skewY || 0;
+            this.originX = originX || 0;
+            this.originY = originY || 0;
+          }
+        }, {
+          key: 'setMatrix',
+          value: function setMatrix(a, b, c, d, tx, ty) {
+            _matrix2d2.default.decompose(a, b, c, d, tx, ty, this);
+          }
+        }, {
           key: 'unfilter',
           value: function unfilter() {
             this.uncache();
+          }
+        }, {
+          key: '_getStage',
+          value: function _getStage() {
+            var o = this;
+            while (o.parent) {
+              o = o.parent;
+            }
+            if (o.___instanceof === 'Stage') {
+              return o;
+            }
+            return null;
           }
         }]);
 
@@ -799,7 +997,7 @@ var _typeof2 = typeof Symbol === "function" && typeof Symbol.iterator === "symbo
 
       /***/
     },
-    /* 3 */
+    /* 4 */
     /***/function (module, exports, __webpack_require__) {
 
       "use strict";
@@ -818,7 +1016,7 @@ var _typeof2 = typeof Symbol === "function" && typeof Symbol.iterator === "symbo
         };
       }();
 
-      var _displayObject = __webpack_require__(2);
+      var _displayObject = __webpack_require__(3);
 
       var _displayObject2 = _interopRequireDefault(_displayObject);
 
@@ -1059,144 +1257,6 @@ var _typeof2 = typeof Symbol === "function" && typeof Symbol.iterator === "symbo
 
       /***/
     },
-    /* 4 */
-    /***/function (module, exports, __webpack_require__) {
-
-      "use strict";
-
-      Object.defineProperty(exports, "__esModule", {
-        value: true
-      });
-
-      var _createClass = function () {
-        function defineProperties(target, props) {
-          for (var i = 0; i < props.length; i++) {
-            var descriptor = props[i];descriptor.enumerable = descriptor.enumerable || false;descriptor.configurable = true;if ("value" in descriptor) descriptor.writable = true;Object.defineProperty(target, descriptor.key, descriptor);
-          }
-        }return function (Constructor, protoProps, staticProps) {
-          if (protoProps) defineProperties(Constructor.prototype, protoProps);if (staticProps) defineProperties(Constructor, staticProps);return Constructor;
-        };
-      }();
-
-      var _displayObject = __webpack_require__(2);
-
-      var _displayObject2 = _interopRequireDefault(_displayObject);
-
-      var _util = __webpack_require__(9);
-
-      var _util2 = _interopRequireDefault(_util);
-
-      function _interopRequireDefault(obj) {
-        return obj && obj.__esModule ? obj : { default: obj };
-      }
-
-      function _classCallCheck(instance, Constructor) {
-        if (!(instance instanceof Constructor)) {
-          throw new TypeError("Cannot call a class as a function");
-        }
-      }
-
-      function _possibleConstructorReturn(self, call) {
-        if (!self) {
-          throw new ReferenceError("this hasn't been initialised - super() hasn't been called");
-        }return call && ((typeof call === 'undefined' ? 'undefined' : _typeof2(call)) === "object" || typeof call === "function") ? call : self;
-      }
-
-      function _inherits(subClass, superClass) {
-        if (typeof superClass !== "function" && superClass !== null) {
-          throw new TypeError("Super expression must either be null or a function, not " + (typeof superClass === 'undefined' ? 'undefined' : _typeof2(superClass)));
-        }subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } });if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass;
-      }
-
-      var Bitmap = function (_DisplayObject) {
-        _inherits(Bitmap, _DisplayObject);
-
-        function Bitmap(img, onLoad) {
-          _classCallCheck(this, Bitmap);
-
-          var _this = _possibleConstructorReturn(this, (Bitmap.__proto__ || Object.getPrototypeOf(Bitmap)).call(this));
-
-          if (typeof img === 'string') {
-            if (Bitmap.cache[img]) {
-              if (_util2.default.isWeapp) {
-                _this.img = Bitmap.cache[img].img;
-                _this.rect = [0, 0, Bitmap.cache[img].width, Bitmap.cache[img].height];
-                _this.width = _this.rect[2];
-                _this.height = _this.rect[3];
-              } else {
-                _this.img = Bitmap.cache[img];
-                _this.rect = [0, 0, _this.img.width, _this.img.height];
-                _this.width = _this.img.width;
-                _this.height = _this.img.height;
-              }
-              onLoad && onLoad.call(_this);
-            } else if (_util2.default.isWeapp) {
-              _util2.default.getImageInWx(img, function (result) {
-                _this.img = result.img;
-                if (!_this.rect) {
-                  _this.rect = [0, 0, result.width, result.height];
-                }
-                _this.width = result.width;
-                _this.height = result.height;
-                onLoad && onLoad.call(_this);
-                Bitmap.cache[img] = result;
-              });
-            } else {
-              _this.img = _util2.default.isWegame ? wx.createImage() : new window.Image();
-              _this.visible = false;
-              _this.img.onload = function () {
-                _this.visible = true;
-                if (!_this.rect) {
-                  _this.rect = [0, 0, _this.img.width, _this.img.height];
-                }
-                _this.width = _this.img.width;
-                _this.height = _this.img.height;
-                onLoad && onLoad.call(_this);
-                Bitmap.cache[img] = _this.img;
-              };
-              _this.img.src = img;
-            }
-          } else {
-            _this.img = img;
-            _this.rect = [0, 0, img.width, img.height];
-            _this.width = img.width;
-            _this.height = img.height;
-            Bitmap.cache[img.src] = img;
-          }
-          return _this;
-        }
-
-        _createClass(Bitmap, [{
-          key: 'clone',
-          value: function clone() {
-            // 复制完img宽度0？？所以直接传字符串
-            var bitmap = new Bitmap(typeof this.img === 'string' ? this.img : this.img.src);
-            bitmap.x = this.x;
-            bitmap.y = this.y;
-            bitmap.scaleX = this.scaleX;
-            bitmap.scaleY = this.scaleY;
-            bitmap.rotation = this.rotation;
-            bitmap.skewX = this.skewX;
-            bitmap.skewY = this.skewY;
-            bitmap.originX = this.originX;
-            bitmap.originY = this.originY;
-            bitmap.width = this.width;
-            bitmap.height = this.height;
-            bitmap.cursor = this.cursor;
-
-            return bitmap;
-          }
-        }]);
-
-        return Bitmap;
-      }(_displayObject2.default);
-
-      Bitmap.cache = {};
-
-      exports.default = Bitmap;
-
-      /***/
-    },
     /* 5 */
     /***/function (module, exports, __webpack_require__) {
 
@@ -1216,7 +1276,7 @@ var _typeof2 = typeof Symbol === "function" && typeof Symbol.iterator === "symbo
         };
       }();
 
-      var _displayObject = __webpack_require__(2);
+      var _displayObject = __webpack_require__(3);
 
       var _displayObject2 = _interopRequireDefault(_displayObject);
 
@@ -1266,7 +1326,7 @@ var _typeof2 = typeof Symbol === "function" && typeof Symbol.iterator === "symbo
           option = option || {};
           _this.font = option.font || '10px sans-serif';
           _this.color = option.color || 'black';
-
+          _this.textAlign = option.textAlign || 'left';
           _this.baseline = option.baseline || 'top';
           return _this;
         }
@@ -1313,7 +1373,7 @@ var _typeof2 = typeof Symbol === "function" && typeof Symbol.iterator === "symbo
         };
       }();
 
-      var _displayObject = __webpack_require__(2);
+      var _displayObject = __webpack_require__(3);
 
       var _displayObject2 = _interopRequireDefault(_displayObject);
 
@@ -1321,7 +1381,7 @@ var _typeof2 = typeof Symbol === "function" && typeof Symbol.iterator === "symbo
 
       var _util2 = _interopRequireDefault(_util);
 
-      var _bitmap = __webpack_require__(4);
+      var _bitmap = __webpack_require__(2);
 
       var _bitmap2 = _interopRequireDefault(_bitmap);
 
@@ -1457,7 +1517,10 @@ var _typeof2 = typeof Symbol === "function" && typeof Symbol.iterator === "symbo
 
               rectLen > 4 && (this.originX = this.rect[2] * this.rect[4]);
               rectLen > 5 && (this.originY = this.rect[3] * this.rect[5]);
-              rectLen > 6 && (this.img = this.imgMap[this.option.imgs[this.rect[6]]]);
+              if (rectLen > 6) {
+                var img = this.option.imgs[this.rect[6]];
+                this.img = typeof img === 'string' ? this.imgMap[img] : img;
+              }
 
               if (index === len - 1 && (!this.endTime || Date.now() - this.endTime > this.interval)) {
                 this.endTime = Date.now();
@@ -1491,7 +1554,10 @@ var _typeof2 = typeof Symbol === "function" && typeof Symbol.iterator === "symbo
             var rectLen = rect.length;
             rectLen > 4 && (this.originX = rect[2] * rect[4]);
             rectLen > 5 && (this.originY = rect[3] * rect[5]);
-            rectLen > 6 && (this.img = this.imgMap[this.option.imgs[rect[6]]]);
+            if (rectLen > 6) {
+              var img = this.option.imgs[rect[6]];
+              this.img = typeof img === 'string' ? this.imgMap[img] : img;
+            }
           }
         }, {
           key: 'gotoAndPlayOnce',
@@ -2539,7 +2605,7 @@ var _typeof2 = typeof Symbol === "function" && typeof Symbol.iterator === "symbo
             this.cmds.push(['to']);
             if (arguments.length !== 0) {
               for (var key in target) {
-                this.set(key, target[key], duration, easing);
+                this.set(key, target[key], duration || 0, easing);
               }
             }
             return this;
@@ -3286,6 +3352,21 @@ var _typeof2 = typeof Symbol === "function" && typeof Symbol.iterator === "symbo
             }
           }
         }, {
+          key: 'on',
+          value: function on(type, cb) {
+            switch (type) {
+              case 'touchstart':
+                this.touchStart = cb;
+                break;
+              case 'touchmove':
+                this.touchMove = cb;
+                break;
+              case 'touchend':
+                this.touchEnd = cb;
+                break;
+            }
+          }
+        }, {
           key: 'update',
           value: function update() {
             this.renderer.update(this);
@@ -3431,11 +3512,11 @@ var _typeof2 = typeof Symbol === "function" && typeof Symbol.iterator === "symbo
 
       var _weStage2 = _interopRequireDefault(_weStage);
 
-      var _graphics = __webpack_require__(3);
+      var _graphics = __webpack_require__(4);
 
       var _graphics2 = _interopRequireDefault(_graphics);
 
-      var _bitmap = __webpack_require__(4);
+      var _bitmap = __webpack_require__(2);
 
       var _bitmap2 = _interopRequireDefault(_bitmap);
 
@@ -3974,10 +4055,12 @@ var _typeof2 = typeof Symbol === "function" && typeof Symbol.iterator === "symbo
 
           var len = arguments.length;
           _this.isWegame = typeof wx !== 'undefined' && wx.createCanvas;
+          _this.moveDetectionInterval = 0;
           if (len === 0) {
             // wegame
             _this.canvas = _wegameCanvas2.default;
             _this.disableMoveDetection = true;
+            _this.moveDetectionInterval = 500;
           } else if (len === 4) {
             var _ret;
 
@@ -4076,6 +4159,10 @@ var _typeof2 = typeof Symbol === "function" && typeof Symbol.iterator === "symbo
 
           _this.width = _this.canvas.width;
           _this.height = _this.canvas.height;
+
+          _this.___instanceof = 'Stage';
+
+          _this._moveDetectionTime = Date.now();
           return _this;
         }
 
@@ -4135,7 +4222,7 @@ var _typeof2 = typeof Symbol === "function" && typeof Symbol.iterator === "symbo
             this.preStageX = null;
             this.preStageY = null;
 
-            if (obj && Math.abs(this._mouseDownX - this._mouseUpX) < 30 && Math.abs(this._mouseDownY - this._mouseUpY) < 30) {
+            if (obj && evt.type === 'touchend' && Math.abs(this._mouseDownX - this._mouseUpX) < 30 && Math.abs(this._mouseDownY - this._mouseUpY) < 30) {
               mockEvt.type = 'tap';
               obj.dispatchEvent(mockEvt);
             }
@@ -4154,6 +4241,11 @@ var _typeof2 = typeof Symbol === "function" && typeof Symbol.iterator === "symbo
         }, {
           key: '_handleMouseMove',
           value: function _handleMouseMove(evt) {
+            if (Date.now() - this._moveDetectionTime < this.moveDetectionInterval) {
+              return;
+            }
+            this._moveDetectionTime = Date.now();
+
             if (this.isWegame) {
               evt.type = 'touchmove';
             }
@@ -4338,6 +4430,7 @@ var _typeof2 = typeof Symbol === "function" && typeof Symbol.iterator === "symbo
       }
 
       var DEG_TO_RAD = 0.017453292519943295;
+      var PI_2 = Math.PI * 2;
 
       var Matrix2D = function () {
         function Matrix2D(a, b, c, d, tx, ty) {
@@ -4449,6 +4542,35 @@ var _typeof2 = typeof Symbol === "function" && typeof Symbol.iterator === "symbo
         return Matrix2D;
       }();
 
+      Matrix2D.decompose = function (a, b, c, d, tx, ty, transform) {
+        var skewX = -Math.atan2(-c, d);
+        var skewY = Math.atan2(b, a);
+
+        var delta = Math.abs(skewX + skewY);
+
+        if (delta < 0.00001 || Math.abs(PI_2 - delta) < 0.00001) {
+          transform.rotation = skewY;
+
+          if (a < 0 && d >= 0) {
+            transform.rotation += transform.rotation <= 0 ? Math.PI : -Math.PI;
+          }
+
+          transform.skewX = transform.skewY = 0;
+        } else {
+          transform.rotation = 0;
+          transform.skewX = skewX;
+          transform.skewY = skewY;
+        }
+
+        // next set scale
+        transform.scaleX = Math.sqrt(a * a + b * b);
+        transform.scaleY = Math.sqrt(c * c + d * d);
+
+        // next set position
+        transform.x = tx;
+        transform.y = ty;
+      };
+
       exports.default = Matrix2D;
 
       /***/
@@ -4478,8 +4600,6 @@ var _typeof2 = typeof Symbol === "function" && typeof Symbol.iterator === "symbo
         }
       }
 
-      var MOUSEOUT = 'mouseout';
-
       var EventDispatcher = function () {
         function EventDispatcher() {
           _classCallCheck(this, EventDispatcher);
@@ -4489,7 +4609,7 @@ var _typeof2 = typeof Symbol === "function" && typeof Symbol.iterator === "symbo
         }
 
         _createClass(EventDispatcher, [{
-          key: 'addEventListener',
+          key: "addEventListener",
           value: function addEventListener(type, listener, useCapture) {
             var listeners;
             if (useCapture) {
@@ -4510,7 +4630,7 @@ var _typeof2 = typeof Symbol === "function" && typeof Symbol.iterator === "symbo
             return listener;
           }
         }, {
-          key: 'removeEventListener',
+          key: "removeEventListener",
           value: function removeEventListener(type, listener, useCapture) {
             var listeners = useCapture ? this._captureListeners : this._listeners;
             if (!listeners) {
@@ -4530,42 +4650,38 @@ var _typeof2 = typeof Symbol === "function" && typeof Symbol.iterator === "symbo
             });
           }
         }, {
-          key: 'on',
+          key: "on",
           value: function on(type, listener, useCapture) {
             this.addEventListener(type, listener, useCapture);
           }
         }, {
-          key: 'off',
+          key: "off",
           value: function off(type, listener, useCapture) {
             this.removeEventListener(type, listener, useCapture);
           }
         }, {
-          key: 'dispatchEvent',
+          key: "dispatchEvent",
           value: function dispatchEvent(evt) {
-            if (evt.type === MOUSEOUT || !this.parent) {
-              this._dispatchEvent(evt, 0);
-              this._dispatchEvent(evt, 1);
-            } else {
-              var top = this,
-                  list = [top];
-              while (top.parent) {
-                list.push(top = top.parent);
-              }
-              var i,
-                  l = list.length;
 
-              // capture & atTarget
-              for (i = l - 1; i >= 0 && !evt.propagationStopped; i--) {
-                list[i]._dispatchEvent(evt, 0);
-              }
-              // bubbling
-              for (i = 0; i < l && !evt.propagationStopped; i++) {
-                list[i]._dispatchEvent(evt, 1);
-              }
+            var top = this,
+                list = [top];
+            while (top.parent) {
+              list.push(top = top.parent);
+            }
+            var i,
+                l = list.length;
+
+            // capture & atTarget
+            for (i = l - 1; i >= 0 && !evt.propagationStopped; i--) {
+              list[i]._dispatchEvent(evt, 0);
+            }
+            // bubbling
+            for (i = 0; i < l && !evt.propagationStopped; i++) {
+              list[i]._dispatchEvent(evt, 1);
             }
           }
         }, {
-          key: '_dispatchEvent',
+          key: "_dispatchEvent",
           value: function _dispatchEvent(evt, type) {
             var _this = this;
 
@@ -4636,7 +4752,7 @@ var _typeof2 = typeof Symbol === "function" && typeof Symbol.iterator === "symbo
 
       var _group2 = _interopRequireDefault(_group);
 
-      var _graphics = __webpack_require__(3);
+      var _graphics = __webpack_require__(4);
 
       var _graphics2 = _interopRequireDefault(_graphics);
 
@@ -4648,7 +4764,7 @@ var _typeof2 = typeof Symbol === "function" && typeof Symbol.iterator === "symbo
 
       var _sprite2 = _interopRequireDefault(_sprite);
 
-      var _bitmap = __webpack_require__(4);
+      var _bitmap = __webpack_require__(2);
 
       var _bitmap2 = _interopRequireDefault(_bitmap);
 
@@ -4808,6 +4924,7 @@ var _typeof2 = typeof Symbol === "function" && typeof Symbol.iterator === "symbo
               this.setComplexProps(ctx, o);
               ctx.font = o.font;
               ctx.fillStyle = o.color;
+              ctx.textAlign = o.textAlign;
               ctx.textBaseline = o.baseline;
               ctx.fillText(o.text, 0, 0);
             }
@@ -5332,7 +5449,7 @@ var _typeof2 = typeof Symbol === "function" && typeof Symbol.iterator === "symbo
 
       var _group2 = _interopRequireDefault(_group);
 
-      var _graphics = __webpack_require__(3);
+      var _graphics = __webpack_require__(4);
 
       var _graphics2 = _interopRequireDefault(_graphics);
 
@@ -5348,7 +5465,7 @@ var _typeof2 = typeof Symbol === "function" && typeof Symbol.iterator === "symbo
 
       var _sprite2 = _interopRequireDefault(_sprite);
 
-      var _bitmap = __webpack_require__(4);
+      var _bitmap = __webpack_require__(2);
 
       var _bitmap2 = _interopRequireDefault(_bitmap);
 
@@ -5426,7 +5543,7 @@ var _typeof2 = typeof Symbol === "function" && typeof Symbol.iterator === "symbo
         }, {
           key: '_hitAABB',
           value: function _hitAABB(o, evt) {
-            if (!o.isVisible()) {
+            if (o.ignoreHit || !o.isVisible()) {
               return;
             }
             if (o instanceof _group2.default) {
@@ -5480,7 +5597,7 @@ var _typeof2 = typeof Symbol === "function" && typeof Symbol.iterator === "symbo
         }, {
           key: '_hitPixel',
           value: function _hitPixel(o, evt, mtx) {
-            if (!o.isVisible()) return;
+            if (o.ignoreHit || !o.isVisible()) return;
             var ctx = this.ctx;
             if (mtx && !o.fixed) {
               o._hitMatrix.initialize(mtx.a, mtx.b, mtx.c, mtx.d, mtx.tx, mtx.ty);
@@ -5544,6 +5661,7 @@ var _typeof2 = typeof Symbol === "function" && typeof Symbol.iterator === "symbo
 
                 ctx.font = o.font;
                 ctx.fillStyle = o.color;
+                ctx.textAlign = o.textAlign;
                 ctx.textBaseline = o.baseline;
                 ctx.fillText(o.text, 0, 0);
               }
@@ -5606,7 +5724,7 @@ var _typeof2 = typeof Symbol === "function" && typeof Symbol.iterator === "symbo
         };
       }();
 
-      var _graphics = __webpack_require__(3);
+      var _graphics = __webpack_require__(4);
 
       var _graphics2 = _interopRequireDefault(_graphics);
 
@@ -5622,7 +5740,7 @@ var _typeof2 = typeof Symbol === "function" && typeof Symbol.iterator === "symbo
 
       var _sprite2 = _interopRequireDefault(_sprite);
 
-      var _bitmap = __webpack_require__(4);
+      var _bitmap = __webpack_require__(2);
 
       var _bitmap2 = _interopRequireDefault(_bitmap);
 
@@ -5726,6 +5844,7 @@ var _typeof2 = typeof Symbol === "function" && typeof Symbol.iterator === "symbo
             } else if (obj instanceof _text2.default) {
               ctx.font = obj.font;
               ctx.fillStyle = obj.color;
+              ctx.textAlign = obj.textAlign;
               ctx.fillText(obj.text, 0, 0);
             }
             ctx.restore();
@@ -6052,8 +6171,6 @@ var _typeof2 = typeof Symbol === "function" && typeof Symbol.iterator === "symbo
           _this.d = d;
 
           option = Object.assign({
-            fillStyle: 'black',
-            strokeStyle: 'black',
             lineWidth: 1
           }, option);
           _this.option = option;
@@ -6118,9 +6235,9 @@ var _typeof2 = typeof Symbol === "function" && typeof Symbol.iterator === "symbo
                 case 'S':
 
                   if (preItem[0] === 'C' || preItem[0] === 'c') {
-                    this.bezierCurveTo(preX, preY, preX + preItem[5] - preItem[3], preY + preItem[6] - preItem[4], item[1], item[2], item[3], item[4]);
+                    this.bezierCurveTo(preX + preItem[5] - preItem[3], preY + preItem[6] - preItem[4], item[1], item[2], item[3], item[4]);
                   } else if (preItem[0] === 'S' || preItem[0] === 's') {
-                    this.bezierCurveTo(preX, preY, preX + preItem[3] - preItem[1], preY + preItem[4] - preItem[2], item[1], item[2], item[3], item[4]);
+                    this.bezierCurveTo(preX + preItem[3] - preItem[1], preY + preItem[4] - preItem[2], item[1], item[2], item[3], item[4]);
                   }
                   preX = item[3];
                   preY = item[4];
@@ -6157,9 +6274,9 @@ var _typeof2 = typeof Symbol === "function" && typeof Symbol.iterator === "symbo
                   break;
                 case 's':
                   if (preItem[0] === 'C' || preItem[0] === 'c') {
-                    this.bezierCurveTo(preX, preY, preX + preItem[5] - preItem[3], preY + preItem[6] - preItem[4], preX + item[1], preY + item[2], preX + item[3], preY + item[4]);
+                    this.bezierCurveTo(preX + preItem[5] - preItem[3], preY + preItem[6] - preItem[4], preX + item[1], preY + item[2], preX + item[3], preY + item[4]);
                   } else if (preItem[0] === 'S' || preItem[0] === 's') {
-                    this.bezierCurveTo(preX, preY, preX + preItem[3] - preItem[1], preY + preItem[4] - preItem[2], preX + item[1], preY + item[2], preX + item[3], preY + item[4]);
+                    this.bezierCurveTo(preX + preItem[3] - preItem[1], preY + preItem[4] - preItem[2], preX + item[1], preY + item[2], preX + item[3], preY + item[4]);
                   }
 
                   preX += item[3];
@@ -6194,9 +6311,11 @@ var _typeof2 = typeof Symbol === "function" && typeof Symbol.iterator === "symbo
 
                   curves.forEach(function (curve, index) {
                     if (index === 0) {
-                      _this2.bezierCurveTo(preX, preY, curve.x1, curve.y1, curve.x2, curve.y2, curve.x, curve.y);
+                      _this2.moveTo(preX, preY);
+                      _this2.bezierCurveTo(curve.x1, curve.y1, curve.x2, curve.y2, curve.x, curve.y);
                     } else {
-                      _this2.bezierCurveTo(curves[index - 1].x, curves[index - 1].y, curve.x1, curve.y1, curve.x2, curve.y2, curve.x, curve.y);
+                      //curves[index - 1].x, curves[index - 1].y, 
+                      _this2.bezierCurveTo(curve.x1, curve.y1, curve.x2, curve.y2, curve.x, curve.y);
                     }
                   });
 
@@ -6222,9 +6341,11 @@ var _typeof2 = typeof Symbol === "function" && typeof Symbol.iterator === "symbo
 
                   curves.forEach(function (curve, index) {
                     if (index === 0) {
-                      _this2.bezierCurveTo(preX, preY, curve.x1, curve.y1, curve.x2, curve.y2, curve.x, curve.y);
+                      _this2.moveTo(preX, preY);
+                      _this2.bezierCurveTo(curve.x1, curve.y1, curve.x2, curve.y2, curve.x, curve.y);
                     } else {
-                      _this2.bezierCurveTo(curves[index - 1].x, curves[index - 1].y, curve.x1, curve.y1, curve.x2, curve.y2, curve.x, curve.y);
+                      //curves[index - 1].x, curves[index - 1].y
+                      _this2.bezierCurveTo(curve.x1, curve.y1, curve.x2, curve.y2, curve.x, curve.y);
                     }
                   });
 
@@ -6595,6 +6716,10 @@ var _typeof2 = typeof Symbol === "function" && typeof Symbol.iterator === "symbo
 
       var _roundedRect2 = _interopRequireDefault(_roundedRect);
 
+      var _bitmap2 = __webpack_require__(2);
+
+      var _bitmap3 = _interopRequireDefault(_bitmap2);
+
       function _interopRequireDefault(obj) {
         return obj && obj.__esModule ? obj : { default: obj };
       }
@@ -6617,6 +6742,18 @@ var _typeof2 = typeof Symbol === "function" && typeof Symbol.iterator === "symbo
         }subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } });if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass;
       }
 
+      /*
+      Options
+        font:
+        text: 
+        textColor:
+        image: [path, width, height]
+        bgColor: 
+        bgImage: [path, width, height]
+        borderRadius:
+        borderColor:
+      */
+
       var Button = function (_Group) {
         _inherits(Button, _Group);
 
@@ -6626,45 +6763,78 @@ var _typeof2 = typeof Symbol === "function" && typeof Symbol.iterator === "symbo
           var _this = _possibleConstructorReturn(this, (Button.__proto__ || Object.getPrototypeOf(Button)).call(this));
 
           _this.width = option.width;
+          _this.height = option.height;
+          _this.x = option.x;
+          _this.y = option.y;
 
           var textHeight = 0;
-          _this.text = new _text2.default(option.text, {
-            font: option.font,
-            color: option.color
-          });
-          var textWidth = _this.text.getWidth();
-          var textGroup = new _group2.default();
+          var textGroup;
 
-          if (textWidth > option.width) {
-            var step = Math.round(option.text.length * option.width / textWidth / 2);
-
-            var textList = _this.stringSplit(option.text, step);
-            var lineHeight = option.lineHeight || 12;
-            textHeight = textList.length * lineHeight + 6;
-
-            textList.forEach(function (text, index) {
-              _this.text = new _text2.default(text, {
-                font: option.font,
-                color: option.color
-              });
-
-              _this.text.x = option.width / 2 - _this.text.getWidth() / 2 * _this.text.scaleX + (option.textX || 0);
-              _this.text.y = Math.max(textHeight, option.height) / 2 - 10 + 5 * _this.text.scaleY + (option.textY || 0) + index * 12 - textHeight / 2 + lineHeight / 2;
-              textGroup.add(_this.text);
+          if (option.text) {
+            textGroup = new _group2.default();
+            _this.text = new _text2.default(option.text, {
+              font: option.font,
+              color: option.color
             });
-          } else {
-            _this.text.x = option.width / 2 - _this.text.getWidth() / 2 * _this.text.scaleX + (option.textX || 0);
-            _this.text.y = option.height / 2 - 10 + 5 * _this.text.scaleY + (option.textY || 0);
-            textGroup.add(_this.text);
+            var textWidth = _this.text.getWidth();
+
+            if (textWidth > option.width) {
+              var step = Math.round(option.text.length * option.width / textWidth / 2);
+
+              var textList = _this.stringSplit(option.text, step);
+              var lineHeight = option.lineHeight || 12;
+              textHeight = textList.length * lineHeight + 6;
+
+              textList.forEach(function (text, index) {
+                _this.text = new _text2.default(text, {
+                  font: option.font,
+                  color: option.color
+                });
+
+                _this.text.x = option.width / 2 - _this.text.getWidth() / 2 * _this.text.scaleX + (option.textX || 0);
+                _this.text.y = Math.max(textHeight, option.height) / 2 - 10 + 5 * _this.text.scaleY + (option.textY || 0) + index * 12 - textHeight / 2 + lineHeight / 2;
+                textGroup.add(_this.text);
+              });
+            } else {
+              _this.text.x = option.width / 2 - _this.text.getWidth() / 2 * _this.text.scaleX + (option.textX || 0);
+              _this.text.y = option.height / 2 - 10 + 5 * _this.text.scaleY + (option.textY || 0);
+              textGroup.add(_this.text);
+            }
           }
 
-          _this.roundedRect = new _roundedRect2.default(option.width, option.autoHeight ? Math.max(textHeight, option.height) : option.height, option.borderRadius, {
-            strokeStyle: option.borderColor || 'black',
-            fillStyle: option.backgroundColor || '#F5F5F5'
-          });
+          if (option.bgImage) {
+            var ratio = SCALE_RATIO;
+            var bitmap = new _bitmap3.default(option.bgImage[0]);
+            bitmap.scaleX = ratio;
+            bitmap.scaleY = ratio;
+            bitmap.width = option.bgImage[1];
+            bitmap.height = option.bgImage[2];
+            bitmap.x = (_this.width - bitmap.width) / 2;
+            bitmap.y = (_this.height - bitmap.height) / 2;
+            _this.add(bitmap);
+          } else if (option.bgColor || option.borderColor) {
+            _this.roundedRect = new _roundedRect2.default(option.width, option.autoHeight ? Math.max(textHeight, option.height) : option.height, option.borderRadius, {
+              strokeStyle: option.borderColor || 'black',
+              fillStyle: option.backgroundColor || '#F5F5F5'
+            });
+            _this.add(_this.roundedRect);
+          }
 
-          _this.add(_this.roundedRect);
-          _this.add(textGroup);
+          if (option.image) {
+            var ratio = SCALE_RATIO;
+            var _bitmap = new _bitmap3.default(option.image[0]);
+            _bitmap.scaleX = ratio;
+            _bitmap.scaleY = ratio;
+            _bitmap.width = option.image[1];
+            _bitmap.height = option.image[2];
+            _bitmap.x = (_this.width - _bitmap.width) / 2;
+            _bitmap.y = (_this.height - _bitmap.height) / 2;
+            _this.add(_bitmap);
+          }
+
+          if (textGroup) {
+            _this.add(textGroup);
+          }
           return _this;
         }
 
@@ -7016,7 +7186,7 @@ var _typeof2 = typeof Symbol === "function" && typeof Symbol.iterator === "symbo
           _this.num = num;
           _this.r = r;
           _this.options = options || {};
-          _this.strokeColor = options.strokeColor || 'black';
+
           _this.vertex = [];
           _this.initVertex();
           return _this;
@@ -7062,23 +7232,25 @@ var _typeof2 = typeof Symbol === "function" && typeof Symbol.iterator === "symbo
           key: 'draw',
           value: function draw() {
             this.beginPath();
-            this.strokeStyle(this.strokeColor);
+
             this.moveTo(this.vertex[0][0], this.vertex[0][1]);
 
             for (var i = 1, len = this.vertex.length; i < len; i++) {
               this.lineTo(this.vertex[i][0], this.vertex[i][1]);
             }
             this.closePath();
-            // 路径闭合
-            //  if (this.options.strokeStyle) {
-            //    this.strokeStyle = strokeStyle;
-            // this.lineWidth(this.options.width);
-            // this.lineJoin('round');
-            this.stroke();
-            //  }
+
             if (this.options.fillStyle) {
               this.fillStyle(this.options.fillStyle);
               this.fill();
+            }
+
+            if (this.options.strokeStyle) {
+              this.strokeStyle(this.options.strokeStyle);
+              if (typeof this.options.lineWidth === 'number') {
+                this.lineWidth(this.options.lineWidth);
+              }
+              this.stroke();
             }
           }
         }]);

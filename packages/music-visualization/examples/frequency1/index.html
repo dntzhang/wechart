@@ -46,10 +46,37 @@
         display: none;
 
     }
+    #play{
+        font:30px Arial;
+        box-sizing: border-box;
+        position: absolute;
+        left:50%;
+        top:50%;
+        -webkit-transform: translate3d(-50%,-50%,0);
+        color:aqua;
+        border:1px solid aqua;
+        width:100px;
+        height:100px;
+        border-radius: 100px;
+        display: -webkit-box;
+        -webkit-box-pack: center;
+        -webkit-box-align: center;
+        -webkit-animation: 1.2s scale linear infinite;
+        visibility: hidden;
+    }
+    @-webkit-keyframes scale{
+        0%,100%{
+            -webkit-transform: translate3d(-50%,-50%,0) scale(1);
+        }
+        50%{
+            -webkit-transform: translate3d(-50%,-50%,0) scale(1.15);
+        }
+    }
     </style>
 </head>
 <body>
     <div id="precent">0%</div>
+    <div id="play">Play</div>
     <a href="https://github.com/dntzhang/wechart" target="_blank" style="position: fixed; right: 0; top: 0; z-index: 3;">
         <img src="//alloyteam.github.io/github.png" alt="">
     </a>
