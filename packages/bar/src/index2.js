@@ -120,9 +120,9 @@ class Bar extends Group {
     tooltip.style.textAlign = 'center'
 
     data.datasets.forEach((dataset,index) => {
-    
+
       dataset.data.forEach((subData, subIndex) => {
-        this.add(new OneBar(index,subData, subIndex, tooltip,index ===0?yScaleLeft:yScaleRight,dataset.color,xScale,data.size,bottomY,xInterval/2,len))
+        this.add(new OneBar(index,subData, subIndex, tooltip,index ===0?yScaleLeft:yScaleRight,dataset.color,xScale,data.size,bottomY,xInterval/2,len,dataset.label,data.labels[index]))
       })
     })
   }
@@ -137,7 +137,7 @@ function getX(x, index, len, size){
 }
 
 class OneBar extends Group {
-  constructor (index,value, subIndex, tooltip,scale,color,xScale,size,bottomY,interval,len) {
+  constructor (index,value, subIndex, tooltip,scale,color,xScale,size,bottomY,interval,len,label,gLabel) {
     super()
     const option = Object.assign({}, defaultOption)
 
@@ -177,15 +177,13 @@ class OneBar extends Group {
       to.y += rect.y
     }
 
-    if (option.show) {
-      Object.assign(rect, from)
-    }
+   
 
-    if (option.tooltip) {
+    if (tooltip) {
       rect.addEventListener('mouseover', (evt) => {
         tooltip.style.left = (evt.pureEvent.pageX + 5) + 'px'
         tooltip.style.top = (evt.pureEvent.pageY + 5) + 'px'
-        tooltip.innerHTML = option.tooltip(data[subIndex])
+        tooltip.innerHTML =gLabel+'<br>'+ label+': '+value
         tooltip.style.display = 'block'
       })
 

@@ -7032,11 +7032,11 @@ var stage = new _cax2.default.Stage(800, 520, 'body');
 stage.add(new _index2.default({
   labels: ['aaaaaaaaa', 'b', 'c'],
   datasets: [{
-    lable: 'age',
+    label: 'age',
     data: [10, 20, 30],
     color: 'red'
   }, {
-    lable: 'exp',
+    label: 'exp',
     data: [100, 2000, 30],
     color: 'green'
   }],
@@ -7231,7 +7231,7 @@ var Bar = function (_Group) {
     data.datasets.forEach(function (dataset, index) {
 
       dataset.data.forEach(function (subData, subIndex) {
-        _this.add(new OneBar(index, subData, subIndex, tooltip, index === 0 ? yScaleLeft : yScaleRight, dataset.color, xScale, data.size, bottomY, xInterval / 2, len));
+        _this.add(new OneBar(index, subData, subIndex, tooltip, index === 0 ? yScaleLeft : yScaleRight, dataset.color, xScale, data.size, bottomY, xInterval / 2, len, dataset.label, data.labels[index]));
       });
     });
     return _this;
@@ -7251,7 +7251,7 @@ function getX(x, index, len, size) {
 var OneBar = function (_Group2) {
   _inherits(OneBar, _Group2);
 
-  function OneBar(index, value, subIndex, tooltip, scale, color, xScale, size, bottomY, interval, len) {
+  function OneBar(index, value, subIndex, tooltip, scale, color, xScale, size, bottomY, interval, len, label, gLabel) {
     _classCallCheck(this, OneBar);
 
     var _this2 = _possibleConstructorReturn(this, (OneBar.__proto__ || Object.getPrototypeOf(OneBar)).call(this));
@@ -7292,15 +7292,11 @@ var OneBar = function (_Group2) {
       to.y += rect.y;
     }
 
-    if (option.show) {
-      Object.assign(rect, from);
-    }
-
-    if (option.tooltip) {
+    if (tooltip) {
       rect.addEventListener('mouseover', function (evt) {
         tooltip.style.left = evt.pureEvent.pageX + 5 + 'px';
         tooltip.style.top = evt.pureEvent.pageY + 5 + 'px';
-        tooltip.innerHTML = option.tooltip(data[subIndex]);
+        tooltip.innerHTML = gLabel + '<br>' + label + ': ' + value;
         tooltip.style.display = 'block';
       });
 

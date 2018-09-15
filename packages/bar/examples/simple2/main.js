@@ -9,12 +9,12 @@ stage.add(new Bar({
   labels:['aaaaaaaaa','b','c'],
   datasets:[
     {
-      lable:'age',
+      label:'age',
       data: [10,20,30],
       color:'red'
     },
     {
-      lable:'exp',
+      label:'exp',
       data: [100,2000,30],
       color:'green'
     }
