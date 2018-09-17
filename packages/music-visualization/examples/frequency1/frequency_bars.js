@@ -12,6 +12,7 @@ class FrequencyBars extends cax.Group {
         fillStyle: 'white'
       })
       rect.alpha = 0.666
+      rect.scaleY = 0.1
       this.add(rect)
       this.rects.push(rect)
       rect.x = w * i + gap * i

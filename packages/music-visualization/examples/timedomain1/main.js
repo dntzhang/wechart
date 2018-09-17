@@ -26,8 +26,9 @@ var loadAudio = (url) => {
         asource.connect(splitter)
         splitter.connect(analyser, 0, 0)
         analyser.connect(actx.destination)
-        asource.start()
-        resolve()
+        // asource.start()
+        // resolve()
+        resolve(asource)
       })
     }
     xhr.onprogress = (o) => {
@@ -39,10 +40,10 @@ var loadAudio = (url) => {
   })
 }
 
-loadAudio(media).then(data => {
-  timeDomainData = new Uint8Array(analyser.frequencyBinCount)
+loadAudio(media).then(asource => {
+  // timeDomainData = new Uint8Array(analyser.frequencyBinCount)
 
-  var stage = new cax.Stage(window.innerWidth, window.innerHeight, 'body')
+  var stage = new cax.Stage(document.body.offsetWidth, document.body.offsetHeight, 'body')
   var bg = new cax.Rect(stage.width, stage.height, {fillStyle: 'black'})
   stage.add(bg)
 
@@ -51,6 +52,9 @@ loadAudio(media).then(data => {
       { id: 'logo', src: './asset/logox3.png' }
     ],
     complete: () => {
+      var play = false, $play = document.querySelector('#play')
+      $play.style.visibility = 'visible'
+
       var tex = loader.get('logo')
       var tdpic1 = new ScaleTimeDomain(tex, 'horizontal')
       var tdpic2 = new ScaleTimeDomain(tex, 'vertical')
@@ -64,12 +68,24 @@ loadAudio(media).then(data => {
       tdpic1.scaleX = tdpic1.scaleY = 0.8
       tdpic2.scaleX = tdpic2.scaleY = 0.8
 
+      $play.addEventListener('click', function () {
+        this.style.visibility = 'hidden'
+        this.style.webkitAnimation = 'none'
+        asource.start()
+        timeDomainData = new Uint8Array(analyser.frequencyBinCount)
+        play = true
+      })
+
       ;(function animate () {
         window.requestAnimationFrame(animate)
-        analyser.getByteTimeDomainData(timeDomainData)
         stage.update()
-        tdpic1.update(timeDomainData)
-        tdpic2.update(timeDomainData)
+
+        if (play) {
+          // debugger
+          analyser.getByteTimeDomainData(timeDomainData)
+          tdpic1.update(timeDomainData)
+          tdpic2.update(timeDomainData)
+        }
       })()
     }
   })
