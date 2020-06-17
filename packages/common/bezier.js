@@ -44,7 +44,7 @@ export function slope(points, t, dt) {
 
   const dx = -3* t1Sqr*  p1x +3*t1Sqr*c1x - 6*t*t1*c1x - 3*tSqr*c2x+6*t*t1*c2x+3*tSqr*p2x
   const dy = -3* t1Sqr * p1y +3*t1Sqr*c1y - 6*t*t1*c1y - 3*tSqr*c2y+6*t*t1*c2y+3*tSqr*p2y
-  return dy == 0 ? Infinity : Math.atan(dy / dx)
+  return  Math.atan2(dy , dx)
 
   // let p1 = getValue(points, t),
   // p2 = getValue(points, t + (dt || 0.01)),
